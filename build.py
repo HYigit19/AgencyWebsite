@@ -7,7 +7,7 @@ from html import escape as e
 
 sys.path.insert(0, os.path.dirname(__file__))
 from legal import LEGAL, OPERATOR
-from content import SLUGS, UI, PROCESS, SERVICE_CARDS, HOME, SERVICES, CONTACT, EXAMPLES
+from content import SLUGS, UI, PROCESS, SERVICE_CARDS, HOME, SERVICES, CONTACT, EXAMPLES, BOOKING, BOOKING_URL
 
 BASE = "https://www.nexvio.de"   # placeholder until the domain is bought
 EMAIL = "hallo@nexvio.de"        # placeholder
@@ -128,12 +128,16 @@ def header(L, lang, key):
 """
 
 
+def contact_href(L, lang):
+    return L.page(lang, lang, "contact") + ("#termin" if BOOKING_URL else "")
+
+
 def cta_band(L, lang):
     ui = UI[lang]
     return f"""<section class="cta-band">
   <div class="wrap section-inner">
     <div><h2>{e(ui['band_h2'])}</h2><p>{e(ui['band_p'])}</p></div>
-    <a class="btn btn-primary" href="{L.page(lang, lang, 'contact')}">{e(ui['band_btn'])}</a>
+    <a class="btn btn-primary" href="{contact_href(L, lang)}">{e(ui['band_btn'])}</a>
   </div>
 </section>
 """
@@ -253,7 +257,7 @@ def page_home(L, lang):
       <h1>{e(h['h1a'])} <span class="accent">{e(h['h1b'])}</span></h1>
       <p class="lead">{e(h['lead'])}</p>
       <div class="hero-cta">
-        <a class="btn btn-primary" href="{L.page(lang, lang, 'contact')}">{e(h['cta1'])}</a>
+        <a class="btn btn-primary" href="{contact_href(L, lang)}">{e(h['cta1'])}</a>
         <a class="btn btn-ghost" href="#leistungen">{e(h['cta2'])}</a>
       </div>
       <ul class="facts">{facts}</ul>
@@ -306,7 +310,7 @@ def page_service(L, lang, key):
       <h1>{e(s['h1'])}</h1>
       <p class="lead">{e(s['lead'])}</p>
       <ul class="chips">{chips}</ul>
-      <div class="hero-cta"><a class="btn btn-primary" href="{L.page(lang, lang, 'contact')}">{e(HOME[lang]['cta1'])}</a></div>
+      <div class="hero-cta"><a class="btn btn-primary" href="{contact_href(L, lang)}">{e(HOME[lang]['cta1'])}</a></div>
     </div>
     {render_example(EXAMPLES[lang][key])}
   </div>
@@ -341,7 +345,27 @@ def page_contact(L, lang):
     steps = "".join(f'<li><span class="n">{i}</span><div><b>{e(h)}</b><p>{e(p)}</p></div></li>'
                     for i, (h, p) in enumerate(c["steps"], 1))
     opts = "".join(f"<option>{e(o)}</option>" for o in f["options"])
-    body = f"""<section class="wrap contact">
+    booking = ""
+    if BOOKING_URL:
+        b = BOOKING[lang]
+        src = BOOKING_URL + ("&" if "?" in BOOKING_URL else "?") + "gv=true"
+        booking = f"""<section class="band tint" id="termin">
+  <div class="wrap section-inner booking">
+    <div class="section-head"><p class="eyebrow">{e(b['eyebrow'])}</p><h2>{e(b['h2'])}</h2><p>{e(b['p'])}</p></div>
+    <div class="booking-frame" id="booking" data-src="{e(src)}">
+      <div class="booking-gate">
+        <p>{e(b['consent'])} <a href="{L.page(lang, lang, 'privacy')}">{e(b['privacy_link'])}</a></p>
+        <div class="hero-cta">
+          <button type="button" class="btn btn-primary" id="booking-load">{e(b['load'])}</button>
+          <a class="btn btn-ghost" href="{e(BOOKING_URL)}" target="_blank" rel="noopener">{e(b['open'])} ↗</a>
+        </div>
+      </div>
+    </div>
+    <p class="note">{e(b['or_form'])}</p>
+  </div>
+</section>
+"""
+    body = booking + f"""<section class="wrap contact">
   <div class="contact-info">
     <p class="eyebrow">{e(c['eyebrow'])}</p>
     <h1>{e(c['h1'])}</h1>

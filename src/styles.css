@@ -344,3 +344,12 @@ footer { border-top: 1px solid var(--line); background: var(--surface); }
 mark.ph { background: #fff1b8; color: #6b4e00; border-radius: 4px; padding: 0 4px; }
 .foot-base a { text-decoration: none; color: var(--muted); }
 .foot-base a:hover { color: var(--fg); }
+
+/* Booking (Google Calendar appointment schedule, loaded on click) */
+.booking { gap: 24px; }
+.booking-frame { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; min-height: 220px; display: grid; }
+.booking-frame iframe { width: 100%; height: 640px; border: 0; display: block; }
+.booking-gate { display: grid; gap: 18px; align-content: center; justify-items: start; padding: 28px; max-width: 46em; }
+.booking-gate p { color: var(--muted); font-size: var(--step--1); }
+.booking-gate a:not(.btn) { color: var(--accent); }
+@media (max-width: 560px) { .booking-frame iframe { height: 760px; } .booking-gate { padding: 22px 18px; } }

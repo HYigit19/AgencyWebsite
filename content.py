@@ -422,3 +422,33 @@ EXAMPLES = {
                  "foot": ("Updated", "today 06:00", "automatically from ERP and CRM")},
     },
 }
+
+
+# Google Calendar appointment schedule (Workspace "Terminbuchungsseite").
+# Paste the public booking link here, e.g.
+# "https://calendar.google.com/calendar/appointments/schedules/AcZssZ..."
+# Leave empty to hide the booking section.
+BOOKING_URL = ""
+
+BOOKING = {
+    "de": {
+        "eyebrow": "Termin buchen",
+        "h2": "Erstgespräch direkt buchen",
+        "p": "Wählen Sie einen freien Termin für ein kostenloses 30-minütiges Videogespräch. Sie erhalten sofort eine Bestätigung mit Link per E-Mail.",
+        "consent": "Der Buchungskalender wird von Google bereitgestellt. Beim Laden werden Daten wie Ihre IP-Adresse an Google übertragen.",
+        "privacy_link": "Mehr dazu in der Datenschutzerklärung.",
+        "load": "Kalender laden",
+        "open": "In neuem Tab öffnen",
+        "or_form": "Lieber schreiben? Nutzen Sie das Formular weiter unten.",
+    },
+    "en": {
+        "eyebrow": "Book a call",
+        "h2": "Book your intro call",
+        "p": "Pick a free slot for a free 30-minute video call. You get a confirmation with the meeting link by email right away.",
+        "consent": "The booking calendar is provided by Google. Loading it sends data such as your IP address to Google.",
+        "privacy_link": "Read more in the privacy policy.",
+        "load": "Load calendar",
+        "open": "Open in new tab",
+        "or_form": "Prefer to write? Use the form below.",
+    },
+}

@@ -55,6 +55,20 @@
     }
   });
 
+  // Booking calendar: only load Google after the visitor clicks (privacy).
+  var bookBtn = document.getElementById("booking-load");
+  if (bookBtn) {
+    bookBtn.addEventListener("click", function () {
+      var box = document.getElementById("booking");
+      var f = document.createElement("iframe");
+      f.src = box.dataset.src;
+      f.title = bookBtn.textContent;
+      f.loading = "lazy";
+      box.innerHTML = "";
+      box.appendChild(f);
+    });
+  }
+
   // Contact form: no backend yet, so validate and say so plainly.
   var form = document.getElementById("contact-form");
   if (form) {

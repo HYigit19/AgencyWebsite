@@ -348,7 +348,9 @@ def page_contact(L, lang):
     booking = ""
     if BOOKING_URL:
         b = BOOKING[lang]
-        src = BOOKING_URL + ("&" if "?" in BOOKING_URL else "?") + "gv=true"
+        joiner = "&" if "?" in BOOKING_URL else "?"
+        src = BOOKING_URL + joiner + "gv=true&hl=" + lang
+        open_url = BOOKING_URL + joiner + "hl=" + lang
         booking = f"""<section class="band tint" id="termin">
   <div class="wrap section-inner booking">
     <div class="section-head"><p class="eyebrow">{e(b['eyebrow'])}</p><h2>{e(b['h2'])}</h2><p>{e(b['p'])}</p></div>
@@ -357,7 +359,7 @@ def page_contact(L, lang):
         <p>{e(b['consent'])} <a href="{L.page(lang, lang, 'privacy')}">{e(b['privacy_link'])}</a></p>
         <div class="hero-cta">
           <button type="button" class="btn btn-primary" id="booking-load">{e(b['load'])}</button>
-          <a class="btn btn-ghost" href="{e(BOOKING_URL)}" target="_blank" rel="noopener">{e(b['open'])} ↗</a>
+          <a class="btn btn-ghost" href="{e(open_url)}" target="_blank" rel="noopener">{e(b['open'])} ↗</a>
         </div>
       </div>
     </div>

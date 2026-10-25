@@ -84,7 +84,7 @@ HOME = {
         "desc": "Nexvio entwickelt KI-Automatisierungen, Websites, Web-Apps und Dashboards für kleine und mittlere Unternehmen. Festpreis, erster Prototyp in ca. einer Woche.",
         "eyebrow": "KI-Software · Websites · Dashboards",
         "h1a": "Software, die Ihnen", "h1b": "Arbeit abnimmt.",
-        "lead": "Nexvio entwickelt KI-Automatisierungen, Websites und Web-Apps für kleine und mittlere Unternehmen. Vom ersten Prototyp bis zum laufenden Betrieb, zum Festpreis.",
+        "lead": "Nexvio entwickelt KI-Automatisierungen, Websites und Web-Apps für kleine und mittlere Unternehmen. Vom ersten Prototyp bis zum laufenden Betrieb, zum fairen Preis.",
         "cta1": "Kostenloses Erstgespräch", "cta2": "Leistungen ansehen",
         "facts": ["Festpreis nach Erstgespräch", "Erster Prototyp in ca. einer Woche", "Betreuung auf Deutsch & Englisch"],
         "log_title": "Kundenanfrage automatisch bearbeiten", "log_tag": "Beispiel",

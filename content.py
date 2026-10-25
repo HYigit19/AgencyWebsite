@@ -428,7 +428,7 @@ EXAMPLES = {
 # Paste the public booking link here, e.g.
 # "https://calendar.google.com/calendar/appointments/schedules/AcZssZ..."
 # Leave empty to hide the booking section.
-BOOKING_URL = ""
+BOOKING_URL = "https://calendar.google.com/calendar/appointments/schedules/AcZssZ1uZ__iWuTBmuOGyDMOc9RhHkbnhzpkhuMgPj3ZOz4rqCMPN46Ku26UPOpzMMb7NTCmPfGnASEe"
 
 BOOKING = {
     "de": {

@@ -8,7 +8,7 @@ SLUGS = {
 
 UI = {
     "de": {
-        "nav": {"ai": "KI-Automatisierung", "web": "Websites", "apps": "Web-Apps", "dash": "Dashboards"},
+        "nav": {"ai": "KI-Automatisierung", "web": "Websites", "apps": "Web-Apps", "dash": "Dashboards", "home": "Start"},
         "cta": "Projekt anfragen",
         "menu": "Menü",
         "more": "Mehr erfahren",
@@ -27,7 +27,7 @@ UI = {
         "lang_label": "Sprache",
     },
     "en": {
-        "nav": {"ai": "AI automation", "web": "Websites", "apps": "Web apps", "dash": "Dashboards"},
+        "nav": {"ai": "AI automation", "web": "Websites", "apps": "Web apps", "dash": "Dashboards", "home": "Home"},
         "cta": "Start a project",
         "menu": "Menu",
         "more": "Learn more",

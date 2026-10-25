@@ -106,11 +106,11 @@ def header(L, lang, key):
     cur = ' aria-current="page"'
     links = "".join(
         f'<a href="{L.page(lang, lang, k)}"{cur if k == key else ""}>{e(ui["nav"][k])}</a>'
-        for k in SERVICE_KEYS)
+        for k in ["home"] + SERVICE_KEYS)
     langsw = "".join(
         f'<a href="{L.page(lang, l, key)}" hreflang="{l}" lang="{l}" aria-current="{str(l == lang).lower()}">{l.upper()}</a>'
         for l in LANGS)
-    mobile = "".join(f'<a href="{L.page(lang, lang, k)}">{e(ui["nav"][k])}</a>' for k in SERVICE_KEYS)
+    mobile = "".join(f'<a href="{L.page(lang, lang, k)}">{e(ui["nav"][k])}</a>' for k in ["home"] + SERVICE_KEYS)
     mobile += f'<a href="{L.page(lang, lang, "contact")}">{e(ui["cta"])}</a>'
     return f"""<header class="site-header">
   <div class="wrap nav">

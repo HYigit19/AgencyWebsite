@@ -8,6 +8,8 @@
 <style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 </head>
 <body>
+<title>GeoAuftrag</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <meta name="theme-color" content="#F2F4F8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0E1116" media="(prefers-color-scheme: dark)">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -438,7 +440,7 @@ button.bcard:hover, a.bcard:hover { box-shadow: 0 0 0 2px var(--accent-soft), va
 .sheet { width: min(640px, 100%); background: var(--surface); border-radius: 18px; box-shadow: var(--shadow); }
 .sheet.wide { width: min(820px, 100%); }
 @media (max-width: 560px) {
-  .overlay { padding: env(safe-area-inset-top, 0px) 0 0; align-items: stretch; }
+  .overlay { padding: env(safe-area-inset-top, 0px) 0 0; align-items: flex-start; }
   .sheet, .sheet.wide { width: 100%; min-height: 100%; border-radius: 0; padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
   .sheet-h { position: sticky; top: 0; background: var(--surface); z-index: 2; }
   .sheet-f { position: sticky; bottom: 0; background: var(--surface); }
@@ -517,6 +519,51 @@ label.btn:has(+ input.sr:focus-visible) { outline: 2px solid var(--accent); outl
 .files .ft.mkft-rohrende { background: var(--cable); color: #FFFFFF; } .files .ft.mkft-schaden { background: var(--col-crit); color: #FFFFFF; } .files .ft.mkft-hinweis { background: #0B7A71; color: #FFFFFF; }
 .files .ft[class*="mkft-"] { font-family: var(--font-d); font-size: 15px; }
 .nav-i .lbl .hint { font-weight: 500; }
+
+/* Auftraggeber-Übersicht und Material */
+.sec-t { font-size: 18px; margin: 4px 0 -4px; }
+.firms { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.firm { background: var(--surface); box-shadow: var(--card-shadow); border-radius: var(--radius); padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; border-top: 4px solid var(--fc); }
+.firm-h { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.firm-h b { font-size: 15px; min-width: 0; }
+.firm-k { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.firm-k div { display: flex; flex-direction: column; min-width: 0; }
+.firm-n { font-size: 22px; font-weight: 800; line-height: 1.1; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.firm-k small { font-size: 12px; color: var(--ink-2); line-height: 1.3; }
+.firm .btn { align-self: flex-start; }
+.sbar { display: flex; gap: 2px; height: 10px; border-radius: 5px; overflow: hidden; background: var(--muted-soft); }
+.sbar i { display: block; height: 100%; min-width: 6px; }
+.sleg { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; color: var(--ink-2); }
+.sleg span { display: inline-flex; align-items: center; gap: 5px; }
+.sleg i { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
+.sb-geplant { background: var(--col-info); } .sb-arbeit { background: var(--col-warn); } .sb-problem { background: var(--col-crit); } .sb-erledigt { background: var(--col-good); } .sb-abgerechnet { background: var(--col-done); }
+.who-an { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; font-weight: 600; }
+.fdot { width: 10px; height: 10px; border-radius: 50%; background: var(--fc); display: inline-block; flex: none; }
+.mbar { display: inline-flex; align-items: center; gap: 8px; min-width: 120px; width: 100%; max-width: 180px; }
+.mbar .tr { flex: 1; height: 8px; border-radius: 4px; background: var(--muted-soft); overflow: hidden; min-width: 50px; }
+.mbar .tr i { display: block; height: 100%; border-radius: 4px; background: var(--col-good); }
+.mbar.hi .tr i { background: var(--col-warn); }
+.mbar.over .tr i { background: var(--col-crit); }
+.mbar small { font-size: 12px; color: var(--ink-2); font-variant-numeric: tabular-nums; min-width: 38px; text-align: right; }
+.matin { display: grid; gap: 8px; }
+.mrow { display: grid; grid-template-columns: minmax(0, 1fr) 128px; gap: 10px; align-items: center; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; }
+.mrow > label { display: flex; flex-direction: column; min-width: 0; font-weight: 600; }
+.mrow small { font-weight: 400; color: var(--ink-2); font-size: 12px; }
+.mrow.add { border-style: dashed; }
+.mrow.add select, .mq input { border: 1px solid var(--line); border-radius: 8px; padding: 8px 9px; background-color: var(--surface); width: 100%; min-width: 0; }
+.mq { display: flex; align-items: center; gap: 6px; }
+.mq input { text-align: right; font-variant-numeric: tabular-nums; }
+.mq b { font-size: 13px; color: var(--ink-2); min-width: 26px; }
+.mlog { list-style: none; margin: 0; padding: 0; }
+.mlog li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 10px 0; border-top: 1px solid var(--line); }
+.ml-b { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.ml-b small { color: var(--ink-2); font-size: 12.5px; }
+.mlog-h { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 6px 0 4px; }
+.mchips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+#mat-offen:focus { outline: none; }
+button.kpi { border: 0; width: 100%; font: inherit; cursor: pointer; }
+.kpi-v.warn { color: var(--warn); }
+@media (max-width: 560px) { .mbar { min-width: 96px; } .mrow { grid-template-columns: minmax(0, 1fr) 112px; } .mlog li { grid-template-columns: auto minmax(0, 1fr); } .mlog li > :last-child { grid-column: 2; justify-self: start; } }
 </style>
 
 <a class="skip" href="#center">Zum Inhalt springen</a>
@@ -532,7 +579,7 @@ label.btn:has(+ input.sr:focus-visible) { outline: 2px solid var(--accent); outl
 <script>
 /* GeoAuftrag: Feldaufträge mit Standortnachweis. Demo mit Beispieldaten, gespeichert nur im Browser. */
 document.documentElement.lang = 'de';
-const KEY = 'geoauftrag-demo-v2';
+const KEY = 'geoauftrag-demo-v3';
 const ORG = 'Muster Netzbau GmbH';
 const ICONS = {
   home: '<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',
@@ -669,10 +716,12 @@ const ART = { begonnen: ['Arbeit begonnen', 'info', 'var(--col-info)'], zwischen
 const MTYP = { hup: ['Hausübergabepunkt', 'H'], muffe: ['Muffe / Verteiler', 'M'], schacht: ['Schacht', 'S'], rohrende: ['Leerrohrende', 'R'], schaden: ['Schaden', '!'], hinweis: ['Hinweis', 'i'] };
 const AUFTRAGSARTEN = ['Glasfaser-Hausanschluss', 'Trassenbau', 'Microtrenching', 'Schacht setzen', 'Pflasterarbeiten', 'Störung beheben'];
 const ROHRE = ['Speedpipe 1×7/4 mm', 'Speedpipe 7×7/4 mm', 'Speedpipe 12×10/6 mm', 'Kabelschutzrohr DN 50', 'Leerrohr DN 110'];
+const MATKAT = [['Sand 0/2', 't'], ['Schotter 0/32', 't'], ['Splitt 2/5', 't'], ['Kupferkabel NAYY 4×150', 'm'], ['Kupferkabel NYY-J 5×16', 'm'], ['Glasfaser-Mikrokabel 2 Fasern', 'm'], ['Glasfaserkabel 12 Fasern', 'm'], ['Speedpipe 1×7/4 mm', 'm'], ['Speedpipe 12×10/6 mm', 'm'], ['Kabelschutzrohr DN 50', 'm'], ['Kabelschutzrohr DN 110', 'm'], ['Warnband', 'm'], ['Pflastersteine', 'm²'], ['Beton C25/30', 'm³'], ['Vergussmasse', 'kg'], ['Asphalt', 't']];
+const EINHEITEN = ['t', 'm', 'm²', 'm³', 'kg', 'Stück'];
 const VERLEGE = ['Offener Graben', 'Spülbohrung', 'Microtrenching', 'Einzug in Bestandsrohr', 'Oberirdisch'];
 
 function seed() {
-  const P = (id, name, rolle, fach, kunde) => ({ id, name, rolle, fach, kunde: kunde || null });
+  const P = (id, name, rolle, fach, kunde, firma) => ({ id, name, rolle, fach, kunde: kunde || null, firma: kunde ? null : (firma || 'mn') });
   const people = [
     P('p1', 'Sabine Krüger', 'admin', 'Büro und Disposition'),
     P('p2', 'Ahmet Demir', 'monteur', 'Glasfaser-Monteur, Spleißer'),
@@ -680,8 +729,13 @@ function seed() {
     P('p4', 'Marek Nowak', 'monteur', 'Tiefbau, Baggerfahrer'),
     P('p5', 'Lisa Hoffmann', 'monteur', 'Pflaster und Wegebau'),
     P('p6', 'Katja Albers', 'kunde', 'Netzplanung', 'sw'),
-    P('p7', 'Peter Kramer', 'kunde', 'Hausverwaltung', 'hk')
+    P('p7', 'Peter Kramer', 'kunde', 'Hausverwaltung', 'hk'),
+    P('p8', 'Dirk Schröder', 'monteur', 'Tiefbau, Vorarbeiter', null, 'ts'),
+    P('p9', 'Emre Yilmaz', 'monteur', 'Kabelleger', null, 'ts'),
+    P('p10', 'Nina Petrovic', 'monteur', 'Glasfaser-Monteurin', null, 'fl'),
+    P('p11', 'Tobias Lange', 'monteur', 'Spleißer', null, 'fl')
   ];
+  const firmen = [{ id: 'mn', name: 'Muster Netzbau GmbH', kurz: 'Muster Netzbau', farbe: '#6E4AF2' }, { id: 'ts', name: 'Tiefbau Schröder GmbH', kurz: 'Schröder Tiefbau', farbe: '#0E8F83' }, { id: 'fl', name: 'FiberLine Montage GmbH', kurz: 'FiberLine', farbe: '#D9822B' }];
   const kunden = [{ id: 'sw', name: 'Stadtwerke Musterstadt', kurz: 'Stadtwerke' }, { id: 'hk', name: 'Hausverwaltung Kramer', kurz: 'HV Kramer' }];
   const G = (id, name, sn, kat, pruef) => ({ id, name, sn, kat, pruef: pruef === null ? null : addDays(TODAY, pruef) });
   const geraete = [
@@ -691,7 +745,7 @@ function seed() {
     G('g7', 'Kabelortungsgerät', 'KOG-4-5521', 'Messen', 60), G('g8', 'Absperrset Verkehrssicherung', 'VS-SET-03', 'Baustelle', null)
   ];
   const c = addr => { const b = bldAt(addr); return ll(b.x, b.y); };
-  const O = (id, titel, art, kunde, adresse, loc, radius, status, team, ger, faellig, created, text) => ({ id, titel, art, kunde, adresse, loc, radius, status, team, geraete: ger, faellig, created, text });
+  const O = (id, titel, art, kunde, adresse, loc, radius, status, team, ger, faellig, created, text, an) => ({ id, titel, art, kunde, an: an || 'mn', adresse, loc, radius, status, team, geraete: ger, faellig, created, text, mat: [] });
   const orders = [
     O('A-2026-0412', 'Glasfaser-Hausanschluss', 'Glasfaser-Hausanschluss', 'sw', 'Birkenweg 7', c('Birkenweg 7'), 40, 'arbeit', ['p2', 'p3'], ['g1', 'g3', 'g7', 'g8'], TODAY, at(-6, '10:12'), 'Hausanschluss vom NVt 14 bis HÜP im Keller. Gehweg in Pflaster, Wiederherstellung durch uns.'),
     O('A-2026-0407', 'Microtrenching Lindenstraße', 'Microtrenching', 'sw', 'Lindenstraße 2–10', ll(30, 52), 110, 'erledigt', ['p4', 'p3'], ['g6', 'g8'], addDays(TODAY, -1), at(-12, '08:30'), 'Trasse im Gehweg Südseite, Fräsbreite 12 cm, Tiefe 40 cm. Leerrohrende am Ahornweg mit Endkappe.'),
@@ -699,7 +753,11 @@ function seed() {
     O('A-2026-0419', 'Glasfaser-Hausanschluss', 'Glasfaser-Hausanschluss', 'sw', 'Ahornweg 3', c('Ahornweg 3'), 40, 'geplant', ['p2'], ['g1', 'g2'], addDays(TODAY, 1), at(-2, '14:05'), 'Anschluss über Leerrohrende Lindenstraße. Kunde ist ab 8 Uhr zu Hause.'),
     O('A-2026-0398', 'Schacht setzen', 'Schacht setzen', 'sw', 'Kreuzung Mühlbachstraße / Birkenweg', ll(-72, -112), 25, 'erledigt', ['p3'], ['g4', 'g8'], addDays(TODAY, -3), at(-14, '11:40'), 'Kabelschacht 60×60 cm im Gehweg, Anbindung an Trasse Birkenweg.'),
     O('A-2026-0421', 'Störung: Leerrohr beschädigt', 'Störung beheben', 'sw', 'Mühlbachstraße 6', c('Mühlbachstraße 6'), 35, 'problem', ['p2'], ['g7', 'g8'], TODAY, at(-1, '16:50'), 'Leerrohr bei Fremdbaggerung beschädigt. Schaden freilegen, Rohr muffen, Kabel prüfen.'),
-    O('A-2026-0389', 'Glasfaser-Hausanschluss', 'Glasfaser-Hausanschluss', 'sw', 'Birkenweg 4', c('Birkenweg 4'), 40, 'abgerechnet', ['p2'], ['g1', 'g3'], addDays(TODAY, -14), at(-21, '09:20'), 'Hausanschluss per Spülbohrung, keine Oberfläche geöffnet.')
+    O('A-2026-0389', 'Glasfaser-Hausanschluss', 'Glasfaser-Hausanschluss', 'sw', 'Birkenweg 4', c('Birkenweg 4'), 40, 'abgerechnet', ['p2'], ['g1', 'g3'], addDays(TODAY, -14), at(-21, '09:20'), 'Hausanschluss per Spülbohrung, keine Oberfläche geöffnet.'),
+    O('A-2026-0430', 'Kabeltrasse Ahornweg', 'Trassenbau', 'sw', 'Ahornweg 1–9, Gehweg West', ll(132, -10), 110, 'arbeit', ['p8', 'p9'], [], addDays(TODAY, 3), at(-5, '08:00'), 'Neue Niederspannungstrasse NAYY 4×150 im Gehweg Westseite. Sandbett, Warnband, an Querungen Kabelschutzrohr DN 110.', 'ts'),
+    O('A-2026-0433', 'Leerrohrverband Lindenstraße West', 'Trassenbau', 'sw', 'Lindenstraße, westlicher Abschnitt', ll(-230, 66), 90, 'problem', ['p8'], [], TODAY, at(-4, '13:30'), 'Leerrohrverband DN 50 im Gehweg Nordseite, Anschluss an Schacht Birkenweg.', 'ts'),
+    O('A-2026-0436', 'Glasfaser-Hausanschlüsse', 'Glasfaser-Hausanschluss', 'sw', 'Mühlbachstraße 1–7', ll(28, -143), 70, 'arbeit', ['p10', 'p11'], [], addDays(TODAY, 2), at(-3, '10:00'), 'Vier Hausanschlüsse von der Trasse Mühlbachstraße, einblasen, spleißen, messen.', 'fl'),
+    O('A-2026-0428', 'Glasfaser-Hausanschluss', 'Glasfaser-Hausanschluss', 'sw', 'Ahornweg 8', c('Ahornweg 8'), 40, 'erledigt', ['p10'], [], addDays(TODAY, -1), at(-6, '09:30'), 'Hausanschluss über Leerrohr Ahornweg, HÜP im Hausanschlussraum.', 'fl')
   ];
   orders[0].genau = 0.1; orders[1].genau = 0.1;
   const L = (x, y, acc, src, t) => Object.assign(ll(x, y), { acc, src, at: t });
@@ -715,13 +773,21 @@ function seed() {
     R('A-2026-0398', 'p3', at(-3, '14:20'), 'fertig', 'Schacht gesetzt und an die Trasse angeschlossen.', L(1900, -1480, 12, 'gps', at(-3, '14:20')), [F('schacht', 0, 0, at(-3, '14:02'), 'none')], { std: 6 }),
     R('A-2026-0421', 'p2', at(0, '08:05'), 'behinderung', 'Bei der Suchschachtung eine Gasleitung gefunden, die nicht im Plan steht. Arbeiten gestoppt, Netzbetreiber informiert.', Object.assign(ll(45, -97), { acc: null, src: 'manuell', at: at(0, '08:05') }), [], { reason: 'Kein GPS-Empfang in der Baugrube' }),
     R('A-2026-0389', 'p2', at(-15, '07:55'), 'begonnen', 'Material am Verteiler abgeholt, Bohrgerät aufgebaut.', L(-57, 85, 6, 'gps', at(-15, '07:55')), [], { review: { by: 'p1', at: at(-14, '12:00'), note: 'Start am Verteiler Lindenstraße, plausibel.' } }),
-    R('A-2026-0389', 'p2', at(-14, '10:30'), 'fertig', 'Spülbohrung bis Hauswand, HÜP gesetzt und eingemessen.', L(-62, 5, 4, 'gps', at(-14, '10:30')), [F('hup', -60, 4, at(-14, '10:24'))], { std: 5.5 })
+    R('A-2026-0389', 'p2', at(-14, '10:30'), 'fertig', 'Spülbohrung bis Hauswand, HÜP gesetzt und eingemessen.', L(-62, 5, 4, 'gps', at(-14, '10:30')), [F('hup', -60, 4, at(-14, '10:24'))], { std: 5.5 }),
+    R('A-2026-0430', 'p8', at(-2, '07:05'), 'begonnen', 'Baustelle eingerichtet, Gehweg halbseitig gesperrt, Leitungsauskunft liegt vor.', L(133, 32, 5, 'gps', at(-2, '07:05')), [], { team: ['p8', 'p9'] }),
+    R('A-2026-0430', 'p9', at(-1, '15:40'), 'zwischen', 'Graben 30 m offen, Sandbett eingebracht, Kabel auf 30 m verlegt.', L(131, 2, 4, 'gps', at(-1, '15:40')), [F('graben', 131, 3, at(-1, '15:31'))], { team: ['p9', 'p8'], std: 7 }),
+    R('A-2026-0430', 'p9', at(0, '10:40'), 'zwischen', 'Weitere 34 m verlegt, Warnband eingelegt. Querung Lindenstraße mit Schutzrohr DN 110 vorbereitet.', L(130, -26, 4, 'gps', at(0, '10:40')), [F('rohr', 130, -24, at(0, '10:32'))], { team: ['p9', 'p8'], std: 4 }),
+    R('A-2026-0433', 'p8', at(0, '07:30'), 'behinderung', 'Gehweg durch Fremdbaustelle belegt. Abstimmung mit dem Bauamt läuft, Weiterarbeit voraussichtlich morgen.', L(-226, 63, 6, 'gps', at(0, '07:30')), []),
+    R('A-2026-0436', 'p10', at(-1, '07:20'), 'begonnen', 'Material abgeholt, Kabelblasgerät aufgebaut.', L(-18, -139, 5, 'gps', at(-1, '07:20')), [], { team: ['p10', 'p11'] }),
+    R('A-2026-0436', 'p11', at(0, '11:05'), 'zwischen', 'Hausanschlüsse Nr. 1 und 3 eingeblasen und gespleißt, Nr. 5 und 7 folgen morgen.', L(12, -141, 4, 'gps', at(0, '11:05')), [F('hup', 10, -141, at(0, '10:58'))], { team: ['p11', 'p10'], std: 4.5 }),
+    R('A-2026-0428', 'p10', at(-1, '15:10'), 'fertig', 'Hausanschluss fertig, OTDR-Messung ohne Befund.', L(161, -60, 4, 'gps', at(-1, '15:10')), [F('hup', 162, -61, at(-1, '15:02'))], { std: 5 })
   ];
   const T = (oid, by, t, name, typ, tiefe, art, pts, notiz) => ({ id: uid('t'), oid, by, at: t, name, typ, tiefe, art, pts: pts.map(([x, y]) => Object.assign(ll(x, y), { src: 'gps' })), notiz: notiz || '' });
   const trassen = [
     T('A-2026-0412', 'p2', at(0, '09:30'), 'Hausanschluss Birkenweg 7', 'Speedpipe 1×7/4 mm', 60, 'Offener Graben', [[-74, 52], [-88, 48], [-88, -56], [-95, -61]], 'Im Gehweg 30 cm neben Bordstein.'),
     T('A-2026-0407', 'p4', at(-1, '16:20'), 'Microtrenching Lindenstraße Süd', 'Speedpipe 12×10/6 mm', 40, 'Microtrenching', [[-70, 52], [-20, 52], [40, 52], [90, 52], [130, 52]]),
-    T('A-2026-0389', 'p2', at(-14, '10:40'), 'Hausanschluss Birkenweg 4', 'Speedpipe 1×7/4 mm', 60, 'Spülbohrung', [[-74, 52], [-72, 47], [-72, 5], [-66, 3]])
+    T('A-2026-0389', 'p2', at(-14, '10:40'), 'Hausanschluss Birkenweg 4', 'Speedpipe 1×7/4 mm', 60, 'Spülbohrung', [[-74, 52], [-72, 47], [-72, 5], [-66, 3]]),
+    T('A-2026-0430', 'p9', at(0, '10:50'), 'NS-Trasse Ahornweg West', 'Leerrohr DN 110', 80, 'Offener Graben', [[132, 52], [132, 20], [132, -12]], 'Kabel NAYY 4×150 im Sandbett, Warnband 30 cm darüber.')
   ];
   const rtk = (p, i) => Object.assign(p, { src: 'rtk', acc: [0.018, 0.021, 0.016, 0.024, 0.019][i % 5] });
   trassen[0].pts.forEach(rtk);
@@ -750,16 +816,43 @@ function seed() {
     { id: uid('n'), to: 'p2', text: 'Neuer Auftrag für morgen: Ahornweg 3, Glasfaser-Hausanschluss.', at: at(-2, '14:06'), read: false, link: 'auftrag-A-2026-0419' },
     { id: uid('n'), to: 'p7', text: 'Zwischenstand: Stellplatz 12 und 13 sind neu gepflastert.', at: at(0, '08:21'), read: false, link: 'auftrag-A-2026-0415' }
   ];
+  /* Material: geplante Positionen je Auftrag und Buchungen der Monteure */
+  const matlog = [];
+  const rep = (oid, by, art) => reports.find(r => r.oid === oid && r.by === by && r.art === art) || null;
+  const MP = (oid, list) => { const o = orders.find(x => x.id === oid); o.mat = list.map(([name, einheit, soll], i) => ({ id: `${oid.slice(-4)}m${i + 1}`, name, einheit, soll })); return o.mat; };
+  const BK = (oid, i, menge, r, ok) => { const o = orders.find(x => x.id === oid); matlog.push({ id: uid('b'), oid, mid: o.mat[i].id, menge, by: r ? r.by : o.team[0], at: r ? r.at : o.created, rid: r ? r.id : null, ok: ok || null }); };
+  MP('A-2026-0412', [['Speedpipe 1×7/4 mm', 'm', 45], ['Glasfaser-Mikrokabel 2 Fasern', 'm', 50], ['Sand 0/2', 't', 2]]);
+  BK('A-2026-0412', 2, 1.5, rep('A-2026-0412', 'p3', 'begonnen')); BK('A-2026-0412', 0, 38, rep('A-2026-0412', 'p2', 'zwischen'));
+  MP('A-2026-0407', [['Speedpipe 12×10/6 mm', 'm', 200], ['Vergussmasse', 'kg', 450]]);
+  BK('A-2026-0407', 0, 120, rep('A-2026-0407', 'p3', 'zwischen'), { by: 'p6', at: at(-1, '09:10') }); BK('A-2026-0407', 1, 260, rep('A-2026-0407', 'p3', 'zwischen'), { by: 'p6', at: at(-1, '09:10') });
+  BK('A-2026-0407', 0, 80, rep('A-2026-0407', 'p4', 'fertig')); BK('A-2026-0407', 1, 175, rep('A-2026-0407', 'p4', 'fertig'));
+  MP('A-2026-0415', [['Pflastersteine', 'm²', 60], ['Schotter 0/32', 't', 10], ['Splitt 2/5', 't', 4]]);
+  BK('A-2026-0415', 0, 18, rep('A-2026-0415', 'p4', 'zwischen')); BK('A-2026-0415', 1, 6, rep('A-2026-0415', 'p4', 'zwischen')); BK('A-2026-0415', 2, 1.5, rep('A-2026-0415', 'p4', 'zwischen'));
+  MP('A-2026-0419', [['Speedpipe 1×7/4 mm', 'm', 30], ['Glasfaser-Mikrokabel 2 Fasern', 'm', 35]]);
+  MP('A-2026-0398', [['Beton C25/30', 'm³', 1.2], ['Schotter 0/32', 't', 2]]);
+  BK('A-2026-0398', 0, 1.2, rep('A-2026-0398', 'p3', 'fertig')); BK('A-2026-0398', 1, 2.6, rep('A-2026-0398', 'p3', 'fertig'));
+  MP('A-2026-0421', [['Speedpipe 12×10/6 mm', 'm', 6]]);
+  MP('A-2026-0389', [['Speedpipe 1×7/4 mm', 'm', 40], ['Glasfaser-Mikrokabel 2 Fasern', 'm', 45]]);
+  BK('A-2026-0389', 0, 36, rep('A-2026-0389', 'p2', 'fertig'), { by: 'p6', at: at(-13, '09:00') }); BK('A-2026-0389', 1, 44, rep('A-2026-0389', 'p2', 'fertig'), { by: 'p6', at: at(-13, '09:00') });
+  MP('A-2026-0430', [['Sand 0/2', 't', 10], ['Kupferkabel NAYY 4×150', 'm', 100], ['Kabelschutzrohr DN 110', 'm', 24], ['Warnband', 'm', 100]]);
+  BK('A-2026-0430', 0, 4, rep('A-2026-0430', 'p9', 'zwischen'), { by: 'p6', at: at(0, '08:15') }); BK('A-2026-0430', 1, 30, rep('A-2026-0430', 'p9', 'zwischen'), { by: 'p6', at: at(0, '08:15') });
+  { const r2 = reports.find(r => r.oid === 'A-2026-0430' && r.at.startsWith(TODAY)); BK('A-2026-0430', 0, 3.5, r2); BK('A-2026-0430', 1, 34, r2); BK('A-2026-0430', 2, 12, r2); BK('A-2026-0430', 3, 64, r2); }
+  MP('A-2026-0433', [['Kabelschutzrohr DN 50', 'm', 180], ['Sand 0/2', 't', 6]]);
+  MP('A-2026-0436', [['Glasfaser-Mikrokabel 2 Fasern', 'm', 160], ['Speedpipe 1×7/4 mm', 'm', 120], ['Sand 0/2', 't', 3]]);
+  BK('A-2026-0436', 1, 55, rep('A-2026-0436', 'p11', 'zwischen')); BK('A-2026-0436', 0, 72, rep('A-2026-0436', 'p11', 'zwischen')); BK('A-2026-0436', 2, 1, rep('A-2026-0436', 'p11', 'zwischen'));
+  MP('A-2026-0428', [['Glasfaser-Mikrokabel 2 Fasern', 'm', 40], ['Speedpipe 1×7/4 mm', 'm', 35]]);
+  BK('A-2026-0428', 0, 38, rep('A-2026-0428', 'p10', 'fertig')); BK('A-2026-0428', 1, 33, rep('A-2026-0428', 'p10', 'fertig'));
+  notes.push({ id: uid('n'), to: 'p6', text: 'Behinderung bei Schröder Tiefbau: A-2026-0433, Gehweg belegt.', at: at(0, '07:31'), read: false, link: 'auftrag-A-2026-0433' });
   let user = 'p1';
   try { if (matchMedia('(max-width: 760px)').matches) user = 'p2'; } catch (e) {}
-  return { v: 2, user, route: { p: 'start', id: null }, af: { q: '', st: '', kd: '' }, layers: { orders: true, reports: true, trassen: true, marker: true }, pf: 'offen',
-    people, kunden, geraete, orders, reports, trassen, marker, docs, rechnungen, notes };
+  return { v: 3, user, route: { p: 'start', id: null }, af: { q: '', st: '', kd: '', an: '' }, layers: { orders: true, reports: true, trassen: true, marker: true }, pf: 'offen',
+    people, kunden, firmen, geraete, orders, reports, trassen, marker, docs, rechnungen, notes, matlog };
 }
 
 /* ---------- Zustand ---------- */
 let S;
 function load() {
-  try { const raw = localStorage.getItem(KEY); if (raw) { const s = JSON.parse(raw); if (s && s.v === 2 && Array.isArray(s.orders)) return s; } } catch (e) {}
+  try { const raw = localStorage.getItem(KEY); if (raw) { const s = JSON.parse(raw); if (s && s.v === 3 && Array.isArray(s.orders)) return s; } } catch (e) {}
   return seed();
 }
 function save() {
@@ -777,14 +870,31 @@ const isKunde = () => me().rolle === 'kunde';
 const kunde = id => S.kunden.find(k => k.id === id) || { name: '–', kurz: '–' };
 const order = id => S.orders.find(o => o.id === id);
 const geraet = id => S.geraete.find(g => g.id === id);
+const firma = id => S.firmen.find(f => f.id === id) || { id, name: '–', kurz: '–', farbe: '#8A92A6' };
+const orgName = () => isKunde() ? kunde(me().kunde).name : firma(me().firma).name;
+const anTag = o => { const f = firma(o.an); return `<span class="who-an"><i class="fdot" style="--fc:${f.farbe}"></i>${esc(f.kurz)}</span>`; };
 function myOrders() {
-  if (isAdmin()) return S.orders;
+  if (isAdmin()) return S.orders.filter(o => o.an === me().firma);
   if (isKunde()) return S.orders.filter(o => o.kunde === me().kunde);
   return S.orders.filter(o => o.team.includes(S.user));
 }
 const canSee = o => !!o && myOrders().includes(o);
-const canReport = o => !!o && (isAdmin() || (isMon() && o.team.includes(S.user))) && o.status !== 'abgerechnet';
-const canMark = o => !!o && (isAdmin() || (isMon() && o.team.includes(S.user)) || (isKunde() && o.kunde === me().kunde));
+const ownAdmin = o => isAdmin() && o.an === me().firma;
+const canReport = o => !!o && (ownAdmin(o) || (isMon() && o.team.includes(S.user))) && o.status !== 'abgerechnet';
+const canMark = o => !!o && (ownAdmin(o) || (isMon() && o.team.includes(S.user)) || (isKunde() && o.kunde === me().kunde));
+/* Material */
+const NFM = new Intl.NumberFormat('de-DE', { maximumFractionDigits: 2 });
+const fmtMenge = (n, e) => `${NFM.format(n)}\u00A0${e}`;
+const parseMenge = s => { s = String(s || '').trim().replace(/\s/g, ''); if (!s) return 0; if (s.includes(',')) s = s.replace(/\./g, '').replace(',', '.'); const n = Number(s); return isFinite(n) ? n : NaN; };
+const matPos = (o, mid) => (o && o.mat || []).find(m => m.id === mid) || { name: 'Material', einheit: '' };
+const bookings = oid => S.matlog.filter(b => b.oid === oid).sort((a, b) => b.at.localeCompare(a.at));
+const matIst = (oid, mid) => S.matlog.filter(b => b.oid === oid && b.mid === mid).reduce((s, b) => s + b.menge, 0);
+function matPct(o) { const m = (o.mat || []).filter(x => x.soll > 0); if (!m.length) return null; return Math.round(m.reduce((s, x) => s + Math.min(1.5, matIst(o.id, x.id) / x.soll), 0) / m.length * 100); }
+const mbar = (pct, label) => pct == null ? '<span class="muted">–</span>' : `<span class="mbar${pct > 100 ? ' over' : pct >= 90 ? ' hi' : ''}" title="${esc(label || `${pct} % der geplanten Menge`)}"><span class="tr"><i style="width:${Math.min(100, pct)}%"></i></span><small>${pct}&nbsp;%</small></span>`;
+const canBook = o => canReport(o);
+const canPlanMat = o => !!o && (ownAdmin(o) || (isKunde() && o.kunde === me().kunde)) && o.status !== 'abgerechnet';
+const canConfirm = o => !!o && isKunde() && o.kunde === me().kunde;
+const openBookings = oids => S.matlog.filter(b => !b.ok && (!oids || oids.has(b.oid)));
 const isActive = o => ['geplant', 'arbeit', 'problem'].includes(o.status);
 const reportsOf = oid => S.reports.filter(r => r.oid === oid).sort((a, b) => b.at.localeCompare(a.at));
 const lastReport = oid => reportsOf(oid)[0] || null;
@@ -832,7 +942,7 @@ const trToReview = () => S.trassen.filter(t => !t.review && trFlags(t).length &&
 
 /* ---------- Benachrichtigungen ---------- */
 function notify(pid, text, link) { if (!pid || pid === S.user) return; S.notes.unshift({ id: uid('n'), to: pid, text, at: nowISO(), read: false, link: link || null }); if (S.notes.length > 200) S.notes.length = 200; }
-const admins = () => S.people.filter(p => p.rolle === 'admin').map(p => p.id);
+const admins = o => S.people.filter(p => p.rolle === 'admin' && (!o || p.firma === o.an)).map(p => p.id);
 const kundenOf = o => S.people.filter(p => p.rolle === 'kunde' && p.kunde === o.kunde).map(p => p.id);
 
 /* ---------- GPS ---------- */
@@ -1179,12 +1289,12 @@ function modeAdd(p) {
 const NAV = {
   admin: [['start', 'Übersicht', 'home', 'var(--n-start)'], ['karte', 'Karte', 'map', 'var(--n-karte)'], ['auftraege', 'Aufträge', 'list', 'var(--n-auf)'], ['pruefen', 'Prüfen', 'shield', 'var(--n-pruef)'], ['rechnungen', 'Rechnungen', 'euro', 'var(--n-re)'], ['sep'], ['team', 'Team & Geräte', 'users', 'var(--n-team)']],
   monteur: [['start', 'Heute', 'home', 'var(--n-start)'], ['karte', 'Karte', 'map', 'var(--n-karte)'], ['auftraege', 'Meine Aufträge', 'list', 'var(--n-auf)']],
-  kunde: [['start', 'Meine Aufträge', 'home', 'var(--n-start)'], ['karte', 'Karte', 'map', 'var(--n-karte)'], ['rechnungen', 'Rechnungen', 'euro', 'var(--n-re)']]
+  kunde: [['start', 'Übersicht', 'home', 'var(--n-start)'], ['auftraege', 'Baustellen', 'list', 'var(--n-auf)'], ['karte', 'Karte', 'map', 'var(--n-karte)'], ['rechnungen', 'Rechnungen', 'euro', 'var(--n-re)']]
 };
 const TABS = {
   admin: [['start', 'Übersicht', 'home'], ['karte', 'Karte', 'map'], ['auftraege', 'Aufträge', 'list'], ['pruefen', 'Prüfen', 'shield'], ['more', 'Mehr', 'more']],
   monteur: [['start', 'Heute', 'home'], ['karte', 'Karte', 'map'], ['melden', 'Melden', 'plus'], ['auftraege', 'Aufträge', 'list'], ['more', 'Mehr', 'more']],
-  kunde: [['start', 'Aufträge', 'home'], ['karte', 'Karte', 'map'], ['rechnungen', 'Rechnungen', 'euro'], ['more', 'Mehr', 'more']]
+  kunde: [['start', 'Übersicht', 'home'], ['auftraege', 'Baustellen', 'list'], ['karte', 'Karte', 'map'], ['more', 'Mehr', 'more']]
 };
 const ROUTE_NAV = { auftrag: 'auftraege' };
 function navCount(k) {
@@ -1199,7 +1309,7 @@ function renderFrame() {
   const bellLbl = `Benachrichtigungen${unread ? `, ${unread} neu` : ''}`, bellOpen = !$('bellPanel').hidden;
   const nav = NAV[me().rolle] || NAV.admin;
   $('rail').innerHTML = `
-    <div class="brand">${brandMark()}<div><div class="brand-name" translate="no">GeoAuftrag</div><div class="brand-sub" translate="no">${ORG}</div></div></div>
+    <div class="brand">${brandMark()}<div><div class="brand-name" translate="no">GeoAuftrag</div><div class="brand-sub" translate="no">${esc(orgName())}</div></div></div>
     ${isMon() ? `<div class="rail-cta"><button class="btn primary big" data-action="melden" aria-label="Rückmeldung senden">${ic('plus', 's')}<span>Rückmeldung</span></button></div>` : ''}
     ${nav.map(([k, l, i, c]) => {
       if (k === 'sep') return '<div class="nav-sep"></div>';
@@ -1208,7 +1318,7 @@ function renderFrame() {
     }).join('')}
     <div class="rail-foot">
       <button class="nav-i" data-action="bell" aria-label="${bellLbl}" aria-controls="bellPanel" aria-expanded="${bellOpen}" title="Benachrichtigungen" style="position:relative"><span class="ni" style="--ni:var(--n-team)">${ic('bell')}</span><span class="lbl">Benachrichtigungen</span>${badge}</button>
-      <label class="me-card">${av(me().name, 's')}<div><span class="sr">Ansicht als</span><select id="userSel" data-role="user">${userOpts()}</select><small>${esc(roleLabel(me().rolle))} · ${esc(me().kunde ? kunde(me().kunde).kurz : me().fach)}</small></div></label>
+      <label class="me-card">${av(me().name, 's')}<div><span class="sr">Ansicht als</span><select id="userSel" data-role="user">${userOpts()}</select><small>${esc(roleLabel(me().rolle))} · ${esc(me().kunde ? kunde(me().kunde).kurz : firma(me().firma).kurz)}</small></div></label>
       <button class="linkbtn" data-action="reset">Demo zurücksetzen…</button>
     </div>`;
   $('mtop').innerHTML = `<div class="brand">${brandMark()}<div><div class="brand-name" translate="no">GeoAuftrag</div></div></div>
@@ -1223,7 +1333,9 @@ function renderFrame() {
   if (!$('bellPanel').hidden) renderBell();
 }
 function userOpts() {
-  return [['admin', 'Büro'], ['monteur', 'Monteure'], ['kunde', 'Auftraggeber']].map(([rl, l]) => `<optgroup label="${l}">${S.people.filter(p => p.rolle === rl).map(p => `<option value="${p.id}"${p.id === S.user ? ' selected' : ''}>${esc(p.name)}</option>`).join('')}</optgroup>`).join('');
+  const grp = [['admin', 'Büro · Muster Netzbau', p => p.rolle === 'admin'], ['kunde', 'Auftraggeber', p => p.rolle === 'kunde']];
+  S.firmen.forEach(f => grp.splice(grp.length - 1, 0, ['monteur', `Monteure · ${f.kurz}`, p => p.rolle === 'monteur' && p.firma === f.id]));
+  return grp.map(([rl, l, fn]) => `<optgroup label="${esc(l)}">${S.people.filter(fn).map(p => `<option value="${p.id}"${p.id === S.user ? ' selected' : ''}>${esc(p.name)}</option>`).join('')}</optgroup>`).join('');
 }
 function renderBell() {
   const mine = S.notes.filter(n => n.to === S.user);
@@ -1249,6 +1361,7 @@ function tlItem(r, withOrder) {
     ${withOrder ? `<a class="linkbtn" href="#auftrag-${o.id}" data-action="go" data-p="auftrag" data-id="${o.id}"><span class="mono">${esc(o.id)}</span> ${esc(o.adresse)}</a>` : ''}
     <p class="tl-text">${esc(r.text)}</p>
     <div class="tl-meta">${vChip(r)}${r.loc && String(r.loc.src).startsWith('demo') ? `<span class="tag">${esc(srcLabel(r.loc.src))}</span>` : ''}${r.loc ? `<a class="mini" href="${gmPlace(r.loc)}" target="_blank" rel="noopener" aria-label="Gemeldeten Ort in Google Maps öffnen">${ic('pin')}<span class="mono">${esc(fmtCoord(r.loc))}</span></a>` : ''}${r.loc && r.loc.acc ? `<span>${fmtAcc(r.loc.acc)}</span>` : ''}${r.std ? `<span>${ic('clock', 's')} ${NF2.format(r.std)}&nbsp;Std.</span>` : ''}${teamTxt}</div>
+    ${(() => { const ms = S.matlog.filter(b => b.rid === r.id); return ms.length ? `<div class="mchips">${ms.map(b => { const m = matPos(o, b.mid); return `<span class="pill muted">${ic('layers')}${esc(fmtMenge(b.menge, m.einheit))} ${esc(m.name)}</span>`; }).join('')}</div>` : ''; })()}
     ${r.reason ? `<p class="hint">Grund für manuellen Standort: „${esc(r.reason)}“</p>` : ''}
     ${r.fotos.length ? `<div class="thumbs">${r.fotos.map(f => thumb(f, r)).join('')}</div>` : ''}
     ${(r.docs || []).length ? `<div class="row-acts">${r.docs.map(d => `<button class="mini" data-action="doc-open" data-id="${d.id}" data-r="${r.id}">${ic('file')} ${esc(d.name)}</button>`).join('')}</div>` : ''}
@@ -1256,11 +1369,12 @@ function tlItem(r, withOrder) {
   </div></li>`;
 }
 function feedItems(oids) {
-  const ok = oid => !oids || oids.has(oid);
+  const ok = oid => oids ? oids.has(oid) : canSee(order(oid));
   const items = [];
-  S.reports.forEach(r => ok(r.oid) && items.push({ at: r.at, by: r.by, oid: r.oid, t: ART[r.art][0], sub: r.text, chip: vChip(r) }));
+  S.reports.forEach(r => { if (!ok(r.oid)) return; const ms = S.matlog.filter(b => b.rid === r.id), o = order(r.oid); items.push({ at: r.at, by: r.by, oid: r.oid, t: ART[r.art][0], sub: r.text + (ms.length ? ` · Material: ${ms.map(b => { const m = matPos(o, b.mid); return `${fmtMenge(b.menge, m.einheit)} ${m.name}`; }).join(', ')}` : ''), chip: vChip(r) }); });
   S.marker.forEach(x => ok(x.oid) && items.push({ at: x.at, by: x.by, oid: x.oid, t: `${MTYP[x.typ][0]} gesetzt`, sub: x.text, chip: `<span class="tag">${esc(srcLabel(x.loc.src))}</span>` }));
   S.trassen.forEach(t => ok(t.oid) && items.push({ at: t.at, by: t.by, oid: t.oid, t: `Trasse erfasst, ${fmtLen(pathLen(t.pts))}`, sub: `${t.name} · ${t.typ}`, chip: '' }));
+  S.matlog.forEach(b => { if (!ok(b.oid)) return; const m = matPos(order(b.oid), b.mid); if (!b.rid) items.push({ at: b.at, by: b.by, oid: b.oid, t: 'Material gebucht', sub: `${fmtMenge(b.menge, m.einheit)} ${m.name}`, chip: '' }); });
   S.docs.forEach(d => ok(d.oid) && items.push({ at: d.at, by: d.by, oid: d.oid, t: 'Dokument hochgeladen', sub: d.name, chip: '' }));
   if (isAdmin()) S.rechnungen.forEach(x => ok(x.oid) && items.push({ at: x.at, by: x.by, oid: x.oid, t: `Rechnung ${x.id} erfasst`, sub: EUR.format(brutto(x)) + ' brutto', chip: '' }));
   return items.sort((a, b) => b.at.localeCompare(a.at));
@@ -1281,10 +1395,10 @@ function jobCard(o) {
 /* ---------- Seiten ---------- */
 function pageStart() { return isAdmin() ? startAdmin() : isMon() ? startMon() : startKunde(); }
 function startAdmin() {
-  const act = S.orders.filter(isActive), rep = S.reports.filter(r => r.at.startsWith(TODAY)), rev = toReview();
-  const open = S.rechnungen.filter(x => x.status === 'offen'), sumOpen = open.reduce((s, x) => s + brutto(x), 0);
-  const einsatz = S.orders.filter(o => ['arbeit', 'problem'].includes(o.status) || (o.status === 'geplant' && o.faellig <= addDays(TODAY, 1))).sort(orderSort);
-  const abr = S.orders.filter(o => o.status === 'erledigt');
+  const mo = myOrders(), act = mo.filter(isActive), rep = S.reports.filter(r => r.at.startsWith(TODAY) && canSee(order(r.oid))), rev = toReview();
+  const open = S.rechnungen.filter(x => x.status === 'offen' && canSee(order(x.oid))), sumOpen = open.reduce((s, x) => s + brutto(x), 0);
+  const einsatz = mo.filter(o => ['arbeit', 'problem'].includes(o.status) || (o.status === 'geplant' && o.faellig <= addDays(TODAY, 1))).sort(orderSort);
+  const abr = mo.filter(o => o.status === 'erledigt');
   const col = (cls, title, items, empty) => `<div class="col"><h2 class="col-h ${cls}"><span>${title}</span><span>${items.length}</span></h2>${items.length ? items.join('') : `<div class="col-empty">${empty}</div>`}</div>`;
   const rvCard = r => { const o = order(r.oid), fl = flagsOf(r); return `<a class="bcard" href="#pruefen" data-action="go" data-p="pruefen"><div class="bc-top"><span class="eyebrow">${esc(o.id)}</span>${av(pname(r.by), 'xs')}</div><div class="bc-t">${esc(o.adresse)}</div><div class="bc-s">${esc(fl[0])}${fl.length > 1 ? ` und ${fl.length - 1} weitere` : ''}</div><div class="bc-b">${vChip(r)}<span class="bc-s">${esc(fmtRel(r.at))}</span></div></a>`; };
   const eCard = o => { const lr = lastReport(o.id); return `<a class="bcard" href="#auftrag-${o.id}" data-action="go" data-p="auftrag" data-id="${o.id}"><div class="bc-top"><span class="spill ${o.status}">${STAT[o.status]}</span><span class="av-stack">${o.team.map(id => av(pname(id), 'xs')).join('')}</span></div><div class="bc-t">${esc(o.adresse)}</div><div class="bc-s">${esc(o.titel)}</div><div class="bc-b"><span class="bc-s">${lr ? `zuletzt ${esc(fmtRel(lr.at))}` : `ab ${esc(fmtDay(o.faellig))}`}</span>${lr ? vChip(lr) : ''}</div></a>`; };
@@ -1293,13 +1407,13 @@ function startAdmin() {
   <div class="hello"><div><h1>${hello()}</h1><p>${esc(DFW.format(new Date()).replace('.', ''))}, ${fmt(TODAY)} · ${act.length} Aufträge aktiv</p></div>
     <div class="quick"><button class="qbtn" style="--qc:var(--accent)" data-action="o-new">${ic('plus', 's')} Auftrag anlegen</button><button class="qbtn" style="--qc:var(--n-re)" data-action="re-new">${ic('euro', 's')} Rechnung erfassen</button><button class="qbtn" style="--qc:var(--n-karte)" data-action="kml-all">${ic('download', 's')} KML für Google Maps</button></div></div>
   <div class="kpi-row">
-    <a class="kpi" href="#auftraege" data-action="go" data-p="auftraege"><div class="kpi-l">Im Einsatz</div><div class="kpi-v">${S.orders.filter(o => ['arbeit', 'problem'].includes(o.status)).length}</div><div class="kpi-s">${S.orders.filter(o => o.status === 'problem').length} mit Behinderung</div></a>
+    <a class="kpi" href="#auftraege" data-action="go" data-p="auftraege"><div class="kpi-l">Im Einsatz</div><div class="kpi-v">${mo.filter(o => ['arbeit', 'problem'].includes(o.status)).length}</div><div class="kpi-s">${mo.filter(o => o.status === 'problem').length} mit Behinderung</div></a>
     <a class="kpi" href="#karte" data-action="go" data-p="karte"><div class="kpi-l">Rückmeldungen heute</div><div class="kpi-v">${rep.length}</div><div class="kpi-s">${rep.filter(r => verify(r).k === 'ok').length} vor Ort bestätigt</div></a>
     <a class="kpi" href="#pruefen" data-action="go" data-p="pruefen"><div class="kpi-l">Zu prüfen</div><div class="kpi-v${rev.length ? ' crit' : ' good'}">${rev.length}</div><div class="kpi-s">Standort oder Foto auffällig</div></a>
     <a class="kpi" href="#rechnungen" data-action="go" data-p="rechnungen"><div class="kpi-l">Offene Rechnungen</div><div class="kpi-v" style="font-size:24px">${EUR.format(sumOpen)}</div><div class="kpi-s">${open.length} Rechnung${open.length === 1 ? '' : 'en'}, brutto</div></a>
   </div>
   <div class="two">
-    <section class="card"><div class="card-h"><div><h2>Lageplan</h2><p>Alle laufenden Aufträge mit Rückmeldungen und Trassen</p></div><a class="linkbtn" href="#karte" data-action="go" data-p="karte">Große Karte ${ic('next', 's')}</a></div>${mapBlock('start', { oids: S.orders.filter(o => o.status !== 'abgerechnet').map(o => o.id), label: 'Lageplan aller laufenden Aufträge' }, 'md')}<div class="map-foot">${legend()}</div></section>
+    <section class="card"><div class="card-h"><div><h2>Lageplan</h2><p>Alle laufenden Aufträge mit Rückmeldungen und Trassen</p></div><a class="linkbtn" href="#karte" data-action="go" data-p="karte">Große Karte ${ic('next', 's')}</a></div>${mapBlock('start', { oids: mo.filter(o => o.status !== 'abgerechnet').map(o => o.id), label: 'Lageplan aller laufenden Aufträge' }, 'md')}<div class="map-foot">${legend()}</div></section>
     <section class="card"><div class="card-h"><div><h2>Wer, wo, was</h2><p>Letzte Einträge aus dem Feld</p></div></div><ul class="feed">${feedItems().slice(0, 7).map(feedLi).join('')}</ul></section>
   </div>
   <div class="cols3">
@@ -1326,22 +1440,66 @@ function startMon() {
   ${done.length ? `<section class="card"><div class="card-h"><div><h2>Abgeschlossen</h2></div></div><ul class="feed">${done.map(o => `<li><span class="spill ${o.status}">${STAT[o.status]}</span><div class="ft"><a class="linkbtn" href="#auftrag-${o.id}" data-action="go" data-p="auftrag" data-id="${o.id}">${esc(o.adresse)}</a><small><span class="mono">${esc(o.id)}</span>${esc(o.titel)}</small></div></li>`).join('')}</ul></section>` : ''}`;
 }
 function startKunde() {
-  const k = kunde(me().kunde), os = myOrders().slice().sort(orderSort);
-  const today = S.reports.filter(r => r.at.startsWith(TODAY) && os.some(o => o.id === r.oid)).length;
-  const card = o => {
-    const lr = lastReport(o.id), fotos = reportsOf(o.id).flatMap(r => r.fotos.map(f => [f, r])).slice(0, 4);
-    return `<section class="card"><div class="card-b">
-      <div class="bc-top"><div style="min-width:0"><span class="eyebrow">${esc(o.id)}</span><h2 style="font-size:19px">${esc(o.adresse)}</h2><p class="hint">${esc(o.titel)}</p></div><span class="spill ${o.status}">${STAT[o.status]}</span></div>
-      ${steps(o)}
-      ${lr ? `<div class="tl-meta"><span>Zuletzt vor Ort: <b>${esc(pname(lr.by))}</b>, ${esc(fmtRel(lr.at))}</span>${vChip(lr)}</div><p>${esc(lr.text)}</p>` : `<p class="hint">Noch keine Rückmeldung. Geplant für ${esc(fmtDay(o.faellig))}.</p>`}
-      ${fotos.length ? `<div class="thumbs">${fotos.map(([f, r]) => thumb(f, r)).join('')}</div>` : ''}
-      <div class="row-acts"><a class="btn primary" href="#auftrag-${o.id}" data-action="go" data-p="auftrag" data-id="${o.id}">${ic('map', 's')} Nachweis und Karte</a>${canMark(o) && isActive(o) ? `<button class="btn" data-action="mode-start" data-kind="marker" data-id="${o.id}">${ic('flag', 's')} Hinweis auf der Karte</button>` : ''}</div>
-    </div></section>`;
+  const k = kunde(me().kunde), os = myOrders().slice().sort(orderSort), ids = new Set(os.map(o => o.id)), act = os.filter(isActive);
+  const repsToday = S.reports.filter(r => r.at.startsWith(TODAY) && ids.has(r.oid));
+  const openB = openBookings(ids), probs = os.filter(o => o.status === 'problem');
+  const firms = [...new Set(os.map(o => o.an))].map(firma);
+  const segs = fo => STAT_ORDER.map(st => [st, fo.filter(o => o.status === st).length]).filter(x => x[1]);
+  const firmCard = f => {
+    const fo = os.filter(o => o.an === f.id), fa = fo.filter(isActive), fids = new Set(fo.map(o => o.id));
+    const reps = S.reports.filter(r => fids.has(r.oid)).sort((a, b) => b.at.localeCompare(a.at)), last = reps[0];
+    const r30 = reps.filter(r => daysBetween(r.at, TODAY) <= 30), okPct = r30.length ? Math.round(r30.filter(r => verify(r).k === 'ok').length / r30.length * 100) : null;
+    const pr = fo.filter(o => o.status === 'problem').length, ps = fa.map(matPct).filter(x => x != null), mp = ps.length ? Math.round(ps.reduce((s, x) => s + x, 0) / ps.length) : null;
+    return `<article class="firm" style="--fc:${f.farbe}">
+      <div class="firm-h"><b>${esc(f.name)}</b>${pr ? `<span class="pill crit">${ic('alert')}${pr} Behinderung${pr > 1 ? 'en' : ''}</span>` : '<span class="pill good">läuft</span>'}</div>
+      <div class="firm-k"><div><span class="firm-n">${fa.length}</span><small>aktive Baustelle${fa.length === 1 ? '' : 'n'}</small></div><div><span class="firm-n">${okPct == null ? '–' : okPct + ' %'}</span><small>vor Ort bestätigt</small></div><div><span class="firm-n">${mp == null ? '–' : mp + ' %'}</span><small>Material verbraucht</small></div></div>
+      <div class="sbar" role="img" aria-label="${esc(segs(fo).map(([st, n]) => `${n} ${STAT[st]}`).join(', '))}">${segs(fo).map(([st, n]) => `<i class="sb-${st}" style="flex:${n}"></i>`).join('')}</div>
+      <div class="sleg">${segs(fo).map(([st, n]) => `<span><i class="sb-${st}"></i>${n} ${esc(STAT[st])}</span>`).join('')}</div>
+      <p class="hint">${last ? `Zuletzt: ${esc(pname(last.by))}, ${esc(fmtRel(last.at))}, ${esc(order(last.oid).adresse)}` : 'Noch keine Rückmeldung'}</p>
+      <button class="btn" data-action="an-filter" data-an="${f.id}">${ic('list', 's')} ${fo.length} Baustelle${fo.length === 1 ? '' : 'n'} ansehen</button>
+    </article>`;
   };
+  const agg = {}; act.forEach(o => (o.mat || []).forEach(m => { const key = m.name + '|' + m.einheit; const a = agg[key] || (agg[key] = { name: m.name, einheit: m.einheit, soll: 0, ist: 0, n: 0 }); a.soll += m.soll; a.ist += matIst(o.id, m.id); a.n++; }));
+  const aggL = Object.values(agg).sort((a, b) => b.soll - a.soll);
   return `
-  <div class="hello"><div><h1>${hello()}</h1><p>${esc(k.name)} · ${today ? `${today} neue Rückmeldung${today === 1 ? '' : 'en'} heute` : 'heute noch keine Rückmeldung'}</p></div></div>
-  <section class="card">${mapBlock('kstart', { oids: os.map(o => o.id), label: 'Lageplan Ihrer Aufträge' }, 'sm')}<div class="map-foot">${legend()}</div></section>
-  ${os.map(card).join('')}`;
+  <div class="hello"><div><h1>${hello()}</h1><p>${esc(k.name)} · ${firms.length} Auftragnehmer · ${act.length} aktive Baustelle${act.length === 1 ? '' : 'n'}</p></div>
+    <div class="quick"><button class="qbtn" style="--qc:var(--n-karte)" data-action="kml-all">${ic('download', 's')} KML für Google Maps</button></div></div>
+  <div class="kpi-row">
+    <a class="kpi" href="#auftraege" data-action="go" data-p="auftraege"><div class="kpi-l">Baustellen aktiv</div><div class="kpi-v">${act.length}</div><div class="kpi-s">bei ${firms.length} Auftragnehmern</div></a>
+    <button class="kpi" data-action="an-filter" data-an="" data-st="problem"><div class="kpi-l">Behinderungen</div><div class="kpi-v${probs.length ? ' crit' : ' good'}">${probs.length}</div><div class="kpi-s">${probs.length ? esc(probs.map(o => o.adresse).join(', ')) : 'Keine'}</div></button>
+    <a class="kpi" href="#karte" data-action="go" data-p="karte"><div class="kpi-l">Rückmeldungen heute</div><div class="kpi-v">${repsToday.length}</div><div class="kpi-s">${repsToday.filter(r => verify(r).k === 'ok').length} vor Ort bestätigt</div></a>
+    <a class="kpi" href="#mat-offen" data-action="go-anchor" data-a="mat-offen"><div class="kpi-l">Material zu bestätigen</div><div class="kpi-v${openB.length ? ' warn' : ' good'}">${openB.length}</div><div class="kpi-s">Buchungen der Auftragnehmer</div></a>
+  </div>
+  <h2 class="sec-t">Auftragnehmer</h2>
+  <div class="firms">${firms.map(firmCard).join('')}</div>
+  <div class="two">
+    <section class="card"><div class="card-h"><div><h2>Alle Baustellen auf der Karte</h2><p>Aufträge aller Auftragnehmer mit Rückmeldungen und Trassen</p></div><a class="linkbtn" href="#karte" data-action="go" data-p="karte">Große Karte ${ic('next', 's')}</a></div>${mapBlock('kstart', { oids: os.filter(o => o.status !== 'abgerechnet').map(o => o.id), label: 'Lageplan aller Baustellen' }, 'md')}<div class="map-foot">${legend()}</div></section>
+    <section class="card"><div class="card-h"><div><h2>Neu von den Baustellen</h2><p>Rückmeldungen, Trassen und Material aller Auftragnehmer</p></div></div><ul class="feed">${feedItems(ids).slice(0, 7).map(feedLi).join('')}</ul></section>
+  </div>
+  <section class="card"><div class="card-h"><div><h2>Baustellen im Überblick</h2><p>Status, letzte Rückmeldung und Materialverbrauch je Auftrag</p></div><a class="linkbtn" href="#auftraege" data-action="go" data-p="auftraege">Alle Baustellen ${ic('next', 's')}</a></div>
+    <div class="tbl"><table><thead><tr><th>Baustelle</th><th>Auftragnehmer</th><th>Status</th><th>Letzte Rückmeldung</th><th>Material</th><th>Fällig</th></tr></thead><tbody>
+    ${os.filter(o => o.status !== 'abgerechnet').map(o => { const lr = lastReport(o.id); return `<tr class="click" data-action="go" data-p="auftrag" data-id="${o.id}"><td><button class="rowbtn" data-action="go" data-p="auftrag" data-id="${o.id}">${esc(o.adresse)}</button><div class="muted"><span class="mono">${esc(o.id)}</span> · ${esc(o.titel)}</div></td><td>${anTag(o)}</td><td><span class="spill ${o.status}">${STAT[o.status]}</span></td><td>${lr ? `<div>${esc(fmtRel(lr.at))}</div>${vChip(lr)}` : '<span class="muted">–</span>'}</td><td>${mbar(matPct(o))}</td><td class="num">${esc(fmtDay(o.faellig))}</td></tr>`; }).join('')}
+    </tbody></table></div></section>
+  <div class="two">
+    <section class="card"><div class="card-h"><div><h2>Material über alle Baustellen</h2><p>Geplante Menge und gebuchter Verbrauch der aktiven Baustellen</p></div></div>
+      ${aggL.length ? `<div class="tbl"><table><thead><tr><th>Material</th><th class="num">Geplant</th><th class="num">Verbraucht</th><th>Anteil</th></tr></thead><tbody>${aggL.map(a => `<tr><td><b>${esc(a.name)}</b><div class="muted">${a.n} Baustelle${a.n === 1 ? '' : 'n'}</div></td><td class="num">${fmtMenge(a.soll, a.einheit)}</td><td class="num">${fmtMenge(a.ist, a.einheit)}</td><td>${mbar(a.soll ? Math.round(a.ist / a.soll * 100) : null)}</td></tr>`).join('')}</tbody></table></div>` : '<p class="empty">Noch kein Material geplant.</p>'}</section>
+    <section class="card" id="mat-offen" tabindex="-1"><div class="card-h"><div><h2>Materialbuchungen bestätigen</h2><p>${openB.length ? `${openB.length} offen` : 'Alles bestätigt'}</p></div>${openB.length > 1 ? `<button class="btn" data-action="mat-ok-all" data-oid="">${ic('check', 's')} Alle bestätigen</button>` : ''}</div>
+      ${openB.length ? `<ul class="mlog">${openB.sort((a, b) => b.at.localeCompare(a.at)).slice(0, 8).map(b => mlogLi(b, true)).join('')}</ul>` : '<p class="empty">Keine offenen Buchungen.</p>'}</section>
+  </div>`;
+}
+
+function mlogLi(b, withOrder) {
+  const o = order(b.oid), m = matPos(o, b.mid), r = b.rid ? S.reports.find(x => x.id === b.rid) : null;
+  return `<li>${av(pname(b.by), 's')}<div class="ml-b"><b>${esc(fmtMenge(b.menge, m.einheit))} ${esc(m.name)}</b><small>${esc(pname(b.by))} · ${esc(fmtRel(b.at))}${withOrder && o ? ` · <a class="linkbtn" href="#auftrag-${o.id}" data-action="go" data-p="auftrag" data-id="${o.id}">${esc(o.adresse)}</a> · ${esc(firma(o.an).kurz)}` : ''}</small>${r ? `<span class="row-acts">${vChip(r)}</span>` : '<span class="row-acts"><span class="pill muted">ohne Rückmeldung gebucht</span></span>'}</div>
+    ${b.ok ? `<span class="pill good">${ic('check')}bestätigt</span>` : canConfirm(o) ? `<button class="mini acc" data-action="mat-ok" data-id="${b.id}">${ic('check')} Bestätigen</button>` : '<span class="pill warn">offen</span>'}</li>`;
+}
+function matCard(o) {
+  const pos = o.mat || [], bs = bookings(o.id), open = bs.filter(b => !b.ok).length, pct = matPct(o);
+  return `<section class="card" id="mat"><div class="card-h"><div><h2>Material</h2><p>${pos.length ? `${pct == null ? '' : `${pct} % der geplanten Menge verbraucht · `}${bs.length} Buchung${bs.length === 1 ? '' : 'en'}${open ? `, ${open} offen` : ''}` : 'Noch kein Material geplant'}</p></div>
+    <div class="row-acts">${canBook(o) ? `<button class="btn" data-action="mat-book" data-id="${o.id}">${ic('plus', 's')} Verbrauch buchen</button>` : ''}${canPlanMat(o) ? `<button class="mini" data-action="mat-pos" data-id="${o.id}">${ic('pen')} Menge planen</button>` : ''}</div></div>
+    ${pos.length ? `<div class="tbl"><table><thead><tr><th>Material</th><th class="num">Geplant</th><th class="num">Verbraucht</th><th>Anteil</th></tr></thead><tbody>${pos.map(m => { const ist = matIst(o.id, m.id), p = m.soll ? Math.round(ist / m.soll * 100) : null; return `<tr><td><b>${esc(m.name)}</b>${p != null && p > 100 ? ' <span class="pill crit">über Plan</span>' : ''}</td><td class="num">${m.soll ? fmtMenge(m.soll, m.einheit) : '<span class="muted">–</span>'}</td><td class="num">${fmtMenge(ist, m.einheit)}</td><td>${mbar(p)}</td></tr>`; }).join('')}</tbody></table></div>` : ''}
+    ${bs.length ? `<div class="card-b" style="padding-top:0"><div class="mlog-h"><b>Buchungen</b>${canConfirm(o) && open > 1 ? `<button class="mini acc" data-action="mat-ok-all" data-oid="${o.id}">${ic('check')} Alle bestätigen</button>` : ''}</div><ul class="mlog">${bs.map(b => mlogLi(b)).join('')}</ul></div>` : ''}
+  </section>`;
 }
 
 function pageKarte() {
@@ -1366,18 +1524,19 @@ function pageAuftraege() {
   const q = f.q.trim().toLowerCase();
   if (q) os = os.filter(o => (o.id + ' ' + o.adresse + ' ' + o.titel + ' ' + kunde(o.kunde).name).toLowerCase().includes(q));
   if (f.kd) os = os.filter(o => o.kunde === f.kd);
+  if (f.an) os = os.filter(o => o.an === f.an);
   const base = os;
   if (f.st) os = os.filter(o => o.status === f.st);
   os = os.slice().sort(orderSort);
   const chip = (k, l) => `<button class="chip${f.st === k ? ' on' : ''}" data-action="af-st" data-k="${k}" aria-pressed="${f.st === k}">${l} <span class="muted">${k ? base.filter(o => o.status === k).length : base.length}</span></button>`;
   return `
-  <div class="page-h"><div><h1>${isMon() ? 'Meine Aufträge' : 'Aufträge'}</h1><p>Nummer, Ort, Team, Geräte und alle Nachweise zu jedem Auftrag.</p></div>
+  <div class="page-h"><div><h1>${isMon() ? 'Meine Aufträge' : isKunde() ? 'Baustellen' : 'Aufträge'}</h1><p>${isKunde() ? 'Alle Aufträge Ihrer Auftragnehmer mit Status, Nachweisen und Materialverbrauch.' : 'Nummer, Ort, Team, Geräte und alle Nachweise zu jedem Auftrag.'}</p></div>
     ${isAdmin() ? `<button class="btn primary" data-action="o-new">${ic('plus', 's')} Auftrag anlegen</button>` : ''}</div>
   <div class="tools"><label class="search">${ic('list', 's')}<span class="sr">Aufträge durchsuchen</span><input id="aq" name="aq" type="search" placeholder="z. B. Birkenweg oder 0412…" value="${esc(f.q)}" autocomplete="off" spellcheck="false"></label>
-    ${isAdmin() ? `<select class="sel" id="akSel" aria-label="Auftraggeber">${opts([['', 'Alle Auftraggeber']].concat(S.kunden.map(k => [k.id, k.name])), f.kd)}</select>` : ''}</div>
+    ${isAdmin() ? `<select class="sel" id="akSel" aria-label="Auftraggeber">${opts([['', 'Alle Auftraggeber']].concat(S.kunden.map(k => [k.id, k.name])), f.kd)}</select>` : ''}${isKunde() ? `<select class="sel" id="anSel" aria-label="Auftragnehmer">${opts([['', 'Alle Auftragnehmer']].concat([...new Set(myOrders().map(o => o.an))].map(id => [id, firma(id).name])), f.an || '')}</select>` : ''}</div>
   <div class="chips">${chip('', 'Alle')}${STAT_ORDER.map(s => chip(s, STAT[s])).join('')}</div>
-  ${os.length ? `<section class="card"><div class="tbl"><table><thead><tr><th>Nr.</th><th>Ort und Auftrag</th><th>Auftraggeber</th><th>Team</th><th>Status</th><th>Letzte Rückmeldung</th><th>Fällig</th></tr></thead><tbody>
-    ${os.map(o => { const lr = lastReport(o.id); return `<tr class="click" data-action="go" data-p="auftrag" data-id="${o.id}"><td><button class="rowbtn mono" data-action="go" data-p="auftrag" data-id="${o.id}">${esc(o.id)}</button></td><td><b>${esc(o.adresse)}</b><div class="muted">${esc(o.titel)}</div></td><td>${esc(kunde(o.kunde).kurz)}</td><td><span class="av-stack">${o.team.map(id => av(pname(id), 'xs')).join('')}</span></td><td><span class="spill ${o.status}">${STAT[o.status]}</span></td><td>${lr ? `<div>${esc(fmtRel(lr.at))}</div>${vChip(lr)}` : '<span class="muted">–</span>'}</td><td class="num">${esc(fmtDay(o.faellig))}</td></tr>`; }).join('')}
+  ${os.length ? `<section class="card"><div class="tbl"><table><thead><tr><th>Nr.</th><th>Ort und Auftrag</th><th>${isKunde() ? 'Auftragnehmer' : 'Auftraggeber'}</th><th>Team</th><th>Status</th><th>Letzte Rückmeldung</th>${isMon() ? '' : '<th>Material</th>'}<th>Fällig</th></tr></thead><tbody>
+    ${os.map(o => { const lr = lastReport(o.id); return `<tr class="click" data-action="go" data-p="auftrag" data-id="${o.id}"><td><button class="rowbtn mono" data-action="go" data-p="auftrag" data-id="${o.id}">${esc(o.id)}</button></td><td><b>${esc(o.adresse)}</b><div class="muted">${esc(o.titel)}</div></td><td>${isKunde() ? anTag(o) : esc(kunde(o.kunde).kurz)}</td><td><span class="av-stack">${o.team.map(id => av(pname(id), 'xs')).join('')}</span></td><td><span class="spill ${o.status}">${STAT[o.status]}</span></td><td>${lr ? `<div>${esc(fmtRel(lr.at))}</div>${vChip(lr)}` : '<span class="muted">–</span>'}</td>${isMon() ? '' : `<td>${mbar(matPct(o))}</td>`}<td class="num">${esc(fmtDay(o.faellig))}</td></tr>`; }).join('')}
   </tbody></table></div></section>` : `<div class="col-empty">Keine Aufträge für diesen Filter. Suche oder Status zurücksetzen.</div>`}`;
 }
 
@@ -1388,10 +1547,10 @@ function pageAuftrag() {
   const showInv = isAdmin() || isKunde();
   const markLbl = isKunde() ? 'Hinweis setzen' : 'Markierung setzen';
   return `
-  <a class="linkbtn" href="#auftraege" data-action="go" data-p="auftraege">${ic('back', 's')} ${isKunde() ? 'Meine Aufträge' : 'Alle Aufträge'}</a>
-  <div class="page-h"><div style="min-width:0"><span class="eyebrow">${esc(o.id)} · ${esc(o.art)}</span><h1>${esc(o.adresse)}</h1><p>${esc(o.titel)} · ${esc(kunde(o.kunde).name)}</p></div>
+  <a class="linkbtn" href="#auftraege" data-action="go" data-p="auftraege">${ic('back', 's')} ${isKunde() ? 'Alle Baustellen' : 'Alle Aufträge'}</a>
+  <div class="page-h"><div style="min-width:0"><span class="eyebrow">${esc(o.id)} · ${esc(o.art)}</span><h1>${esc(o.adresse)}</h1><p>${esc(o.titel)} · ${isKunde() ? `Auftragnehmer: ${esc(firma(o.an).name)}` : esc(kunde(o.kunde).name)}</p></div>
     <div class="row-acts">${canReport(o) ? `<button class="btn primary" data-action="melden" data-id="${o.id}">${ic('pin', 's')} Rückmeldung</button>` : ''}<a class="btn" href="${gmNav(o.loc)}" target="_blank" rel="noopener">${ic('route', 's')} Route</a><button class="btn" data-action="pdf" data-id="${o.id}">${ic('download', 's')} Nachweis-PDF</button><button class="btn" data-action="kml" data-id="${o.id}">${ic('download', 's')} KML</button></div></div>
-  <div class="row-acts">${steps(o)}${isAdmin() ? `<label class="sr" for="oStat">Status ändern</label><select class="sel" id="oStat" data-id="${o.id}">${opts(STAT_ORDER.map(s => [s, STAT[s]]), o.status)}</select>` : ''}</div>
+  <div class="row-acts">${steps(o)}${ownAdmin(o) ? `<label class="sr" for="oStat">Status ändern</label><select class="sel" id="oStat" data-id="${o.id}">${opts(STAT_ORDER.map(s => [s, STAT[s]]), o.status)}</select>` : ''}</div>
   <div class="two">
     <div class="stack">
       <section class="card">${mapBlock('auf', { oids: [o.id], focus: o.id, label: `Lageplan ${o.adresse}` }, 'md')}
@@ -1401,20 +1560,21 @@ function pageAuftrag() {
         ${reps.length ? `<ul class="tl">${reps.map(r => tlItem(r)).join('')}</ul>` : '<p class="empty">Noch keine Rückmeldung zu diesem Auftrag.</p>'}</section>
     </div>
     <div class="stack">
-      <section class="card"><div class="card-h"><div><h2>Auftragsdaten</h2></div>${isAdmin() ? `<button class="mini" data-action="o-edit" data-id="${o.id}">${ic('pen')} Bearbeiten</button>` : ''}</div><div class="card-b"><dl class="dl">
-        <div><dt>Auftraggeber</dt><dd>${esc(kunde(o.kunde).name)}</dd></div><div><dt>Fällig</dt><dd>${esc(fmtDay(o.faellig))}</dd></div>
+      <section class="card"><div class="card-h"><div><h2>Auftragsdaten</h2></div>${ownAdmin(o) ? `<button class="mini" data-action="o-edit" data-id="${o.id}">${ic('pen')} Bearbeiten</button>` : ''}</div><div class="card-b"><dl class="dl">
+        <div><dt>Auftraggeber</dt><dd>${esc(kunde(o.kunde).name)}</dd></div><div><dt>Auftragnehmer</dt><dd>${anTag(o)}</dd></div><div><dt>Fällig</dt><dd>${esc(fmtDay(o.faellig))}</dd></div>
         <div style="grid-column:1/-1"><dt>Auftragsort</dt><dd class="coord"><span class="mono">${esc(fmtCoord(o.loc))}</span><button class="mini" data-action="copy" data-t="${esc(fmtCoord(o.loc))}">${ic('copy')} Kopieren</button><a class="mini" href="${gmPlace(o.loc)}" target="_blank" rel="noopener">${ic('ext')} Google Maps</a></dd></div>
         <div><dt>Prüfradius</dt><dd>${fmtDist(o.radius)} um den Auftragsort</dd></div>
         <div><dt>Einmessung</dt><dd>${o.genau ? `${genauTxt(o.genau)} gefordert <span class="pill info">RTK-Empfänger</span>` : 'Handy-GPS genügt'}</dd></div><div><dt>Angelegt</dt><dd>${esc(fmt(o.created))}</dd></div>
         <div style="grid-column:1/-1"><dt>Team</dt><dd><span class="row-acts">${o.team.map(id => `<span class="who">${av(pname(id), 'xs')}<b>${esc(pname(id))}</b></span>`).join('')}</span></dd></div>
         <div style="grid-column:1/-1"><dt>Beschreibung</dt><dd style="font-weight:500">${esc(o.text)}</dd></div></dl></div></section>
-      <section class="card"><div class="card-h"><div><h2>Geräte</h2><p>${o.geraete.length} im Einsatz</p></div></div><ul class="files">${o.geraete.map(gid => { const g = geraet(gid); if (!g) return ''; return `<li><span class="ft" style="background:var(--muted-soft);color:var(--ink-2)">${ic('tool', 's')}</span><div class="fn"><b>${esc(g.name)}</b><small class="mono">${esc(g.sn)}</small></div>${pruefPill(g)}</li>`; }).join('')}</ul></section>
+      ${matCard(o)}
+      ${o.geraete.length ? `<section class="card"><div class="card-h"><div><h2>Geräte</h2><p>${o.geraete.length} im Einsatz</p></div></div><ul class="files">${o.geraete.map(gid => { const g = geraet(gid); if (!g) return ''; return `<li><span class="ft" style="background:var(--muted-soft);color:var(--ink-2)">${ic('tool', 's')}</span><div class="fn"><b>${esc(g.name)}</b><small class="mono">${esc(g.sn)}</small></div>${pruefPill(g)}</li>`; }).join('')}</ul></section>` : ''}
       <section class="card"><div class="card-h"><div><h2>Trassen und Markierungen</h2><p>${ts.length ? `${fmtLen(ts.reduce((s, t) => s + pathLen(t.pts), 0))} Trasse` : 'Noch keine Trasse'} · ${ms.length} Markierung${ms.length === 1 ? '' : 'en'}</p></div></div>
         ${ts.length || ms.length ? `<ul class="files">${ts.map(t => `<li><span class="ft" style="background:var(--man-soft);color:var(--cable)">${ic('route', 's')}</span><div class="fn"><b>${esc(t.name)}</b><small>${fmtLen(pathLen(t.pts))} · ${esc(t.typ)} · ${esc(t.art)} · ${t.tiefe} cm · ${esc(pname(t.by))}</small><div class="row-acts" style="margin-top:4px">${trWorst(t) != null ? `<span class="pill ${trFlags(t).length ? 'warn' : 'good'}">${t.pts.every(isRtk) ? 'RTK' : 'GPS'} · schlechtester Punkt ${fmtAcc(trWorst(t))}</span>` : '<span class="pill man">teils im Plan gezeichnet</span>'}</div></div><button class="mini" data-action="map-focus" data-kind="trasse" data-id="${t.id}">${ic('pin')} Zeigen</button><a class="mini" href="${gmRoute(t.pts)}" target="_blank" rel="noopener">${ic('ext')} Google Maps</a></li>`).join('')}
           ${ms.map(x => `<li><span class="ft mkft-${x.typ}">${esc(MTYP[x.typ][1])}</span><div class="fn"><b>${esc(MTYP[x.typ][0])}</b><small>${esc(x.text)} · ${esc(pname(x.by))}, ${esc(fmtRel(x.at))}${x.loc.acc != null ? ` · ${fmtAcc(x.loc.acc)}` : ''}</small></div><button class="mini" data-action="map-focus" data-kind="marker" data-id="${x.id}">${ic('pin')} Zeigen</button><a class="mini" href="${gmPlace(x.loc)}" target="_blank" rel="noopener">${ic('ext')} Google Maps</a></li>`).join('')}</ul>` : '<p class="empty">Trassen und Markierungen erfassen Sie direkt auf der Karte.</p>'}</section>
       <section class="card"><div class="card-h"><div><h2>Dokumente</h2><p>${ds.length} Datei${ds.length === 1 ? '' : 'en'}</p></div><label class="btn" for="docIn">${ic('upload', 's')} Hochladen</label><input class="sr" id="docIn" name="docIn" type="file" data-oid="${o.id}" multiple></div>
         ${ds.length ? `<ul class="files">${ds.map(d => `<li><span class="ft">${esc((d.name.split('.').pop() || '').toUpperCase().slice(0, 4))}</span><div class="fn"><b>${esc(d.name)}</b><small>${fmtSize(d.size)} · ${esc(pname(d.by))}, ${esc(fmtRel(d.at))}</small></div><button class="mini" data-action="doc-open" data-id="${d.id}">${ic('download')} Öffnen</button>${canDelete(d) ? `<button class="mini" data-action="doc-del" data-id="${d.id}" aria-label="${esc(d.name)} entfernen">${ic('x')}</button>` : ''}</li>`).join('')}</ul>` : '<p class="empty">Noch keine Dokumente.</p>'}</section>
-      ${showInv ? `<section class="card"><div class="card-h"><div><h2>Rechnungen</h2><p>${inv.length ? EUR.format(inv.reduce((s, x) => s + brutto(x), 0)) + ' brutto' : 'Noch keine Rechnung'}</p></div>${isAdmin() ? `<button class="btn" data-action="re-new" data-id="${o.id}">${ic('plus', 's')} Rechnung</button>` : ''}</div>
+      ${showInv ? `<section class="card"><div class="card-h"><div><h2>Rechnungen</h2><p>${inv.length ? EUR.format(inv.reduce((s, x) => s + brutto(x), 0)) + ' brutto' : 'Noch keine Rechnung'}</p></div>${ownAdmin(o) ? `<button class="btn" data-action="re-new" data-id="${o.id}">${ic('plus', 's')} Rechnung</button>` : ''}</div>
         ${inv.length ? `<ul class="files">${inv.map(x => { const st = invState(x); return `<li><span class="ft" style="background:var(--good-soft);color:var(--good)">${ic('euro', 's')}</span><div class="fn"><b class="mono">${esc(x.id)}</b><small>${esc(x.titel)} · ${fmt(x.datum)} · ${EUR.format(brutto(x))}</small></div><span class="pill ${st[0]}">${st[1]}</span>${x.datei ? `<button class="mini" data-action="re-file" data-id="${x.id}">${ic('download')} PDF</button>` : ''}</li>`; }).join('')}</ul>` : ''}</section>` : ''}
     </div>
   </div>`;
@@ -1426,7 +1586,7 @@ function pagePruefen() {
   const open = all.filter(r => !r.review), done = all.filter(r => r.review);
   const list = (S.pf === 'erledigt' ? done : open).sort((a, b) => b.at.localeCompare(a.at));
   const trs = S.pf === 'erledigt' ? S.trassen.filter(t => t.review && canSee(order(t.oid))) : trToReview();
-  const last30 = S.reports.filter(r => daysBetween(r.at, TODAY) <= 30), okPct = last30.length ? Math.round(last30.filter(r => verify(r).k === 'ok').length / last30.length * 100) : 100;
+  const last30 = S.reports.filter(r => daysBetween(r.at, TODAY) <= 30 && canSee(order(r.oid))), okPct = last30.length ? Math.round(last30.filter(r => verify(r).k === 'ok').length / last30.length * 100) : 100;
   const card = r => {
     const o = order(r.oid), fl = flagsOf(r);
     return `<section class="card"><div class="card-b">
@@ -1469,7 +1629,7 @@ function pagePruefen() {
 function pageRechnungen() {
   const vis = S.rechnungen.filter(x => canSee(order(x.oid))).sort((a, b) => b.datum.localeCompare(a.datum));
   const open = vis.filter(x => x.status === 'offen'), over = open.filter(x => x.faellig < TODAY), paid = vis.filter(x => x.status === 'bezahlt' && x.bezahlt && daysBetween(x.bezahlt, TODAY) <= 30);
-  const todo = isAdmin() ? S.orders.filter(o => o.status === 'erledigt') : [];
+  const todo = isAdmin() ? myOrders().filter(o => o.status === 'erledigt') : [];
   const sum = l => l.reduce((s, x) => s + brutto(x), 0);
   return `
   <div class="page-h"><div><h1>Rechnungen</h1><p>${isAdmin() ? 'Rechnungen zu jedem Auftrag erfassen, PDF anhängen, Zahlungseingang festhalten.' : 'Rechnungen zu Ihren Aufträgen.'}</p></div>
@@ -1487,7 +1647,7 @@ function pageRechnungen() {
 }
 
 function pageTeam() {
-  const mons = S.people.filter(p => p.rolle === 'monteur');
+  const mons = S.people.filter(p => p.rolle === 'monteur' && p.firma === me().firma);
   const week = addDays(TODAY, -6);
   const pc = p => {
     const act = S.orders.filter(o => o.team.includes(p.id) && isActive(o));
@@ -1583,6 +1743,7 @@ function meldenStart(oid) {
       <span class="help">Jedes Foto bekommt Zeit, Koordinaten und Auftragsnummer als Stempel. Hat das Foto eigene GPS-Daten, werden diese geprüft.</span></div>
     <div class="field"><span class="lbl">Dokumente</span><div class="row-acts" id="melDocs"></div><div class="row-acts"><label class="btn" for="mel-doc">${ic('file', 's')} Datei anhängen</label><input class="sr" id="mel-doc" type="file" multiple></div></div>
     <div class="grid2"><div class="field"><label for="mel-std">Arbeitszeit in Stunden</label><input id="mel-std" type="number" inputmode="decimal" min="0" max="24" step="0.25" placeholder="z. B. 2,5"></div></div>
+    <div class="field"><span class="lbl">Material verbraucht</span>${matInputs(o)}<span class="help">Nur eintragen, was seit der letzten Meldung verbraucht wurde. Der Auftraggeber sieht jede Buchung.</span></div>
     <div class="field"><span class="lbl">Vor Ort</span>${checks('mel-team', team, [S.user].filter(id => o.team.includes(id)))}</div>
   </div><div class="sheet-f"><button type="button" class="btn" data-action="close">Abbrechen</button><button type="submit" class="btn primary" id="melSend">${ic('send', 's')} Rückmeldung senden</button></div></form>`, false, true);
   updMelLoc(); updMelFotos(); melLocate();
@@ -1629,6 +1790,7 @@ function melSubmit() {
   if (!art) { fieldErr('mel-art', 'Bitte auswählen, was Sie melden.'); return; }
   if (text.length < 3) { fieldErr('mel-text', 'Bitte kurz beschreiben, was gemacht wurde.'); return; }
   if (MEL.pending) { toast('Fotos werden noch verarbeitet. Bitte kurz warten und erneut senden.'); return; }
+  const ml = readMat(); if (!ml) return;
   const std = parseFloat(String($('mel-std').value).replace(',', '.'));
   const loc = MEL.manual ? Object.assign({ lat: o.loc.lat, lng: o.loc.lng }, { acc: null, src: 'manuell', at: nowISO() }) : Object.assign({}, MEL.fix, { at: nowISO() });
   const team = checked('mel-team');
@@ -1637,13 +1799,51 @@ function melSubmit() {
   const prev = o.status;
   if (art === 'fertig') o.status = 'erledigt'; else if (art === 'behinderung') o.status = 'problem'; else if (['geplant', 'problem'].includes(o.status)) o.status = 'arbeit';
   S.reports.push(r);
+  const bs = applyMat(o, ml, r.id);
   const v = verify(r);
-  admins().forEach(a => notify(a, v.k === 'ok' ? `${pname(S.user)}: ${ART[art][0]}, ${o.adresse} (vor Ort bestätigt)` : `Prüfen: ${o.id}, ${o.adresse}, ${v.t}`, v.k === 'ok' ? 'auftrag-' + o.id : 'pruefen'));
-  if (art !== 'begonnen') kundenOf(o).forEach(k => notify(k, `${ART[art][0]}: ${o.adresse}`, 'auftrag-' + o.id));
-  if (!save()) { S.reports.pop(); o.status = prev; return; }
+  admins(o).forEach(a => notify(a, v.k === 'ok' ? `${pname(S.user)}: ${ART[art][0]}, ${o.adresse} (vor Ort bestätigt)` : `Prüfen: ${o.id}, ${o.adresse}, ${v.t}`, v.k === 'ok' ? 'auftrag-' + o.id : 'pruefen'));
+  if (art !== 'begonnen' || bs.length) kundenOf(o).forEach(k => notify(k, `${ART[art][0]}: ${o.adresse}${bs.length ? ` · Material: ${matTxt(o, bs)}` : ''}`, 'auftrag-' + o.id));
+  if (!save()) { S.reports.pop(); S.matlog = S.matlog.filter(b => !bs.includes(b)); o.status = prev; return; }
   closeSheet(); S.route = { p: 'auftrag', id: o.id }; syncHash(true); renderAll(); focusMain();
-  toast(`Rückmeldung gesendet · ${v.t}`);
+  toast(`Rückmeldung gesendet · ${v.t}${bs.length ? ` · ${bs.length} Materialbuchung${bs.length === 1 ? '' : 'en'}` : ''}`);
 }
+
+/* ---------- Material ---------- */
+const mqVal = n => n ? String(n).replace('.', ',') : '';
+function matInputs(o) {
+  const pos = o.mat || [];
+  return `<div class="matin">${pos.map(m => { const ist = matIst(o.id, m.id); return `<div class="mrow"><label for="mq-${m.id}">${esc(m.name)}<small>bisher ${esc(fmtMenge(ist, m.einheit))}${m.soll ? ` von ${esc(fmtMenge(m.soll, m.einheit))} geplant` : ''}</small></label><span class="mq"><input id="mq-${m.id}" data-mid="${m.id}" type="text" inputmode="decimal" placeholder="0" autocomplete="off"><b>${esc(m.einheit)}</b></span></div>`; }).join('')}
+    <div class="mrow add"><select id="mq-new" aria-label="Weiteres Material"><option value="">Weiteres Material…</option>${MATKAT.filter(([n]) => !pos.some(m => m.name === n)).map(([n, e]) => `<option value="${esc(n)}">${esc(n)} (${esc(e)})</option>`).join('')}</select><span class="mq"><input id="mq-newq" type="text" inputmode="decimal" placeholder="0" autocomplete="off" aria-label="Menge weiteres Material"><b id="mq-newe">–</b></span></div></div>`;
+}
+function readMat() {
+  const out = [];
+  for (const inp of document.querySelectorAll('#sheet [data-mid]')) { const n = parseMenge(inp.value); if (isNaN(n) || n < 0 || n > 100000) { fieldErr(inp.id, 'Bitte eine Menge wie 2,5 eingeben.'); return null; } if (n > 0) out.push({ mid: inp.dataset.mid, menge: n }); }
+  const nn = $('mq-new') ? $('mq-new').value : '', nq = parseMenge(($('mq-newq') || {}).value);
+  if (nn) { if (isNaN(nq) || nq <= 0) { fieldErr('mq-newq', 'Bitte die Menge für das weitere Material eingeben.'); return null; } out.push({ name: nn, einheit: (MATKAT.find(x => x[0] === nn) || [nn, 'Stück'])[1], menge: nq }); }
+  else if (nq > 0) { fieldErr('mq-new', 'Bitte auswählen, welches Material das ist.'); return null; }
+  return out;
+}
+function applyMat(o, list, rid) {
+  const bs = list.map(x => { let mid = x.mid; if (!mid) { const m = { id: uid('mp'), name: x.name, einheit: x.einheit, soll: 0 }; (o.mat = o.mat || []).push(m); mid = m.id; } return { id: uid('b'), oid: o.id, mid, menge: x.menge, by: S.user, at: nowISO(), rid: rid || null, ok: null }; });
+  S.matlog.push(...bs); return bs;
+}
+const matTxt = (o, bs) => bs.map(b => { const m = matPos(o, b.mid); return `${fmtMenge(b.menge, m.einheit)} ${m.name}`; }).join(', ');
+function matSheet(oid) {
+  const o = order(oid); if (!canBook(o)) return;
+  openSheet(`${sheetH('Verbrauch buchen', `${esc(o.id)} · ${esc(o.adresse)}`)}<form id="matForm" data-oid="${o.id}" novalidate><div class="sheet-b">
+    <div class="field"><span class="lbl">Material verbraucht</span>${matInputs(o)}<span class="help">Die Buchung erscheint sofort beim Auftraggeber. Mit einer Rückmeldung vor Ort ist sie zusätzlich per GPS belegt.</span></div>
+  </div>${foot(`${ic('check', 's')} Buchen`)}</form>`);
+}
+function matPosSheet(oid) {
+  const o = order(oid); if (!canPlanMat(o)) return;
+  openSheet(`${sheetH('Mengen planen', `${esc(o.id)} · ${esc(o.adresse)}`)}<form id="mpForm" data-oid="${o.id}" novalidate><div class="sheet-b">
+    ${(o.mat || []).length ? `<div class="field"><span class="lbl">Geplante Mengen</span><div class="matin">${o.mat.map(m => `<div class="mrow"><label for="ms-${m.id}">${esc(m.name)}<small>verbraucht ${esc(fmtMenge(matIst(o.id, m.id), m.einheit))}</small></label><span class="mq"><input id="ms-${m.id}" data-sid="${m.id}" type="text" inputmode="decimal" value="${mqVal(m.soll)}" placeholder="0" autocomplete="off"><b>${esc(m.einheit)}</b></span></div>`).join('')}</div></div>` : ''}
+    <div class="field"><span class="lbl">Neue Position</span><div class="grid2"><div class="field"><label for="mp-n">Material</label><input id="mp-n" list="mpList" placeholder="z. B. Sand 0/2…" autocomplete="off"><datalist id="mpList">${MATKAT.map(([n]) => `<option value="${esc(n)}"></option>`).join('')}</datalist></div>
+      <div class="grid2"><div class="field"><label for="mp-s">Menge</label><input id="mp-s" type="text" inputmode="decimal" placeholder="z. B. 10" autocomplete="off"></div><div class="field"><label for="mp-e">Einheit</label><select id="mp-e">${opts(EINHEITEN, 't')}</select></div></div></div>
+      <span class="help">${isKunde() ? 'Die geplanten Mengen sieht der Auftragnehmer sofort, zum Beispiel aus Ihrem Leistungsverzeichnis.' : 'Der Auftraggeber sieht die geplanten Mengen und jede Buchung.'}</span></div>
+  </div>${foot('Mengen speichern')}</form>`);
+}
+
 
 /* ---------- Trasse und Markierung auf der Karte ---------- */
 function modeStart(kind, oid) {
@@ -1806,11 +2006,11 @@ async function pdfNachweis(o) {
   const need = h => { if (y + h > 282) { doc.addPage(); y = 18; } };
   const para = (t, sz, c, x0) => { font(sz || 9.5, 'normal', c); doc.splitTextToSize(pdfTxt(t), CW - ((x0 || M) - M)).forEach(l => { need(5); doc.text(l, x0 || M, y); y += (sz || 9.5) * 0.43; }); };
   doc.setFillColor(...RGB.acc); doc.rect(0, 0, W, 34, 'F');
-  font(9, 'bold', [255, 255, 255]); doc.text(pdfTxt(`${ORG} · GeoAuftrag`), M, 11);
+  font(9, 'bold', [255, 255, 255]); doc.text(pdfTxt(`${firma(o.an).name} · GeoAuftrag`), M, 11);
   font(19, 'bold', [255, 255, 255]); doc.text('Einsatznachweis', M, 22);
   font(10, 'normal', [255, 255, 255]); doc.text(pdfTxt(`${o.id} · ${o.adresse} · ${o.titel}`), M, 29);
   y = 44;
-  const meta = [['Auftraggeber', kunde(o.kunde).name], ['Status', STAT[o.status]], ['Auftragsort', `${fmtCoord(o.loc)} (Prüfradius ${o.radius} m)`], ['Team', o.team.map(pname).join(', ')], ['Geräte', o.geraete.map(id => { const g = geraet(id); return g ? `${g.name} (${g.sn})` : ''; }).join(', ')], ['Stand', fmtDT(nowISO())]];
+  const meta = [['Auftraggeber', kunde(o.kunde).name], ['Auftragnehmer', firma(o.an).name], ['Status', STAT[o.status]], ['Auftragsort', `${fmtCoord(o.loc)} (Prüfradius ${o.radius} m)`], ['Team', o.team.map(pname).join(', ')], ['Geräte', o.geraete.map(id => { const g = geraet(id); return g ? `${g.name} (${g.sn})` : ''; }).join(', ')], ['Stand', fmtDT(nowISO())]];
   meta.forEach(([k, v]) => { font(7.5, 'bold', RGB.gray); doc.text(k.toUpperCase(), M, y); font(9.5, 'normal'); const ls = doc.splitTextToSize(pdfTxt(v), CW - 34); doc.text(ls, M + 34, y); y += Math.max(5.5, ls.length * 4.2); });
   y += 2;
   // Lageplan-Ausschnitt
@@ -1853,6 +2053,14 @@ async function pdfNachweis(o) {
     }
     y += 3; doc.setDrawColor(...RGB.line); doc.setLineWidth(0.2); doc.line(M, y - 2, M + CW, y - 2); y += 2;
   }
+  const mp = o.mat || [];
+  if (mp.length) {
+    need(24); y += 4; font(14, 'bold'); doc.text(pdfTxt('Material'), M, y); y += 7;
+    mp.forEach(m => { need(7); font(9.5, 'bold'); doc.text(pdfTxt(m.name), M, y); font(9.5, 'normal'); doc.text(pdfTxt(`geplant ${m.soll ? fmtMenge(m.soll, m.einheit) : '-'} · verbraucht ${fmtMenge(matIst(o.id, m.id), m.einheit)}`), M + 72, y); y += 5.5; });
+    const bl = bookings(o.id).slice().reverse();
+    if (bl.length) { y += 1; bl.forEach(b => { const m = matPos(o, b.mid); para(`${fmtDT(b.at)} · ${pname(b.by)} · ${fmtMenge(b.menge, m.einheit)} ${m.name}${b.ok ? ` · bestätigt von ${pname(b.ok.by)}` : ' · noch nicht bestätigt'}`, 8.5, RGB.gray); }); }
+    y += 2;
+  }
   const ts = S.trassen.filter(t => t.oid === o.id), ms = S.marker.filter(x => x.oid === o.id);
   if (ts.length || ms.length) {
     need(24); y += 4; font(14, 'bold'); doc.text(pdfTxt('Trassen und Markierungen'), M, y); y += 7;
@@ -1861,13 +2069,13 @@ async function pdfNachweis(o) {
     ms.forEach(x => { need(12); font(10, 'bold'); doc.text(pdfTxt(MTYP[x.typ][0]), M, y); y += 4.6; para(`${x.text} · ${fmtCoord(x.loc)} · ${pname(x.by)}, ${fmtDT(x.at)}`, 8.5, RGB.gray); y += 2; });
   }
   const n = doc.getNumberOfPages();
-  for (let i = 1; i <= n; i++) { doc.setPage(i); font(7.5, 'normal', RGB.gray); doc.text(pdfTxt(`${ORG} · Einsatznachweis ${o.id} · Erstellt mit GeoAuftrag (Demo)`), M, 290); doc.text(`Seite ${i} von ${n}`, W - M, 290, { align: 'right' }); }
+  for (let i = 1; i <= n; i++) { doc.setPage(i); font(7.5, 'normal', RGB.gray); doc.text(pdfTxt(`${firma(o.an).name} · Einsatznachweis ${o.id} · Erstellt mit GeoAuftrag (Demo)`), M, 290); doc.text(`Seite ${i} von ${n}`, W - M, 290, { align: 'right' }); }
   return doc.output('blob');
 }
 
 /* ---------- Rendern und Navigation ---------- */
 const PAGES = { start: pageStart, karte: pageKarte, auftraege: pageAuftraege, auftrag: pageAuftrag, pruefen: pagePruefen, rechnungen: pageRechnungen, team: pageTeam };
-const ALLOWED = { admin: Object.keys(PAGES), monteur: ['start', 'karte', 'auftraege', 'auftrag'], kunde: ['start', 'karte', 'auftrag', 'rechnungen'] };
+const ALLOWED = { admin: Object.keys(PAGES), monteur: ['start', 'karte', 'auftraege', 'auftrag'], kunde: ['start', 'auftraege', 'karte', 'auftrag', 'rechnungen'] };
 function renderAll() {
   if (!(ALLOWED[me().rolle] || []).includes(S.route.p)) S.route = { p: 'start', id: null };
   if (MODE && (S.route.p !== 'auftrag' || S.route.id !== MODE.oid)) MODE = null;
@@ -1960,6 +2168,12 @@ document.addEventListener('click', e => {
     }
     case 'layer': S.layers[d.k] = !S.layers[d.k]; commit(); break;
     case 'af-st': S.af.st = d.k; commit(); break;
+    case 'an-filter': S.af = { q: '', st: d.st || '', kd: '', an: d.an || '' }; go('auftraege'); break;
+    case 'go-anchor': { const el = $(d.a); if (el) { try { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); el.focus({ preventScroll: true }); } catch (er) {} } break; }
+    case 'mat-book': matSheet(d.id); break;
+    case 'mat-pos': matPosSheet(d.id); break;
+    case 'mat-ok': { const b = S.matlog.find(x => x.id === d.id); if (!b || !canConfirm(order(b.oid)) || b.ok) break; b.ok = { by: S.user, at: nowISO() }; notify(b.by, `Materialbuchung bestätigt: ${order(b.oid).adresse}`, 'auftrag-' + b.oid); commit('Buchung bestätigt', () => { b.ok = null; commit(); }); break; }
+    case 'mat-ok-all': { const bs = S.matlog.filter(b => !b.ok && (!d.oid || b.oid === d.oid) && canConfirm(order(b.oid))); if (!bs.length) break; bs.forEach(b => { b.ok = { by: S.user, at: nowISO() }; }); commit(`${bs.length} Buchungen bestätigt`, () => { bs.forEach(b => { b.ok = null; }); commit(); }); break; }
     case 'pf': S.pf = d.k; commit(); break;
     case 'mode-start': modeStart(d.kind, d.id); break;
     case 'mode-gps': geo().then(fix => { FIX = fix; modeAdd({ lat: fix.lat, lng: fix.lng, acc: fix.acc, src: fix.src }); }).catch(err => toast(err && err.code === 1 ? 'Standortfreigabe abgelehnt. In der Demo bitte auf den Plan tippen.' : 'GPS ist in der Claude-Vorschau gesperrt. In der Demo bitte auf den Plan tippen.')); break;
@@ -1994,9 +2208,12 @@ document.addEventListener('change', e => {
   const t = e.target, d = t.dataset;
   clearErr(t);
   if (t.closest && t.closest('#sheet form')) SDIRTY = true;
-  if (d.role === 'user') { S.user = t.value; MODE = null; S.route = { p: 'start', id: null }; S.af = { q: '', st: '', kd: '' }; closeSheet(); $('bellPanel').hidden = true; commit(`Ansicht: ${me().name}, ${roleLabel(me().rolle)}`); return; }
+  if (d.role === 'user') { S.user = t.value; MODE = null; S.route = { p: 'start', id: null }; S.af = { q: '', st: '', kd: '', an: '' }; closeSheet(); $('bellPanel').hidden = true; commit(`Ansicht: ${me().name}, ${roleLabel(me().rolle)}`); return; }
   if (t.id === 'kfSel') { S.kf = t.value; MAPS.karte && (MAPS.karte.v = null); commit(); return; }
   if (t.id === 'akSel') { S.af.kd = t.value; commit(); return; }
+  if (t.id === 'anSel') { S.af.an = t.value; commit(); return; }
+  if (t.id === 'mq-new') { const k = MATKAT.find(x => x[0] === t.value); $('mq-newe').textContent = k ? k[1] : '–'; return; }
+  if (t.id === 'mp-n') { const k = MATKAT.find(x => x[0] === t.value.trim()); if (k) $('mp-e').value = k[1]; return; }
   if (t.id === 'oStat') { const o = order(d.id), prev = o.status; o.status = t.value; commit(`Status: ${STAT[o.status]}`, () => { o.status = prev; commit(); }); return; }
   if (t.id === 'of-p' && t.value && !$('of-ad').value.trim()) { $('of-ad').value = t.value === 'park' ? 'Am Mühlbach, Parkplatz' : t.value === 'lind' ? 'Lindenstraße, Gehweg Süd' : t.value; return; }
   if (t.id === 're-o') { const o = order(t.value); if (o) { $('re-t').value = `${o.titel} ${o.adresse}`; $('re-ab').checked = o.status === 'erledigt'; } return; }
@@ -2036,6 +2253,25 @@ document.addEventListener('submit', e => {
   e.preventDefault();
   const f = e.target, id = f.id, v = x => ($(x) ? $(x).value.trim() : '');
   if (id === 'melForm') { melSubmit(); return; }
+  if (id === 'matForm') {
+    const o = order(f.dataset.oid), ml = readMat(); if (!ml) return;
+    if (!ml.length) { const first = document.querySelector('#sheet [data-mid]'); fieldErr(first ? first.id : 'mq-new', 'Bitte mindestens eine Menge eintragen.'); return; }
+    const bs = applyMat(o, ml, null);
+    kundenOf(o).forEach(k => notify(k, `Material gebucht: ${o.adresse} · ${matTxt(o, bs)}`, 'auftrag-' + o.id));
+    closeSheet(); commit(`Gebucht: ${matTxt(o, bs)}`, () => { S.matlog = S.matlog.filter(b => !bs.includes(b)); commit(); }); return;
+  }
+  if (id === 'mpForm') {
+    const o = order(f.dataset.oid), ch = [];
+    for (const inp of document.querySelectorAll('#sheet [data-sid]')) { const n = parseMenge(inp.value); if (isNaN(n) || n < 0) { fieldErr(inp.id, 'Bitte eine Menge wie 10 oder 2,5 eingeben.'); return; } ch.push([inp.dataset.sid, n]); }
+    const nn = v('mp-n'), ns = parseMenge(v('mp-s'));
+    if (nn && (isNaN(ns) || ns <= 0)) { fieldErr('mp-s', 'Bitte die geplante Menge eingeben, z. B. 10.'); return; }
+    if (!nn && v('mp-s')) { fieldErr('mp-n', 'Bitte angeben, welches Material geplant ist.'); return; }
+    const prev = JSON.parse(JSON.stringify(o.mat || []));
+    ch.forEach(([sid, n]) => { const m = (o.mat || []).find(x => x.id === sid); if (m) m.soll = n; });
+    if (nn) (o.mat = o.mat || []).push({ id: uid('mp'), name: nn, einheit: v('mp-e'), soll: ns });
+    (isKunde() ? admins(o).concat(o.team) : kundenOf(o)).forEach(p => notify(p, `Geplante Materialmengen geändert: ${o.adresse}`, 'auftrag-' + o.id));
+    closeSheet(); commit('Geplante Mengen gespeichert', () => { o.mat = prev; commit(); }); return;
+  }
   if (id === 'trForm') {
     if (!v('tr-n')) { fieldErr('tr-n', 'Bitte eine Bezeichnung eingeben, z. B. „Hausanschluss Birkenweg 7“.'); return; }
     const t = { id: uid('t'), oid: MODE.oid, by: S.user, at: nowISO(), name: v('tr-n'), typ: v('tr-t'), art: v('tr-a'), tiefe: Math.max(0, parseInt(v('tr-d'), 10) || 0), pts: MODE.pts.slice(), notiz: v('tr-x') };
@@ -2045,7 +2281,7 @@ document.addEventListener('submit', e => {
     if (v('mk-x').length < 3) { fieldErr('mk-x', 'Bitte kurz beschreiben, was an dieser Stelle ist.'); return; }
     const x = { id: uid('m'), oid: MODE.oid, by: S.user, at: nowISO(), typ: v('mk-t'), text: v('mk-x'), loc: Object.assign({}, MODE.pt), foto: MODE.foto || null };
     S.marker.push(x); const o = order(x.oid);
-    if (isKunde()) o.team.concat(admins()).forEach(p => notify(p, `${pname(S.user)} hat einen Hinweis gesetzt: ${o.adresse}`, 'auftrag-' + o.id));
+    if (isKunde()) o.team.concat(admins(o)).forEach(p => notify(p, `${pname(S.user)} hat einen Hinweis gesetzt: ${o.adresse}`, 'auftrag-' + o.id));
     MODE = null; closeSheet(); commit(`${MTYP[x.typ][0]} gespeichert`); return;
   }
   if (id === 'rvForm') { const r = S.reports.find(y => y.id === f.dataset.id); r.review = { by: S.user, at: nowISO(), note: v('rv-n') }; closeSheet(); commit('Als geprüft markiert', () => { r.review = null; commit(); }); return; }
@@ -2109,6 +2345,10 @@ window.addEventListener('beforeunload', e => { if (SDIRTY || (MODE && (MODE.pts.
 /* ---------- Start ---------- */
 S = load();
 { const r0 = routeFromHash(); if (r0) S.route = r0; }
+/* ?als=monteur | buero | kunde: Demo direkt in einer Rolle öffnen (z. B. Handyansicht auf der Website) */
+{ let a = ''; try { a = new URLSearchParams(location.search).get('als') || ''; } catch (e) {}
+  const pid = { monteur: 'p2', buero: 'p1', kunde: 'p6' }[a], p = pid && S.people.find(x => x.id === pid);
+  if (p && S.user !== p.id) { S.user = p.id; MODE = null; if (!location.hash) S.route = { p: 'start', id: null }; } }
 renderAll();
 (async () => { try { DL = window.claude && window.claude.use ? await window.claude.use('downloads') : null; } catch (e) { DL = null; } })();
 </script>

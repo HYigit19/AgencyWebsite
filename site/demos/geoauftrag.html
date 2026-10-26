@@ -12,9 +12,11 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="theme-color" content="#F2F4F8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0E1116" media="(prefers-color-scheme: dark)">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+@font-face { font-family: "Figtree"; font-style: normal; font-weight: 300 900; font-display: swap; src: url(shared-files/figtree-latin-wght-normal.woff2) format("woff2-variations"); }
+@font-face { font-family: "Geist"; font-style: normal; font-weight: 100 900; font-display: swap; src: url(shared-files/geist-latin-wght-normal.woff2) format("woff2-variations"); }
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight: 100 800; font-display: swap; src: url(shared-files/jetbrains-mono-latin-wght-normal.woff2) format("woff2-variations"); }
+</style>
 <style>
 /* Layout: Navigation links (farbige Kacheln), Inhalt in der Mitte; am Handy Kopfzeile + Tab-Leiste mit großem „Melden“.
    Karte: eigener Lageplan in Metern, Pins in fester Pixelgröße; Koordinaten immer in Mono-Schrift wie auf dem Vermessungsprotokoll. */
@@ -265,7 +267,7 @@ a.linkbtn { align-self: flex-start; }
 .seg label:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
 .seg input { position: absolute; opacity: 0; pointer-events: none; }
 .seg label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
-.tbl { overflow-x: auto; }
+.tbl { overflow-x: auto; position: relative; }
 table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
 th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2); font-weight: 700; padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
 td { padding: 10px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
@@ -351,6 +353,7 @@ button.bcard:hover, a.bcard:hover { box-shadow: 0 0 0 2px var(--accent-soft), va
 .map-ctl button .i { width: 18px; height: 18px; }
 .map-scale { position: absolute; left: 10px; bottom: 10px; display: flex; flex-direction: column; gap: 2px; font-family: var(--font-m); font-size: 11px; font-weight: 600; color: var(--m-label); pointer-events: none; }
 .map-scale i { display: block; height: 6px; border: 2px solid var(--m-label); border-top: 0; }
+.map-tag.on { background: var(--accent); color: var(--accent-ink); }
 .map-tag { position: absolute; left: 10px; top: 10px; background: var(--surface); color: var(--ink-2); border-radius: 8px; padding: 4px 8px; font-size: 11.5px; font-weight: 700; box-shadow: var(--card-shadow); pointer-events: none; }
 .map-pop { position: absolute; left: 10px; right: 58px; bottom: 34px; max-width: 420px; background: var(--surface); border-radius: 14px; box-shadow: var(--shadow); padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; touch-action: auto; user-select: text; -webkit-user-select: text; }
 .map-pop .bc-top b { font-family: var(--font-d); font-size: 15px; font-weight: 800; overflow-wrap: anywhere; }
@@ -852,7 +855,7 @@ function seed() {
 /* ---------- Zustand ---------- */
 let S;
 function load() {
-  try { const raw = localStorage.getItem(KEY); if (raw) { const s = JSON.parse(raw); if (s && s.v === 5 && Array.isArray(s.orders)) return s; } } catch (e) {}
+  try { const raw = localStorage.getItem(KEY); if (raw) { const s = JSON.parse(raw); if (s && s.v === 5 && Array.isArray(s.orders)) { s.orders.forEach(o => { if (!o.an) o.an = 'mn'; if (!o.mat) o.mat = []; }); return s; } } } catch (e) {}
   return seed();
 }
 function save() {
@@ -941,7 +944,9 @@ const toReview = () => S.reports.filter(r => needsReview(r) && canSee(order(r.oi
 const trToReview = () => S.trassen.filter(t => !t.review && trFlags(t).length && canSee(order(t.oid)));
 
 /* ---------- Benachrichtigungen ---------- */
-function notify(pid, text, link) { if (!pid || pid === S.user) return; S.notes.unshift({ id: uid('n'), to: pid, text, at: nowISO(), read: false, link: link || null }); if (S.notes.length > 200) S.notes.length = 200; }
+function notify(pid, text, link) { if (!pid || pid === S.user) return null; const id = uid('n'); S.notes.unshift({ id, to: pid, text, at: nowISO(), read: false, link: link || null }); if (S.notes.length > 200) S.notes.length = 200; return id; }
+/* Benachrichtigungen einer Aktion beim Rückgängigmachen wieder entfernen */
+const unnotify = ids => { const set = new Set(ids.filter(Boolean)); S.notes = S.notes.filter(n => !set.has(n.id)); };
 const admins = o => S.people.filter(p => p.rolle === 'admin' && (!o || p.firma === o.an)).map(p => p.id);
 const kundenOf = o => S.people.filter(p => p.rolle === 'kunde' && p.kunde === o.kunde).map(p => p.id);
 
@@ -959,7 +964,9 @@ function geo() {
 }
 const geoMsg = e => e && e.code === 1 ? 'Standortfreigabe abgelehnt. Bitte in den Browser-Einstellungen den Standort für diese Seite erlauben und erneut versuchen.'
   : e && e.code === 3 ? 'Kein GPS-Signal nach 9 Sekunden. Bitte unter freien Himmel gehen und erneut versuchen.'
-  : 'Der Browser gibt den Standort hier nicht frei. In der Claude-Vorschau ist GPS gesperrt; auf der eigenen Domain funktioniert es.';
+  : 'Der Browser gibt den Standort hier nicht frei, zum Beispiel in einer eingebetteten Vorschau.';
+/* Der Demo-Lageplan liegt an einem Beispielort. Echte Standorte weit weg davon ersetzt die Demo auf Wunsch durch einen simulierten. */
+const isFar = p => !!p && dist(p, { lat: LAT0, lng: LNG0 }) > 20000;
 function demoFix(near, far, rtk) {
   const q = xy(near), a = Math.random() * 6.28, r = rtk ? 0.3 + Math.random() * 1.2 : 2 + Math.random() * 6;
   const x = far ? q.x + 1750 : q.x + Math.cos(a) * r, y = far ? q.y - 1320 : q.y + Math.sin(a) * r;
@@ -1103,7 +1110,7 @@ function mapBlock(id, o, cls) {
   m.o = o;
   return `<div class="map ${cls || ''}" id="map-${id}">
     <svg id="svg-${id}" data-mapsvg="${id}" tabindex="0" role="group" aria-label="${esc(o.label || 'Lageplan')}. Mit Pfeiltasten verschieben, mit Plus und Minus zoomen." xmlns="http://www.w3.org/2000/svg"></svg>
-    <span class="map-tag">Demo-Lageplan</span>
+    <span class="map-tag" id="tag-${id}" aria-hidden="true">Demo-Lageplan</span>
     <div class="map-ctl"><button type="button" data-action="map-zoom" data-map="${id}" data-z="in" aria-label="Vergrößern">${ic('plus')}</button><button type="button" data-action="map-zoom" data-map="${id}" data-z="out" aria-label="Verkleinern">${ic('minus')}</button><button type="button" data-action="map-fit" data-map="${id}" aria-label="Alles zeigen">${ic('fit')}</button><button type="button" data-action="map-me" data-map="${id}" aria-label="Mein Standort">${ic('target')}</button></div>
     <div class="map-scale" id="scale-${id}" aria-hidden="true"></div>
     <div class="map-pop" id="pop-${id}" role="dialog" aria-label="Details" hidden></div>
@@ -1262,7 +1269,7 @@ function showPop(id, kind, iid) {
   } else if (kind === 'marker') {
     const x = S.marker.find(y => y.id === iid); if (!x) return;
     html = `<div class="bc-top"><div><span class="eyebrow">${esc(x.oid)} · ${esc(fmtRel(x.at))}</span><b>${esc(MTYP[x.typ][0])}</b></div>${close}</div>
-      <p>${esc(x.text)}</p><div class="bc-s">${esc(pname(x.by))} · ${esc(srcLabel(x.loc.src))}${x.loc.acc != null ? ` · ${fmtAcc(x.loc.acc)}` : ''}</div><div class="mono">${esc(fmtCoord(x.loc))}</div>
+      <p>${esc(x.text)}</p>${x.foto && x.foto.data ? `<div class="thumbs"><button class="thumb" data-action="mk-foto" data-id="${x.id}" aria-label="Foto zur Markierung öffnen"><img src="${x.foto.data}" width="96" height="72" alt=""></button></div>` : ''}<div class="bc-s">${esc(pname(x.by))} · ${esc(srcLabel(x.loc.src))}${x.loc.acc != null ? ` · ${fmtAcc(x.loc.acc)}` : ''}</div><div class="mono">${esc(fmtCoord(x.loc))}</div>
       <div class="row-acts"><a class="btn" href="${gmPlace(x.loc)}" target="_blank" rel="noopener">${ic('ext', 's')} Google Maps</a>${canDelete(x) ? `<button class="btn danger" data-action="mk-del" data-id="${x.id}">Entfernen</button>` : ''}</div>`;
   } else if (kind === 'trasse') {
     const t = S.trassen.find(y => y.id === iid); if (!t) return;
@@ -1395,12 +1402,13 @@ function jobCard(o) {
 /* ---------- Seiten ---------- */
 function pageStart() { return isAdmin() ? startAdmin() : isMon() ? startMon() : startKunde(); }
 function startAdmin() {
-  const mo = myOrders(), act = mo.filter(isActive), rep = S.reports.filter(r => r.at.startsWith(TODAY) && canSee(order(r.oid))), rev = toReview();
+  const mo = myOrders(), act = mo.filter(isActive), rep = S.reports.filter(r => r.at.startsWith(TODAY) && canSee(order(r.oid))), rev = toReview(), trv = trToReview(), nRev = rev.length + trv.length;
   const open = S.rechnungen.filter(x => x.status === 'offen' && canSee(order(x.oid))), sumOpen = open.reduce((s, x) => s + brutto(x), 0);
   const einsatz = mo.filter(o => ['arbeit', 'problem'].includes(o.status) || (o.status === 'geplant' && o.faellig <= addDays(TODAY, 1))).sort(orderSort);
   const abr = mo.filter(o => o.status === 'erledigt');
-  const col = (cls, title, items, empty) => `<div class="col"><h2 class="col-h ${cls}"><span>${title}</span><span>${items.length}</span></h2>${items.length ? items.join('') : `<div class="col-empty">${empty}</div>`}</div>`;
+  const col = (cls, title, items, empty, n) => `<div class="col"><h2 class="col-h ${cls}"><span>${title}</span><span>${n == null ? items.length : n}</span></h2>${items.length ? items.join('') : `<div class="col-empty">${empty}</div>`}</div>`;
   const rvCard = r => { const o = order(r.oid), fl = flagsOf(r); return `<a class="bcard" href="#pruefen" data-action="go" data-p="pruefen"><div class="bc-top"><span class="eyebrow">${esc(o.id)}</span>${av(pname(r.by), 'xs')}</div><div class="bc-t">${esc(o.adresse)}</div><div class="bc-s">${esc(fl[0])}${fl.length > 1 ? ` und ${fl.length - 1} weitere` : ''}</div><div class="bc-b">${vChip(r)}<span class="bc-s">${esc(fmtRel(r.at))}</span></div></a>`; };
+  const trvCard = t => { const o = order(t.oid); return `<a class="bcard" href="#pruefen" data-action="go" data-p="pruefen"><div class="bc-top"><span class="eyebrow">${esc(o.id)}</span>${av(pname(t.by), 'xs')}</div><div class="bc-t">${esc(t.name)}</div><div class="bc-s">${esc(trFlags(t)[0])}</div><div class="bc-b"><span class="pill warn">${ic('target')}Einmessung</span><span class="bc-s">${esc(fmtRel(t.at))}</span></div></a>`; };
   const eCard = o => { const lr = lastReport(o.id); return `<a class="bcard" href="#auftrag-${o.id}" data-action="go" data-p="auftrag" data-id="${o.id}"><div class="bc-top"><span class="spill ${o.status}">${STAT[o.status]}</span><span class="av-stack">${o.team.map(id => av(pname(id), 'xs')).join('')}</span></div><div class="bc-t">${esc(o.adresse)}</div><div class="bc-s">${esc(o.titel)}</div><div class="bc-b"><span class="bc-s">${lr ? `zuletzt ${esc(fmtRel(lr.at))}` : `ab ${esc(fmtDay(o.faellig))}`}</span>${lr ? vChip(lr) : ''}</div></a>`; };
   const aCard = o => { const inv = S.rechnungen.filter(x => x.oid === o.id); return `<div class="bcard"><div class="bc-top"><span class="eyebrow">${esc(o.id)}</span><span class="pill ${inv.length ? 'info' : 'warn'}">${inv.length ? `${inv.length} Rechnung${inv.length > 1 ? 'en' : ''}` : 'Noch keine Rechnung'}</span></div><div class="bc-t">${esc(o.adresse)}</div><div class="bc-s">${esc(o.titel)} · ${esc(kunde(o.kunde).kurz)}</div><div class="bc-b"><a class="linkbtn" href="#auftrag-${o.id}" data-action="go" data-p="auftrag" data-id="${o.id}">Nachweis ansehen</a><button class="mini acc" data-action="re-new" data-id="${o.id}">${ic('plus')} Rechnung</button></div></div>`; };
   return `
@@ -1409,7 +1417,7 @@ function startAdmin() {
   <div class="kpi-row">
     <a class="kpi" href="#auftraege" data-action="go" data-p="auftraege"><div class="kpi-l">Im Einsatz</div><div class="kpi-v">${mo.filter(o => ['arbeit', 'problem'].includes(o.status)).length}</div><div class="kpi-s">${mo.filter(o => o.status === 'problem').length} mit Behinderung</div></a>
     <a class="kpi" href="#karte" data-action="go" data-p="karte"><div class="kpi-l">Rückmeldungen heute</div><div class="kpi-v">${rep.length}</div><div class="kpi-s">${rep.filter(r => verify(r).k === 'ok').length} vor Ort bestätigt</div></a>
-    <a class="kpi" href="#pruefen" data-action="go" data-p="pruefen"><div class="kpi-l">Zu prüfen</div><div class="kpi-v${rev.length ? ' crit' : ' good'}">${rev.length}</div><div class="kpi-s">Standort oder Foto auffällig</div></a>
+    <a class="kpi" href="#pruefen" data-action="go" data-p="pruefen"><div class="kpi-l">Zu prüfen</div><div class="kpi-v${nRev ? ' crit' : ' good'}">${nRev}</div><div class="kpi-s">Standort, Foto oder Einmessung auffällig</div></a>
     <a class="kpi" href="#rechnungen" data-action="go" data-p="rechnungen"><div class="kpi-l">Offene Rechnungen</div><div class="kpi-v" style="font-size:24px">${EUR.format(sumOpen)}</div><div class="kpi-s">${open.length} Rechnung${open.length === 1 ? '' : 'en'}, brutto</div></a>
   </div>
   <div class="two">
@@ -1417,7 +1425,7 @@ function startAdmin() {
     <section class="card"><div class="card-h"><div><h2>Wer, wo, was</h2><p>Letzte Einträge aus dem Feld</p></div></div><ul class="feed">${feedItems().slice(0, 7).map(feedLi).join('')}</ul></section>
   </div>
   <div class="cols3">
-    ${col('crit', 'Zu prüfen', rev.slice(0, 4).map(rvCard), 'Alles vor Ort bestätigt')}
+    ${col('crit', 'Zu prüfen', rev.map(rvCard).concat(trv.map(trvCard)).slice(0, 4).concat(nRev > 4 ? [`<a class="linkbtn" href="#pruefen" data-action="go" data-p="pruefen">Alle ${nRev} ansehen ${ic('next', 's')}</a>`] : []), 'Alles vor Ort bestätigt', nRev)}
     ${col('warn', 'Heute im Einsatz', einsatz.map(eCard), 'Heute niemand draußen')}
     ${col('good', 'Abrechnen', abr.map(aCard), 'Nichts offen zur Abrechnung')}
   </div>`;
@@ -1554,7 +1562,7 @@ function pageAuftrag() {
   <div class="two">
     <div class="stack">
       <section class="card">${mapBlock('auf', { oids: [o.id], focus: o.id, label: `Lageplan ${o.adresse}` }, 'md')}
-        <div class="map-foot">${legend()}${canMark(o) ? `<div class="row-acts">${!isKunde() ? `<button class="btn" data-action="mode-start" data-kind="trasse" data-id="${o.id}">${ic('route', 's')} Trasse aufnehmen</button>` : ''}<button class="btn" data-action="mode-start" data-kind="marker" data-id="${o.id}">${ic('flag', 's')} ${markLbl}</button></div>` : ''}</div>
+        <div class="map-foot">${legend()}${canMark(o) ? `<div class="row-acts" id="markActs">${!isKunde() ? `<button class="btn" data-action="mode-start" data-kind="trasse" data-id="${o.id}">${ic('route', 's')} Trasse aufnehmen</button>` : ''}<button class="btn" data-action="mode-start" data-kind="marker" data-id="${o.id}">${ic('flag', 's')} ${markLbl}</button></div>` : ''}</div>
         <div id="modeBar" hidden></div></section>
       <section class="card"><div class="card-h"><div><h2>Rückmeldungen</h2><p>${reps.length} Einträge, ${reps.filter(r => verify(r).k === 'ok').length} vor Ort bestätigt</p></div>${canReport(o) ? `<button class="btn" data-action="melden" data-id="${o.id}">${ic('plus', 's')} Neue Rückmeldung</button>` : ''}</div>
         ${reps.length ? `<ul class="tl">${reps.map(r => tlItem(r)).join('')}</ul>` : '<p class="empty">Noch keine Rückmeldung zu diesem Auftrag.</p>'}</section>
@@ -1571,7 +1579,7 @@ function pageAuftrag() {
       ${o.geraete.length ? `<section class="card"><div class="card-h"><div><h2>Geräte</h2><p>${o.geraete.length} im Einsatz</p></div></div><ul class="files">${o.geraete.map(gid => { const g = geraet(gid); if (!g) return ''; return `<li><span class="ft" style="background:var(--muted-soft);color:var(--ink-2)">${ic('tool', 's')}</span><div class="fn"><b>${esc(g.name)}</b><small class="mono">${esc(g.sn)}</small></div>${pruefPill(g)}</li>`; }).join('')}</ul></section>` : ''}
       <section class="card"><div class="card-h"><div><h2>Trassen und Markierungen</h2><p>${ts.length ? `${fmtLen(ts.reduce((s, t) => s + pathLen(t.pts), 0))} Trasse` : 'Noch keine Trasse'} · ${ms.length} Markierung${ms.length === 1 ? '' : 'en'}</p></div></div>
         ${ts.length || ms.length ? `<ul class="files">${ts.map(t => `<li><span class="ft" style="background:var(--man-soft);color:var(--cable)">${ic('route', 's')}</span><div class="fn"><b>${esc(t.name)}</b><small>${fmtLen(pathLen(t.pts))} · ${esc(t.typ)} · ${esc(t.art)} · ${t.tiefe} cm · ${esc(pname(t.by))}</small><div class="row-acts" style="margin-top:4px">${trWorst(t) != null ? `<span class="pill ${trFlags(t).length ? 'warn' : 'good'}">${t.pts.every(isRtk) ? 'RTK' : 'GPS'} · schlechtester Punkt ${fmtAcc(trWorst(t))}</span>` : '<span class="pill man">teils im Plan gezeichnet</span>'}</div></div><button class="mini" data-action="map-focus" data-kind="trasse" data-id="${t.id}">${ic('pin')} Zeigen</button><a class="mini" href="${gmRoute(t.pts)}" target="_blank" rel="noopener">${ic('ext')} Google Maps</a></li>`).join('')}
-          ${ms.map(x => `<li><span class="ft mkft-${x.typ}">${esc(MTYP[x.typ][1])}</span><div class="fn"><b>${esc(MTYP[x.typ][0])}</b><small>${esc(x.text)} · ${esc(pname(x.by))}, ${esc(fmtRel(x.at))}${x.loc.acc != null ? ` · ${fmtAcc(x.loc.acc)}` : ''}</small></div><button class="mini" data-action="map-focus" data-kind="marker" data-id="${x.id}">${ic('pin')} Zeigen</button><a class="mini" href="${gmPlace(x.loc)}" target="_blank" rel="noopener">${ic('ext')} Google Maps</a></li>`).join('')}</ul>` : '<p class="empty">Trassen und Markierungen erfassen Sie direkt auf der Karte.</p>'}</section>
+          ${ms.map(x => `<li><span class="ft mkft-${x.typ}">${esc(MTYP[x.typ][1])}</span><div class="fn"><b>${esc(MTYP[x.typ][0])}</b><small>${esc(x.text)} · ${esc(pname(x.by))}, ${esc(fmtRel(x.at))}${x.loc.acc != null ? ` · ${fmtAcc(x.loc.acc)}` : ''}</small></div>${x.foto && x.foto.data ? `<button class="mini" data-action="mk-foto" data-id="${x.id}">${ic('image')} Foto</button>` : ''}<button class="mini" data-action="map-focus" data-kind="marker" data-id="${x.id}">${ic('pin')} Zeigen</button><a class="mini" href="${gmPlace(x.loc)}" target="_blank" rel="noopener">${ic('ext')} Google Maps</a></li>`).join('')}</ul>` : '<p class="empty">Trassen und Markierungen erfassen Sie direkt auf der Karte.</p>'}</section>
       <section class="card"><div class="card-h"><div><h2>Dokumente</h2><p>${ds.length} Datei${ds.length === 1 ? '' : 'en'}</p></div><label class="btn" for="docIn">${ic('upload', 's')} Hochladen</label><input class="sr" id="docIn" name="docIn" type="file" data-oid="${o.id}" multiple></div>
         ${ds.length ? `<ul class="files">${ds.map(d => `<li><span class="ft">${esc((d.name.split('.').pop() || '').toUpperCase().slice(0, 4))}</span><div class="fn"><b>${esc(d.name)}</b><small>${fmtSize(d.size)} · ${esc(pname(d.by))}, ${esc(fmtRel(d.at))}</small></div><button class="mini" data-action="doc-open" data-id="${d.id}">${ic('download')} Öffnen</button>${canDelete(d) ? `<button class="mini" data-action="doc-del" data-id="${d.id}" aria-label="${esc(d.name)} entfernen">${ic('x')}</button>` : ''}</li>`).join('')}</ul>` : '<p class="empty">Noch keine Dokumente.</p>'}</section>
       ${showInv ? `<section class="card"><div class="card-h"><div><h2>Rechnungen</h2><p>${inv.length ? EUR.format(inv.reduce((s, x) => s + brutto(x), 0)) + ' brutto' : 'Noch keine Rechnung'}</p></div>${ownAdmin(o) ? `<button class="btn" data-action="re-new" data-id="${o.id}">${ic('plus', 's')} Rechnung</button>` : ''}</div>
@@ -1611,7 +1619,7 @@ function pagePruefen() {
   const rule = (c, i, t, d) => `<div class="rule"><span class="ri" style="--rc:${c}">${ic(i)}</span><div><b>${t}</b><p class="hint">${d}</p></div></div>`;
   return `
   <div class="page-h"><div><h1>Rückmeldungen prüfen</h1><p>Jeder Standort wird beim Senden automatisch mit dem Auftragsort verglichen. Hier landet alles, was nicht eindeutig vor Ort erfasst wurde.</p></div></div>
-  <div class="chips"><button class="chip${S.pf !== 'erledigt' ? ' on' : ''}" data-action="pf" data-k="offen" aria-pressed="${S.pf !== 'erledigt'}">Offen <span class="muted">${open.length}</span></button><button class="chip${S.pf === 'erledigt' ? ' on' : ''}" data-action="pf" data-k="erledigt" aria-pressed="${S.pf === 'erledigt'}">Geprüft <span class="muted">${done.length}</span></button></div>
+  <div class="chips"><button class="chip${S.pf !== 'erledigt' ? ' on' : ''}" data-action="pf" data-k="offen" aria-pressed="${S.pf !== 'erledigt'}">Offen <span class="muted">${open.length + trToReview().length}</span></button><button class="chip${S.pf === 'erledigt' ? ' on' : ''}" data-action="pf" data-k="erledigt" aria-pressed="${S.pf === 'erledigt'}">Geprüft <span class="muted">${done.length + S.trassen.filter(t => t.review && canSee(order(t.oid))).length}</span></button></div>
   <div class="two">
     <div class="stack">${list.length || trs.length ? list.map(card).join('') + trs.map(trCard).join('') : `<div class="col-empty">${S.pf === 'erledigt' ? 'Noch nichts geprüft.' : 'Alles geprüft. Neue Auffälligkeiten erscheinen hier automatisch.'}</div>`}</div>
     <div class="stack">
@@ -1752,7 +1760,7 @@ function melLocate() {
   if (!MEL) return;
   MEL.state = 'locating'; MEL.manual = false; updMelLoc();
   const oid = MEL.oid;
-  geo().then(fix => { FIX = fix; if (!MEL || MEL.oid !== oid) return; MEL.fix = fix; MEL.state = 'ok'; updMelLoc(); })
+  geo().then(fix => { if (!isFar(fix)) FIX = fix; if (!MEL || MEL.oid !== oid) return; MEL.fix = fix; MEL.state = 'ok'; updMelLoc(); })
     .catch(e => { if (!MEL || MEL.oid !== oid) return; MEL.state = 'err'; MEL.err = geoMsg(e); updMelLoc(); });
 }
 function updMelLoc() {
@@ -1764,15 +1772,17 @@ function updMelLoc() {
     return;
   }
   if (MEL.state === 'locating') { el.innerHTML = `<div class="loc"><div class="loc-ic"><span class="spin" aria-hidden="true"></span></div><div class="loc-t" role="status"><b>Standort wird ermittelt…</b><span class="hint">Das GPS des Handys wird abgefragt. Bitte kurz stillhalten.</span></div></div>`; return; }
+  const demoBox = `<div class="demo-box"><span class="k">Nur in der Demo</span><div class="row-acts"><button type="button" class="btn" data-action="mel-demo" data-far="0">Standort am Auftrag simulieren</button><button type="button" class="btn" data-action="mel-demo" data-far="0" data-rtk="1">RTK-Empfänger simulieren (±2&nbsp;cm)</button><button type="button" class="btn danger" data-action="mel-demo" data-far="1">Falschen Standort simulieren (2&nbsp;km)</button></div></div>`;
   if (MEL.state === 'ok') {
     const v = verify({ oid: o.id, loc: MEL.fix });
     el.innerHTML = `<div class="loc ${v.k}"><div class="loc-ic">${ic(VI[v.k])}</div><div class="loc-t" role="status"><b>${esc(v.t)}</b><span class="mono">${esc(fmtCoord(MEL.fix))} · ${fmtAcc(MEL.fix.acc)} · ${esc(srcLabel(MEL.fix.src))}</span>
       <span class="hint">${v.k === 'ok' ? `${fmtDist(v.d)} vom Auftragsort, innerhalb des Prüfradius von ${fmtDist(o.radius)}.` : `Außerhalb des Prüfradius von ${fmtDist(o.radius)}. Sie können trotzdem senden; das Büro prüft die Meldung.`}</span>
-      <div class="row-acts"><button type="button" class="linkbtn" data-action="mel-relocate">Erneut messen</button><a class="linkbtn" href="${gmPlace(MEL.fix)}" target="_blank" rel="noopener">${ic('ext', 's')} In Google Maps prüfen</a></div></div></div>`;
+      <div class="row-acts"><button type="button" class="linkbtn" data-action="mel-relocate">Erneut messen</button><a class="linkbtn" href="${gmPlace(MEL.fix)}" target="_blank" rel="noopener">${ic('ext', 's')} In Google Maps prüfen</a></div></div></div>
+      ${isFar(MEL.fix) && !String(MEL.fix.src).startsWith('demo') ? `<p class="hint">Ihr echter Standort liegt außerhalb des Demo-Lageplans. Zum Ausprobieren können Sie einen Standort simulieren:</p>${demoBox}` : ''}`;
     return;
   }
   el.innerHTML = `<div class="loc"><div class="loc-ic">${ic('alert')}</div><div class="loc-t" role="status"><b>Kein Standort</b><span class="hint">${esc(MEL.err)}</span><div class="row-acts"><button type="button" class="btn" data-action="mel-relocate">${ic('target', 's')} Erneut versuchen</button></div></div></div>
-    <div class="demo-box"><span class="k">Nur in der Demo</span><div class="row-acts"><button type="button" class="btn" data-action="mel-demo" data-far="0">Standort am Auftrag simulieren</button><button type="button" class="btn" data-action="mel-demo" data-far="0" data-rtk="1">RTK-Empfänger simulieren (±2&nbsp;cm)</button><button type="button" class="btn danger" data-action="mel-demo" data-far="1">Falschen Standort simulieren (2&nbsp;km)</button></div></div>
+    ${demoBox}
     <button type="button" class="linkbtn" data-action="mel-manual">Ohne GPS melden und den Auftragsort übernehmen…</button>`;
 }
 function updMelFotos() {
@@ -1851,13 +1861,15 @@ function modeStart(kind, oid) {
   if (S.route.p !== 'auftrag' || S.route.id !== oid) { S.route = { p: 'auftrag', id: oid }; syncHash(true); }
   MODE = { kind, oid, map: 'auf', pts: [], pt: null, typ: isKunde() ? 'hinweis' : kind === 'marker' ? 'hup' : null };
   closeSheet(); renderAll();
-  const el = $('map-auf'); if (el) { try { el.scrollIntoView({ block: 'center' }); } catch (e) {} }
+  const el = $('map-auf'); if (el) { try { el.scrollIntoView({ block: 'start' }); } catch (e) {} }
   const b = $('modeBar') && $('modeBar').querySelector('button'); if (b) { try { b.focus({ preventScroll: true }); } catch (e) {} }
 }
 function renderModeBar() {
-  const bar = $('modeBar'), mapEl = $('map-auf'); if (!bar) return;
-  if (!MODE || MODE.map !== 'auf' || S.route.id !== MODE.oid) { bar.hidden = true; if (mapEl) mapEl.classList.remove('picking'); return; }
+  const bar = $('modeBar'), mapEl = $('map-auf'), tag = $('tag-auf'), acts = $('markActs'); if (!bar) return;
+  if (!MODE || MODE.map !== 'auf' || S.route.id !== MODE.oid) { bar.hidden = true; if (mapEl) mapEl.classList.remove('picking'); if (tag) { tag.textContent = 'Demo-Lageplan'; tag.classList.remove('on'); } if (acts) acts.hidden = false; return; }
   if (mapEl) mapEl.classList.add('picking');
+  if (acts) acts.hidden = true;
+  if (tag) { const n = MODE.pts.length; tag.textContent = MODE.kind === 'trasse' ? `Trasse: ${n} Punkt${n === 1 ? '' : 'e'} · ${n > 1 ? 'unten speichern' : 'auf den Plan tippen'}` : MODE.pt ? 'Punkt gesetzt · unten speichern' : 'Auf den Plan tippen'; tag.classList.add('on'); }
   bar.hidden = false; bar.className = 'mode-bar';
   const g = order(MODE.oid).genau, lastP = MODE.kind === 'trasse' ? MODE.pts[MODE.pts.length - 1] : MODE.pt;
   const accInfo = `${g ? `<span class="pill info">${ic('target')}Gefordert ${genauTxt(g)}</span>` : ''}${lastP && lastP.acc != null ? `<span class="pill ${g && lastP.acc > g ? 'warn' : 'good'}">Letzte Messung ${fmtAcc(lastP.acc)} · ${esc(srcLabel(lastP.src))}</span>` : ''}`;
@@ -1906,6 +1918,13 @@ function fotoSheet(rid, fid) {
       ${d !== null ? `<div><dt>Abstand zum Auftragsort</dt><dd>${fmtDist(d)}</dd></div>` : ''}</dl>
   </div><div class="sheet-f">${f.loc ? `<a class="btn" href="${gmPlace(f.loc)}" target="_blank" rel="noopener" style="margin-right:auto">${ic('ext', 's')} Google Maps</a>` : ''}<button class="btn" data-action="foto-save" data-r="${r.id}" data-f="${f.id}">${ic('download', 's')} Foto speichern</button><button class="btn primary" data-action="close">Schließen</button></div>`, true);
 }
+function mkFotoSheet(mid) {
+  const x = S.marker.find(y => y.id === mid); if (!x || !x.foto || !x.foto.data) return; const o = order(x.oid), f = x.foto;
+  openSheet(`${sheetH('Foto zur Markierung', `${esc(o.id)} · ${esc(MTYP[x.typ][0])}`)}<div class="sheet-b">
+    <img class="photo-big" src="${f.data}" alt="Foto zur Markierung ${esc(MTYP[x.typ][0])}, ${esc(o.adresse)}">
+    <dl class="dl"><div><dt>Aufgenommen</dt><dd>${esc(fmtDT(f.at))}</dd></div><div><dt>Gesetzt von</dt><dd>${esc(pname(x.by))}, ${esc(fmtRel(x.at))}</dd></div><div><dt>Beschreibung</dt><dd>${esc(x.text)}</dd></div></dl>
+  </div><div class="sheet-f"><button class="btn" data-action="mk-foto-save" data-id="${x.id}">${ic('download', 's')} Foto speichern</button><button class="btn primary" data-action="close">Schließen</button></div>`, true);
+}
 function reviewSheet(rid) {
   const r = S.reports.find(x => x.id === rid); if (!r) return; const o = order(r.oid);
   openSheet(`${sheetH('Als geprüft markieren', `${esc(o.id)} · ${esc(pname(r.by))}, ${esc(fmtRel(r.at))}`)}<form id="rvForm" data-id="${r.id}" novalidate><div class="sheet-b">
@@ -1925,7 +1944,8 @@ const placeLoc = k => k === 'park' ? ll(115, 122) : k === 'lind' ? ll(30, 52) : 
 function orderSheet(id) {
   const o = id ? order(id) : null;
   const nextNo = () => { const n = Math.max(...S.orders.map(x => +x.id.slice(-4))) + 1; return `A-${new Date().getFullYear()}-${String(n).padStart(4, '0')}`; };
-  const mons = S.people.filter(p => p.rolle === 'monteur').map(p => [p.id, p.name]);
+  const an = o ? o.an : me().firma;
+  const mons = S.people.filter(p => p.rolle === 'monteur' && p.firma === an).map(p => [p.id, p.name]);
   openSheet(`${sheetH(o ? 'Auftrag bearbeiten' : 'Auftrag anlegen', esc(o ? o.id : nextNo()))}<form id="oForm" data-id="${o ? o.id : ''}" data-no="${o ? o.id : nextNo()}" novalidate><div class="sheet-b">
     <div class="grid2"><div class="field"><label for="of-a">Art</label><select id="of-a">${opts(AUFTRAGSARTEN, o ? o.art : AUFTRAGSARTEN[0])}</select></div><div class="field"><label for="of-k">Auftraggeber</label><select id="of-k">${opts(S.kunden.map(k => [k.id, k.name]), o ? o.kunde : 'sw')}</select></div></div>
     <div class="field"><label for="of-t">Bezeichnung</label><input id="of-t" value="${esc(o ? o.titel : '')}" placeholder="z. B. Glasfaser-Hausanschluss…"></div>
@@ -1939,8 +1959,9 @@ function orderSheet(id) {
   </div>${foot(o ? 'Auftrag speichern' : 'Auftrag anlegen')}</form>`, true);
 }
 function invoiceSheet(oid) {
-  const cands = S.orders.filter(o => o.status !== 'geplant');
-  const o0 = oid ? order(oid) : (cands.find(o => o.status === 'erledigt') || cands[0]);
+  const cands = myOrders().filter(o => o.status !== 'geplant' || o.id === oid);
+  const o0 = oid && cands.some(o => o.id === oid) ? order(oid) : (cands.find(o => o.status === 'erledigt') || cands[0]);
+  if (!o0) { toast('Noch kein Auftrag zum Abrechnen. Rechnungen gibt es ab dem Arbeitsbeginn.'); return; }
   const n = Math.max(...S.rechnungen.map(x => +x.id.slice(-4)), 180) + 1;
   openSheet(`${sheetH('Rechnung erfassen')}<form id="reForm" novalidate><div class="sheet-b">
     <div class="grid2"><div class="field"><label for="re-o">Auftrag</label><select id="re-o">${opts(cands.map(o => [o.id, `${o.id} · ${o.adresse}`]), o0 ? o0.id : '')}</select></div><div class="field"><label for="re-n">Rechnungsnummer</label><input id="re-n" value="R-${new Date().getFullYear()}-${String(n).padStart(4, '0')}" spellcheck="false"></div></div>
@@ -1991,7 +2012,7 @@ function kml(oids, title) {
   return `<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>${x(title)}</name>${styles}${fold}</Document></kml>`;
 }
 function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
-async function needPdf() { if (!(window.jspdf && window.jspdf.jsPDF)) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'); return window.jspdf.jsPDF; }
+async function needPdf() { if (!(window.jspdf && window.jspdf.jsPDF)) await loadScript('shared-files/jspdf.umd.min.js'); return window.jspdf.jsPDF; }
 const pdfTxt = s => String(s ?? '').replace(/[–—]/g, '-').replace(/[„“”]/g, '"').replace(/[‚‘’]/g, "'").replace(/…/g, '...').replace(/ /g, ' ').replace(/[^\x09\x0A\x0D\x20-\x7E\xA0-\xFF€]/g, '');
 const RGB = { ink: [26, 30, 41], gray: [91, 98, 116], line: [226, 230, 238], acc: [110, 74, 242], land: [238, 241, 234], road: [255, 255, 255], roadc: [205, 210, 220], bld: [218, 221, 230], green: [211, 231, 203], water: [185, 215, 242], park: [227, 230, 238], cable: [232, 89, 12], ok: [31, 138, 85], rand: [244, 178, 63], ungenau: [244, 178, 63], weit: [217, 54, 68], manuell: [224, 112, 31], soft: [244, 246, 250] };
 function clipSeg(x0, y0, x1, y1, b) {
@@ -2114,7 +2135,7 @@ window.addEventListener('hashchange', fromHash);
 function centerOn(id, p, w) { const m = MAPS[id]; if (!m || !m.v) return; const q = xy(p); m.v.cx = q.x; m.v.cy = q.y; if (w) m.v.w = w; clampV(m.v); drawMap(id); }
 function locateDemoFallback(e, near) {
   FIX = demoFix(near || (myOrders().filter(isActive).sort(orderSort)[0] || S.orders[0]).loc);
-  toast(`${e && e.code === 1 ? 'Standortfreigabe abgelehnt.' : 'GPS ist in der Claude-Vorschau gesperrt.'} Demo-Standort gesetzt.`);
+  toast(`${e === 'far' ? 'Ihr Standort liegt außerhalb des Demo-Lageplans.' : e && e.code === 1 ? 'Standortfreigabe abgelehnt.' : 'Kein GPS verfügbar.'} Demo-Standort gesetzt.`);
 }
 
 /* ---------- Klicks ---------- */
@@ -2146,14 +2167,14 @@ document.addEventListener('click', e => {
     case 'mel-manual': if (MEL) { MEL.manual = true; SDIRTY = true; updMelLoc(); const r = $('mel-reason'); if (r) r.focus(); } break;
     case 'mel-foto-del': if (MEL) { MEL.fotos.splice(+d.i, 1); updMelFotos(); } break;
     case 'mel-doc-del': if (MEL) { MEL.docs.splice(+d.i, 1); updMelFotos(); } break;
-    case 'locate-me': geo().then(fix => { FIX = fix; renderAll(); toast(`Standort ermittelt, ${fmtAcc(fix.acc)}`); }).catch(err => { locateDemoFallback(err); renderAll(); }); break;
+    case 'locate-me': geo().then(fix => { if (isFar(fix)) { locateDemoFallback('far'); renderAll(); return; } FIX = fix; renderAll(); toast(`Standort ermittelt, ${fmtAcc(fix.acc)}`); }).catch(err => { locateDemoFallback(err); renderAll(); }); break;
     case 'map-zoom': zoomAt(d.map, d.z === 'in' ? 0.6 : 1.6); break;
     case 'map-fit': { const m = MAPS[d.map]; if (m) { m.v = fitView(m); drawMap(d.map); } break; }
     case 'map-me': {
       const id = d.map, m = MAPS[id];
       const near = m && m.o.focus ? order(m.o.focus).loc : null;
-      geo().then(fix => { FIX = fix; centerOn(id, fix, 220); toast(`Standort ermittelt, ${fmtAcc(fix.acc)}`); })
-        .catch(err => { if (!FIX) locateDemoFallback(err, near); else toast('GPS hier gesperrt. Letzter bekannter Standort wird gezeigt.'); centerOn(id, FIX, 220); });
+      geo().then(fix => { if (isFar(fix)) { locateDemoFallback('far', near); centerOn(id, FIX, 220); return; } FIX = fix; centerOn(id, fix, 220); toast(`Standort ermittelt, ${fmtAcc(fix.acc)}`); })
+        .catch(err => { if (!FIX) locateDemoFallback(err, near); else toast('Kein GPS verfügbar. Der letzte bekannte Standort wird gezeigt.'); centerOn(id, FIX, 220); });
       break;
     }
     case 'map-pick': { const m = MAPS[d.map]; if (m && m.noClick) break; showPop(d.map, d.kind, d.id); const f = $('pop-' + d.map).querySelector('.close'); if (f && e.detail === 0) f.focus(); break; }
@@ -2172,16 +2193,20 @@ document.addEventListener('click', e => {
     case 'go-anchor': { const el = $(d.a); if (el) { try { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); el.focus({ preventScroll: true }); } catch (er) {} } break; }
     case 'mat-book': matSheet(d.id); break;
     case 'mat-pos': matPosSheet(d.id); break;
-    case 'mat-ok': { const b = S.matlog.find(x => x.id === d.id); if (!b || !canConfirm(order(b.oid)) || b.ok) break; b.ok = { by: S.user, at: nowISO() }; notify(b.by, `Materialbuchung bestätigt: ${order(b.oid).adresse}`, 'auftrag-' + b.oid); commit('Buchung bestätigt', () => { b.ok = null; commit(); }); break; }
-    case 'mat-ok-all': { const bs = S.matlog.filter(b => !b.ok && (!d.oid || b.oid === d.oid) && canConfirm(order(b.oid))); if (!bs.length) break; bs.forEach(b => { b.ok = { by: S.user, at: nowISO() }; }); commit(`${bs.length} Buchungen bestätigt`, () => { bs.forEach(b => { b.ok = null; }); commit(); }); break; }
+    case 'mat-ok': { const b = S.matlog.find(x => x.id === d.id); if (!b || !canConfirm(order(b.oid)) || b.ok) break; b.ok = { by: S.user, at: nowISO() }; const nid = notify(b.by, `Materialbuchung bestätigt: ${order(b.oid).adresse}`, 'auftrag-' + b.oid); commit('Buchung bestätigt', () => { b.ok = null; unnotify([nid]); commit(); }); break; }
+    case 'mat-ok-all': { const bs = S.matlog.filter(b => !b.ok && (!d.oid || b.oid === d.oid) && canConfirm(order(b.oid))); if (!bs.length) break; bs.forEach(b => { b.ok = { by: S.user, at: nowISO() }; });
+      const nids = [...new Set(bs.map(b => b.by))].map(pid => { const mine = bs.filter(b => b.by === pid), oids = [...new Set(mine.map(b => b.oid))]; return notify(pid, `${mine.length === 1 ? 'Materialbuchung' : `${mine.length} Materialbuchungen`} bestätigt: ${oids.map(id => order(id).adresse).join(', ')}`, oids.length === 1 ? 'auftrag-' + oids[0] : null); });
+      commit(`${bs.length} Buchungen bestätigt`, () => { bs.forEach(b => { b.ok = null; }); unnotify(nids); commit(); }); break; }
     case 'pf': S.pf = d.k; commit(); break;
     case 'mode-start': modeStart(d.kind, d.id); break;
-    case 'mode-gps': geo().then(fix => { FIX = fix; modeAdd({ lat: fix.lat, lng: fix.lng, acc: fix.acc, src: fix.src }); }).catch(err => toast(err && err.code === 1 ? 'Standortfreigabe abgelehnt. In der Demo bitte auf den Plan tippen.' : 'GPS ist in der Claude-Vorschau gesperrt. In der Demo bitte auf den Plan tippen.')); break;
+    case 'mode-gps': geo().then(fix => { if (isFar(fix)) { toast('Ihr Standort liegt außerhalb des Demo-Lageplans. Bitte auf den Plan tippen.'); return; } FIX = fix; modeAdd({ lat: fix.lat, lng: fix.lng, acc: fix.acc, src: fix.src }); }).catch(err => toast(err && err.code === 1 ? 'Standortfreigabe abgelehnt. In der Demo bitte auf den Plan tippen.' : 'Kein GPS verfügbar. In der Demo bitte auf den Plan tippen.')); break;
     case 'mode-undo': if (MODE) { MODE.kind === 'trasse' ? MODE.pts.pop() : (MODE.pt = null); redraw('auf'); renderModeBar(); } break;
     case 'mode-cancel': { const prev = MODE; MODE = null; renderModeBar(); redraw('auf'); if (prev && (prev.pts.length || prev.pt)) toast('Erfassung verworfen', () => { MODE = prev; renderModeBar(); redraw('auf'); }); break; }
     case 'mode-done': if (MODE) { if (MODE.kind === 'trasse' && MODE.pts.length > 1) trasseSheet(); else if (MODE.kind === 'marker' && MODE.pt) markerSheet(); } break;
     case 'mk-del': { const i = S.marker.findIndex(x => x.id === d.id); if (i < 0) break; const [x] = S.marker.splice(i, 1); Object.values(MAPS).forEach(m => { m.pop = null; }); commit('Markierung entfernt', () => { S.marker.splice(i, 0, x); commit(); }); break; }
     case 'foto': fotoSheet(d.r, d.f); break;
+    case 'mk-foto': mkFotoSheet(d.id); break;
+    case 'mk-foto-save': { const x = S.marker.find(y => y.id === d.id); if (x && x.foto && x.foto.data) saveFile(`${x.oid}_Markierung_${x.foto.at.slice(0, 16).replace(/[:T]/g, '-')}.jpg`, dataBlob(x.foto.data)); break; }
     case 'foto-save': { const r = S.reports.find(x => x.id === d.r), f = r && r.fotos.find(x => x.id === d.f); if (f) { const src = photoSrc(f, r); if (src) saveFile(`${r.oid}_${f.at.slice(0, 16).replace(/[:T]/g, '-')}.jpg`, dataBlob(src)); } break; }
     case 'rv-open': reviewSheet(d.id); break;
     case 'rq-open': askSheet(d.id); break;
@@ -2257,8 +2282,8 @@ document.addEventListener('submit', e => {
     const o = order(f.dataset.oid), ml = readMat(); if (!ml) return;
     if (!ml.length) { const first = document.querySelector('#sheet [data-mid]'); fieldErr(first ? first.id : 'mq-new', 'Bitte mindestens eine Menge eintragen.'); return; }
     const bs = applyMat(o, ml, null);
-    kundenOf(o).forEach(k => notify(k, `Material gebucht: ${o.adresse} · ${matTxt(o, bs)}`, 'auftrag-' + o.id));
-    closeSheet(); commit(`Gebucht: ${matTxt(o, bs)}`, () => { S.matlog = S.matlog.filter(b => !bs.includes(b)); commit(); }); return;
+    const nids = kundenOf(o).map(k => notify(k, `Material gebucht: ${o.adresse} · ${matTxt(o, bs)}`, 'auftrag-' + o.id));
+    closeSheet(); commit(`Gebucht: ${matTxt(o, bs)}`, () => { S.matlog = S.matlog.filter(b => !bs.includes(b)); unnotify(nids); commit(); }); return;
   }
   if (id === 'mpForm') {
     const o = order(f.dataset.oid), ch = [];
@@ -2269,13 +2294,15 @@ document.addEventListener('submit', e => {
     const prev = JSON.parse(JSON.stringify(o.mat || []));
     ch.forEach(([sid, n]) => { const m = (o.mat || []).find(x => x.id === sid); if (m) m.soll = n; });
     if (nn) (o.mat = o.mat || []).push({ id: uid('mp'), name: nn, einheit: v('mp-e'), soll: ns });
-    (isKunde() ? admins(o).concat(o.team) : kundenOf(o)).forEach(p => notify(p, `Geplante Materialmengen geändert: ${o.adresse}`, 'auftrag-' + o.id));
-    closeSheet(); commit('Geplante Mengen gespeichert', () => { o.mat = prev; commit(); }); return;
+    const nids = (isKunde() ? admins(o).concat(o.team) : kundenOf(o)).map(p => notify(p, `Geplante Materialmengen geändert: ${o.adresse}`, 'auftrag-' + o.id));
+    closeSheet(); commit('Geplante Mengen gespeichert', () => { o.mat = prev; unnotify(nids); commit(); }); return;
   }
   if (id === 'trForm') {
     if (!v('tr-n')) { fieldErr('tr-n', 'Bitte eine Bezeichnung eingeben, z. B. „Hausanschluss Birkenweg 7“.'); return; }
     const t = { id: uid('t'), oid: MODE.oid, by: S.user, at: nowISO(), name: v('tr-n'), typ: v('tr-t'), art: v('tr-a'), tiefe: Math.max(0, parseInt(v('tr-d'), 10) || 0), pts: MODE.pts.slice(), notiz: v('tr-x') };
-    S.trassen.push(t); MODE = null; closeSheet(); commit(`Trasse gespeichert, ${fmtLen(pathLen(t.pts))}`, () => { S.trassen = S.trassen.filter(x => x.id !== t.id); commit(); }); return;
+    S.trassen.push(t); const o = order(t.oid), fl = trFlags(t);
+    const nids = admins(o).map(a => notify(a, fl.length ? `Prüfen: Trasse ${t.name}, ${fl[0]}` : `${pname(S.user)}: Trasse erfasst, ${t.name}, ${fmtLen(pathLen(t.pts))}`, fl.length ? 'pruefen' : 'auftrag-' + o.id));
+    MODE = null; closeSheet(); commit(`Trasse gespeichert, ${fmtLen(pathLen(t.pts))}${fl.length ? ' · geht zur Prüfung ans Büro' : ''}`, () => { S.trassen = S.trassen.filter(x => x.id !== t.id); unnotify(nids); commit(); }); return;
   }
   if (id === 'mkForm') {
     if (v('mk-x').length < 3) { fieldErr('mk-x', 'Bitte kurz beschreiben, was an dieser Stelle ist.'); return; }
@@ -2293,7 +2320,7 @@ document.addEventListener('submit', e => {
     if (!v('of-ad')) { fieldErr('of-ad', 'Bitte die Adresse eingeben, wie sie angezeigt werden soll.'); return; }
     const team = checked('of-team');
     if (!team.length) { fieldErr('of-team', 'Bitte mindestens eine Person ins Team nehmen.'); return; }
-    const o = edit || { id: f.dataset.no, status: 'geplant', created: nowISO() };
+    const o = edit || { id: f.dataset.no, an: me().firma, status: 'geplant', created: nowISO(), mat: [] };
     const prevTeam = edit ? edit.team.slice() : [];
     Object.assign(o, { titel: v('of-t'), art: v('of-a'), kunde: v('of-k'), adresse: v('of-ad'), radius: +v('of-r'), genau: +v('of-g') || 0, faellig: v('of-f') || addDays(TODAY, 1), team, geraete: checked('of-ger'), text: v('of-x') });
     if (v('of-p')) o.loc = placeLoc(v('of-p'));
@@ -2312,9 +2339,9 @@ document.addEventListener('submit', e => {
       const x = { id: v('re-n'), oid: o.id, titel: v('re-t') || o.titel, datum: v('re-d') || TODAY, faellig: addDays(v('re-d') || TODAY, +v('re-z')), netto: Math.round(netto * 100) / 100, ust: +v('re-u'), status: 'offen', bezahlt: null, datei, by: S.user, at: nowISO() };
       const prev = o.status;
       S.rechnungen.push(x); if ($('re-ab').checked) o.status = 'abgerechnet';
-      kundenOf(o).forEach(k => notify(k, `Neue Rechnung ${x.id}: ${o.adresse}, ${EUR.format(brutto(x))}`, 'rechnungen'));
+      const nids = kundenOf(o).map(k => notify(k, `Neue Rechnung ${x.id}: ${o.adresse}, ${EUR.format(brutto(x))}`, 'rechnungen'));
       if (!save()) { if (x.datei) x.datei.data = null; save(); }
-      closeSheet(); commit(`Rechnung ${x.id} erfasst`, () => { S.rechnungen = S.rechnungen.filter(y => y.id !== x.id); o.status = prev; commit(); });
+      closeSheet(); commit(`Rechnung ${x.id} erfasst${x.datei && !x.datei.data ? ' (Datei in der Demo ohne Inhalt, da größer als 700 KB)' : ''}`, () => { S.rechnungen = S.rechnungen.filter(y => y.id !== x.id); o.status = prev; unnotify(nids); commit(); });
     };
     if (file) readDoc(file).then(dd => done({ name: dd.name, size: dd.size, data: dd.data })); else done(null);
     return;

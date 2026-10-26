@@ -6,6 +6,7 @@
 <title>Proof of Delivery mit KI</title>
 <meta name="description" content="Demo: Fahrer fotografiert Belege und holt die Unterschrift, die Disposition sieht live, wie die KI Belege erkennt, ausliest, zuordnet und einträgt.">
 <meta name="theme-color" content="#1E2731">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231E2731'/%3E%3Cpath d='M5 10h13v11H5zM18 14h5l4 4v3h-9z' fill='%23F2AE00'/%3E%3C/svg%3E">
 <style>
 @font-face { font-family: "Barlow"; font-weight: 400; font-display: swap; src: url(pod-files/barlow-latin-400-normal.woff2) format("woff2"); }
 @font-face { font-family: "Barlow"; font-weight: 500; font-display: swap; src: url(pod-files/barlow-latin-500-normal.woff2) format("woff2"); }
@@ -297,17 +298,17 @@ table.tt { width: 100%; border-collapse: collapse; background: var(--surface); f
 
 /* Karte */
 .mview { display: grid; grid-template-columns: minmax(0, 1fr) 300px; height: 100%; min-height: 0; }
-.mapbox { position: relative; min-height: 0; overflow: hidden; background: #E9EDE6; display: grid; place-items: center; }
-.mapbox svg.map { width: 100%; height: 100%; display: block; }
+.mapbox { position: relative; min-height: 0; overflow: hidden; background: #E9EDE6; display: flex; flex-direction: column; }
+.mapbox svg.map { flex: 1 1 0; min-height: 0; width: 100%; display: block; }
 .map .pin { cursor: pointer; }
 .map .pin:focus { outline: none; }
 .map .pin:focus-visible circle.o { stroke: var(--blue); stroke-width: 5; }
 .map .pin.is-new circle.o { animation: pinpulse 1.2s ease-out 3; }
 @keyframes pinpulse { 0% { stroke: var(--amber); stroke-width: 14; } 100% { stroke-width: 2; } }
-.maplegend { position: absolute; left: 12px; bottom: 12px; background: rgba(255,255,255,.94); border-radius: 8px; padding: 8px 10px; font-size: 12.5px; box-shadow: var(--shadow-1); display: flex; flex-wrap: wrap; gap: 4px 12px; max-width: calc(100% - 24px); }
+.maplegend { flex: none; background: var(--surface); border-top: 1px solid var(--line); padding: 8px 12px; font-size: 12.5px; display: flex; flex-wrap: wrap; gap: 4px 14px; }
 .maplegend span { display: inline-flex; align-items: center; gap: 5px; }
 .maplegend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-.maptag { position: absolute; right: 12px; top: 12px; background: rgba(255,255,255,.9); border-radius: 6px; padding: 4px 8px; font-size: 12px; color: var(--ink-2); }
+.maplegend .maptag { margin-left: auto; color: var(--ink-3); }
 .tours { overflow-y: auto; background: var(--surface); border-left: 1px solid var(--line); min-height: 0; }
 .tour { padding: 12px 14px; border-bottom: 1px solid var(--line-2); }
 .tour h3 { margin: 0; display: flex; align-items: center; gap: 8px; font-size: 14.5px; }
@@ -368,7 +369,8 @@ table.tt { width: 100%; border-collapse: collapse; background: var(--surface); f
 
 /* Toasts */
 .toasts { position: absolute; left: 16px; bottom: 16px; z-index: 40; display: flex; flex-direction: column; gap: 8px; max-width: min(440px, calc(100% - 32px)); pointer-events: none; }
-.toast { pointer-events: auto; display: flex; gap: 10px; align-items: center; background: var(--asphalt); color: #fff; border-radius: 10px; padding: 10px 12px 10px 14px; box-shadow: var(--shadow-2); font-size: 13.5px; animation: tin .2s ease-out; }
+.toast { pointer-events: none; display: flex; gap: 10px; align-items: center; background: var(--asphalt); color: #fff; border-radius: 10px; padding: 10px 12px 10px 14px; box-shadow: var(--shadow-2); font-size: 13.5px; animation: tin .2s ease-out; }
+.toast.has-btn { pointer-events: auto; }
 .toast .sp { flex: 1; }
 .toast button { border: 1px solid #56636F; background: transparent; color: #fff; height: 30px; border-radius: 7px; padding: 0 10px; font-weight: 600; font-size: 13px; white-space: nowrap; }
 .toast button:hover { background: var(--asphalt-3); }
@@ -396,8 +398,8 @@ table.tt { width: 100%; border-collapse: collapse; background: var(--surface); f
 .tbarseg span.x { background: #FF7B62; }
 .tbarseg span.a { background: var(--amber); }
 .tbarseg span.cur { box-shadow: 0 0 0 2px var(--amber) inset; background: transparent; }
-.abody { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 12px 12px 20px; -webkit-overflow-scrolling: touch; }
-.abar { flex: none; display: grid; grid-template-columns: repeat(3, 1fr); background: #fff; border-top: 1px solid var(--line); padding: 4px 6px 18px; }
+.abody { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 12px 12px 20px; scroll-padding-bottom: 130px; -webkit-overflow-scrolling: touch; }
+.abar { -webkit-user-select: none; user-select: none; flex: none; display: grid; grid-template-columns: repeat(3, 1fr); background: #fff; border-top: 1px solid var(--line); padding: 4px 6px 18px; }
 .abar button { position: relative; border: 0; background: none; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 0 2px; color: var(--ink-3); font-size: 12px; font-weight: 600; min-height: 50px; border-radius: 10px; }
 .abar button svg { width: 24px; height: 24px; }
 .abar button[aria-current="page"] { color: var(--ink); }
@@ -460,7 +462,7 @@ table.tt { width: 100%; border-collapse: collapse; background: var(--surface); f
 .fld.err input, .fld.err textarea, .fld.err .sigwrap { border-color: var(--red); }
 .ferr { color: var(--red); font-size: 13px; font-weight: 600; display: flex; gap: 5px; align-items: center; }
 .ferr svg { width: 15px; height: 15px; }
-.sigwrap { position: relative; border: 1.5px dashed #AEB8C2; border-radius: 12px; background: #fff; height: 150px; overflow: hidden; touch-action: none; }
+.sigwrap { -webkit-user-select: none; user-select: none; position: relative; border: 1.5px dashed #AEB8C2; border-radius: 12px; background: #fff; height: 150px; overflow: hidden; touch-action: none; }
 .sigwrap canvas { width: 100%; height: 100%; display: block; touch-action: none; cursor: crosshair; }
 .sigwrap .ph { position: absolute; left: 14px; right: 14px; bottom: 30px; border-bottom: 1.5px solid #C9D0D7; pointer-events: none; }
 .sigwrap .phx { position: absolute; left: 14px; bottom: 34px; color: #9AA4AE; font-size: 20px; pointer-events: none; }
@@ -750,7 +752,7 @@ table.tt { width: 100%; border-collapse: collapse; background: var(--surface); f
 <script>
 "use strict";
 /* ================= Grundlagen ================= */
-const KEY = 'pod-demo-v1';
+const KEY = 'pod-demo-v2';
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -850,7 +852,7 @@ const IMGC = new Map(); // docId -> {url, el, thumb}
 let storageOk = true, storageWarned = false;
 
 function seed() {
-  const st = { v: 1, day: DAYKEY, stops: [], trs: {}, docs: [], seq: 1, offline: false, introSeen: false, phoneOn: true, drafts: {}, tab: 'inbox', img: {} };
+  const st = { v: 2, day: DAYKEY, stops: [], trs: {}, docs: [], seq: 1, offline: false, introSeen: false, phoneOn: true, drafts: {}, tab: 'inbox', img: {} };
   let trNo = 48151, auNo = 31402, lsNo = 104702, cmrNo = 87403, reNo = 5507, cust = 20411;
   const tourSeq = {};
   STOPDEF.forEach((d, i) => {
@@ -888,22 +890,27 @@ const totalKg = tr => tr.pos.reduce((a, p) => a + p.qty * p.kg, 0);
 const goodsValue = tr => tr.pos.reduce((a, p) => a + p.qty * p.price, 0);
 const unitOf = tr => tr.pos.length === 1 ? tr.pos[0].unit : 'Packst.';
 const posText = tr => tr.pos.map(p => `${p.qty} ${p.unit} ${p.art.split(',')[0]}`).join('; ');
+const whoWord = s => s.kind === 'pickup' ? 'Verlader' : 'Empfänger';
+const absentTxt = s => `${whoWord(s)} nicht angetroffen`;
 const offStatus = s => s.synced === false ? s.prev : s.status;
 
 function save() {
   try { localStorage.setItem(KEY, JSON.stringify(S)); storageOk = true; return true; }
   catch (e) {
     storageOk = false;
-    // Fotos weglassen und erneut versuchen
-    try { const lite = { ...S, img: {} }; localStorage.setItem(KEY, JSON.stringify(lite)); } catch (e2) {}
-    if (!storageWarned) { storageWarned = true; setTimeout(() => ptoast('Speicher voll. Fotos bleiben nur bis zum Neuladen erhalten.'), 50); }
+    // Browserspeicher voll: älteste Fotos weglassen, bis der Rest passt (im geöffneten Tab bleiben alle sichtbar)
+    const cap = id => { const d = S.docs.find(x => x.id === id); return d ? d.capturedAt : 0; };
+    const ids = Object.keys(S.img).sort((a, b) => cap(a) - cap(b));
+    const img = { ...S.img }; let ok = false;
+    while (ids.length && !ok) { delete img[ids.shift()]; try { localStorage.setItem(KEY, JSON.stringify({ ...S, img })); ok = true; } catch (e2) {} }
+    if (!storageWarned) { storageWarned = true; setTimeout(() => ptoast('Browserspeicher voll. Ältere eigene Fotos bleiben nur bis zum Neuladen erhalten.'), 50); }
     return false;
   }
 }
 function load() {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) { const s = JSON.parse(raw); if (s && s.v === 1 && s.day === DAYKEY && Array.isArray(s.stops)) { s.img = s.img || {}; return s; } }
+    if (raw) { const s = JSON.parse(raw); if (s && s.v === 2 && s.day === DAYKEY && Array.isArray(s.stops)) { s.img = s.img || {}; return s; } }
   } catch (e) {}
   return null;
 }
@@ -1332,25 +1339,61 @@ async function runPipeline(id, fast) {
   else release(d, 'KI');
   d.step = 5; changed();
 }
-function writeFields(d, ts) {
-  const tr = S.trs[d.match.trId]; if (!tr) return;
-  const f = fv(d); const src = `${typeLabel(d.type)} ${docTitle(d)}`.trim();
-  const W = tr.written; const put = (k, v) => { if (v) W[k] = { v, src, at: ts, doc: d.id }; };
-  if (d.type === 'ls') { put('lsNo', f.docNo); put('qty', f.qty); put('weight', f.weight); }
-  if (d.type === 'cmr') { put('cmrNo', f.docNo); put('qty', f.qty); put('weight', f.weight); put('received', f.received); }
-  if (d.type === 're') { put('reNo', f.docNo); put('gross', f.gross); }
-  if (d.type === 'ws') { put('wsNo', f.docNo); put('weight', f.weight); }
-  if (d.type === 'au') { put('qty', f.qty); }
-  if (!tr.docIds.includes(d.id)) tr.docIds.push(d.id);
-  devsFor(d).forEach(dv => { if (!tr.devs.some(x => x.open && (x.t === dv.t || (x.k && x.k === dv.k)))) tr.devs.push({ id: 'v' + (S.seq++), t: dv.t, k: dv.k, src, at: ts, open: true }); });
-  return src;
+const docSrc = d => `${typeLabel(d.type)} ${docTitle(d)}`.trim();
+function logTo(tr, t, ts) { const e = { id: 'l' + (S.seq++), at: ts || now(), t }; tr.log.push(e); return e.id; }
+/* Werte "Aus Belegen eingetragen" immer aus allen eingetragenen Belegen des Transports neu bilden (Reihenfolge der Freigabe) */
+function applyWritten(tr) {
+  if (!tr) return;
+  const W = {};
+  S.docs.filter(d => d.state === 'done' && d.match && d.match.trId === tr.id).sort((a, b) => (a.releasedAt || 0) - (b.releasedAt || 0)).forEach(d => {
+    const f = fv(d); const src = docSrc(d); const ts = d.releasedAt;
+    const put = (k, v) => { if (v) W[k] = { v, src, at: ts, doc: d.id }; };
+    if (d.type === 'ls') { put('lsNo', f.docNo); put('qty', f.qty); put('weight', f.weight); }
+    if (d.type === 'cmr') { put('cmrNo', f.docNo); put('qty', f.qty); put('weight', f.weight); put('received', f.received); }
+    if (d.type === 're') { put('reNo', f.docNo); put('gross', f.gross); }
+    if (d.type === 'ws') { put('wsNo', f.docNo); put('weight', f.weight); }
+    if (d.type === 'au') { put('qty', f.qty); }
+  });
+  tr.written = W;
+  tr.docIds = S.docs.filter(d => d.state === 'done' && d.match && d.match.trId === tr.id).map(d => d.id);
 }
+/* Gibt zurück, was geändert wurde, damit "Rückgängig" genau das zurücknehmen kann */
 function release(d, by, ts) {
   ts = ts || now();
+  const tr = d.match && S.trs[d.match.trId];
+  const rec = { doc: d.id, prev: { state: d.state, releasedAt: d.releasedAt, releasedBy: d.releasedBy }, tr: tr ? tr.id : null, devs: [], log: null };
   d.state = 'done'; d.releasedAt = ts; d.releasedBy = by;
-  const src = writeFields(d, ts);
-  const tr = S.trs[d.match.trId];
-  if (tr) tr.log.push({ at: ts, t: by === 'KI' ? `${src} automatisch eingetragen` : `${src} geprüft und eingetragen` });
+  if (!tr) return rec;
+  const src = docSrc(d);
+  devsFor(d).forEach(dv => { if (!tr.devs.some(x => x.open && (x.t === dv.t || (x.k && x.k === dv.k)))) { const id = 'v' + (S.seq++); tr.devs.push({ id, t: dv.t, k: dv.k, src, at: ts, open: true, doc: d.id }); rec.devs.push(id); } });
+  rec.log = logTo(tr, by === 'KI' ? `${src} automatisch eingetragen` : `${src} geprüft und eingetragen`, ts);
+  applyWritten(tr);
+  return rec;
+}
+function undoRelease(rec) {
+  const d = docById(rec.doc); if (!d) return;
+  Object.assign(d, rec.prev);
+  const tr = rec.tr && S.trs[rec.tr];
+  if (tr) { tr.devs = tr.devs.filter(v => !rec.devs.includes(v.id)); tr.log = tr.log.filter(l => l.id !== rec.log); applyWritten(tr); }
+}
+/* Beleg aus dem Transport nehmen (erneut prüfen oder verwerfen): eingetragene Werte und offene Abweichungen dieses Belegs zurücknehmen */
+function unrelease(d, newState, logText) {
+  const tr = d.match && S.trs[d.match.trId];
+  const rec = { doc: d.id, prev: { state: d.state, releasedAt: d.releasedAt, releasedBy: d.releasedBy }, tr: tr ? tr.id : null, removed: [], log: null };
+  d.state = newState; d.releasedAt = null; d.releasedBy = null;
+  if (tr) {
+    rec.removed = tr.devs.filter(v => v.open && v.doc === d.id);
+    tr.devs = tr.devs.filter(v => !(v.open && v.doc === d.id));
+    if (logText) rec.log = logTo(tr, `${docSrc(d)} ${logText}`);
+    applyWritten(tr);
+  }
+  return rec;
+}
+function undoUnrelease(rec) {
+  const d = docById(rec.doc); if (!d) return;
+  Object.assign(d, rec.prev);
+  const tr = rec.tr && S.trs[rec.tr];
+  if (tr) { tr.devs.push(...rec.removed); tr.log = tr.log.filter(l => l.id !== rec.log); applyWritten(tr); }
 }
 function deliverDoc(d) {
   d.state = 'processing'; d.receivedAt = now(); d.seen = false;
@@ -1401,7 +1444,10 @@ const UI = { tab: 'inbox', sel: null, filter: 'all', q: '', trSt: 'all', trDrv: 
 const KPIPREV = {};
 let rq = false, svT = null;
 function scheduleRender() { if (rq) return; rq = true; requestAnimationFrame(() => { rq = false; renderOffice(); updatePhoneLive(); }); }
-function changed() { scheduleRender(); clearTimeout(svT); svT = setTimeout(save, 250); }
+/* Speichern gedrosselt statt entprellt: läuft auch, wenn ständig etwas passiert (z. B. während die KI ausliest) */
+function queueSave() { if (svT) return; svT = setTimeout(() => { svT = null; save(); }, 300); }
+function saveNow() { clearTimeout(svT); svT = null; save(); }
+function changed() { scheduleRender(); queueSave(); }
 function setHTML(el, html) { if (!el) return false; if (el._h === html) return false; el.innerHTML = html; el._h = html; return true; }
 function officeVisible() { return !(window.innerWidth < 760 && document.body.dataset.mview !== 'office'); }
 function withFocus(fn) {
@@ -1412,7 +1458,8 @@ function withFocus(fn) {
   sc.forEach(([k, t]) => { const e = $(`[data-ks="${k}"]`); if (e && e.scrollTop !== t) e.scrollTop = t; });
   if (id && a !== document.activeElement && !document.body.contains(a)) { const n = document.getElementById(id); if (n) { n.focus({ preventScroll: true }); try { if (s1 != null) n.setSelectionRange(s1, s2); } catch (e) {} } }
 }
-const podDocs = s => docsOfStop(s.id, true);
+/* Belege eines Transports im Büro: nach Zuordnung, solange noch nicht zugeordnet nach Stopp */
+const podDocs = s => S.docs.filter(d => inOffice(d) && (d.match && d.match.trId ? d.match.trId === s.trId : d.stopId === s.id));
 function podMissing(s) {
   const p = s.pod; if (!p) return ['Abschluss'];
   const m = [];
@@ -1442,17 +1489,16 @@ const durTxt = ms => { const s = Math.round(ms / 1000); if (s < 90) return `${s}
 
 /* ================= Toasts ================= */
 function toastIn(box, msg, undo, cls) {
-  const t = document.createElement('div'); t.className = 'toast ' + (cls || ''); t.setAttribute('role', 'status');
+  const t = document.createElement('div'); t.className = 'toast ' + (cls || '') + (undo ? ' has-btn' : ''); t.setAttribute('role', 'status');
   t.innerHTML = `<span class="sp">${esc(msg)}</span>` + (undo ? `<button type="button">${ico('undo')} Rückgängig</button>` : '');
   if (undo) t.querySelector('button').addEventListener('click', () => { undo(); t.remove(); });
   box.appendChild(t);
-  while (box.children.length > 3) box.firstChild.remove();
+  while (box.children.length > (box.id === 'ptoasts' ? 2 : 3)) box.firstChild.remove();
   setTimeout(() => t.remove(), undo ? 8000 : 5000);
 }
 const otoast = (m, u, c) => toastIn($('#otoasts'), m, u, c);
 function ptoast(m, u, c) { const b = $('#ptoasts'); if (b) toastIn(b, m, u, c); }
 function snap() { const keep = S.img; S.img = {}; const j = JSON.stringify(S); S.img = keep; return j; }
-function restore(j) { const keep = S.img; S = JSON.parse(j); S.img = keep; changed(); renderPhone(); }
 const live = m => { const l = $('#live'); l.textContent = ''; setTimeout(() => l.textContent = m, 30); };
 
 /* ================= Kennzahlen ================= */
@@ -1469,7 +1515,7 @@ function renderKpis() {
     ['del', 'Zustellungen heute', `${doneDel}<small>von ${del.length}</small>`, `${PCT.format(doneDel / del.length)} erledigt`, '', doneDel / del.length],
     ['pod', 'POD vollständig', PCT.format(podPct), `${comp} von ${doneStops.length} abgeschlossenen Stopps`, '', null],
     ['dev', 'Offene Abweichungen', String(openDev), openDev ? 'Klärung nötig' : 'Alles geklärt', openDev ? 'warn' : '', null],
-    ['rev', 'Belege in Prüfung', String(rev), proc ? `${proc} werden gerade ausgelesen` : 'Warten auf Freigabe', rev ? 'kchk' : '', null],
+    ['rev', 'Belege in Prüfung', String(rev), proc ? `${proc} ${proc === 1 ? 'wird' : 'werden'} gerade ausgelesen` : 'Warten auf Freigabe', rev ? 'kchk' : '', null],
     ['avg', 'Ø Zeit bis POD im Büro', rel.length ? durTxt(avg) : '–', 'vom Foto bis eingetragen', '', null],
   ];
   const box = $('#kpis');
@@ -1504,8 +1550,8 @@ function qMatchDoc(d) {
 }
 function inboxDocs() {
   const all = S.docs.filter(inOffice).filter(qMatchDoc).sort((a, b) => (b.receivedAt || 0) - (a.receivedAt || 0));
-  const counts = { all: all.length, review: all.filter(d => d.state === 'review' || d.state === 'processing').length, done: all.filter(d => d.state === 'done').length, dev: all.filter(d => devsFor(d).length).length };
-  const list = all.filter(d => UI.filter === 'all' || (UI.filter === 'review' ? (d.state === 'review' || d.state === 'processing') : UI.filter === 'done' ? d.state === 'done' : devsFor(d).length));
+  const counts = { all: all.length, review: all.filter(d => d.state === 'review').length, done: all.filter(d => d.state === 'done').length, dev: all.filter(d => devsFor(d).length).length };
+  const list = all.filter(d => UI.filter === 'all' || (UI.filter === 'review' ? d.state === 'review' : UI.filter === 'done' ? d.state === 'done' : devsFor(d).length));
   return { list, counts };
 }
 function renderInbox(view) {
@@ -1515,6 +1561,8 @@ function renderInbox(view) {
   }
   const { list, counts } = inboxDocs();
   if (!UI.sel || !docById(UI.sel) || !inOffice(docById(UI.sel))) { const pick = list.find(d => d.state === 'review') || list[0]; UI.sel = pick ? pick.id : null; }
+  const selD = UI.sel && docById(UI.sel);
+  if (selD && officeVisible() && (window.innerWidth >= 760 || UI.mDetail) && !selD.seen) { selD.seen = true; queueSave(); }
   const fl = [['all', 'Alle'], ['review', 'Zur Prüfung'], ['done', 'Eingetragen'], ['dev', 'Mit Abweichung']];
   setHTML(view.querySelector('.ifilter'), fl.map(f => `<button type="button" class="chip" data-filter="${f[0]}" aria-pressed="${UI.filter === f[0]}">${f[1]} <span class="n">${counts[f[0]]}</span></button>`).join(''));
   const rows = list.map(d => {
@@ -1530,7 +1578,6 @@ function renderInbox(view) {
   const d = UI.sel && docById(UI.sel);
   const dp = view.querySelector('.dpane');
   if (!d) { setHTML(dp, `<div class="empty" style="margin-top:60px"><b>Noch kein Beleg ausgewählt</b>Neue Belege aus der Fahrer-App erscheinen hier sofort.</div>`); return; }
-  if (officeVisible() && (window.innerWidth >= 760 || UI.mDetail) && !d.seen) { d.seen = true; clearTimeout(svT); svT = setTimeout(save, 250); }
   if (setHTML(dp, detailHTML(d))) {
     const slot = dp.querySelector('.docimg');
     if (slot) { const c = docImg(d); if (!c.el && c.url) { c.el = new Image(); c.el.src = c.url; c.el.alt = ''; } if (c.el) slot.prepend(c.el); }
@@ -1566,7 +1613,7 @@ function detailHTML(d) {
   const ov = pp ? `<div class="ov" style="left:${pp.l * 100}%;top:${pp.t * 100}%;width:${pp.w * 100}%;height:${pp.h * 100}%;transform:rotate(${pp.a}rad)">${boxes}</div>` : '';
   const scan = d.state === 'processing' && d.step <= 2 ? `<span class="scan" style="animation-delay:-${now() % 1600}ms"></span>` : '';
   const gps = d.gps ? `GPS ${NF5.format(d.gps.lat)}, ${NF5.format(d.gps.lon)}${d.gps.demo ? ' (Demo-Standort)' : ''}` : 'ohne GPS';
-  const fig = `<figure class="docfig"><div class="docimg">${im.missing ? '<div class="empty" style="color:#C9D2DB;padding:80px 20px">Foto nur auf dem Gerät gespeichert, auf dem es aufgenommen wurde.</div>' : ''}${ov}${scan}</div><figcaption><span>Aufgenommen ${fTS(d.capturedAt)}, ${esc(gps)}</span></figcaption></figure>`;
+  const fig = `<figure class="docfig"><div class="docimg">${im.missing ? '<div class="empty" style="color:#C9D2DB;padding:80px 20px">Foto nicht mehr verfügbar: Der Browserspeicher war voll, darum wurde es nicht dauerhaft gespeichert.</div>' : ''}${ov}${scan}</div><figcaption><span>Aufgenommen ${fTS(d.capturedAt)}, ${esc(gps)}</span></figcaption></figure>`;
   let fields = '';
   if (d.step >= 2) {
     const rowsF = d.fields.map((f, i) => {
@@ -1575,9 +1622,9 @@ function detailHTML(d) {
       const cls = ['frow', pend ? 'pending' : '', lw ? 'low' : '', f.ed ? 'edited' : '', UI.hl === f.k ? 'hl' : ''].join(' ');
       const id = `fi-${d.id}-${f.k}`;
       const confT = f.ed ? 'korrigiert' : PCT.format(f.c);
-      return `<div class="${cls}" data-fk="${f.k}"><label for="${id}">${esc(lbl)}</label><input id="${id}" data-field="${f.k}" value="${esc(pend ? '' : f.v)}" ${pend || d.state === 'processing' ? 'readonly' : ''} autocomplete="off" spellcheck="false" ${lw ? 'aria-describedby="lowhint"' : ''}><span class="conf"><span>${confT}${lw ? ' <span aria-hidden="true">prüfen</span>' : ''}</span><span class="m"><i style="width:${f.ed ? 100 : Math.round(f.c * 100)}%"></i></span></span></div>`;
+      return `<div class="${cls}" data-fk="${f.k}"><label for="${id}">${esc(lbl)}</label><input id="${id}" data-field="${f.k}" value="${esc(pend ? '' : f.v)}" ${pend || d.state !== 'review' ? 'readonly' : ''} autocomplete="off" spellcheck="false" ${lw ? 'aria-describedby="lowhint"' : ''}><span class="conf"><span>${confT}${lw ? ' <span aria-hidden="true">prüfen</span>' : ''}</span><span class="m"><i style="width:${f.ed ? 100 : Math.round(f.c * 100)}%"></i></span></span></div>`;
     }).join('');
-    const typeRow = `<div class="frow"><label for="ft-${d.id}">Dokumenttyp</label><select id="ft-${d.id}" data-dtype ${d.state === 'processing' ? 'disabled' : ''}>${Object.keys(TYPES).map(t => `<option value="${t}" ${t === d.type ? 'selected' : ''}>${TYPES[t].label}</option>`).join('')}</select><span class="conf"><span>${PCT.format(d.typeConf)}</span><span class="m"><i style="width:${Math.round(d.typeConf * 100)}%"></i></span></span></div>`;
+    const typeRow = `<div class="frow"><label for="ft-${d.id}">Dokumenttyp</label><select id="ft-${d.id}" data-dtype ${d.state !== 'review' ? 'disabled' : ''}>${Object.keys(TYPES).map(t => `<option value="${t}" ${t === d.type ? 'selected' : ''}>${TYPES[t].label}</option>`).join('')}</select><span class="conf"><span>${PCT.format(d.typeConf)}</span><span class="m"><i style="width:${Math.round(d.typeConf * 100)}%"></i></span></span></div>`;
     fields = `<section class="fcard" aria-label="Ausgelesene Felder"><h3>Ausgelesene Felder<span class="sp"></span><small id="lowhint">Gelb heißt unsicher</small></h3>${typeRow}${rowsF}</section>`;
   } else {
     fields = `<section class="fcard"><h3>Ausgelesene Felder</h3><div class="empty">Dokumenttyp wird erkannt.</div></section>`;
@@ -1587,7 +1634,7 @@ function detailHTML(d) {
     const opts = Object.values(S.trs).map(t => { const s = stopOf(t); return `<option value="${t.id}" ${tr && tr.id === t.id ? 'selected' : ''}>${t.id}, ${esc(s.name)} (Stopp ${s.seq}, ${esc(DRIVERS[s.drv].name)})</option>`; }).join('');
     const reasons = d.state === 'review' ? reviewReasons(d) : [];
     match = `<section class="mcard"><h3>Zuordnung und Abgleich<span class="sp"></span>${tr ? `<small>${PCT.format(d.match.conf)} sicher</small>` : ''}</h3><div class="mbody">
-      <div class="mline"><label for="mt-${d.id}" class="sr-only">Transport</label><select id="mt-${d.id}" data-match ${d.state === 'processing' ? 'disabled' : ''}>${opts}</select><button class="btn sm" type="button" data-act="opentr" data-tr="${tr ? tr.id : ''}">Transport öffnen</button></div>
+      <div class="mline"><label for="mt-${d.id}" class="sr-only">Transport</label><select id="mt-${d.id}" data-match ${d.state !== 'review' ? 'disabled' : ''}>${opts}</select><button class="btn sm" type="button" data-act="opentr" data-tr="${tr ? tr.id : ''}">Transport öffnen</button></div>
       <div class="why">${esc(d.match ? d.match.why : '')}</div>
       <ul class="devs">${devs.length ? devs.map(v => `<li>${ico('alert')}<span>${esc(v.t)}</span></li>`).join('') : `<li class="ok">${ico('check')}<span>Keine Abweichung zum Auftrag.</span></li>`}</ul>
       ${reasons.length ? `<div><b>Darum zur Prüfung:</b><ul class="reasons">${reasons.map(r => `<li>${esc(r)}</li>`).join('')}</ul></div>` : ''}
@@ -1595,7 +1642,7 @@ function detailHTML(d) {
   }
   let act = '';
   if (d.state === 'review') act = `<div class="dact"><button class="btn pri" type="button" data-act="release">${ico('check')} Freigeben und eintragen</button><button class="btn ghost danger" type="button" data-act="discard">Beleg verwerfen</button><span class="note">Schreibt die Felder in ${tr ? tr.id : 'den Transport'} und setzt den Status.</span></div>`;
-  else if (d.state === 'done') act = `<div class="dact"><span class="note">${d.releasedBy === 'KI' ? 'Automatisch eingetragen' : 'Vom Disponenten freigegeben'} um ${fT(d.releasedAt)}, ${durTxt(d.releasedAt - d.capturedAt)} nach der Aufnahme.</span><button class="btn sm" type="button" data-act="reopen">Erneut prüfen</button></div>`;
+  else if (d.state === 'done') act = `<div class="dact"><span class="note">${d.releasedBy === 'KI' ? 'Automatisch eingetragen' : 'Vom Disponenten freigegeben'} um ${fT(d.releasedAt)}, ${durTxt(d.releasedAt - d.capturedAt)} nach der Aufnahme.</span><button class="btn sm" type="button" data-act="reopen">Erneut prüfen</button></div><p class="note" style="margin:0;color:var(--ink-3);font-size:13px">Zum Ändern der Felder oder der Zuordnung zuerst „Erneut prüfen“ wählen.</p>`;
   else act = `<div class="dact"><span class="note">Die KI verarbeitet den Beleg. Felder sind danach bearbeitbar.</span></div>`;
   const sim = d.simulated ? `<div class="simnote">${ico('info')}<span><b>In der Demo simuliert, bitte prüfen.</b> Bei eigenen Fotos liest die Demo nichts aus dem Bild. Die Felder sind mit Werten des Stopps vorbelegt und haben niedrige Konfidenz.</span></div>` : '';
   return `<div class="dwrap">
@@ -1689,8 +1736,8 @@ function drawerHTML(tr) {
   const gal = docs.map(d => `<button type="button" data-gotodoc="${d.id}"><span class="thumb" style="background-image:url('${docImg(d).thumb}')"></span>${esc(typeLabel(d.type))}<br>${docChip(d)}</button>`).join('');
   const devs = tr.devs.length ? tr.devs.map(v => `<li class="${v.open ? '' : 'closed'}">${ico(v.open ? 'alert' : 'check')}<span class="sp">${esc(v.t)}<br><small>${esc(v.src)}, ${fT(v.at)}${v.open ? '' : ', geklärt ' + fT(v.closedAt)}</small></span>${v.open ? `<button class="btn sm" type="button" data-act="closedev" data-dev="${v.id}">Als geklärt markieren</button>` : ''}</li>`).join('') : `<li class="ok">${ico('check')}<span>Keine Abweichungen.</span></li>`;
   const miss = done ? podMissing(s) : [];
-  const podHtml = p ? `<div class="podbox"><div><div class="muted" style="font-size:12px;margin-bottom:4px">Unterschrift</div>${p.sig ? `<div class="sigimg"><img src="${p.sig}" alt="Unterschrift von ${esc(p.name)}"></div>` : `<div class="sigimg muted">${p.devs && p.devs.absent ? 'Nicht angetroffen' : 'Keine Unterschrift'}</div>`}</div>
-     <div><dl class="kv" style="grid-template-columns:1fr"><div><dt>Empfänger</dt><dd>${esc(p.name || '–')}</dd></div><div><dt>Zeitstempel</dt><dd class="num">${fD(s.doneAt)} ${fTS(s.doneAt)}</dd></div><div><dt>Standort</dt><dd class="num">${p.gps ? `${NF5.format(p.gps.lat)}, ${NF5.format(p.gps.lon)} <small>± ${p.gps.acc} m${p.gps.demo ? ', Demo-Standort' : ', Gerät'}</small>` : '–'}</dd></div><div><dt>Ergebnis</dt><dd>${p.result === 'dev' ? 'Mit Abweichung' : s.kind === 'pickup' ? 'Abgeholt' : 'Zugestellt'}${p.note ? `<br><small>${esc(p.note)}</small>` : ''}</dd></div></dl></div></div>
+  const podHtml = p ? `<div class="podbox"><div><div class="muted" style="font-size:12px;margin-bottom:4px">Unterschrift</div>${p.sig ? `<div class="sigimg"><img src="${p.sig}" alt="Unterschrift von ${esc(p.name)}"></div>` : `<div class="sigimg muted">${p.devs && p.devs.absent ? absentTxt(s) : 'Keine Unterschrift'}</div>`}</div>
+     <div><dl class="kv" style="grid-template-columns:1fr"><div><dt>${p.devs && p.devs.absent ? whoWord(s) : 'Unterschrift von'}</dt><dd>${esc(p.name || (p.devs && p.devs.absent ? 'nicht angetroffen' : '–'))}</dd></div><div><dt>Zeitstempel</dt><dd class="num">${fD(s.doneAt)} ${fTS(s.doneAt)}</dd></div><div><dt>Standort</dt><dd class="num">${p.gps ? `${NF5.format(p.gps.lat)}, ${NF5.format(p.gps.lon)} <small>± ${p.gps.acc} m${p.gps.demo ? ', Demo-Standort' : ', Gerät'}</small>` : '–'}</dd></div><div><dt>Ergebnis</dt><dd>${p.result === 'dev' ? 'Mit Abweichung' : s.kind === 'pickup' ? 'Abgeholt' : 'Zugestellt'}${p.note ? `<br><small>${esc(p.note)}</small>` : ''}</dd></div></dl></div></div>
      ${miss.length ? `<div class="mbody" style="padding-top:0"><div class="simnote" style="background:var(--red-soft);color:#7A1E10">${ico('alert')}<span>POD unvollständig: ${miss.join(', ')} fehlt.</span></div></div>` : ''}`
     : `<div class="empty">${offStatus(s) === 'arrived' ? `Fahrer seit ${fT(s.arrivedAt)} vor Ort.` : 'Noch nicht abgeschlossen.'}</div>`;
   const log = tr.log.slice().sort((a, b) => b.at - a.at).map(x => `<li><time>${fT(x.at)}</time><span>${esc(x.t)}</span></li>`).join('');
@@ -1698,7 +1745,7 @@ function drawerHTML(tr) {
   <div class="dpanel" role="dialog" aria-modal="true" aria-labelledby="dwT">
     <div class="dph"><div><h2 id="dwT">${tr.id}</h2><p>${tr.order}, ${s.kind === 'pickup' ? 'Abholung' : 'Zustellung'}, ${esc(drv.tour)} Stopp ${s.seq}</p></div><span class="sp"></span>${chip(k, l)}<button class="btn ghost icon-btn" type="button" data-act="closedrawer" aria-label="Schließen" id="dwClose">${ico('x')}</button></div>
     <div class="dpb" data-ks="dw">
-      <div class="dact">${done ? `<button class="btn sm" type="button" data-act="print" data-tr="${tr.id}">${ico('print')} Nachweis drucken oder als PDF sichern</button>` : ''}</div>
+      ${done ? `<div class="dact"><button class="btn sm" type="button" data-act="print" data-tr="${tr.id}">${ico('print')} Nachweis drucken oder als PDF sichern</button></div>` : ''}
       <section class="mcard"><dl class="kv">
         <div><dt>Absender</dt><dd>${esc(tr.shipper.name)}<br><small>${esc(tr.shipper.street)}, ${esc(tr.shipper.city)}</small></dd></div>
         <div><dt>Empfänger</dt><dd>${esc(tr.consignee.name)}<br><small>${esc(tr.consignee.street)}, ${esc(tr.consignee.city)}</small></dd></div>
@@ -1743,7 +1790,7 @@ const RHEIN = [[50.035, 8.18], [50.04, 8.24], [50.0, 8.27], [49.95, 8.33], [49.8
 const CITIES = [['Frankfurt', 50.112, 8.68, 46], ['Offenbach', 50.10, 8.765, 22], ['Hanau', 50.133, 8.917, 22], ['Darmstadt', 49.872, 8.652, 34], ['Wiesbaden', 50.078, 8.24, 32], ['Mainz', 49.99, 8.26, 28], ['Bad Homburg', 50.226, 8.618, 18], ['Friedberg', 50.335, 8.755, 14], ['Rüsselsheim', 49.99, 8.41, 16], ['Langen', 49.99, 8.67, 13], ['Dieburg', 49.90, 8.84, 12], ['Eschborn', 50.143, 8.567, 12], ['Bad Vilbel', 50.18, 8.74, 13], ['Oberursel', 50.20, 8.578, 14]];
 function stopColor(s) { const os = offStatus(s); const tr = trOf(s); if (tr.devs.some(d => d.open)) return '#B4301B'; if (os === 'done' || os === 'deviation') return '#16744A'; if (os === 'arrived') return '#F2AE00'; return '#FFFFFF'; }
 function renderMap(view) {
-  const tours = Object.values(DRIVERS).filter(d => UI.trDrv === 'all' || d.id === UI.trDrv);
+  const tours = Object.values(DRIVERS);
   const roads = ROADS.map(r => `<polyline points="${pl(r[1])}" fill="none" stroke="#FFFFFF" stroke-width="9" stroke-linejoin="round"/><polyline points="${pl(r[1])}" fill="none" stroke="#F3D58A" stroke-width="5" stroke-linejoin="round"/>`).join('');
   const rlabels = ROADS.map(r => { const m = r[1][Math.floor(r[1].length / 2)]; const [x, y] = proj(m[0], m[1]); return `<g transform="translate(${x},${y})"><rect x="-17" y="-10" width="34" height="20" rx="4" fill="#2C5AA0"/><text x="0" y="5" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="Barlow Condensed">${r[0]}</text></g>`; }).join('');
   const cities = CITIES.map(c => { const [x, y] = proj(c[1], c[2]); return `<circle cx="${x}" cy="${y}" r="${c[3]}" fill="#DCDFD6"/>`; }).join('');
@@ -1775,25 +1822,25 @@ function renderMap(view) {
       <ol>${ts.map(s => { const c = trOf(s).devs.some(v => v.open) ? 'x' : isDone(s) ? 'd' : offStatus(s) === 'arrived' ? 'a' : ''; return `<li><button type="button" data-tr="${s.trId}"><span class="q ${c}">${s.seq}</span><span class="n">${esc(s.name)}, ${esc(s.city.replace(/^\d+\s/, ''))}</span><span class="tm">${isDone(s) ? fT(s.doneAt) : hm(s.from)}</span></button></li>`; }).join('')}</ol></section>`;
   }).join('');
   if (!view.querySelector('.mview')) view.innerHTML = `<div class="mview"><div class="mapbox"></div><div class="tours" data-ks="tours"></div></div>`;
-  setHTML(view.querySelector('.mapbox'), svg + `<div class="maplegend"><span><i style="background:#fff;box-shadow:0 0 0 2px #888 inset"></i>Offen</span><span><i style="background:#F2AE00"></i>Vor Ort</span><span><i style="background:#16744A"></i>Erledigt</span><span><i style="background:#B4301B"></i>Abweichung</span><span><b style="font-family:var(--f-cond)">D</b> Depot</span></div><div class="maptag">Schematische Karte</div>`);
+  setHTML(view.querySelector('.mapbox'), svg + `<div class="maplegend"><span><i style="background:#fff;box-shadow:0 0 0 2px #888 inset"></i>Offen</span><span><i style="background:#F2AE00"></i>Vor Ort</span><span><i style="background:#16744A"></i>Erledigt</span><span><i style="background:#B4301B"></i>Abweichung</span><span><b style="font-family:var(--f-cond)">D</b> Depot</span><span class="maptag">Schematische Karte</span></div>`);
   setHTML(view.querySelector('.tours'), side);
 }
 
 /* ================= Gesamtrender Büro ================= */
 function renderOffice() {
   withFocus(() => {
-    renderKpis();
     $$('.otab').forEach(b => b.setAttribute('aria-current', b.dataset.tab === UI.tab ? 'page' : 'false'));
     const view = $('#oview');
     if (view.dataset.tab !== UI.tab) { view.innerHTML = ''; view.dataset.tab = UI.tab; }
     if (UI.tab === 'inbox') renderInbox(view); else if (UI.tab === 'trs') renderTrs(view); else renderMap(view);
     renderDrawer();
+    renderKpis();
   });
 }
 
 /* ================= Export und Druck ================= */
 function exportCsv() {
-  const head = ['Transport', 'Auftrag', 'Art', 'Tour', 'Stopp', 'Firma', 'Adresse', 'Zeitfenster', 'Fahrer', 'Status', 'Erledigt um', 'Empfänger', 'POD vollständig', 'Fehlt', 'Belege', 'Menge beauftragt', 'Menge laut Beleg', 'Lieferschein-Nr.', 'Offene Abweichungen', 'GPS'];
+  const head = ['Transport', 'Auftrag', 'Art', 'Tour', 'Stopp', 'Firma', 'Adresse', 'Zeitfenster', 'Fahrer', 'Status', 'Erledigt um', 'Unterschrift von', 'POD vollständig', 'Fehlt', 'Belege', 'Menge beauftragt', 'Menge laut Beleg', 'Lieferschein-Nr.', 'Offene Abweichungen', 'GPS'];
   const q = v => { const s = String(v ?? ''); return /[";\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
   const rows = trList().map(tr => { const s = stopOf(tr); const p = s.pod; const d = isDone(s);
     return [tr.id, tr.order, s.kind === 'pickup' ? 'Abholung' : 'Zustellung', DRIVERS[s.drv].tour, s.seq, s.name, `${s.street}, ${s.city}`, `${hm(s.from)}-${hm(s.to)}`, DRIVERS[s.drv].name, trState(tr)[1], d ? fT(s.doneAt) : '', p ? p.name : '', d ? (podComplete(s) ? 'ja' : 'nein') : '', d ? podMissing(s).join(', ') : '', podDocs(s).length, totalQty(tr), tr.written.qty ? tr.written.qty.v : '', tr.written.lsNo ? tr.written.lsNo.v : '', tr.devs.filter(v => v.open).map(v => v.t).join(' | '), p && p.gps ? `${NF5.format(p.gps.lat)} ${NF5.format(p.gps.lon)}` : ''];
@@ -1812,7 +1859,7 @@ function printPod(trId) {
   <tr><th>Absender</th><td>${esc(tr.shipper.name)}, ${esc(tr.shipper.street)}, ${esc(tr.shipper.city)}</td><th>Empfänger</th><td>${esc(tr.consignee.name)}, ${esc(tr.consignee.street)}, ${esc(tr.consignee.city)}</td></tr>
   <tr><th>Fahrer</th><td>${esc(DRIVERS[s.drv].name)}, ${DRIVERS[s.drv].plate}</td><th>Zeitfenster</th><td>${hm(s.from)}–${hm(s.to)}</td></tr>
   <tr><th>Abgeschlossen</th><td>${s.doneAt ? fD(s.doneAt) + ' ' + fTS(s.doneAt) : '–'}</td><th>Standort</th><td>${p.gps ? `${NF5.format(p.gps.lat)}, ${NF5.format(p.gps.lon)} (± ${p.gps.acc} m${p.gps.demo ? ', Demo-Standort' : ''})` : '–'}</td></tr>
-  <tr><th>Empfangen von</th><td>${esc(p.name || '–')}</td><th>Ergebnis</th><td>${p.result === 'dev' ? 'Mit Abweichung' : 'Ohne Abweichung'}</td></tr></table>
+  <tr><th>Unterschrift von</th><td>${esc(p.name || (p.devs && p.devs.absent ? absentTxt(s) : '–'))}</td><th>Ergebnis</th><td>${p.result === 'dev' ? 'Mit Abweichung' : 'Ohne Abweichung'}</td></tr></table>
   <table><tr><th>Position</th><th>Beauftragt</th><th>Gewicht</th></tr>${tr.pos.map(x => `<tr><td>${esc(x.art)}</td><td>${x.qty} ${x.unit}</td><td>${NF0.format(x.qty * x.kg)} kg</td></tr>`).join('')}</table>
   ${tr.devs.length ? `<p><b>Abweichungen:</b> ${tr.devs.map(v => esc(v.t) + (v.open ? ' (offen)' : ' (geklärt)')).join('; ')}</p>` : ''}
   <p><b>Unterschrift:</b><br>${p.sig ? `<img class="sig" src="${p.sig}" alt="">` : '–'}</p>
@@ -1876,7 +1923,7 @@ function stopHTML() {
   if (done) {
     const p = s.pod;
     return head + docsSec + `<section class="sec"><h3>${s.status === 'deviation' ? 'Mit Abweichung abgeschlossen' : kindWord(s) + ' abgeschlossen'}</h3>
-      <dl class="sumgrid"><dt>Zeit</dt><dd class="num">${fTS(s.doneAt)}</dd><dt>Empfänger</dt><dd>${esc(p.name || 'nicht angetroffen')}</dd>
+      <dl class="sumgrid"><dt>Zeit</dt><dd class="num">${fTS(s.doneAt)}</dd><dt>${whoWord(s)}</dt><dd>${esc(p.name || 'nicht angetroffen')}</dd>
       <dt>Standort</dt><dd class="num">${p.gps ? `${NF5.format(p.gps.lat)}, ${NF5.format(p.gps.lon)}${p.gps.demo ? ' (Demo)' : ''}` : '–'}</dd>
       ${p.result === 'dev' ? `<dt>Abweichung</dt><dd>${esc(devSummary(s))}</dd>` : ''}
       <dt>Büro</dt><dd>${s.synced === false ? 'Wartet auf Netz' : 'Übertragen'}</dd></dl>
@@ -1889,7 +1936,7 @@ function stopHTML() {
       ${dr.qtyOn ? `<div style="margin:0 0 6px 4px">${qtyRows}${E.qty ? `<div class="ferr">${ico('alert')}${E.qty}</div>` : ''}</div>` : ''}
       <label class="chk"><input type="checkbox" data-dv="dmgOn" ${dr.dmgOn ? 'checked' : ''}>Schaden an der Ware</label>
       ${dr.dmgOn ? `<div class="fld ${E.dmg ? 'err' : ''}" style="margin-left:4px"><label for="dmgNote">Was ist beschädigt?</label><textarea id="dmgNote" data-dn>${esc(dr.dmgNote)}</textarea>${E.dmg ? `<div class="ferr">${ico('alert')}${E.dmg}</div>` : ''}<button class="abtn line sm" type="button" data-pact="capdmg">${ico('cam')} Schadensfoto aufnehmen</button></div>` : ''}
-      <label class="chk"><input type="checkbox" data-dv="absent" ${dr.absent ? 'checked' : ''}>Empfänger nicht angetroffen</label>
+      <label class="chk"><input type="checkbox" data-dv="absent" ${dr.absent ? 'checked' : ''}>${absentTxt(s)}</label>
       ${dr.absent ? `<div class="ainfo warn">${ico('info')}<span>Ohne Unterschrift. Bitte ein Foto vom Ort oder der Benachrichtigung aufnehmen.</span></div>` : ''}
       ${E.dev ? `<div class="ferr">${ico('alert')}${E.dev}</div>` : ''}</div>` : '';
   const res = `<section class="sec"><h3>Ergebnis</h3><div class="seg" role="radiogroup" aria-label="Ergebnis">
@@ -1907,14 +1954,14 @@ function devSummary(s) {
   const d = s.pod.devs || {}; const tr = trOf(s); const a = [];
   if (d.qty) tr.pos.forEach((p, i) => { if (d.qty[i] != null && d.qty[i] !== p.qty) a.push(`${d.qty[i]} statt ${p.qty} ${p.unit} ${p.art.split(',')[0]}`); });
   if (d.damage) a.push(`Schaden: ${d.damage}`);
-  if (d.absent) a.push('Empfänger nicht angetroffen');
+  if (d.absent) a.push(absentTxt(s));
   return a.join('; ') || 'Abweichung gemeldet';
 }
 function docsTabHTML() {
-  const docs = myDocs();
+  const docs = S.docs.filter(d => d.drv === DRV).sort((a, b) => b.capturedAt - a.capturedAt);
   if (!docs.length) return `<div class="empty"><b>Noch keine Belege</b>Öffne einen Stopp und fotografiere einen Beleg.</div>`;
   return docs.map(d => { const s = stopById(d.stopId); const im = docImg(d);
-    const ss = d.state === 'queued' ? `<span class="ss q">${ico('cloudoff')} Wartet auf Netz</span>` : d.state === 'sending' ? `<span class="ss">${ico('sync')} Wird übertragen</span>` : d.state === 'processing' ? `<span class="ss">${ico('sync')} Im Büro, KI liest aus</span>` : d.state === 'review' ? `<span class="ss r">${ico('clock')} Im Büro in Prüfung</span>` : `<span class="ss ok">${ico('check')} Im Büro eingetragen ${fT(d.releasedAt)}</span>`;
+    const ss = d.state === 'queued' ? `<span class="ss q">${ico('cloudoff')} Wartet auf Netz</span>` : d.state === 'sending' ? `<span class="ss">${ico('sync')} Wird übertragen</span>` : d.state === 'processing' ? `<span class="ss">${ico('sync')} Im Büro, KI liest aus</span>` : d.state === 'review' ? `<span class="ss r">${ico('clock')} Im Büro in Prüfung</span>` : d.state === 'discarded' ? `<span class="ss r">${ico('x')} Vom Büro verworfen</span>` : `<span class="ss ok">${ico('check')} Im Büro eingetragen ${fT(d.releasedAt)}</span>`;
     return `<div class="drow"><span class="thumb" style="background-image:url('${im.thumb}')"></span><div><b>${esc(typeLabel(d.step >= 2 ? d.type : d.chosen))} ${esc(d.step >= 2 ? docTitle(d) : '')}</b><span>Stopp ${s.seq}, ${esc(s.name)}, ${fT(d.capturedAt)}</span>${ss}</div></div>`; }).join('');
 }
 function moreHTML() {
@@ -1969,7 +2016,7 @@ function initSig() {
   const pt = e => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
   cv.addEventListener('pointerdown', e => { e.preventDefault(); drawing = true; try { cv.setPointerCapture(e.pointerId); } catch (er) {} last = pt(e); const x = ctx(); x.beginPath(); x.arc(last[0], last[1], 1.2, 0, 7); x.fillStyle = '#1F2D6B'; x.fill(); const h = $('#sigHint'); if (h) h.remove(); });
   cv.addEventListener('pointermove', e => { if (!drawing) return; const p = pt(e); const x = ctx(); x.beginPath(); x.moveTo(last[0], last[1]); const mx = (last[0] + p[0]) / 2, my = (last[1] + p[1]) / 2; x.quadraticCurveTo(last[0], last[1], mx, my); x.lineTo(p[0], p[1]); x.stroke(); last = p; });
-  const end = () => { if (!drawing) return; drawing = false; dr.sig = exportSig(cv); if (PH.errs.sig) { PH.errs.sig = null; const f = cv.closest('.fld'); f.classList.remove('err'); const fe = f.querySelector('.ferr'); if (fe) fe.remove(); } clearTimeout(svT); svT = setTimeout(save, 300); };
+  const end = () => { if (!drawing) return; drawing = false; dr.sig = exportSig(cv); if (PH.errs.sig) { PH.errs.sig = null; const f = cv.closest('.fld'); f.classList.remove('err'); const fe = f.querySelector('.ferr'); if (fe) fe.remove(); } queueSave(); };
   cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end); cv.addEventListener('pointerleave', end);
   const ro = new ResizeObserver(fit); ro.observe(wrap); fit();
   SIG = { ro, cv };
@@ -2051,10 +2098,10 @@ async function fileToJpeg(file) {
   const url = URL.createObjectURL(file);
   try {
     const img = new Image(); img.src = url; await img.decode();
-    const sc = Math.min(1, 1200 / Math.max(img.naturalWidth, img.naturalHeight));
+    const sc = Math.min(1, 1000 / Math.max(img.naturalWidth, img.naturalHeight));
     const c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth * sc); c.height = Math.round(img.naturalHeight * sc);
     c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-    return c.toDataURL('image/jpeg', .72);
+    return c.toDataURL('image/jpeg', .66);
   } finally { URL.revokeObjectURL(url); }
 }
 async function onFile(e) {
@@ -2125,18 +2172,18 @@ async function completeStop() {
   s.status = dr.res === 'dev' ? 'deviation' : 'done';
   delete S.drafts[s.id];
   if (S.offline) s.synced = false; else syncStop(s);
-  PH.stop = null; PH.errs = {}; renderPhone(); changed();
+  PH.stop = null; PH.errs = {}; renderPhone(); changed(); saveNow();
   ptoast(S.offline ? `${kindWord(s)} gespeichert. Wird gesendet, sobald Netz da ist.` : `${kindWord(s)} abgeschlossen. Nachweis ans Büro gesendet.`);
   const nx = $('.scard.next'); if (nx) nx.focus();
 }
 function syncStop(s) {
   s.synced = true; const tr = trOf(s); const p = s.pod;
   if (s.arrivedAt && !tr.log.some(l => l.t.endsWith('vor Ort'))) tr.log.push({ at: s.arrivedAt, t: `${DRIVERS[s.drv].name} vor Ort` });
-  tr.log.push({ at: s.doneAt, t: p.devs.absent ? 'Empfänger nicht angetroffen' : `${kindWord(s)} bestätigt von ${p.name}` });
+  tr.log.push({ at: s.doneAt, t: p.devs.absent ? absentTxt(s) : `${kindWord(s)} bestätigt von ${p.name}` });
   const d = p.devs || {};
   if (d.qty) { const a = []; tr.pos.forEach((x, i) => { if (d.qty[i] !== x.qty) a.push(`${d.qty[i]} statt ${x.qty} ${x.unit}`); }); if (a.length) tr.devs.push({ id: 'v' + (S.seq++), t: `Fahrer meldet Menge: ${a.join(', ')}`, k: 'qty', src: 'Fahrer', at: s.doneAt, open: true }); }
   if (d.damage) tr.devs.push({ id: 'v' + (S.seq++), t: `Schaden: ${d.damage}`, k: 'damage', src: 'Fahrer', at: s.doneAt, open: true });
-  if (d.absent) tr.devs.push({ id: 'v' + (S.seq++), t: 'Empfänger nicht angetroffen', k: 'absent', src: 'Fahrer', at: s.doneAt, open: true });
+  if (d.absent) tr.devs.push({ id: 'v' + (S.seq++), t: absentTxt(s), k: 'absent', src: 'Fahrer', at: s.doneAt, open: true });
   markNew('tr', tr.id); setTimeout(scheduleRender, 4600);
   otoast(`Stopp ${s.seq} ${s.status === 'deviation' ? 'mit Abweichung abgeschlossen' : s.kind === 'pickup' ? 'abgeholt' : 'zugestellt'}: ${s.name}. POD von ${DRIVERS[s.drv].name} ist da.`, null, 'amber');
 }
@@ -2146,7 +2193,7 @@ function setOffline(on) {
     const q = myDocs().filter(d => d.state === 'queued').reverse();
     const st = S.stops.filter(s => s.synced === false);
     let i = 0;
-    st.forEach(s => { setTimeout(() => { if (s.status === 'arrived') syncArrive(s); else if (s.pod) syncStop(s); else s.synced = true; changed(); }, 300 + i++ * 500); });
+    st.forEach(s => { setTimeout(() => { if (!S.stops.includes(s) || s.synced !== false) return; if (s.status === 'arrived') syncArrive(s); else if (s.pod) syncStop(s); else s.synced = true; changed(); }, 300 + i++ * 500); });
     q.forEach(d => { d.state = 'sending'; setTimeout(() => { const x = docById(d.id); if (x && x.state === 'sending') deliverDoc(x); }, 500 + i++ * 700); });
     ptoast(q.length || st.length ? `Wieder online. ${q.length + st.length} ${q.length + st.length === 1 ? 'Eintrag wird' : 'Einträge werden'} gesendet.` : 'Wieder online.');
   } else ptoast('Offline simuliert. Neue Belege warten in der Warteschlange.');
@@ -2194,7 +2241,7 @@ function bindPhone() {
     if (t.id === 'rcvName') { dr.name = t.value; if (PH.errs.name && t.value.trim()) { PH.errs.name = null; const f = t.closest('.fld'); f.classList.remove('err'); const fe = f.querySelector('.ferr'); if (fe) fe.remove(); } }
     else if (t.dataset.pq != null) dr.qty[t.dataset.pq] = t.value === '' ? null : Number(t.value);
     else if (t.dataset.dn != null) dr.dmgNote = t.value;
-    clearTimeout(svT); svT = setTimeout(save, 400);
+    queueSave();
   });
   $('#fileCam').addEventListener('change', onFile); $('#fileGal').addEventListener('change', onFile);
 }
@@ -2223,12 +2270,29 @@ function bindOffice() {
     if (a === 'csv') { exportCsv(); return; }
     if (a === 'mback') { UI.mDetail = false; renderOffice(); const r = $(`[data-doc="${UI.sel}"]`); if (r) r.focus(); return; }
     if (a === 'opentr') { if (t.dataset.tr) openDrawer(t.dataset.tr); return; }
-    if (a === 'closedev') { const tr = S.trs[UI.drawer]; const v = tr && tr.devs.find(x => x.id === t.dataset.dev); if (!v) return; const sn = snap(); v.open = false; v.closedAt = now(); tr.log.push({ at: now(), t: `Abweichung geklärt: ${v.t}` }); changed(); otoast('Abweichung als geklärt markiert.', () => restore(sn)); return; }
+    if (a === 'closedev') {
+      const tr = S.trs[UI.drawer]; const v = tr && tr.devs.find(x => x.id === t.dataset.dev); if (!v || !v.open) return;
+      v.open = false; v.closedAt = now(); const lid = logTo(tr, `Abweichung geklärt: ${v.t}`); changed(); live('Abweichung als geklärt markiert');
+      otoast('Abweichung als geklärt markiert.', () => { const x = tr.devs.find(y => y.id === v.id); if (x) { x.open = true; delete x.closedAt; } tr.log = tr.log.filter(l => l.id !== lid); changed(); });
+      return;
+    }
     if (a === 'release' || a === 'discard' || a === 'reopen') {
-      const d = docById(UI.sel); if (!d) return; const sn = snap();
-      if (a === 'release') { if (!d.match || !S.trs[d.match.trId]) return; release(d, 'Disponent'); const tr = S.trs[d.match.trId]; markNew('tr', tr.id); otoast(`${typeLabel(d.type)} in ${tr.id} eingetragen.`, () => restore(sn)); live(`${typeLabel(d.type)} freigegeben`); const nx = S.docs.find(x => x.state === 'review' && x.id !== d.id); if (nx && window.innerWidth >= 760) { setTimeout(() => {}, 0); } }
-      if (a === 'discard') { d.state = 'discarded'; UI.sel = null; UI.mDetail = false; otoast('Beleg verworfen.', () => restore(sn)); }
-      if (a === 'reopen') { d.state = 'review'; otoast('Beleg wieder in Prüfung.', () => restore(sn)); }
+      const d = docById(UI.sel); if (!d) return;
+      if (a === 'release') {
+        if (d.state !== 'review' || !d.match || !S.trs[d.match.trId]) return;
+        const rec = release(d, 'Disponent'); const tr = S.trs[d.match.trId]; markNew('tr', tr.id);
+        otoast(`${typeLabel(d.type)} in ${tr.id} eingetragen.`, () => { undoRelease(rec); UI.sel = rec.doc; changed(); }); live(`${typeLabel(d.type)} freigegeben`);
+      }
+      if (a === 'discard') {
+        if (d.state !== 'review') return;
+        const rec = unrelease(d, 'discarded', 'verworfen'); UI.sel = null; UI.mDetail = false;
+        otoast('Beleg verworfen.', () => { undoUnrelease(rec); UI.sel = rec.doc; changed(); }); live('Beleg verworfen');
+      }
+      if (a === 'reopen') {
+        if (d.state !== 'done') return;
+        const rec = unrelease(d, 'review', 'zur erneuten Prüfung geöffnet');
+        otoast('Beleg wieder in Prüfung. Die Werte sind aus dem Transport genommen, bis du ihn erneut freigibst.', () => { undoUnrelease(rec); UI.sel = rec.doc; changed(); }); live('Beleg wieder in Prüfung');
+      }
       changed(); return;
     }
     if (t.dataset.tr && !a) { openDrawer(t.dataset.tr); return; }
@@ -2236,7 +2300,7 @@ function bindOffice() {
   off.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('g.pin')) { e.preventDefault(); openDrawer(e.target.dataset.tr); } });
   off.addEventListener('input', e => {
     const t = e.target; if (!t.dataset.field) return;
-    const d = docById(UI.sel); if (!d || d.state === 'processing') return;
+    const d = docById(UI.sel); if (!d || d.state !== 'review') return;
     const f = d.fields.find(x => x.k === t.dataset.field); if (!f) return;
     f.v = t.value; f.ed = f.v !== f.o; changed();
   });
@@ -2244,7 +2308,8 @@ function bindOffice() {
     const t = e.target; const d = docById(UI.sel);
     if (t.dataset.trf) { if (t.dataset.trf === 'st') UI.trSt = t.value; else UI.trDrv = t.value; renderOffice(); return; }
     if (!d) return;
-    if (t.hasAttribute('data-match')) { const sn = snap(); d.match = { trId: t.value, conf: 1, why: 'Vom Disponenten zugeordnet.' }; changed(); otoast(`Zuordnung zu ${t.value} geändert.`, () => restore(sn)); }
+    if (d.state !== 'review') return;
+    if (t.hasAttribute('data-match')) { const prev = d.match; d.match = { trId: t.value, conf: 1, why: 'Vom Disponenten zugeordnet.' }; changed(); otoast(`Zuordnung zu ${t.value} geändert.`, () => { const x = docById(d.id); if (x && x.state === 'review') { x.match = prev; changed(); } }); }
     if (t.hasAttribute('data-dtype')) { const old = fv(d); const conf = {}; d.fields.forEach(f => conf[f.k] = f.c); d.type = t.value; d.typeConf = 1; d.fields = FIELDS[t.value].map(([k]) => ({ k, v: old[k] || '', c: old[k] ? conf[k] : 0, o: old[k] || '', ed: false })); d.rev = d.fields.length; changed(); }
   });
   const hl = e => { const r = e.target.closest('.frow[data-fk], .bx'); const k = r ? (r.dataset.fk || r.dataset.bx) : null; if (k !== UI.hl) { UI.hl = k; applyHl(); } };
@@ -2273,7 +2338,8 @@ function introSvg(i) {
 }
 function showIntro(i) {
   introStep = i; const box = $('#intro'); if (box.hidden) introReturn = document.activeElement;
-  const it = INTRO[i]; const mob = window.innerWidth < 760; const ps = (mob && it.pm) || it.p;
+  const it = INTRO[i]; const mob = window.innerWidth < 760; let ps = (mob && it.pm) || it.p;
+  if (i === 0 && !mob && !S.phoneOn) ps = [...ps, `Das Handy ist gerade ausgeblendet. Oben über „${$('#phoneToggle span').textContent}“ holst du es zurück.`];
   box.hidden = false;
   box.innerHTML = `<div class="ibox" role="dialog" aria-modal="true" aria-labelledby="inH"><div class="ill">${introSvg(i)}</div>
     <div class="ibody"><div class="stp">Schritt ${i + 1} von ${INTRO.length}</div><h2 id="inH">${esc(it.h)}</h2>${ps.map(p => `<p>${esc(p)}</p>`).join('')}</div>
@@ -2354,6 +2420,10 @@ async function init() {
   let rw = window.innerWidth;
   window.addEventListener('resize', () => { applyLayout(); if ((rw < 760) !== (window.innerWidth < 760)) { rw = window.innerWidth; renderOffice(); } });
   applyLayout(); renderPhone(); renderOffice(); tickClock(); setInterval(tickClock, 20000);
+  // ausstehendes Speichern nicht verlieren, wenn die Seite geschlossen oder neu geladen wird
+  const flush = () => { if (svT) saveNow(); };
+  window.addEventListener('pagehide', flush);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });
   if (!S.introSeen) showIntro(0);
 }
 init();

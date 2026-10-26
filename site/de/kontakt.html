@@ -46,10 +46,11 @@
   <div class="w contact">
     <div class="contact-side">
       <div class="mail-box"><span class="mail-label">E-Mail</span><code id="mail-addr">yigit@devunox-consulting.com</code><button type="button" class="btn btn-line-dark copy" id="copy-mail" data-done="Kopiert">Kopieren</button></div>
+      <a class="btn btn-o booking-jump" href="#termin">Direkt einen Termin buchen</a>
       <p class="kicker">So geht es weiter</p>
       <ol class="next"><li><span class="dot">1</span><div><b>Anfrage</b><p>Sie beschreiben kurz Ihr Vorhaben über das Formular oder per E-Mail.</p></div></li><li><span class="dot">2</span><div><b>Rückmeldung</b><p>Innerhalb eines Werktags erhalten Sie einen Terminvorschlag.</p></div></li><li><span class="dot">3</span><div><b>Erstgespräch</b><p>30 Minuten per Video, kostenlos und unverbindlich.</p></div></li></ol>
     </div>
-    <form class="card-form" data-missing="Bitte Name und eine gültige E-Mail-Adresse angeben." data-preview="Vorschau-Version: Das Formular wird beim Livegang angebunden. Bis dahin erreichen Sie uns per E-Mail." id="contact-form" novalidate="">
+    <form class="card-form" action="/api/contact" method="post" data-missing="Bitte Name und eine gültige E-Mail-Adresse angeben." data-sending="Wird gesendet …" data-sent="Gesendet" data-success="Danke, Ihre Anfrage ist angekommen. Wir melden uns innerhalb von einem Werktag." data-error="Das hat leider nicht geklappt. Bitte versuchen Sie es noch einmal oder schreiben Sie direkt an yigit@devunox-consulting.com." id="contact-form" novalidate="">
 <div class="field-row">
 <div class="field"><label for="f-name">Name</label><input autocomplete="name" id="f-name" name="name" required=""/></div>
 <div class="field"><label for="f-company">Firma (optional)</label><input autocomplete="organization" id="f-company" name="company"/></div>
@@ -57,9 +58,18 @@
 <div class="field"><label for="f-mail">E-Mail</label><input autocomplete="email" id="f-mail" name="email" required="" type="email"/></div>
 <div class="field"><label for="f-topic">Worum geht es?</label><select id="f-topic" name="topic"><option>KI-Automatisierung</option><option>Website</option><option>Web-App oder SaaS</option><option>Dashboard</option><option>Noch unklar</option></select></div>
 <div class="field"><label for="f-msg">Ihre Nachricht</label><textarea id="f-msg" name="message" placeholder="Zum Beispiel: Wir beantworten jede Woche rund 200 ähnliche Kundenanfragen per E-Mail."></textarea></div>
+<div class="hp" aria-hidden="true"><label for="f-website">Bitte leer lassen</label><input autocomplete="off" id="f-website" name="website" tabindex="-1"/></div>
 <button class="btn btn-primary" type="submit">Anfrage senden</button>
 <p class="form-status" hidden="" id="form-status" role="status"></p>
 </form>
+  </div>
+</section>
+<section class="sec booking-sec" id="termin">
+  <div class="w booking">
+    <div class="booking-head"><p class="kicker">Termin buchen</p><h2>Erstgespräch direkt im Kalender buchen</h2><p class="hh-lead">Wählen Sie einen freien Termin für das kostenlose 30-minütige Erstgespräch per Video. Sie erhalten die Bestätigung mit Link per E-Mail.</p></div>
+    <div class="booking-box" data-booking="https://calendar.google.com/calendar/appointments/schedules/AcZssZ2UWEfl4GhIRsE5S8CcAXtbePcKPCZ9xI576goqo0ma1_TrKRo7dLq6KvJJZJ6BnDcpX-dCvxQF?gv=true" data-title="Terminbuchung devunoxAI">
+      <div class="booking-ph"><b>Kalender von Google</b><p>Beim Laden des Kalenders werden Daten (u. a. Ihre IP-Adresse) an Google übertragen. Mehr dazu in der <a href="datenschutz.html">Datenschutzerklärung</a>.</p><div class="booking-acts"><button type="button" class="btn btn-o booking-load">Kalender anzeigen</button><a class="btn btn-line-dark" href="https://calendar.app.google/LaF7ox8DKMVbsdeU9" target="_blank" rel="noopener">In neuem Tab öffnen</a></div></div>
+    </div>
   </div>
 </section>
 </main>

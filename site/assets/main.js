@@ -59,19 +59,56 @@
     if (reduce) { v.removeAttribute("autoplay"); try { v.pause(); } catch (e) {} }
   });
 
-  // Contact form: no backend yet, so validate and say so plainly.
+  // Contact form: sent by the Cloudflare function /api/contact
   var form = document.getElementById("contact-form");
   if (form) {
+    var started = Date.now();
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       var st = document.getElementById("form-status");
+      var submit = form.querySelector('button[type="submit"]');
       var name = document.getElementById("f-name").value.trim();
       var mail = document.getElementById("f-mail");
-      var ok = name && mail.value && mail.checkValidity();
-      st.textContent = ok ? form.dataset.preview : form.dataset.missing;
-      st.hidden = false;
+      var show = function (text, kind) { st.textContent = text; st.dataset.kind = kind || ""; st.hidden = false; };
+      if (!(name && mail.value && mail.checkValidity())) { show(form.dataset.missing, "error"); return; }
+      if (submit.disabled) return;
+      var label = submit.textContent;
+      submit.disabled = true; submit.textContent = form.dataset.sending;
+      var body = {
+        name: name,
+        company: document.getElementById("f-company").value,
+        email: mail.value.trim(),
+        topic: document.getElementById("f-topic").value,
+        message: document.getElementById("f-msg").value,
+        website: (form.querySelector('[name="website"]') || {}).value || "",
+        lang: document.documentElement.lang === "en" ? "en" : "de",
+        t: Date.now() - started
+      };
+      fetch(form.action || "/api/contact", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok && d.ok, d: d }; }); })
+        .then(function (r) {
+          if (r.ok) { form.reset(); show(form.dataset.success, "ok"); submit.textContent = form.dataset.sent; return; }
+          show(r.d && r.d.error === "missing" ? form.dataset.missing : form.dataset.error, "error");
+          submit.disabled = false; submit.textContent = label;
+        })
+        .catch(function () { show(form.dataset.error, "error"); submit.disabled = false; submit.textContent = label; });
     });
   }
+
+  // Appointment booking: load Google Calendar only after a click (privacy)
+  document.querySelectorAll("[data-booking]").forEach(function (box) {
+    var load = box.querySelector(".booking-load");
+    if (!load) return;
+    load.addEventListener("click", function () {
+      var f = document.createElement("iframe");
+      f.src = box.dataset.booking;
+      f.title = box.dataset.title || "Google Calendar";
+      f.loading = "lazy";
+      f.setAttribute("frameborder", "0");
+      box.querySelector(".booking-ph").replaceWith(f);
+      box.classList.add("loaded");
+    });
+  });
 
   // Copy email address
   var copyBtn = document.getElementById("copy-mail");

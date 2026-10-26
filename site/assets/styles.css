@@ -534,3 +534,21 @@ mark.ph { background: var(--o-soft); color: var(--fg); border-radius: 4px; paddi
   .path li:hover h3 { color: var(--o-text); }
 }
 @media (prefers-reduced-motion: reduce) { .path li:hover .dot { transform: none; } }
+
+/* Kontaktformular: Spam-Falle, Status */
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.card-form { position: relative; }
+.form-status[data-kind="ok"] { background: var(--ok-soft, #dff5ea); }
+.card-form .btn-primary[disabled] { opacity: .6; cursor: default; }
+.booking-jump { justify-self: start; }
+
+/* Terminbuchung (Google Kalender, lädt erst nach Klick) */
+.booking { display: grid; gap: 28px; padding-block: 0 clamp(48px, 7vw, 96px); }
+.booking-head { display: grid; gap: 14px; max-width: 760px; }
+.booking-head h2 { font: 700 clamp(1.6rem, 1.2rem + 1.6vw, 2.4rem)/1.15 var(--font-display); letter-spacing: -0.03em; margin: 0; }
+.booking-box { background: var(--card); border-radius: 30px; overflow: hidden; min-width: 0; }
+.booking-box iframe { display: block; width: 100%; height: 720px; border: 0; background: #ffffff; }
+.booking-ph { display: grid; gap: 12px; justify-items: start; padding: clamp(22px, 3vw, 36px); }
+.booking-ph p { color: var(--muted); max-width: 62ch; margin: 0; }
+.booking-acts { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+@media (max-width: 560px) { .booking-box iframe { height: 820px; } }

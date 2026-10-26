@@ -2,277 +2,565 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Nordline Logistik – Demo-Website | Nexvio</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Instrument+Sans:wght@400;500;600;700&amp;display=swap">
+<meta name="description" content="Beispiel-Website einer fiktiven Spedition: Frachtrechner mit Lademetern, Sendungsverfolgung, Abfahrtstafel und Liniennetz. Gestaltet von Nexvio.">
+<meta name="theme-color" content="#16191D">
 <style>
-body{margin:0;background:#F4F6FA}
-a{color:inherit}a:hover{color:inherit}
-input,select,button{font:inherit}
-a:focus-visible,button:focus-visible,input:focus,select:focus{outline:3px solid #8EC5FF;outline-offset:2px}
-.pill{transition:transform .15s}.pill:hover{transform:translateY(-2px)}
+/* Layout: Industrie-Raster mit Haarlinien, gelbe Signalflächen, kantige Formen. Ein bewusst helles Erscheinungsbild (Lkw-Beschriftung, Frachtpapiere). */
+@font-face { font-family: "Archivo"; font-style: normal; font-weight: 100 900; font-stretch: 62% 125%; font-display: swap; src: url(spedition-files/archivo.woff2) format("woff2"); }
+@font-face { font-family: "Plex Sans"; font-weight: 400; font-display: swap; src: url(spedition-files/ibm-plex-sans-latin-400-normal.woff2) format("woff2"); }
+@font-face { font-family: "Plex Sans"; font-weight: 500; font-display: swap; src: url(spedition-files/ibm-plex-sans-latin-500-normal.woff2) format("woff2"); }
+@font-face { font-family: "Plex Sans"; font-weight: 600; font-display: swap; src: url(spedition-files/ibm-plex-sans-latin-600-normal.woff2) format("woff2"); }
+@font-face { font-family: "Plex Sans"; font-weight: 700; font-display: swap; src: url(spedition-files/ibm-plex-sans-latin-700-normal.woff2) format("woff2"); }
+@font-face { font-family: "Plex Mono"; font-weight: 500; font-display: swap; src: url(spedition-files/ibm-plex-mono-latin-500-normal.woff2) format("woff2"); }
+@font-face { font-family: "Plex Mono"; font-weight: 600; font-display: swap; src: url(spedition-files/ibm-plex-mono-latin-600-normal.woff2) format("woff2"); }
+:root {
+  --asphalt: #16191D;
+  --asphalt-2: #23282E;
+  --asphalt-3: #343B43;
+  --concrete: #E5E8EB;
+  --paper: #F7F8F9;
+  --white: #FFFFFF;
+  --line: #C6CBD1;
+  --line-dark: #3C444D;
+  --ink: #16191D;
+  --ink-2: #4E5660;
+  --ink-inv: #EEF1F4;
+  --ink-inv-2: #9AA4AF;
+  --signal: #FFC20E;
+  --signal-ink: #16191D;
+  --route: #2C6CB0;
+  --ok: #1B7F3B;
+  --ok-dark: #5BD38A;
+  --warn: #A35F00;
+  --warn-dark: #FFC20E;
+  --plan-dark: #9AA4AF;
+  --font-d: "Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --font-b: "Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-m: "Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 80px; -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--concrete); color: var(--ink); font-family: var(--font-b); font-size: 16.5px; line-height: 1.6; }
+a { color: inherit; }
+img, svg { max-width: 100%; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--route); outline-offset: 2px; }
+[hidden] { display: none !important; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+.mono { font-family: var(--font-m); font-variant-numeric: tabular-nums; }
+.h-d { font-family: var(--font-d); font-stretch: 78%; font-weight: 800; text-transform: uppercase; letter-spacing: .005em; line-height: .98; margin: 0; text-wrap: balance; }
+.eyebrow { font-family: var(--font-m); font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); display: flex; align-items: center; gap: 10px; }
+.eyebrow::before { content: ""; width: 14px; height: 14px; background: var(--signal); flex: none; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 50px; padding: 0 22px; border: 2px solid var(--ink); background: transparent; color: var(--ink); font-family: var(--font-d); font-stretch: 90%; font-weight: 700; font-size: 16px; letter-spacing: .04em; text-transform: uppercase; text-decoration: none; border-radius: 0; transition: background-color .15s, color .15s; }
+.btn:hover { background: var(--ink); color: var(--white); }
+.btn.sig { background: var(--signal); border-color: var(--signal); color: var(--signal-ink); }
+.btn.sig:hover { background: var(--ink); border-color: var(--ink); color: var(--signal); }
+.btn.inv { border-color: var(--ink-inv); color: var(--ink-inv); }
+.btn.inv:hover { background: var(--ink-inv); color: var(--asphalt); }
+.btn svg { width: 18px; height: 18px; flex: none; }
+
+/* Demo-Hinweis */
+.demo-strip { background: var(--signal); color: var(--signal-ink); font-size: 14px; font-weight: 600; }
+.demo-strip .wrap { display: flex; flex-wrap: wrap; gap: 6px 18px; justify-content: space-between; align-items: center; padding-block: 8px; }
+.demo-strip a { font-weight: 700; }
+
+/* Kopf */
+.top { position: sticky; top: 0; z-index: 20; background: var(--white); border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; align-items: stretch; gap: 20px; min-height: 68px; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); }
+.brand-mark { width: 38px; height: 38px; background: var(--asphalt); color: var(--signal); display: grid; place-items: center; flex: none; }
+.brand-mark svg { width: 24px; height: 24px; }
+.brand b { font-family: var(--font-d); font-stretch: 72%; font-weight: 800; font-size: 25px; letter-spacing: .02em; text-transform: uppercase; line-height: 1; display: block; }
+.brand small { font-family: var(--font-m); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); display: block; }
+.nav { display: flex; align-items: stretch; margin-left: auto; }
+.nav a { display: flex; align-items: center; padding: 0 16px; text-decoration: none; font-weight: 600; font-size: 15px; border-bottom: 3px solid transparent; }
+.nav a:hover { border-bottom-color: var(--signal); }
+.top-cta { display: flex; align-items: center; }
+.menu-btn { display: none; align-items: center; gap: 8px; border: 2px solid var(--ink); background: none; min-height: 44px; padding: 0 14px; font-weight: 700; margin-left: auto; align-self: center; }
+.mobile-nav { display: none; border-top: 1px solid var(--line); background: var(--white); }
+.mobile-nav a { display: block; padding: 14px max(20px, env(safe-area-inset-left, 0px)); border-bottom: 1px solid var(--line); text-decoration: none; font-weight: 600; }
+@media (max-width: 960px) {
+  .nav, .top-cta { display: none; }
+  .menu-btn { display: inline-flex; }
+  .mobile-nav.open { display: block; }
+}
+
+/* Hero */
+.hero { background: var(--white); border-bottom: 1px solid var(--line); }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 48px; padding-block: 56px 0; align-items: end; }
+.hero-copy { padding-bottom: 56px; display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+.hero h1 { font-size: clamp(44px, 6vw, 76px); }
+.hero h1 span { background: var(--signal); padding: 0 .12em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.hero p.lead { margin: 0; font-size: 19px; color: var(--ink-2); max-width: 34em; }
+.hero .acts { display: flex; flex-wrap: wrap; gap: 12px; }
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); margin-top: 6px; }
+.facts div { padding: 14px 16px 0 0; }
+.facts div + div { padding-left: 16px; border-left: 1px solid var(--line); }
+.facts b { display: block; font-family: var(--font-d); font-stretch: 80%; font-weight: 800; font-size: 32px; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.facts span { font-size: 13.5px; color: var(--ink-2); }
+.board { background: var(--asphalt); color: var(--ink-inv); align-self: stretch; display: flex; flex-direction: column; min-width: 0; }
+.board-h { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--line-dark); }
+.board-h b { font-family: var(--font-d); font-stretch: 85%; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; font-size: 15px; }
+.board-h .clock { font-family: var(--font-m); font-size: 22px; font-weight: 600; color: var(--signal); }
+.board table { width: 100%; border-collapse: collapse; font-family: var(--font-m); font-size: 14px; }
+.board th { text-align: left; font-weight: 500; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-inv-2); padding: 10px 20px 8px; border-bottom: 1px solid var(--line-dark); }
+.board td { padding: 11px 20px; border-bottom: 1px solid var(--asphalt-2); white-space: nowrap; }
+.board td.ziel { color: var(--white); font-weight: 600; white-space: normal; }
+.board td.t { color: var(--signal); font-weight: 600; }
+.st { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
+.st::before { content: ""; width: 8px; height: 8px; background: currentColor; }
+.st.on { color: var(--ok-dark); } .st.load { color: var(--warn-dark); } .st.plan { color: var(--plan-dark); }
+@media (prefers-reduced-motion: no-preference) { .st.load::before { animation: blink 1.2s steps(2, start) infinite; } }
+@keyframes blink { to { visibility: hidden; } }
+.board-f { margin-top: auto; padding: 12px 20px; font-size: 12.5px; color: var(--ink-inv-2); border-top: 1px solid var(--line-dark); }
+.board .tbl { overflow-x: auto; }
+@media (max-width: 960px) {
+  .hero .wrap { grid-template-columns: minmax(0, 1fr); gap: 0; padding-top: 36px; }
+  .hero-copy { padding-bottom: 36px; }
+  .board { margin-left: calc(-1 * max(20px, env(safe-area-inset-left, 0px))); margin-right: calc(-1 * max(20px, env(safe-area-inset-right, 0px))); }
+}
+@media (max-width: 520px) { .facts b { font-size: 24px; } .board td, .board th { padding-left: 14px; padding-right: 10px; } .board .rampe { display: none; } }
+
+.stripe { height: 14px; background: repeating-linear-gradient(-45deg, var(--signal) 0 18px, var(--asphalt) 18px 36px); }
+
+/* Abschnitte */
+.sec { padding-block: 72px; }
+.sec-h { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 16px 40px; margin-bottom: 32px; }
+.sec-h h2 { font-size: clamp(34px, 4.4vw, 54px); margin-top: 12px; }
+.sec-h p { margin: 0; max-width: 36em; color: var(--ink-2); }
+.sec.dark { background: var(--asphalt); color: var(--ink-inv); }
+.sec.dark .eyebrow { color: var(--ink-inv-2); }
+.sec.dark .sec-h p { color: var(--ink-inv-2); }
+.sec.white { background: var(--white); }
+
+/* Frachtrechner */
+.calc { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); border: 1px solid var(--line); background: var(--white); }
+.calc form { padding: 28px; display: grid; gap: 18px; border-right: 1px solid var(--line); }
+.row2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.row3 { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 16px; }
+.f { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.f label, .f .lbl { font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
+.f input, .f select, .f textarea { border: 1.5px solid var(--line); border-radius: 0; background: var(--paper); padding: 11px 12px; min-height: 48px; width: 100%; min-width: 0; }
+.f input:focus, .f select:focus, .f textarea:focus { border-color: var(--ink); outline: none; background: var(--white); }
+.f textarea { min-height: 110px; resize: vertical; }
+.f .err { color: #B3261E; font-size: 13px; font-weight: 600; }
+.f [aria-invalid="true"] { border-color: #B3261E; }
+.checks { display: flex; flex-wrap: wrap; gap: 10px 22px; }
+.checks label { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; cursor: pointer; min-height: 32px; }
+.checks input { width: 20px; height: 20px; accent-color: var(--ink); margin: 0; }
+.result { background: var(--asphalt); color: var(--ink-inv); padding: 28px; display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.result h3 { font-family: var(--font-d); font-stretch: 85%; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; font-size: 15px; margin: 0; color: var(--ink-inv-2); }
+.trailer { display: grid; grid-template-columns: repeat(34, 1fr); gap: 2px; padding: 8px; border: 1.5px solid var(--line-dark); position: relative; }
+.trailer i { aspect-ratio: 1 / 1.5; background: var(--asphalt-3); }
+.trailer i.on { background: var(--signal); }
+.trailer-l { display: flex; justify-content: space-between; font-family: var(--font-m); font-size: 11.5px; color: var(--ink-inv-2); margin-top: 6px; }
+.kv { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--line-dark); }
+.kv div { padding: 12px 0; border-bottom: 1px solid var(--line-dark); min-width: 0; }
+.kv div:nth-child(odd) { padding-right: 12px; }
+.kv div:nth-child(even) { padding-left: 12px; border-left: 1px solid var(--line-dark); }
+.kv span { display: block; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-inv-2); }
+.kv b { display: block; font-family: var(--font-m); font-size: 20px; font-weight: 600; color: var(--white); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.price { border: 2px solid var(--signal); padding: 14px 16px; }
+.price span { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-inv-2); }
+.price b { display: block; font-family: var(--font-d); font-stretch: 80%; font-weight: 800; font-size: 36px; color: var(--signal); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.price small { color: var(--ink-inv-2); font-size: 12.5px; }
+.note { font-size: 13px; color: var(--ink-inv-2); margin: 0; }
+.status { padding: 12px 14px; border-left: 4px solid var(--ok); background: #E8F4EC; color: #12401F; font-weight: 600; font-size: 14.5px; }
+@media (max-width: 900px) {
+  .calc { grid-template-columns: minmax(0, 1fr); }
+  .calc form { border-right: 0; border-bottom: 1px solid var(--line); }
+}
+@media (max-width: 560px) { .row2, .row3 { grid-template-columns: minmax(0, 1fr); } .calc form, .result { padding: 20px; } .trailer { grid-template-columns: repeat(17, 1fr); } }
+
+/* Sendungsverfolgung */
+.track { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 0; border: 1px solid var(--line-dark); }
+.track form { padding: 26px; display: flex; flex-direction: column; gap: 14px; border-right: 1px solid var(--line-dark); }
+.track .f label { color: var(--ink-inv-2); }
+.track .f input { background: var(--asphalt-2); border-color: var(--line-dark); color: var(--white); font-family: var(--font-m); font-size: 18px; letter-spacing: .04em; text-transform: uppercase; }
+.track .f input:focus { border-color: var(--signal); background: var(--asphalt-2); }
+.track .f .err { color: #FF8A80; }
+.samples { display: flex; flex-wrap: wrap; gap: 8px; }
+.samples button { background: none; border: 1px solid var(--line-dark); color: var(--ink-inv); font-family: var(--font-m); font-size: 13px; padding: 7px 10px; min-height: 36px; }
+.samples button:hover { border-color: var(--signal); color: var(--signal); }
+.track-out { padding: 26px; min-width: 0; display: flex; flex-direction: column; gap: 20px; }
+.tr-h { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 20px; align-items: baseline; }
+.tr-h b { font-family: var(--font-m); font-size: 20px; color: var(--white); }
+.tr-h .eta { font-family: var(--font-d); font-stretch: 85%; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--signal); font-size: 18px; }
+.line { position: relative; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; padding-top: 6px; }
+.line::before { content: ""; position: absolute; left: 10px; right: 10px; top: 15px; height: 3px; background: var(--line-dark); }
+.line .prog { position: absolute; left: 10px; top: 15px; height: 3px; background: var(--signal); }
+.stop { position: relative; display: flex; flex-direction: column; gap: 6px; padding-right: 8px; min-width: 0; }
+.stop i { width: 21px; height: 21px; border: 3px solid var(--line-dark); background: var(--asphalt); position: relative; z-index: 1; }
+.stop.done i { background: var(--signal); border-color: var(--signal); }
+.stop.now i { border-color: var(--signal); }
+.stop b { font-size: 14.5px; color: var(--white); overflow-wrap: anywhere; }
+.stop small { font-family: var(--font-m); font-size: 12px; color: var(--ink-inv-2); }
+.events { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line-dark); }
+.events li { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--asphalt-2); font-size: 15px; }
+.events time { font-family: var(--font-m); font-size: 13px; color: var(--ink-inv-2); }
+.track-empty { color: var(--ink-inv-2); border: 1.5px dashed var(--line-dark); padding: 24px; }
+@media (max-width: 860px) { .track { grid-template-columns: minmax(0, 1fr); } .track form { border-right: 0; border-bottom: 1px solid var(--line-dark); } }
+@media (max-width: 520px) { .events li { grid-template-columns: minmax(0, 1fr); gap: 2px; } .track form, .track-out { padding: 20px; } .stop b { font-size: 13px; } }
+
+/* Leistungen */
+.manifest { border-top: 2px solid var(--ink); }
+.mf { display: grid; grid-template-columns: 92px minmax(0, 1.1fr) minmax(0, 1.6fr) minmax(0, .8fr); gap: 20px; align-items: baseline; padding: 22px 0; border-bottom: 1px solid var(--line); }
+.mf .code { font-family: var(--font-m); font-weight: 600; font-size: 15px; background: var(--ink); color: var(--signal); padding: 4px 8px; justify-self: start; letter-spacing: .06em; }
+.mf h3 { font-family: var(--font-d); font-stretch: 85%; font-weight: 700; font-size: 24px; text-transform: uppercase; margin: 0; line-height: 1.1; }
+.mf p { margin: 0; color: var(--ink-2); }
+.mf .k { font-family: var(--font-m); font-size: 14px; font-weight: 600; text-align: right; }
+@media (max-width: 820px) { .mf { grid-template-columns: 76px minmax(0, 1fr); gap: 8px 16px; } .mf p, .mf .k { grid-column: 2; } .mf .k { text-align: left; } }
+
+/* Netz */
+.net { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+.net-map { background: var(--white); border: 1px solid var(--line); padding: 12px; }
+.net-map svg { display: block; width: 100%; height: auto; }
+.net-map .ln { fill: none; stroke-width: 5; stroke-linecap: square; }
+.net-map .l1 { stroke: var(--signal); } .net-map .l2 { stroke: var(--route); } .net-map .l3 { stroke: var(--ink); }
+.net-map .nd { fill: var(--white); stroke: var(--ink); stroke-width: 3; }
+.net-map .hub { fill: var(--signal); stroke: var(--ink); stroke-width: 3; }
+.net-map text { font-family: var(--font-b); font-size: 15px; font-weight: 600; fill: var(--ink); }
+.net-map text.big { font-family: var(--font-d); font-stretch: 80%; font-weight: 800; font-size: 19px; text-transform: uppercase; }
+.rel { width: 100%; border-collapse: collapse; background: var(--white); border: 1px solid var(--line); }
+.rel th { text-align: left; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); padding: 12px 14px; border-bottom: 2px solid var(--ink); }
+.rel td { padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.rel td.m { font-family: var(--font-m); font-size: 14px; white-space: nowrap; }
+.rel .sw { display: inline-block; width: 12px; height: 12px; margin-right: 8px; vertical-align: -1px; }
+@media (max-width: 900px) { .net { grid-template-columns: minmax(0, 1fr); } }
+
+/* Ablauf */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--line-dark); }
+.steps li { padding: 24px 22px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.steps li + li { border-left: 1px solid var(--line-dark); }
+.steps .n { font-family: var(--font-d); font-stretch: 75%; font-weight: 800; font-size: 56px; line-height: 1; color: var(--signal); }
+.steps h3 { margin: 0; font-family: var(--font-d); font-stretch: 85%; font-weight: 700; text-transform: uppercase; font-size: 20px; letter-spacing: .02em; }
+.steps p { margin: 0; color: var(--ink-inv-2); font-size: 15px; }
+.steps .t { font-family: var(--font-m); font-size: 13px; color: var(--ink-inv); margin-top: auto; border-top: 1px solid var(--line-dark); padding-top: 10px; }
+@media (max-width: 900px) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } .steps li:nth-child(3) { border-left: 0; } .steps li:nth-child(n+3) { border-top: 1px solid var(--line-dark); } }
+@media (max-width: 520px) { .steps { grid-template-columns: minmax(0, 1fr); } .steps li + li { border-left: 0; border-top: 1px solid var(--line-dark); } }
+
+/* Karriere */
+.job { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); border: 2px solid var(--ink); background: var(--signal); }
+.job > div { padding: 32px; min-width: 0; }
+.job > div + div { border-left: 2px solid var(--ink); background: var(--white); }
+.job h2 { font-size: clamp(32px, 4vw, 48px); }
+.job ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.job li { display: flex; gap: 12px; align-items: baseline; }
+.job li::before { content: ""; width: 10px; height: 10px; background: var(--ink); flex: none; transform: translateY(-1px); }
+@media (max-width: 820px) { .job { grid-template-columns: minmax(0, 1fr); } .job > div + div { border-left: 0; border-top: 2px solid var(--ink); } .job > div { padding: 24px 20px; } }
+
+/* Kontakt */
+.contact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 32px; align-items: start; }
+.cards { display: grid; gap: 0; border: 1px solid var(--line); background: var(--white); }
+.cards div { padding: 18px 20px; border-bottom: 1px solid var(--line); }
+.cards div:last-child { border-bottom: 0; }
+.cards span { display: block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+.cards b { display: block; font-size: 18px; }
+.cards small { color: var(--ink-2); }
+.contact form { background: var(--white); border: 1px solid var(--line); padding: 26px; display: grid; gap: 16px; }
+@media (max-width: 900px) { .contact { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 520px) { .contact form { padding: 20px; } .sec { padding-block: 52px; } }
+
+/* Fuß */
+.foot { background: var(--asphalt); color: var(--ink-inv-2); font-size: 14px; }
+.foot .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px 32px; padding-block: 28px calc(28px + env(safe-area-inset-bottom, 0px)); }
+.foot b { color: var(--ink-inv); }
+.foot a { color: var(--signal); }
 </style>
 </head>
 <body>
-<div style="background:#ff5a1f;color:#141417;font:600 14px/1.4 system-ui,sans-serif;padding:10px 20px;text-align:center">Beispiel-Website einer fiktiven Spedition, gestaltet von Nexvio · <a href="../de/demos.html" style="color:#141417">Zurück zu den Demos</a></div>
-<div id="top" style="font-family: 'Instrument Sans', 'Segoe UI', system-ui, sans-serif; font-size: 16.5px; line-height: 1.6; color: #101828; background: #F4F6FA; min-width: 0;">
+<div class="demo-strip"><div class="wrap"><span>Beispiel-Website einer fiktiven Spedition, gestaltet von Nexvio. Alle Daten sind erfunden.</span><a href="../de/demos.html">Zurück zu den Demos</a></div></div>
 
-<header style="background: #14213D; color: #EAEFF8; border-bottom: 1px solid #263556;">
-<div style="max-width: 1140px; margin: 0 auto; padding: 14px 20px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px;">
-<a href="#top" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #EAEFF8; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 800; font-size: 19px; letter-spacing: -0.02em;">
-<span style="width: 30px; height: 30px; border-radius: 9px; background: #8EC5FF; color: #14213D; display: flex; align-items: center; justify-content: center; font-size: 14px; transform: rotate(-6deg);">NL</span>
-Nordline Logistik
-</a>
-<nav aria-label="Hauptnavigation" style="display: flex; flex-wrap: wrap; gap: 4px;">
-<a href="#leistungen" style="text-decoration: none; font-weight: 600; font-size: 15px; padding: 10px 14px; border-radius: 999px; color: #A8B5CD;">Leistungen</a>
-<a href="#ablauf" style="text-decoration: none; font-weight: 600; font-size: 15px; padding: 10px 14px; border-radius: 999px; color: #A8B5CD;">Ablauf</a>
-<a href="#tracking" style="text-decoration: none; font-weight: 600; font-size: 15px; padding: 10px 14px; border-radius: 999px; color: #A8B5CD;">Tracking</a>
-<a href="#kontakt" style="text-decoration: none; font-weight: 600; font-size: 15px; padding: 10px 14px; border-radius: 999px; color: #A8B5CD;">Kontakt</a>
-</nav>
-<a class="pill" href="#angebot" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; border-radius: 999px; background: #8EC5FF; color: #14213D; text-decoration: none; font-weight: 700; font-size: 15px;">Angebot anfragen</a>
-</div>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#start" aria-label="Nordline Logistik, zum Seitenanfang">
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M2 7h12v9H2zM14 10h4.5L22 13.5V16h-8z"/><circle cx="6" cy="18" r="2" fill="currentColor"/><circle cx="18" cy="18" r="2" fill="currentColor"/></svg></span>
+      <span><b>Nordline</b><small>Logistik · Bielefeld</small></span>
+    </a>
+    <nav class="nav" aria-label="Hauptnavigation"><a href="#frachtrechner">Frachtrechner</a><a href="#tracking">Sendung verfolgen</a><a href="#leistungen">Leistungen</a><a href="#netz">Netz</a><a href="#karriere">Karriere</a><a href="#kontakt">Kontakt</a></nav>
+    <div class="top-cta"><a class="btn sig" href="#frachtrechner">Angebot anfordern</a></div>
+    <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="mobileNav">Menü</button>
+  </div>
+  <nav class="mobile-nav" id="mobileNav" aria-label="Menü"><a href="#frachtrechner">Frachtrechner</a><a href="#tracking">Sendung verfolgen</a><a href="#leistungen">Leistungen</a><a href="#netz">Netz</a><a href="#karriere">Karriere</a><a href="#kontakt">Kontakt</a></nav>
 </header>
 
-<section style="background: #14213D; color: #EAEFF8; position: relative; overflow: hidden;">
-<div aria-hidden="true" style="position: absolute; right: -120px; top: -140px; width: 520px; height: 520px; border-radius: 50%; background: #22355E; opacity: 0.7;"></div>
-<div style="position: relative; max-width: 1140px; margin: 0 auto; padding: 64px 20px 120px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 48px;">
-<div style="flex: 1.25 1 460px; min-width: 0; display: flex; flex-direction: column;">
-<span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #8EC5FF;"><span style="width: 22px; height: 3px; border-radius: 2px; background: #8EC5FF;"></span>Spedition · Lager · Kontraktlogistik</span>
-<h1 style="margin: 18px 0 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 800; font-size: clamp(48px, 7vw, 96px); line-height: 0.92; letter-spacing: -0.045em;">Fracht,<br>die ankommt.</h1>
-<p style="margin: 18px 0 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 500; font-size: clamp(20px, 2.2vw, 25px); letter-spacing: -0.01em;">Ihre Spedition für Deutschland und Europa</p>
-<p style="margin: 14px 0 0; max-width: 34em; font-size: 17px; color: #A8B5CD;">Komplett- und Teilladungen, Lagerlogistik und Sonderfahrten aus einer Hand. Mit fester Ansprechperson und Live-Sendungsverfolgung.</p>
-<div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px;">
-<a class="pill" href="#angebot" style="display: inline-flex; align-items: center; gap: 9px; min-height: 50px; padding: 0 22px; border-radius: 999px; background: #8EC5FF; color: #14213D; text-decoration: none; font-weight: 700; font-size: 16px;">Angebot anfragen
-<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
-</a>
-<a class="pill" href="#leistungen" style="display: inline-flex; align-items: center; min-height: 50px; padding: 0 22px; border-radius: 999px; border: 2px solid #5C6A86; color: #EAEFF8; text-decoration: none; font-weight: 700; font-size: 16px; box-sizing: border-box;">Leistungen</a>
-</div>
-<span style="display: inline-flex; align-items: center; gap: 8px; margin-top: 26px; font-size: 15px; color: #A8B5CD;"><span style="width: 9px; height: 9px; border-radius: 50%; background: #5DDB95; box-shadow: 0 0 0 4px rgba(93, 219, 149, 0.25);"></span>Disposition heute erreichbar</span>
-</div>
+<main id="start">
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-copy">
+      <p class="eyebrow">Spedition · Lager · Gefahrgut · seit 1987</p>
+      <h1 class="h-d">Ihre Ladung.<br><span>Unser Fahrplan.</span></h1>
+      <p class="lead">Komplett- und Teilladungen ab einer Palette, Lager mit 24.000 Stellplätzen und Gefahrgut nach ADR. Täglich ab Bielefeld in ganz Deutschland, nach Österreich, in die Benelux-Länder und nach Polen.</p>
+      <div class="acts">
+        <a class="btn sig" href="#frachtrechner">Fracht berechnen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn" href="#tracking">Sendung verfolgen</a>
+      </div>
+      <div class="facts"><div><b>86</b><span>eigene Lkw</span></div><div><b>24.000</b><span>Palettenstellplätze</span></div><div><b>98,7&nbsp;%</b><span>pünktlich zugestellt</span></div></div>
+    </div>
+    <div class="board" aria-labelledby="boardTitle">
+      <div class="board-h"><b id="boardTitle">Abfahrten heute · Hof Bielefeld</b><span class="clock" id="clock" aria-label="Uhrzeit">--:--</span></div>
+      <div class="tbl"><table><caption class="sr">Abfahrtstafel mit Zeit, Ziel, Rampe und Status</caption><thead><tr><th scope="col">Zeit</th><th scope="col">Ziel</th><th scope="col" class="rampe">Rampe</th><th scope="col">Status</th></tr></thead><tbody id="boardRows"></tbody></table></div>
+      <p class="board-f">Beispielanzeige. Der Status richtet sich nach der aktuellen Uhrzeit.</p>
+    </div>
+  </div>
+</section>
+<div class="stripe" aria-hidden="true"></div>
 
-<div id="angebot" style="flex: 0.75 1 360px; max-width: 440px; min-width: 0; position: relative;">
-<span style="position: absolute; z-index: 2; right: -8px; top: -16px; padding: 6px 14px; border-radius: 999px; background: #3A6EA5; color: #FFFFFF; font-size: 13px; font-weight: 700; transform: rotate(6deg);">Live-Tracking</span>
-<span style="position: absolute; z-index: 2; left: -14px; bottom: -16px; padding: 6px 14px; border-radius: 999px; background: #FFFFFF; color: #101828; font-size: 13px; font-weight: 700; box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.5);">Europaweit</span>
-<div style="background: #FFFFFF; color: #101828; border-radius: 22px; padding: 26px; box-sizing: border-box; box-shadow: 0 24px 50px -24px rgba(0, 0, 0, 0.6); display: flex; flex-direction: column; gap: 18px;">
-<div role="group" aria-label="Formular wählen" style="display: flex; flex-wrap: wrap; gap: 8px;">
-<button type="button" aria-pressed="true" id="tab-quote" style="flex: 1 1 auto; min-height: 44px; padding: 0 16px; border-radius: 999px; cursor: pointer; font-weight: 700; font-size: 15px; border: 2px solid #8EC5FF; background: #8EC5FF; color: #14213D;">Schnellangebot</button>
-<button type="button" aria-pressed="false" id="tab-track" style="flex: 1 1 auto; min-height: 44px; padding: 0 16px; border-radius: 999px; cursor: pointer; font-weight: 700; font-size: 15px; border: 2px solid #D6DCE7; background: transparent; color: #101828;">Sendung verfolgen</button>
-</div>
-
-<div id="pane-quote">
-<form style="display: flex; flex-direction: column; gap: 14px; margin: 0;">
-<div style="display: flex; flex-wrap: wrap; gap: 12px;">
-<label style="flex: 1 1 150px; display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #4F5B70;">Abholort
-<input type="text" placeholder="PLZ oder Ort" style="min-height: 46px; padding: 0 14px; border: 2px solid #D6DCE7; border-radius: 14px; background: #FFFFFF; color: #101828; font-size: 15px; font-weight: 500; letter-spacing: 0; text-transform: none;">
-</label>
-<label style="flex: 1 1 150px; display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #4F5B70;">Zielort
-<input type="text" placeholder="PLZ oder Ort" style="min-height: 46px; padding: 0 14px; border: 2px solid #D6DCE7; border-radius: 14px; background: #FFFFFF; color: #101828; font-size: 15px; font-weight: 500; letter-spacing: 0; text-transform: none;">
-</label>
-</div>
-<div style="display: flex; flex-wrap: wrap; gap: 12px;">
-<label style="flex: 1 1 150px; display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #4F5B70;">Ladungsart
-<select style="min-height: 46px; padding: 0 12px; border: 2px solid #D6DCE7; border-radius: 14px; background: #FFFFFF; color: #101828; font-size: 15px; font-weight: 500; letter-spacing: 0; text-transform: none;">
-<option>Komplettladung (FTL)</option>
-<option>Teilladung (LTL)</option>
-<option>Kühltransport</option>
-<option>Gefahrgut (ADR)</option>
-<option>Express / Sonderfahrt</option>
-</select>
-</label>
-<label style="flex: 1 1 150px; display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #4F5B70;">Paletten / Gewicht
-<input type="text" placeholder="z. B. 12 Pal. / 8 t" style="min-height: 46px; padding: 0 14px; border: 2px solid #D6DCE7; border-radius: 14px; background: #FFFFFF; color: #101828; font-size: 15px; font-weight: 500; letter-spacing: 0; text-transform: none;">
-</label>
-</div>
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #4F5B70;">E-Mail
-<input type="email" placeholder="name@firma.de" style="min-height: 46px; padding: 0 14px; border: 2px solid #D6DCE7; border-radius: 14px; background: #FFFFFF; color: #101828; font-size: 15px; font-weight: 500; letter-spacing: 0; text-transform: none;">
-</label>
-<button class="pill" type="button" style="min-height: 50px; border: 0; border-radius: 999px; background: #14213D; color: #EAEFF8; font-weight: 700; font-size: 16px; cursor: pointer;">Unverbindliches Angebot erhalten</button>
-<p style="margin: 0; font-size: 13px; color: #4F5B70; text-align: center;">Antwort in der Regel innerhalb von 2 Stunden.</p>
-</form>
-</div>
-
-<div id="pane-track" hidden>
-<div style="display: flex; flex-direction: column; gap: 14px;">
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #4F5B70;">Sendungsnummer
-<input type="text" placeholder="z. B. NL-26-04817" style="min-height: 46px; padding: 0 14px; border: 2px solid #D6DCE7; border-radius: 14px; background: #FFFFFF; color: #101828; font-size: 15px; font-weight: 500; letter-spacing: 0; text-transform: none;">
-</label>
-<button class="pill" type="button" style="min-height: 50px; border: 0; border-radius: 999px; background: #14213D; color: #EAEFF8; font-weight: 700; font-size: 16px; cursor: pointer;">Sendung verfolgen</button>
-<p style="margin: 0; padding: 14px 16px; border-radius: 16px; background: #E5E9F2; font-size: 14px; color: #4F5B70;">Die Nummer steht in Ihrer Auftragsbestätigung und auf dem Lieferschein.</p>
-</div>
-</div>
-</div>
-</div>
-</div>
+<section class="sec" id="frachtrechner">
+  <div class="wrap">
+    <div class="sec-h"><div><p class="eyebrow">Frachtrechner</p><h2 class="h-d">Was kostet Ihre Ladung?</h2></div><p>Paletten eingeben, Lademeter und Richtpreis sofort sehen. Das verbindliche Angebot schickt Ihnen die Disposition innerhalb von zwei Stunden.</p></div>
+    <div class="calc">
+      <form id="calcForm" novalidate>
+        <div class="row2">
+          <div class="f"><label for="c-from">Abhol-PLZ</label><input id="c-from" name="c-from" inputmode="numeric" autocomplete="off" maxlength="5" value="33602" placeholder="z. B. 33602…"></div>
+          <div class="f"><label for="c-to">Ziel-PLZ</label><input id="c-to" name="c-to" inputmode="numeric" autocomplete="off" maxlength="5" value="80331" placeholder="z. B. 80331…"></div>
+        </div>
+        <div class="row3">
+          <div class="f"><label for="c-lt">Ladungsträger</label><select id="c-lt" name="c-lt"><option value="eur">Europalette 120 × 80 cm</option><option value="ind">Industriepalette 120 × 100 cm</option><option value="gb">Gitterbox 124 × 84 cm</option></select></div>
+          <div class="f"><label for="c-n">Anzahl</label><input id="c-n" name="c-n" type="number" inputmode="numeric" min="1" max="66" value="8"></div>
+          <div class="f"><label for="c-kg">Gewicht kg</label><input id="c-kg" name="c-kg" type="number" inputmode="numeric" min="1" max="40000" step="10" value="4200"></div>
+        </div>
+        <div class="checks"><label><input type="checkbox" id="c-st" name="c-st"> Stapelbar</label><label><input type="checkbox" id="c-adr" name="c-adr"> Gefahrgut (ADR)</label><label><input type="checkbox" id="c-exp" name="c-exp"> Express, Abholung heute</label></div>
+        <div class="row2">
+          <div class="f"><label for="c-mail">E-Mail für das Angebot</label><input id="c-mail" name="c-mail" type="email" autocomplete="email" spellcheck="false" placeholder="z. B. einkauf@firma.de…"></div>
+          <div class="f"><label for="c-date">Abholdatum</label><input id="c-date" name="c-date" type="date"></div>
+        </div>
+        <div><button class="btn sig" type="submit">Verbindliches Angebot anfordern</button></div>
+        <p class="status" id="calcStatus" role="status" hidden></p>
+      </form>
+      <div class="result" aria-live="polite">
+        <h3>Ihre Ladung im Auflieger</h3>
+        <div><div class="trailer" id="trailer" role="img" aria-label="Belegung des Aufliegers"></div><div class="trailer-l"><span>Heck</span><span>13,6 Lademeter</span><span>Stirnwand</span></div></div>
+        <div class="kv">
+          <div><span>Lademeter</span><b id="r-ldm">–</b></div>
+          <div><span>Stellplätze</span><b id="r-pl">–</b></div>
+          <div><span>Fahrzeug</span><b id="r-veh">–</b></div>
+          <div><span>Laufzeit</span><b id="r-lz">–</b></div>
+        </div>
+        <div class="price"><span>Richtpreis netto</span><b id="r-price">–</b><small id="r-type">–</small></div>
+        <p class="note">Beispielrechnung mit erfundenen Preisen. Maut und Dieselzuschlag sind enthalten, Wartezeiten nicht.</p>
+      </div>
+    </div>
+  </div>
 </section>
 
-<div style="max-width: 1140px; margin: -56px auto 0; padding: 0 20px; box-sizing: border-box; position: relative; z-index: 2;">
-<div style="background: #8EC5FF; color: #14213D; border-radius: 22px; display: flex; flex-wrap: wrap;">
-<div style="flex: 1 1 200px; padding: 24px 26px; display: flex; flex-direction: column; gap: 2px; border-right: 2px solid rgba(20, 33, 61, 0.14);"><b style="font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: clamp(28px, 3vw, 36px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05;">140</b><span style="font-weight: 600; font-size: 14px;">Fahrzeuge im Einsatz</span></div>
-<div style="flex: 1 1 200px; padding: 24px 26px; display: flex; flex-direction: column; gap: 2px; border-right: 2px solid rgba(20, 33, 61, 0.14);"><b style="font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: clamp(28px, 3vw, 36px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05;">24</b><span style="font-weight: 600; font-size: 14px;">Länder in Europa</span></div>
-<div style="flex: 1 1 200px; padding: 24px 26px; display: flex; flex-direction: column; gap: 2px; border-right: 2px solid rgba(20, 33, 61, 0.14);"><b style="font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: clamp(28px, 3vw, 36px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05;">98 %</b><span style="font-weight: 600; font-size: 14px;">Termintreue</span></div>
-<div style="flex: 1 1 200px; padding: 24px 26px; display: flex; flex-direction: column; gap: 2px;"><b style="font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: clamp(28px, 3vw, 36px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05;">1994</b><span style="font-weight: 600; font-size: 14px;">am Markt seit</span></div>
-</div>
-</div>
-
-<section id="leistungen" style="max-width: 1140px; margin: 0 auto; padding: 88px 20px 0; box-sizing: border-box;">
-<div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 32px; margin-bottom: 36px;">
-<div style="display: flex; flex-direction: column; gap: 12px;">
-<span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #22355E;"><span style="width: 22px; height: 3px; border-radius: 2px; background: #22355E;"></span>Leistungen</span>
-<h2 style="margin: 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 800; font-size: clamp(32px, 4.6vw, 52px); line-height: 1.02; letter-spacing: -0.03em;">Was wir bewegen</h2>
-</div>
-<p style="margin: 0; max-width: 30em; color: #4F5B70;">Vom einzelnen Stellplatz bis zur kompletten Lieferkette – geplant, gefahren und gelagert, wie Ihr Geschäft es braucht.</p>
-</div>
-<div style="display: flex; flex-wrap: wrap; gap: 16px;">
-<article style="flex: 1 1 300px; min-height: 230px; border-radius: 22px; padding: 24px; box-sizing: border-box; background: #14213D; color: #EAEFF8; display: flex; flex-direction: column; gap: 14px;">
-<div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;"><b style="font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -0.03em;">FTL</b><span style="font-size: 13px; font-weight: 700; padding: 4px 11px; border-radius: 999px; background: rgba(234, 239, 248, 0.12);">Direktfahrt</span></div>
-<h3 style="margin: 0; font-size: 18px; font-weight: 700; line-height: 1.35;">Komplettladungen</h3>
-<p style="margin: 0; font-size: 15px; color: #A8B5CD;">Ohne Umladen von Rampe zu Rampe – für volle Züge und zeitkritische Ware.</p>
-</article>
-<article style="flex: 1 1 300px; min-height: 230px; border-radius: 22px; padding: 24px; box-sizing: border-box; background: #8EC5FF; color: #14213D; display: flex; flex-direction: column; gap: 14px;">
-<div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;"><b style="font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -0.03em;">LTL</b><span style="font-size: 13px; font-weight: 700; padding: 4px 11px; border-radius: 999px; background: rgba(20, 33, 61, 0.12);">Sammelgut</span></div>
-<h3 style="margin: 0; font-size: 18px; font-weight: 700; line-height: 1.35;">Teilladungen &amp; Stückgut</h3>
-<p style="margin: 0; font-size: 15px;">Sie zahlen nur den Laderaum, den Sie nutzen – mit festen Abfahrten.</p>
-</article>
-<article style="flex: 1 1 300px; min-height: 230px; border-radius: 22px; padding: 24px; box-sizing: border-box; background: #E5E9F2; color: #101828; display: flex; flex-direction: column; gap: 14px;">
-<div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;"><b style="font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -0.03em;">Lager</b><span style="font-size: 13px; font-weight: 700; padding: 4px 11px; border-radius: 999px; background: rgba(16, 24, 40, 0.08);">Kontraktlogistik</span></div>
-<h3 style="margin: 0; font-size: 18px; font-weight: 700; line-height: 1.35;">Lager &amp; Kommissionierung</h3>
-<p style="margin: 0; font-size: 15px; color: #4F5B70;">Einlagern, kommissionieren, versenden – angebunden an Ihr Warenwirtschaftssystem.</p>
-</article>
-<article style="flex: 1 1 300px; min-height: 230px; border-radius: 22px; padding: 24px; box-sizing: border-box; background: #FFFFFF; color: #101828; border: 2px solid #D6DCE7; display: flex; flex-direction: column; gap: 14px;">
-<div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;"><b style="font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -0.03em;">Kühl</b><span style="font-size: 13px; font-weight: 700; padding: 4px 11px; border-radius: 999px; background: rgba(16, 24, 40, 0.08);">temperaturgeführt</span></div>
-<h3 style="margin: 0; font-size: 18px; font-weight: 700; line-height: 1.35;">Kühl- &amp; Frischelogistik</h3>
-<p style="margin: 0; font-size: 15px; color: #4F5B70;">Für Lebensmittel und Pharma, mit lückenloser Temperaturaufzeichnung.</p>
-</article>
-<article style="flex: 1 1 300px; min-height: 230px; border-radius: 22px; padding: 24px; box-sizing: border-box; background: #3A6EA5; color: #FFFFFF; display: flex; flex-direction: column; gap: 14px;">
-<div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;"><b style="font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -0.03em;">ADR</b><span style="font-size: 13px; font-weight: 700; padding: 4px 11px; border-radius: 999px; background: rgba(255, 255, 255, 0.16);">Gefahrgut</span></div>
-<h3 style="margin: 0; font-size: 18px; font-weight: 700; line-height: 1.35;">Gefahrguttransporte</h3>
-<p style="margin: 0; font-size: 15px;">Geschulte Fahrer und passende Ausrüstung für gefährliche Güter.</p>
-</article>
-<article style="flex: 1 1 300px; min-height: 230px; border-radius: 22px; padding: 24px; box-sizing: border-box; background: #E5E9F2; color: #101828; display: flex; flex-direction: column; gap: 14px;">
-<div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;"><b style="font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -0.03em;">Express</b><span style="font-size: 13px; font-weight: 700; padding: 4px 11px; border-radius: 999px; background: rgba(16, 24, 40, 0.08);">Sonderfahrt</span></div>
-<h3 style="margin: 0; font-size: 18px; font-weight: 700; line-height: 1.35;">Express &amp; Eilsendungen</h3>
-<p style="margin: 0; font-size: 15px; color: #4F5B70;">Direktfahrt mit dem nächsten freien Fahrzeug, auch nachts und am Wochenende.</p>
-</article>
-</div>
+<section class="sec dark" id="tracking">
+  <div class="wrap">
+    <div class="sec-h"><div><p class="eyebrow">Sendungsverfolgung</p><h2 class="h-d">Wo ist meine Sendung?</h2></div><p>Mit der Sendungsnummer vom Lieferschein sehen Sie jeden Umschlag, die voraussichtliche Ankunft und den Ablieferbeleg.</p></div>
+    <div class="track">
+      <form id="trackForm" novalidate>
+        <div class="f"><label for="t-nr">Sendungsnummer</label><input id="t-nr" name="t-nr" autocomplete="off" spellcheck="false" placeholder="z. B. NL-48117…"></div>
+        <button class="btn sig" type="submit">Sendung suchen</button>
+        <div><p class="note" style="margin:0 0 8px">Beispielnummern zum Ausprobieren:</p><div class="samples"><button type="button" data-nr="NL-48117">NL-48117</button><button type="button" data-nr="NL-48092">NL-48092</button><button type="button" data-nr="NL-48230">NL-48230</button></div></div>
+      </form>
+      <div class="track-out" id="trackOut" aria-live="polite"><p class="track-empty">Geben Sie eine Sendungsnummer ein oder wählen Sie eine Beispielnummer.</p></div>
+    </div>
+  </div>
 </section>
 
-<section id="ablauf" style="max-width: 1140px; margin: 0 auto; padding: 88px 20px 0; box-sizing: border-box;">
-<div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px;">
-<span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #22355E;"><span style="width: 22px; height: 3px; border-radius: 2px; background: #22355E;"></span>Ablauf</span>
-<h2 style="margin: 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 800; font-size: clamp(32px, 4.6vw, 52px); line-height: 1.02; letter-spacing: -0.03em;">In vier Schritten ans Ziel</h2>
-</div>
-<div style="background: #14213D; color: #EAEFF8; border-radius: 26px; padding: 36px; box-sizing: border-box;">
-<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px;"><span style="font-weight: 700; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: #8EC5FF;">Ihr Auftrag</span><em style="font-style: normal; font-size: 14px; color: #A8B5CD;">von der Anfrage bis zum Beleg</em></div>
-<ol style="list-style: none; margin: 0; padding: 0;">
-<li style="display: flex; flex-wrap: wrap; gap: 8px 32px; padding: 26px 0;">
-<div style="flex: 0 0 140px; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 800; font-size: 44px; line-height: 0.95; letter-spacing: -0.04em; color: #8EC5FF;">01</div>
-<div style="flex: 1 1 320px; min-width: 0;"><h3 style="margin: 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: 22px; font-weight: 700; letter-spacing: -0.01em;">Anfrage senden</h3><p style="margin: 6px 0 0; color: #A8B5CD;">Strecke, Ladung und Wunschtermin über das Formular oder per Telefon.</p></div>
-</li>
-<li style="display: flex; flex-wrap: wrap; gap: 8px 32px; padding: 26px 0; border-top: 2px solid #263556;">
-<div style="flex: 0 0 140px; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 800; font-size: 44px; line-height: 0.95; letter-spacing: -0.04em; color: #8EC5FF;">02</div>
-<div style="flex: 1 1 320px; min-width: 0;"><h3 style="margin: 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: 22px; font-weight: 700; letter-spacing: -0.01em;">Festpreis erhalten</h3><p style="margin: 6px 0 0; color: #A8B5CD;">Ein klares Angebot ohne versteckte Zuschläge.</p></div>
-</li>
-<li style="display: flex; flex-wrap: wrap; gap: 8px 32px; padding: 26px 0; border-top: 2px solid #263556;">
-<div style="flex: 0 0 140px; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 800; font-size: 44px; line-height: 0.95; letter-spacing: -0.04em; color: #8EC5FF;">03</div>
-<div style="flex: 1 1 320px; min-width: 0;"><h3 style="margin: 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: 22px; font-weight: 700; letter-spacing: -0.01em;">Abholung</h3><p style="margin: 6px 0 0; color: #A8B5CD;">Pünktlich im vereinbarten Zeitfenster. Ihre Sendungsnummer kommt sofort per E-Mail.</p></div>
-</li>
-<li style="display: flex; flex-wrap: wrap; gap: 8px 32px; padding: 26px 0 0; border-top: 2px solid #263556;">
-<div style="flex: 0 0 140px; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 800; font-size: 44px; line-height: 0.95; letter-spacing: -0.04em; color: #8EC5FF;">04</div>
-<div style="flex: 1 1 320px; min-width: 0;"><h3 style="margin: 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: 22px; font-weight: 700; letter-spacing: -0.01em;">Zustellung</h3><p style="margin: 6px 0 0; color: #A8B5CD;">Digitaler Ablieferbeleg direkt in Ihr Postfach.</p></div>
-</li>
-</ol>
-</div>
+<section class="sec white" id="leistungen">
+  <div class="wrap">
+    <div class="sec-h"><div><p class="eyebrow">Leistungen</p><h2 class="h-d">Alles, was auf eine Palette passt</h2></div><p>Von der einzelnen Palette bis zum Komplettzug. Eine feste Ansprechperson in der Disposition, die Ihre Sendung kennt.</p></div>
+    <div class="manifest">
+      <div class="mf"><span class="code">FTL</span><h3>Komplettladung</h3><p>Ein Lkw nur für Ihre Ware, direkt von der Rampe zum Empfänger. Planen- und Kofferauflieger, Hebebühne auf Wunsch.</p><span class="k">13,6 Lademeter</span></div>
+      <div class="mf"><span class="code">LTL</span><h3>Teilladung &amp; Stückgut</h3><p>Sie zahlen nur die Lademeter, die Sie brauchen. Bündelung über unser Netz, Zustellung mit Avis.</p><span class="k">ab 1 Palette</span></div>
+      <div class="mf"><span class="code">LAG</span><h3>Lager &amp; Kommissionierung</h3><p>Ein- und Auslagerung, Kommissionierung nach Auftrag, Inventur und Bestandsliste jeden Morgen per E-Mail.</p><span class="k">24.000 Stellplätze</span></div>
+      <div class="mf"><span class="code">ADR</span><h3>Gefahrgut</h3><p>Geschulte Fahrer, ausgerüstete Fahrzeuge und ein Gefahrgutbeauftragter im Haus. Getrennte Lagerung nach Klassen.</p><span class="k">ADR-Klassen 2–9</span></div>
+      <div class="mf"><span class="code">EXP</span><h3>Express &amp; Sonderfahrt</h3><p>Wenn die Linie steht: Abholung innerhalb von zwei Stunden im Umkreis von 150 km, Direktfahrt ohne Umladen.</p><span class="k">Abholung in 2&nbsp;Std.</span></div>
+      <div class="mf"><span class="code">ZOL</span><h3>Zoll &amp; Export</h3><p>Ausfuhranmeldung, Versandverfahren T1 und die Papiere für Schweiz und Großbritannien aus einer Hand.</p><span class="k">ATLAS · T1</span></div>
+    </div>
+  </div>
 </section>
 
-<section id="tracking" style="max-width: 1140px; margin: 0 auto; padding: 88px 20px 0; box-sizing: border-box;">
-<div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px;">
-<span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #22355E;"><span style="width: 22px; height: 3px; border-radius: 2px; background: #22355E;"></span>Warum Nordline</span>
-<h2 style="margin: 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 800; font-size: clamp(32px, 4.6vw, 52px); line-height: 1.02; letter-spacing: -0.03em;">Logistik mit Gesicht</h2>
-</div>
-<div style="display: flex; flex-wrap: wrap; gap: 24px;">
-<div style="flex: 1.15 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 16px; font-size: 18px;">
-<p style="margin: 0;">Bei uns haben Sie eine feste Ansprechperson, die Ihre Abläufe kennt. Keine Hotline, keine Warteschleife.</p>
-<p style="margin: 0;">Unsere eigene Flotte fährt mit geschulten Fahrern, und jede Sendung ist live verfolgbar – vom Abholen bis zur Unterschrift beim Empfänger.</p>
-<p style="margin: 0;">Die Preise sind klar: Festpreis pro Auftrag oder Rahmenvertrag. Sie wissen vorher, was es kostet.</p>
-<div style="padding-top: 16px; border-top: 2px solid #D6DCE7; display: flex; flex-direction: column; gap: 10px;">
-<span style="font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #4F5B70;">Branchen</span>
-<div style="display: flex; flex-wrap: wrap; gap: 7px;">
-<span style="font-weight: 600; font-size: 14px; padding: 6px 14px; border-radius: 999px; background: #14213D; color: #EAEFF8;">Automotive</span>
-<span style="font-weight: 600; font-size: 14px; padding: 6px 14px; border-radius: 999px; background: #14213D; color: #EAEFF8;">Lebensmittel</span>
-<span style="font-weight: 600; font-size: 14px; padding: 6px 14px; border-radius: 999px; background: #E5E9F2; color: #101828;">Handel &amp; E-Commerce</span>
-<span style="font-weight: 600; font-size: 14px; padding: 6px 14px; border-radius: 999px; background: #E5E9F2; color: #101828;">Maschinenbau</span>
-<span style="font-weight: 600; font-size: 14px; padding: 6px 14px; border-radius: 999px; background: #E5E9F2; color: #101828;">Chemie &amp; Pharma</span>
-<span style="font-weight: 600; font-size: 14px; padding: 6px 14px; border-radius: 999px; background: #E5E9F2; color: #101828;">Baustoffe</span>
-</div>
-</div>
-</div>
-
-<div style="flex: 0.85 1 340px; min-width: 0; background: #E5E9F2; border-radius: 22px; padding: 26px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px;">
-<span style="font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #4F5B70;">Beispiel: Live-Sendungsverfolgung</span>
-<div style="background: #FFFFFF; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 16px;">
-<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px;">
-<b style="font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: 20px; font-weight: 800; letter-spacing: -0.02em;">NL-26-04817</b>
-<span style="font-size: 13px; font-weight: 700; padding: 4px 12px; border-radius: 999px; background: #8EC5FF; color: #14213D;">Unterwegs</span>
-</div>
-<div style="display: flex; flex-direction: column; gap: 8px;">
-<div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 15px;"><span>Hamburg</span><span>München</span></div>
-<div style="height: 8px; border-radius: 999px; background: #E5E9F2; overflow: hidden;"><div style="width: 64%; height: 100%; border-radius: 999px; background: #14213D;"></div></div>
-<div style="display: flex; justify-content: space-between; gap: 10px; font-size: 13px; color: #4F5B70;"><span>Mo, 08:10</span><span>ca. Di, 10:30</span></div>
-</div>
-</div>
-<ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px;">
-<li style="position: relative; padding-left: 22px;"><span style="position: absolute; left: 0; top: 9px; width: 8px; height: 8px; border-radius: 2px; transform: rotate(45deg); background: #3A6EA5;"></span><b style="font-size: 15px;">Abgeholt</b><span style="font-size: 14px; color: #4F5B70;"> · Hamburg, Mo 08:10</span></li>
-<li style="position: relative; padding-left: 22px;"><span style="position: absolute; left: 0; top: 9px; width: 8px; height: 8px; border-radius: 2px; transform: rotate(45deg); background: #3A6EA5;"></span><b style="font-size: 15px;">Umschlag im Hub</b><span style="font-size: 14px; color: #4F5B70;"> · Hannover, Mo 13:45</span></li>
-<li style="position: relative; padding-left: 22px;"><span style="position: absolute; left: 0; top: 9px; width: 8px; height: 8px; border-radius: 2px; transform: rotate(45deg); background: #8EC5FF;"></span><b style="font-size: 15px;">Auf der A7</b><span style="font-size: 14px; color: #4F5B70;"> · Nähe Kassel, vor 4 Min.</span></li>
-<li style="position: relative; padding-left: 22px;"><span style="position: absolute; left: 0; top: 9px; width: 8px; height: 8px; border-radius: 2px; transform: rotate(45deg); background: #B5BFD0;"></span><b style="font-size: 15px; color: #4F5B70;">Zustellung</b><span style="font-size: 14px; color: #4F5B70;"> · München, geplant</span></li>
-</ul>
-</div>
-</div>
+<section class="sec" id="netz">
+  <div class="wrap">
+    <div class="sec-h"><div><p class="eyebrow">Liniennetz</p><h2 class="h-d">Feste Linien, feste Tage</h2></div><p>Unsere Linien fahren nach Fahrplan. Wer bis 16 Uhr anmeldet, ist in der Regel am nächsten Werktag beim Empfänger.</p></div>
+    <div class="net">
+      <div class="net-map">
+        <svg viewBox="0 0 640 520" role="img" aria-labelledby="netT"><title id="netT">Schematisches Liniennetz ab Bielefeld</title>
+          <polyline class="ln l1" points="300,250 300,120 260,70"/>
+          <polyline class="ln l1" points="300,250 300,440 360,490"/>
+          <polyline class="ln l2" points="300,250 160,250 90,200"/>
+          <polyline class="ln l2" points="300,250 470,250 560,190"/>
+          <polyline class="ln l3" points="300,250 420,370 520,420"/>
+          <polyline class="ln l3" points="300,250 200,360"/>
+          <circle class="hub" cx="300" cy="250" r="16"/>
+          <circle class="nd" cx="300" cy="120" r="8"/><circle class="nd" cx="260" cy="70" r="8"/><circle class="nd" cx="300" cy="440" r="8"/><circle class="nd" cx="360" cy="490" r="8"/>
+          <circle class="nd" cx="160" cy="250" r="8"/><circle class="nd" cx="90" cy="200" r="8"/><circle class="nd" cx="470" cy="250" r="8"/><circle class="nd" cx="560" cy="190" r="8"/>
+          <circle class="nd" cx="420" cy="370" r="8"/><circle class="nd" cx="520" cy="420" r="8"/><circle class="nd" cx="200" cy="360" r="8"/>
+          <text class="big" x="322" y="240">Bielefeld</text>
+          <text x="314" y="125">Hannover</text><text x="274" y="66">Hamburg</text><text x="314" y="445">Würzburg</text><text x="376" y="495">München</text>
+          <text x="152" y="280" text-anchor="end">Dortmund</text><text x="78" y="186" text-anchor="middle">Rotterdam</text><text x="450" y="280">Berlin</text><text x="540" y="175" text-anchor="middle">Warschau</text>
+          <text x="436" y="365">Nürnberg</text><text x="516" y="450" text-anchor="middle">Wien</text><text x="190" y="388" text-anchor="middle">Köln</text>
+        </svg>
+      </div>
+      <div style="overflow-x:auto"><table class="rel"><caption class="sr">Relationen mit Abfahrtstagen und Laufzeit</caption><thead><tr><th scope="col">Relation</th><th scope="col">Abfahrt</th><th scope="col">Laufzeit</th></tr></thead><tbody>
+        <tr><td><span class="sw" style="background:var(--signal)" aria-hidden="true"></span>Hamburg, Hannover</td><td class="m">Mo–Fr</td><td class="m">24 h</td></tr>
+        <tr><td><span class="sw" style="background:var(--signal)" aria-hidden="true"></span>Würzburg, München</td><td class="m">Mo–Fr</td><td class="m">24–48 h</td></tr>
+        <tr><td><span class="sw" style="background:var(--route)" aria-hidden="true"></span>Dortmund, Rotterdam</td><td class="m">Mo–Fr</td><td class="m">24 h</td></tr>
+        <tr><td><span class="sw" style="background:var(--route)" aria-hidden="true"></span>Berlin, Warschau</td><td class="m">Mo, Mi, Fr</td><td class="m">24–48 h</td></tr>
+        <tr><td><span class="sw" style="background:var(--ink)" aria-hidden="true"></span>Nürnberg, Wien</td><td class="m">Di, Do</td><td class="m">48 h</td></tr>
+        <tr><td><span class="sw" style="background:var(--ink)" aria-hidden="true"></span>Köln</td><td class="m">Mo–Sa</td><td class="m">24 h</td></tr>
+      </tbody></table></div>
+    </div>
+  </div>
 </section>
 
-<section id="kontakt" style="margin-top: 88px; background: #8EC5FF; color: #14213D; position: relative; overflow: hidden;">
-<div aria-hidden="true" style="position: absolute; left: -90px; bottom: -140px; width: 360px; height: 360px; border-radius: 50%; background: rgba(20, 33, 61, 0.07);"></div>
-<div style="position: relative; max-width: 1140px; margin: 0 auto; padding: 72px 20px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 40px;">
-<div style="flex: 1 1 420px; min-width: 0;">
-<span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;"><span style="width: 22px; height: 3px; border-radius: 2px; background: #14213D;"></span>Kontakt</span>
-<h2 style="margin: 14px 0 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 800; font-size: clamp(40px, 6vw, 70px); line-height: 1.02; letter-spacing: -0.03em;">Transport­anfrage?</h2>
-<p style="margin: 14px 0 0; max-width: 28em; font-weight: 500;">Kurz Strecke, Ladung und Termin schicken. Wir melden uns mit einem konkreten Angebot.</p>
-</div>
-<div style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 12px;">
-<a href="tel:+490000000000" style="display: flex; align-items: center; gap: 14px; background: #FFFFFF; color: #101828; border-radius: 18px; padding: 16px 18px; text-decoration: none;">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22355E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"></path></svg>
-<span style="display: flex; flex-direction: column; min-width: 0;"><small style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #4F5B70;">Disposition</small><b style="font-size: 17px;">+49 40 555 0190</b></span>
-</a>
-<a href="mailto:info@example.com" style="display: flex; align-items: center; gap: 14px; background: #FFFFFF; color: #101828; border-radius: 18px; padding: 16px 18px; text-decoration: none;">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22355E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>
-<span style="display: flex; flex-direction: column; min-width: 0;"><small style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #4F5B70;">E-Mail</small><b style="font-size: 17px;">dispo@nordline-demo.de</b></span>
-</a>
-<div style="display: flex; align-items: center; gap: 14px; background: #FFFFFF; color: #101828; border-radius: 18px; padding: 16px 18px;">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22355E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"></path><circle cx="12" cy="9" r="2.5"></circle></svg>
-<span style="display: flex; flex-direction: column; min-width: 0;"><small style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #4F5B70;">Standort</small><b style="font-size: 17px;">Hafenstraße 12, 20457 Hamburg</b></span>
-</div>
-<a href="#kontakt" style="align-self: flex-start; font-weight: 700; font-size: 15px; padding: 8px 0;">Wir stellen ein: Berufskraftfahrer (m/w/d) →</a>
-</div>
-</div>
+<section class="sec dark" id="ablauf">
+  <div class="wrap">
+    <div class="sec-h"><div><p class="eyebrow">Ablauf</p><h2 class="h-d">Von der Anfrage bis zum Ablieferbeleg</h2></div></div>
+    <ol class="steps">
+      <li><span class="n" aria-hidden="true">1</span><h3>Anfrage</h3><p>Frachtrechner oder Anruf in der Disposition. Abhol- und Zielort, Paletten, Gewicht.</p><span class="t">bis 16:00 Uhr</span></li>
+      <li><span class="n" aria-hidden="true">2</span><h3>Angebot</h3><p>Verbindlicher Preis mit Laufzeit. Bestätigen Sie per Klick, wir planen die Tour.</p><span class="t">innerhalb 2 Std.</span></li>
+      <li><span class="n" aria-hidden="true">3</span><h3>Abholung</h3><p>Zeitfenster per SMS, Fahrer mit Frachtbrief. Ab jetzt ist die Sendung verfolgbar.</p><span class="t">nächster Werktag</span></li>
+      <li><span class="n" aria-hidden="true">4</span><h3>Zustellung</h3><p>Avis an den Empfänger, Zustellung im Zeitfenster, Ablieferbeleg als PDF.</p><span class="t">24–48 h</span></li>
+    </ol>
+  </div>
 </section>
 
-<footer style="background: #14213D; color: #A8B5CD; font-size: 14px;">
-<div style="max-width: 1140px; margin: 0 auto; padding: 24px 20px 36px; box-sizing: border-box; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px;">
-<span>© 2026 Nordline Logistik</span>
-<span><a href="#top" style="color: #A8B5CD;">Impressum</a> · <a href="#top" style="color: #A8B5CD;">Datenschutz</a> · <a href="#top" style="color: #A8B5CD;">AGB</a></span>
-</div>
-</footer>
+<section class="sec" id="karriere">
+  <div class="wrap">
+    <div class="job">
+      <div><p class="eyebrow" style="color:var(--ink)">Karriere</p><h2 class="h-d" style="margin-top:12px">Berufskraftfahrer CE (m/w/d) gesucht</h2><p style="margin:16px 0 0;font-size:18px">Nahverkehr und Linie, jeden Abend zu Hause. Wir bilden auch aus.</p></div>
+      <div><ul><li>Feste Touren im Nahverkehr und auf unseren Linien</li><li>Neue Fahrzeuge mit Assistenzsystemen, Durchschnittsalter unter drei Jahren</li><li>Bezahlung über Tarif, Urlaubs- und Weihnachtsgeld</li><li>Weiterbildung zu ADR und Ladungssicherung bezahlt</li></ul><p style="margin:20px 0 0"><a class="btn" href="#kontakt">Jetzt bewerben</a></p></div>
+    </div>
+  </div>
+</section>
 
-</div>
+<section class="sec white" id="kontakt">
+  <div class="wrap">
+    <div class="sec-h"><div><p class="eyebrow">Kontakt</p><h2 class="h-d">Disposition erreichen</h2></div><p>Montag bis Freitag von 6 bis 20 Uhr, Samstag bis 12 Uhr. Für laufende Sendungen auch außerhalb der Zeiten.</p></div>
+    <div class="contact">
+      <div class="cards">
+        <div><span>Disposition</span><b>dispo@nordline.example</b><small>Antwort in der Regel innerhalb einer Stunde</small></div>
+        <div><span>Lager</span><b>lager@nordline.example</b><small>Avisierung von Anlieferungen</small></div>
+        <div><span>Hof und Rampen</span><b>Am Güterbahnhof 7, Bielefeld</b><small>Beispieladresse · 14 Rampen, Einfahrt Tor 2</small></div>
+      </div>
+      <form id="contactForm" novalidate>
+        <div class="row2"><div class="f"><label for="k-name">Name</label><input id="k-name" name="k-name" autocomplete="name" placeholder="z. B. Anna Becker…"></div><div class="f"><label for="k-firma">Firma</label><input id="k-firma" name="k-firma" autocomplete="organization" placeholder="z. B. Becker Metallbau GmbH…"></div></div>
+        <div class="f"><label for="k-mail">E-Mail</label><input id="k-mail" name="k-mail" type="email" autocomplete="email" spellcheck="false" placeholder="z. B. anna.becker@firma.de…"></div>
+        <div class="f"><label for="k-msg">Nachricht</label><textarea id="k-msg" name="k-msg" placeholder="z. B. Regelmäßig 10 Paletten pro Woche nach Wien…"></textarea></div>
+        <div><button class="btn sig" type="submit">Nachricht senden</button></div>
+        <p class="status" id="contactStatus" role="status" hidden></p>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot"><div class="wrap"><span><b>Nordline Logistik</b> ist ein fiktives Unternehmen. Diese Seite ist eine Demo von Nexvio.</span><a href="../de/demos.html">Weitere Demos ansehen</a></div></footer>
+
 <script>
-(function(){var tq=document.getElementById("tab-quote"),tt=document.getElementById("tab-track"),pq=document.getElementById("pane-quote"),pt=document.getElementById("pane-track");
-function set(q){pq.hidden=!q;pt.hidden=q;tq.setAttribute("aria-pressed",q);tt.setAttribute("aria-pressed",!q);
-tq.style.background=q?"#8EC5FF":"transparent";tq.style.color=q?"#14213D":"#101828";tq.style.borderColor=q?"#8EC5FF":"#D6DCE7";
-tt.style.background=q?"transparent":"#8EC5FF";tt.style.color=q?"#101828":"#14213D";tt.style.borderColor=q?"#D6DCE7":"#8EC5FF";}
-tq.addEventListener("click",function(){set(true)});tt.addEventListener("click",function(){set(false)});
-document.querySelectorAll("form").forEach(function(f){f.addEventListener("submit",function(e){e.preventDefault();});});
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var NF0 = new Intl.NumberFormat('de-DE', { maximumFractionDigits: 0 });
+  var NF1 = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  var TF = new Intl.DateTimeFormat('de-DE', { hour: '2-digit', minute: '2-digit' });
+  var DF = new Intl.DateTimeFormat('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' });
+  var EUR = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+
+  /* Menü */
+  var mb = $('menuBtn'), mn = $('mobileNav');
+  mb.addEventListener('click', function () { var o = !mn.classList.contains('open'); mn.classList.toggle('open', o); mb.setAttribute('aria-expanded', String(o)); });
+  mn.addEventListener('click', function (e) { if (e.target.tagName === 'A') { mn.classList.remove('open'); mb.setAttribute('aria-expanded', 'false'); } });
+
+  /* Abfahrtstafel */
+  var TOURS = [['05:30', 'Hamburg · Hannover', '3'], ['06:45', 'Dortmund · Köln', '7'], ['08:15', 'Rotterdam', '11'], ['10:00', 'Berlin', '2'], ['12:30', 'Würzburg · München', '5'], ['14:00', 'Nürnberg · Wien', '9'], ['15:45', 'Köln', '7'], ['17:30', 'Warschau', '12'], ['19:15', 'Hamburg (Nachtlinie)', '3'], ['21:00', 'München (Nachtlinie)', '5'], ['22:30', 'Rotterdam (Nachtlinie)', '11']];
+  function mins(hm) { var p = hm.split(':'); return +p[0] * 60 + +p[1]; }
+  function board() {
+    var d = new Date(), now = d.getHours() * 60 + d.getMinutes();
+    $('clock').textContent = TF.format(d);
+    var idx = TOURS.findIndex(function (t) { return mins(t[0]) > now - 75; });
+    if (idx < 0) idx = TOURS.length - 8;
+    idx = Math.max(0, Math.min(idx - 1, TOURS.length - 8));
+    $('boardRows').innerHTML = TOURS.slice(idx, idx + 8).map(function (t) {
+      var m = mins(t[0]), s = m < now - 20 ? ['on', 'Unterwegs'] : m <= now + 60 ? ['load', 'Verladung'] : ['plan', 'Geplant'];
+      return '<tr><td class="t">' + t[0] + '</td><td class="ziel">' + t[1] + '</td><td class="rampe">' + t[2] + '</td><td><span class="st ' + s[0] + '">' + s[1] + '</span></td></tr>';
+    }).join('');
+  }
+  board(); setInterval(board, 30000);
+
+  /* Frachtrechner */
+  var LT = { eur: { ldm: 0.4, name: 'Europaletten' }, ind: { ldm: 0.5, name: 'Industriepaletten' }, gb: { ldm: 0.42, name: 'Gitterboxen' } };
+  function zone(plz) { return /^\d{5}$/.test(plz) ? +plz[0] : null; }
+  function calc() {
+    var lt = LT[$('c-lt').value], n = Math.max(0, Math.min(66, parseInt($('c-n').value, 10) || 0)), kg = Math.max(0, parseInt($('c-kg').value, 10) || 0);
+    var stack = $('c-st').checked && kg / Math.max(1, n) <= 500, adr = $('c-adr').checked, exp = $('c-exp').checked;
+    var places = stack ? Math.ceil(n / 2) : n, ldm = Math.round(places * lt.ldm * 10) / 10;
+    var z1 = zone($('c-from').value.trim()), z2 = zone($('c-to').value.trim());
+    var km = z1 === null || z2 === null ? null : Math.abs(z1 - z2) * 115 + 90;
+    var ftl = ldm > 8 || kg > 12000;
+    var veh = kg > 24000 || ldm > 13.6 ? '2 Sattelzüge' : ftl ? 'Sattelzug' : ldm <= 2.4 && kg <= 1000 ? 'Transporter 3,5 t' : ldm <= 6.6 && kg <= 5000 ? 'Lkw 12 t' : 'Sattelzug (Teil)';
+    $('r-ldm').textContent = NF1.format(ldm) + ' m';
+    $('r-pl').textContent = NF0.format(places) + (stack ? ' (gestapelt)' : '');
+    $('r-veh').textContent = veh;
+    $('r-lz').textContent = km === null ? '–' : exp ? 'heute / morgen' : km <= 450 ? '24 h' : '24–48 h';
+    var t = '';
+    for (var i = 0; i < 34; i++) t += '<i class="' + (i < Math.min(34, Math.round(ldm / 0.4)) ? 'on' : '') + '"></i>';
+    $('trailer').innerHTML = t;
+    $('trailer').setAttribute('aria-label', 'Belegung: ' + NF1.format(ldm) + ' von 13,6 Lademetern');
+    if (km === null || n === 0) { $('r-price').textContent = '–'; $('r-type').textContent = 'Bitte gültige fünfstellige Postleitzahlen und eine Anzahl eingeben.'; return; }
+    var full = km * 1.45 + 140, price = ftl ? full : Math.max(95, full * Math.min(1, ldm / 13.6) * 1.3 + 45);
+    if (adr) price *= 1.18; if (exp) price *= 1.35;
+    $('r-price').textContent = EUR.format(Math.round(price * 0.93 / 5) * 5) + ' – ' + EUR.format(Math.round(price * 1.07 / 5) * 5);
+    $('r-type').textContent = (ftl ? 'Komplettladung' : 'Teilladung') + ' · ca. ' + NF0.format(km) + ' km · ' + NF0.format(n) + ' ' + lt.name + (adr ? ' · ADR' : '') + (exp ? ' · Express' : '');
+  }
+  ['c-from', 'c-to', 'c-lt', 'c-n', 'c-kg', 'c-st', 'c-adr', 'c-exp'].forEach(function (id) { $(id).addEventListener('input', calc); $(id).addEventListener('change', calc); });
+  try { var dd = new Date(); dd.setDate(dd.getDate() + 1); $('c-date').value = dd.toISOString().slice(0, 10); } catch (e) {}
+  calc();
+
+  function fieldErr(id, msg) {
+    var el = $(id), e = $(id + '-err');
+    if (!e) { e = document.createElement('span'); e.id = id + '-err'; e.className = 'err'; el.parentNode.appendChild(e); }
+    e.textContent = msg; el.setAttribute('aria-invalid', 'true'); el.setAttribute('aria-describedby', e.id); el.focus();
+  }
+  function clearErr(el) { if (el.getAttribute('aria-invalid') !== 'true') return; el.removeAttribute('aria-invalid'); var e = $(el.id + '-err'); if (e) e.remove(); }
+  document.addEventListener('input', function (e) { if (e.target.id) clearErr(e.target); });
+  $('calcForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!/^\d{5}$/.test($('c-from').value.trim())) return fieldErr('c-from', 'Bitte eine fünfstellige Postleitzahl eingeben, z. B. 33602.');
+    if (!/^\d{5}$/.test($('c-to').value.trim())) return fieldErr('c-to', 'Bitte eine fünfstellige Postleitzahl eingeben, z. B. 80331.');
+    var m = $('c-mail'); if (!m.value.trim() || !m.checkValidity()) return fieldErr('c-mail', 'Bitte eine gültige E-Mail-Adresse eingeben, an die das Angebot gehen soll.');
+    var st = $('calcStatus'); st.textContent = 'Demo: In der echten Website ginge jetzt die Anfrage an die Disposition. Es wurde nichts gesendet.'; st.hidden = false;
+  });
+  $('contactForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!$('k-name').value.trim()) return fieldErr('k-name', 'Bitte Ihren Namen eingeben.');
+    var m = $('k-mail'); if (!m.value.trim() || !m.checkValidity()) return fieldErr('k-mail', 'Bitte eine gültige E-Mail-Adresse eingeben, damit wir antworten können.');
+    var st = $('contactStatus'); st.textContent = 'Demo: In der echten Website ginge die Nachricht jetzt an die Disposition. Es wurde nichts gesendet.'; st.hidden = false;
+  });
+
+  /* Sendungsverfolgung */
+  function at(h, m, dayOff) { var d = new Date(); d.setDate(d.getDate() + (dayOff || 0)); d.setHours(h, m, 0, 0); return d; }
+  function fmtAt(d) { return DF.format(d).replace('.,', ',') + ', ' + TF.format(d); }
+  var SHIP = {
+    'NL-48117': { stops: [['Abholung', 'Bielefeld'], ['Umschlag', 'Würzburg'], ['Zustellung', 'München']], cur: 1, eta: 'Heute, 10:00–12:00', ev: [[at(15, 40, -1), 'Abgeholt bei Becker Metallbau, Bielefeld · 8 Europaletten'], [at(19, 5, -1), 'Abfahrt Hof Bielefeld, Nachtlinie München'], [at(2, 50, 0), 'Umschlag Würzburg, Rampe 4'], [at(5, 30, 0), 'Auf Zustelltour, Fahrer informiert den Empfänger per Avis']] },
+    'NL-48092': { stops: [['Abholung', 'Bielefeld'], ['Linie', 'Hannover'], ['Zustellung', 'Hamburg']], cur: 3, eta: 'Zugestellt', ev: [[at(14, 10, -2), 'Abgeholt im Lager Bielefeld · 3 Gitterboxen'], [at(5, 30, -1), 'Abfahrt Linie Hamburg'], [at(9, 47, -1), 'Zugestellt in Hamburg, unterschrieben von „T. Weber“'], [at(9, 52, -1), 'Ablieferbeleg als PDF bereitgestellt']] },
+    'NL-48230': { stops: [['Abholung', 'Gütersloh'], ['Hof', 'Bielefeld'], ['Zustellung', 'Wien']], cur: 0, eta: 'Übermorgen, 08:00–14:00', ev: [[at(9, 12, 0), 'Auftrag angelegt, 14 Europaletten, ADR Klasse 3'], [at(9, 40, 0), 'Abholung geplant: morgen 07:00–09:00']] }
+  };
+  function showShip(nr) {
+    var out = $('trackOut'), s = SHIP[nr];
+    if (!s) { out.innerHTML = '<p class="track-empty">Zur Nummer „' + nr.replace(/[<>&"]/g, '') + '“ haben wir keine Sendung gefunden. Bitte die Nummer vom Lieferschein prüfen, sie beginnt mit NL-. Zum Ausprobieren: NL-48117.</p>'; return; }
+    var n = s.stops.length, pct = Math.min(1, s.cur / (n - 1));
+    out.innerHTML = '<div class="tr-h"><b>' + nr + '</b><span class="eta">' + (s.cur >= n ? 'Zugestellt' : 'Ankunft: ' + s.eta) + '</span></div>'
+      + '<div class="line"><span class="prog" style="width:calc((100% - 20px) * ' + pct.toFixed(3) + ')"></span>' + s.stops.map(function (st, i) { return '<div class="stop ' + (i < s.cur || s.cur >= n ? 'done' : i === s.cur ? 'now' : '') + '"><i aria-hidden="true"></i><b>' + st[1] + '</b><small>' + st[0] + '</small></div>'; }).join('') + '</div>'
+      + '<ol class="events">' + s.ev.slice().reverse().map(function (e) { return '<li><time>' + fmtAt(e[0]) + '</time><span>' + e[1] + '</span></li>'; }).join('') + '</ol>';
+  }
+  $('trackForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var v = $('t-nr').value.trim().toUpperCase().replace(/\s+/g, '');
+    if (!v) return fieldErr('t-nr', 'Bitte eine Sendungsnummer eingeben, z. B. NL-48117.');
+    if (/^\d+$/.test(v)) v = 'NL-' + v;
+    showShip(v);
+  });
+  document.querySelectorAll('.samples button').forEach(function (b) { b.addEventListener('click', function () { $('t-nr').value = b.dataset.nr; clearErr($('t-nr')); showShip(b.dataset.nr); }); });
 })();
 </script>
 </body>

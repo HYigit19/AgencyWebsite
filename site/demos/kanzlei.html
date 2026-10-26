@@ -7,6 +7,7 @@
 <title>Muster &amp; Partner Rechtsanwälte – Beispiel-Website</title>
 <meta name="description" content="Beispiel-Website einer fiktiven Anwaltskanzlei: Rechtsgebiete, Fristenrechner, transparente Kosten und eine mehrstufige Anfrage zur Ersteinschätzung.">
 <meta name="theme-color" content="#172440">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23172440'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Georgia,serif' font-size='15' font-style='italic' fill='%23F1ECE2'%3EM%26amp;P%3C/text%3E%3C/svg%3E">
 <style>
 /* Gestaltung: gesetzt wie ein juristischer Kommentar. Randspalte mit römischen Kapitelzahlen, Tintenblau auf Papier, Gold nur als Haarlinie. */
 @font-face { font-family: "Cormorant"; font-style: normal; font-weight: 500; font-display: swap; src: url(kanzlei-files/cormorant-garamond-latin-500-normal.woff2) format("woff2"); }
@@ -797,7 +798,7 @@ dialog::backdrop { background: rgba(23, 36, 64, .55); }
   <div class="wrap"><div class="g12">
     <div class="fb"><b>Muster <i>&amp;</i> Partner</b><p>Rechtsanwälte, Partnerschaft mbB<br>Marktplatz 12, 12345 Musterstadt</p></div>
     <div class="fl"><button type="button" data-dlg="impressum">Impressum</button><button type="button" data-dlg="datenschutz">Datenschutz</button><button type="button" id="resetBtn">Demo zurücksetzen</button><a href="../de/websites.html">Zurück zu den Demos</a></div>
-    <p class="fine">Beispiel-Website. Kanzlei, Personen, Adressen und Rufnummern sind erfunden. Die Inhalte sind allgemeine Informationen und keine Rechtsberatung.</p>
+    <p class="fine">Beispiel-Website. Name, Personen und Daten sind aus Datenschutzgründen geändert. Die Inhalte sind allgemeine Informationen und keine Rechtsberatung.</p>
   </div></div>
 </footer>
 
@@ -1022,6 +1023,7 @@ dialog::backdrop { background: rgba(23, 36, 64, .55); }
   var wiz = $('wiz'), step = 1, files = [];
   var gGeb = $('g-gebiet');
   gGeb.insertAdjacentHTML('beforeend', Object.keys(AREA_NAME).map(function (k) { return '<label class="opt"><input type="radio" name="gebiet" value="' + k + '"><span><b>' + AREA_NAME[k] + '</b>' + (k === 'sonst' ? '<small>Wir sagen Ihnen, wer helfen kann</small>' : '') + '</span></label>'; }).join(''));
+  $('w-fdate').max = iso(today());
   $('w-frist').innerHTML = '<option value="">Nein, keine Frist bekannt</option>' + Object.keys(FR).map(function (k) { return '<option value="' + k + '">' + FR[k].name + '</option>'; }).join('') + '<option value="andere">Ein anderes Schreiben mit Frist</option>';
   (function () { var d = addDays(today(), 1), out = [], i = 0; while (out.length < 6 && i < 20) { if (!isFree(d, 'NW')) out.push(d); d = addDays(d, 1); i++; } $('w-day').innerHTML = out.map(function (x) { return '<option value="' + iso(x) + '">' + DS.format(x) + '</option>'; }).join(''); })();
   $('wizNav').innerHTML = STEPS.map(function (s, i) { return '<li data-i="' + (i + 1) + '"><button type="button" data-go="' + (i + 1) + '"><span class="n" aria-hidden="true">' + ['I', 'II', 'III', 'IV', 'V'][i] + '</span><span class="t">' + s + '</span></button></li>'; }).join('');
@@ -1032,7 +1034,9 @@ dialog::backdrop { background: rgba(23, 36, 64, .55); }
   function collect() { var o = {}; FIELDS.forEach(function (k) { o[k] = val(k); }); o.files = files.map(function (f) { return { n: f.n, s: f.s }; }); return o; }
   function applyDraft(d) { if (!d) return; FIELDS.forEach(function (k) { if (k in d) setVal(k, d[k]); }); if (d.day && !Array.prototype.some.call($('w-day').options, function (o) { return o.value === d.day; })) $('w-day').selectedIndex = 0; files = (d.files || []).slice(0, 8); }
   var saveT;
-  function saveDraft() { clearTimeout(saveT); if (!$('doneCard').hidden) return; saveT = setTimeout(function () { state.draft = collect(); state.step = step; $('savedNote').textContent = save() ? 'Entwurf gespeichert' : 'Speichern im Browser ist nicht möglich. Die Anfrage funktioniert trotzdem.'; }, 300); }
+  function writeDraft() { saveT = null; state.draft = collect(); state.step = step; $('savedNote').textContent = save() ? 'Entwurf gespeichert' : 'Speichern im Browser ist nicht möglich. Die Anfrage funktioniert trotzdem.'; }
+  function saveDraft(now) { clearTimeout(saveT); saveT = null; if (!$('doneCard').hidden) return; if (now) writeDraft(); else saveT = setTimeout(writeDraft, 300); }
+  window.addEventListener('pagehide', function () { if (saveT && $('doneCard').hidden) { clearTimeout(saveT); writeDraft(); } });
 
   function clearErrs(scope) { scope.querySelectorAll('[aria-invalid]').forEach(function (el) { el.removeAttribute('aria-invalid'); }); scope.querySelectorAll('.err, .grp-err').forEach(function (e) { e.remove(); }); }
   function fieldErr(el, msg, first) {
@@ -1049,6 +1053,7 @@ dialog::backdrop { background: rgba(23, 36, 64, .55); }
     if (s === 2 && val('text').trim().length < 40) errs.push([$('w-text'), 'Bitte schildern Sie Ihr Anliegen in mindestens 40 Zeichen. Noch ' + (40 - val('text').trim().length) + ' Zeichen.']);
     if (s === 3) {
       if (FR[val('frist')] && !parseIso(val('fdate'))) errs.push([$('w-fdate'), 'Bitte geben Sie an, wann Sie das Schreiben erhalten haben.']);
+      else if (FR[val('frist')] && parseIso(val('fdate')) > today()) errs.push([$('w-fdate'), 'Das Datum liegt in der Zukunft. Bitte den Tag angeben, an dem das Schreiben ankam.']);
       if (!val('eile')) errs.push([$('g-eile'), 'Bitte wählen Sie, wie dringend Ihr Anliegen ist.']);
     }
     if (s === 5) {
@@ -1078,7 +1083,7 @@ dialog::backdrop { background: rgba(23, 36, 64, .55); }
     $('wizMobT').textContent = STEPS[s - 1]; $('wizMobN').textContent = 'Schritt ' + s + ' von 5'; $('wizMobBar').style.width = (s * 20) + '%';
     if (s === 3) fristLine(); if (s === 5) summary(); if (s === 4) renderFiles();
     if (focus) { var lg = wiz.querySelector('.step[data-step="' + s + '"] > legend'); lg.tabIndex = -1; lg.focus({ preventScroll: true }); var top = wiz.closest('.sheet').getBoundingClientRect().top; if (top < 60 || top > innerHeight * .5) wiz.closest('.sheet').scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); }
-    if (focus) saveDraft();
+    if (focus) saveDraft(true);
   }
   document.getElementById('wizNav').addEventListener('click', function (e) { var b = e.target.closest('[data-go]'); if (!b || b.disabled) return; var g = +b.dataset.go; if (g > step && !validate(step)) return; if (g > step) maxDone = Math.max(maxDone, step); show(g, true); });
   $('wBack').addEventListener('click', function () { if (step > 1) show(step - 1, true); });
@@ -1125,14 +1130,14 @@ dialog::backdrop { background: rgba(23, 36, 64, .55); }
       if (!/\.(pdf|jpe?g|png|docx?|heic)$/i.test(f.name)) { msg.push(f.name + ' hat ein Format, das wir nicht annehmen.'); return; }
       files.push({ n: f.name, s: f.size });
     });
-    show(4); renderFiles(msg.join(' ')); saveDraft();
+    show(4); renderFiles(msg.join(' ')); saveDraft(true);
   }
   function renderFiles(msg) {
     var ul = $('fileList');
     ul.innerHTML = files.map(function (f, i) { return '<li><span class="nm">' + esc(f.n) + '</span><span class="sz">' + KB(f.s) + '</span><button type="button" data-rm="' + i + '" aria-label="' + esc(f.n) + ' entfernen">Entfernen</button></li>'; }).join('') + (msg ? '<li style="color:var(--bordeaux);font-weight:600">' + esc(msg) + '</li>' : '');
   }
   $('w-files').addEventListener('change', function (e) { addFiles(e.target.files); e.target.value = ''; });
-  $('fileList').addEventListener('click', function (e) { var b = e.target.closest('[data-rm]'); if (!b) return; var f = files.splice(+b.dataset.rm, 1)[0]; renderFiles(); saveDraft(); show(4); toast(f.n + ' entfernt.', function () { files.splice(+b.dataset.rm, 0, f); renderFiles(); saveDraft(); show(4); }); $('drop').focus(); });
+  $('fileList').addEventListener('click', function (e) { var b = e.target.closest('[data-rm]'); if (!b) return; var f = files.splice(+b.dataset.rm, 1)[0]; renderFiles(); show(4); saveDraft(true); toast(f.n + ' entfernt.', function () { files.splice(Math.min(+b.dataset.rm, files.length), 0, f); renderFiles(); show(4); saveDraft(true); }); $('drop').focus(); });
   var drop = $('drop');
   drop.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('w-files').click(); } });
   drop.tabIndex = 0; drop.setAttribute('role', 'button');
@@ -1150,7 +1155,7 @@ dialog::backdrop { background: rgba(23, 36, 64, .55); }
   function finish() {
     var d = collect(), ref = 'MP-' + new Date().getFullYear() + '-' + String(Math.floor(1000 + Math.random() * 9000));
     state.sent = (state.sent || []).concat([{ ref: ref, at: new Date().toISOString(), gebiet: d.gebiet }]).slice(-10);
-    clearTimeout(saveT); state.draft = null; state.step = 1; save();
+    clearTimeout(saveT); saveT = null; state.draft = null; state.step = 1; save();
     var who = AREA_WHO[d.gebiet] || 'Dr. Johanna Muster', first = d.name.trim().split(/\s+/)[0];
     var urgent = /endet voraussichtlich/.test(deadlineText()) && d.eile === 'hoch';
     var card = $('doneCard');
@@ -1214,7 +1219,7 @@ dialog::backdrop { background: rgba(23, 36, 64, .55); }
   });
   $('dlgBody').addEventListener('click', function (e) { var b = e.target.closest('[data-ask-close]'); if (!b) return; opener = null; closeDlg(); prefill({ gebiet: b.dataset.askClose }); });
   var LEGAL = {
-    impressum: ['Pflichtangaben', 'Impressum', '<p style="margin-top:14px">Platzhalter. Auf einer echten Kanzlei-Website stünden hier die Angaben nach §\u00a05 DDG:</p><ul style="margin-top:10px;padding-left:1.2em"><li>Name und Anschrift der Partnerschaft, Partnerschaftsregister und Registernummer</li><li>Vertretungsberechtigte Partnerinnen und Partner</li><li>Berufsbezeichnung „Rechtsanwalt“, verliehen in der Bundesrepublik Deutschland</li><li>Zuständige Rechtsanwaltskammer</li><li>Berufsrechtliche Regelungen: BRAO, BORA, FAO, RVG, CCBE-Berufsregeln</li><li>Berufshaftpflichtversicherung mit Geltungsbereich</li><li>Umsatzsteuer-Identifikationsnummer</li></ul><p class="fine">Beispiel-Website. Alle Angaben sind erfunden.</p>'],
+    impressum: ['Pflichtangaben', 'Impressum', '<p style="margin-top:14px">Platzhalter. Auf einer echten Kanzlei-Website stünden hier die Angaben nach §\u00a05 DDG:</p><ul style="margin-top:10px;padding-left:1.2em"><li>Name und Anschrift der Partnerschaft, Partnerschaftsregister und Registernummer</li><li>Vertretungsberechtigte Partnerinnen und Partner</li><li>Berufsbezeichnung „Rechtsanwalt“, verliehen in der Bundesrepublik Deutschland</li><li>Zuständige Rechtsanwaltskammer</li><li>Berufsrechtliche Regelungen: BRAO, BORA, FAO, RVG, CCBE-Berufsregeln</li><li>Berufshaftpflichtversicherung mit Geltungsbereich</li><li>Umsatzsteuer-Identifikationsnummer</li></ul><p class="fine">Beispiel-Website. Name, Personen und Daten sind aus Datenschutzgründen geändert.</p>'],
     datenschutz: ['Hinweise', 'Datenschutz', '<p style="margin-top:14px">Platzhalter für die Datenschutzerklärung. Für diese Beispiel-Website gilt:</p><ul style="margin-top:10px;padding-left:1.2em"><li>Es werden keine Inhalte von fremden Servern geladen, auch keine Schriften.</li><li>Es gibt keine Cookies und keine Statistik-Werkzeuge.</li><li>Formulareingaben und der Fristenrechner werden nur in Ihrem Browser gespeichert (localStorage) und nie gesendet.</li><li>Über „Demo zurücksetzen“ im Fußbereich löschen Sie diese Daten.</li></ul><p class="fine">Eine echte Kanzlei-Website bräuchte hier eine vollständige Erklärung nach Art. 13 DSGVO.</p>']
   };
   document.querySelectorAll('[data-dlg]').forEach(function (b) { b.addEventListener('click', function () { var L = LEGAL[b.dataset.dlg]; openDlg(L[0], L[1], L[2]); }); });
@@ -1249,10 +1254,11 @@ dialog::backdrop { background: rgba(23, 36, 64, .55); }
 
   /* Demo zurücksetzen */
   $('resetBtn').addEventListener('click', function () {
+    if (saveT) { clearTimeout(saveT); writeDraft(); }
     var prev = JSON.stringify(state);
     try { localStorage.removeItem(KEY); } catch (e) {}
     state = { fr: null, draft: null, step: 1, sent: [] };
-    resetWizard(); show(1);
+    resetWizard(); show(1); clearTimeout(saveT); saveT = null;
     ftype.value = 'kschg'; fland.value = 'NW'; fdate.value = iso(today()); $('fr-post').checked = false; $('fr-abroad').checked = false; runFr();
     AREAS.forEach(function (a) { setArea(a.id, false); });
     $('savedNote').textContent = '';

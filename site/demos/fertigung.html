@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>Muster Präzisionsteile</title>
+<title>Muster Präzisionsteile – Beispiel-Website</title>
 <meta name="description" content="Beispiel-Website eines fiktiven Fertigungsbetriebs: CNC-Drehen und -Fräsen, filterbarer Maschinenpark, Machbarkeits-Check und Angebotsanfrage mit Zeichnung.">
 <meta name="theme-color" content="#14181D">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 34 34'%3E%3Crect width='34' height='34' fill='%2314181D'/%3E%3Ccircle cx='17' cy='17' r='10' fill='none' stroke='%2345C9F2' stroke-width='2.4'/%3E%3Ccircle cx='17' cy='17' r='3.5' fill='none' stroke='%23E6EDF3' stroke-width='2.4'/%3E%3C/svg%3E">
 <style>
 /* Gestaltung: technische Zeichnung auf Graphit. Blaupausen-Raster, Maßlinien in Messblau, Monospace nur für Maße und Toleranzen. */
 @font-face { font-family: "Inter Tight"; font-style: normal; font-weight: 100 900; font-display: swap; src: url(fertigung-files/inter-tight-latin-wght-normal.woff2) format("woff2"); }
@@ -234,6 +235,7 @@ table.t tr > :first-child { padding-left: 0; }
 .chip[aria-pressed="true"] { background: var(--cy); border-color: var(--cy); color: var(--cy-ink); }
 .chip[aria-pressed="true"] .m { color: var(--cy-ink); }
 .search { position: relative; min-width: min(300px, 100%); }
+.msort { display: none; }
 .search input { padding-left: 38px; }
 .search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--ink-3); pointer-events: none; }
 .mt { border: 1px solid var(--line); background: var(--g1); }
@@ -259,6 +261,8 @@ table.t tr > :first-child { padding-left: 0; }
 .mt-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 20px; padding: 12px 14px; color: var(--ink-2); font-size: 14.5px; background: var(--g0); }
 .empty { padding: 28px 14px; color: var(--ink-2); }
 @media (max-width: 760px) {
+  .msort { display: block; width: 100%; }
+  .search { width: 100%; }
   .mt thead { display: none; }
   .mt table, .mt tbody, .mt tr, .mt td { display: block; }
   .mt tr { padding: 14px; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; }
@@ -548,7 +552,7 @@ dialog.dlg.sm { width: min(520px, calc(100vw - 32px)); }
           <div><span class="k">Toleranz bis</span><span class="v">±0,005 mm</span><span class="s">Rundlauf 0,003 mm</span></div>
           <div><span class="k">Losgrößen</span><span class="v">1–50.000</span><span class="s">Prototyp bis Serie</span></div>
           <div><span class="k">Liefertreue</span><span class="v">98,4 %</span><span class="s" id="otdNote">letzte 12 Monate</span></div>
-          <div><span class="k">Maschinenpark</span><span class="v" id="heroMach">38 CNC</span><span class="s">2 Schichten, 1 mannlos</span></div>
+          <div><span class="k">Maschinenpark</span><span class="v" id="heroMach">40 CNC</span><span class="s">2 Schichten, 1 mannlos</span></div>
           <dl class="meta">
             <dt>Benennung</dt><dd>Antriebswelle mit Flansch</dd>
             <dt>Werkstoff</dt><dd>1.4404</dd>
@@ -668,6 +672,7 @@ dialog.dlg.sm { width: min(520px, calc(100vw - 32px)); }
     <div class="tools">
       <div class="chips" role="group" aria-label="Nach Verfahren filtern" id="mFilter"></div>
       <div class="search"><label class="sr" for="mSearch">Maschinen durchsuchen</label><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="8.5" cy="8.5" r="6" stroke="currentColor" stroke-width="1.8"/><path d="M13 13l5 5" stroke="currentColor" stroke-width="1.8"/></svg><input class="in" id="mSearch" type="search" placeholder="Suchen, z. B. Gegenspindel" autocomplete="off"></div>
+      <div class="msort"><label class="sr" for="mSort">Sortieren</label><select class="in" id="mSort"><option value="">Sortierung: Standard</option><option value="n:-1">Anzahl, meiste zuerst</option><option value="tol:1">Genauigkeit, feinste zuerst</option><option value="ax:-1">Achsen, meiste zuerst</option><option value="typ:1">Name A bis Z</option></select></div>
     </div>
     <div class="mt">
       <div class="tbl-scroll">
@@ -896,7 +901,7 @@ dialog.dlg.sm { width: min(520px, calc(100vw - 32px)); }
 
 <footer class="foot">
   <div class="wrap">
-    <div><b style="color:var(--ink)">Muster Präzisionsteile GmbH</b><small>Fiktives Unternehmen. Diese Seite ist eine Beispiel-Website, alle Angaben sind erfunden.</small></div>
+    <div><b style="color:var(--ink)">Muster Präzisionsteile GmbH</b><small>Beispiel-Website. Name, Personen und Daten sind aus Datenschutzgründen geändert.</small></div>
     <nav aria-label="Rechtliches">
       <button type="button" class="lnk" data-legal="imp">Impressum</button>
       <button type="button" class="lnk" data-legal="ds">Datenschutz</button>
@@ -1162,9 +1167,12 @@ dialog.dlg.sm { width: min(520px, calc(100vw - 32px)); }
   Array.prototype.forEach.call(document.querySelectorAll('.mt th[data-k] button'), function (b) {
     b.addEventListener('click', function () { var k = b.parentNode.getAttribute('data-k'); if (mState.sort === k) mState.dir *= -1; else { mState.sort = k; mState.dir = (k === 'n' || k === 'ax') ? -1 : 1; } renderM(); });
   });
+  $('mSort').addEventListener('change', function () { var v = this.value.split(':'); mState.sort = v[0] || null; mState.dir = +v[1] || 1; renderM(); });
   function renderM() {
     var rows = MACH.filter(function (m) { return (mState.vf === 'Alle' || m.vf === mState.vf) && (!mState.q || (m.typ + ' ' + m.h + ' ' + m.tag + ' ' + m.raum + ' ' + m.vf).toLowerCase().indexOf(mState.q) >= 0); });
     if (mState.sort) { var k = mState.sort, d = mState.dir; rows = rows.slice().sort(function (a, b) { var x = a[k], y = b[k]; return (typeof x === 'number' ? x - y : String(x).localeCompare(String(y), 'de')) * d; }); }
+    var sv = mState.sort ? mState.sort + ':' + mState.dir : '';
+    $('mSort').value = Array.prototype.some.call($('mSort').options, function (o) { return o.value === sv; }) ? sv : '';
     Array.prototype.forEach.call(document.querySelectorAll('.mt th'), function (th) { var k = th.getAttribute('data-k'); if (!k) return; if (k === mState.sort) th.setAttribute('aria-sort', mState.dir > 0 ? 'ascending' : 'descending'); else th.removeAttribute('aria-sort'); });
     $('mBody').innerHTML = rows.map(function (m) {
       return '<tr><td class="c-typ"><b style="font-weight:600">' + esc(m.typ) + '</b><span class="sub">' + esc(m.h) + '. ' + esc(m.tag) + '</span></td><td class="c-vf"><span class="vf" data-v="' + m.vf + '">' + m.vf + '</span></td><td class="c-ax m" data-l="Achsen">' + m.ax + '</td><td class="m" data-l="Arbeitsraum">' + m.raum + '</td><td class="m" data-l="Genauigkeit">' + (m.vf === 'Messen' ? NF.format(m.tol * 1000) + ' µm' : tolTxt(m.tol)) + '</td><td class="n">' + m.n + '</td></tr>';
@@ -1381,13 +1389,21 @@ dialog.dlg.sm { width: min(520px, calc(100vw - 32px)); }
     S.inquiries.unshift(rec); S.draft = {}; save();
     showDone(rec);
   });
+  function resetForm() {
+    form.reset(); FILES = []; renderFiles(); setFileErr('');
+    ['f-part', 'f-mat', 'f-tol', 'f-qty', 'f-date', 'f-co', 'f-name', 'f-mail', 'f-priv'].forEach(function (id) { setErr(id, ''); });
+    S.draft = {}; save();
+  }
+  function showForm() { var d = $('doneBox'); if (d) d.remove(); form.hidden = false; }
   function showDone(r) {
     var due = addWorkdays(new Date(r.at), 3), rep = REP[r.br] || 'Jana Brehm';
-    $('formWrap').innerHTML = '<div class="done" tabindex="-1" id="doneBox"><div class="done-h"><span class="muted">Anfrage eingegangen. Ihre Vorgangsnummer</span><span class="no">' + esc(r.no) + '</span><span class="sim">In der Demo simuliert. Es wurde nichts gesendet.</span></div>' +
+    var old = $('doneBox'); if (old) old.remove();
+    form.hidden = true;
+    $('formWrap').insertAdjacentHTML('beforeend', '<div class="done" tabindex="-1" id="doneBox"><div class="done-h"><span class="muted">Anfrage eingegangen. Ihre Vorgangsnummer</span><span class="no">' + esc(r.no) + '</span><span class="sim">In der Demo simuliert. Es wurde nichts gesendet.</span></div>' +
       '<div class="done-b"><p>Danke, ' + esc(r.name) + '. ' + esc(rep) + ' aus dem Vertrieb prüft Ihre Zeichnung mit unserer Technik. Sie erhalten Ihr Angebot bis <b>' + DFL.format(due) + '</b> an ' + esc(r.mail) + '.</p>' +
       '<dl class="sum"><dt>Bauteil</dt><dd>' + esc(r.part) + '</dd><dt>Werkstoff</dt><dd>' + esc(r.mat) + '</dd><dt>Toleranz</dt><dd>' + esc(r.tol) + '</dd><dt>Stückzahl</dt><dd class="m">' + NF.format(r.qty) + ' Stk.</dd><dt>Wunschtermin</dt><dd class="m">' + DF.format(new Date(r.date + 'T12:00:00')) + '</dd>' + (r.dim ? '<dt>Abmessungen</dt><dd>' + esc(r.dim) + '</dd>' : '') + (r.doc && r.doc.length ? '<dt>Prüfung</dt><dd>' + esc(r.doc.join(', ')) + '</dd>' : '') + '<dt>Dateien</dt><dd>' + (r.files.length ? esc(r.files.join(', ')) : 'folgen per E-Mail') + '</dd></dl>' +
-      '<div class="acts"><button type="button" class="btn pri" id="newReq">Weitere Anfrage stellen</button><button type="button" class="btn" id="resetBtn2">Demo zurücksetzen</button></div>' + histHTML() + '</div></div>';
-    $('newReq').addEventListener('click', function () { location.hash = ''; location.reload(); });
+      '<div class="acts"><button type="button" class="btn pri" id="newReq">Weitere Anfrage stellen</button><button type="button" class="btn" id="resetBtn2">Demo zurücksetzen</button></div>' + histHTML() + '</div></div>');
+    $('newReq').addEventListener('click', function () { resetForm(); showForm(); $('f-part').focus({ preventScroll: true }); $('anfrage').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); });
     $('resetBtn2').addEventListener('click', resetDemo);
     var box = $('doneBox'); box.focus({ preventScroll: true }); box.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     toast('Anfrage ' + r.no + ' gesendet');
@@ -1473,7 +1489,7 @@ dialog.dlg.sm { width: min(520px, calc(100vw - 32px)); }
   ckRun();
   $('ckUse').addEventListener('click', function () {
     if (!lastRes) { $('ck-err').textContent = 'Bitte zuerst gültige Maße eingeben.'; return; }
-    if (!form.elements || !form.elements.dim || !document.contains(form)) { toast('Bitte zuerst eine neue Anfrage öffnen.'); return; }
+    if (form.hidden) { resetForm(); showForm(); }
     form.elements.dim.value = (ck.kind === 'rund' ? 'Drehteil ' : 'Frästeil ') + lastRes.dimTxt;
     var tmap = { '0.1': 0, '0.05': 1, '0.02': 2, '0.01': 3, '0.005': 4, '0.002': 5 };
     form.elements.tol.value = TOLS[tmap[ck.tol]];
@@ -1484,8 +1500,9 @@ dialog.dlg.sm { width: min(520px, calc(100vw - 32px)); }
     toast('Maße, Toleranz und Stückzahl übernommen');
   });
   $('refAsk').addEventListener('click', function () {
-    if (!curRef) return; closeDlg($('refDlg'));
-    if (document.contains(form)) {
+    if (!curRef) return; lastFocus = null; closeDlg($('refDlg'));
+    if (form.hidden) { resetForm(); showForm(); }
+    {
       var mi = MATS.filter(function (m) { return curRef.mat.indexOf(m.split(' (')[0].replace('Edelstahl ', '').replace('Stahl ', '')) >= 0 || m.indexOf(curRef.mat.replace(' vergütet', '')) >= 0; })[0];
       if (mi) form.elements.mat.value = mi;
       form.elements.br.value = curRef.br; form.elements.part.value = form.elements.part.value || ('Ähnlich ' + curRef.n);

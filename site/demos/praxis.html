@@ -7,6 +7,7 @@
 <title>Hausarztpraxis Dr. med. Muster – Beispiel-Website</title>
 <meta name="description" content="Beispiel-Website einer fiktiven Hausarztpraxis: Online-Terminbuchung, Rezeptanfrage, Sprechzeiten mit Live-Status, Leistungen, Team und Anfahrt.">
 <meta name="theme-color" content="#FAF6EE">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='23' fill='%23E4EBE0'/%3E%3Cpath d='M24 37c-7-4.5-12-10-12-16.2 0-4.4 3.3-7.6 7.1-7.6 2.3 0 4 1 4.9 2.6.9-1.6 2.6-2.6 4.9-2.6 3.8 0 7.1 3.2 7.1 7.6C36 27 31 32.5 24 37z' fill='%234F6B58'/%3E%3C/svg%3E">
 <style>
 /* Gestaltung: ruhiges Leinen, Salbei und Ziegel. Leitmotiv ist das Praxisschild an der Tür und die Linde aus der Lindenallee.
    Newsreader (Überschriften) und Atkinson Hyperlegible Next (Text, für Menschen mit eingeschränktem Sehen entwickelt). */
@@ -81,6 +82,14 @@ p { margin: 0; }
 .btn.small { min-height: 2.75rem; padding: .45rem 1.1rem; font-size: 1rem; }
 .linkbtn { background: none; border: 0; padding: .25rem 0; color: var(--salbei-tief); text-decoration: underline; text-underline-offset: .18em; font-weight: 700; min-height: 2.75rem; }
 .linkbtn:hover { color: var(--ziegel-tief); }
+.linkbtn.inl { align-self: flex-start; min-height: 2.75rem; font-size: 1rem; margin-left: 2.1rem; }
+.foot ul .linkbtn { min-height: 2.2rem; padding: 0; font-weight: 400; text-align: left; }
+dialog.info { border: 0; padding: 0; border-radius: var(--r-l); width: min(36rem, calc(100vw - 2rem)); max-height: calc(100dvh - 3rem); background: var(--leinen); color: var(--tinte); box-shadow: 0 24px 60px rgba(31,43,37,.28); }
+dialog.info::backdrop { background: rgba(31,43,37,.42); }
+.info-in { padding: 1.4rem 1.5rem 1.6rem; display: grid; gap: .9rem; }
+.info-in .sheet-h { margin: 0; }
+.info-in ul { margin: 0; padding-left: 1.2rem; color: var(--tinte-2); }
+#legalB { display: grid; gap: .7rem; }
 
 /* Hinweisleiste */
 .demo-strip { background: var(--salbei-tief); color: #F4F7F2; font-size: .95rem; }
@@ -123,6 +132,7 @@ p { margin: 0; }
   .top .wrap { gap: .5rem; }
 }
 @media (max-width: 380px) { .brand svg { display: none; } }
+@media (max-width: 620px) { html[data-fs="1"] .brand-t, html[data-fs="2"] .brand-t { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } html[data-fs="1"] .brand svg, html[data-fs="2"] .brand svg { display: block; } }
 
 /* Menü-Dialog */
 dialog.sheet { border: 0; padding: 0; margin: 0 0 0 auto; height: 100dvh; max-height: 100dvh; width: min(26rem, 100vw); max-width: 100vw; background: var(--leinen); color: var(--tinte); box-shadow: -20px 0 60px rgba(31,43,37,.18); }
@@ -633,7 +643,7 @@ html[data-fs="2"] .tabbar a { font-size: .72rem; }
               <fieldset class="field" id="b-ins" aria-describedby="b-ins-e"><legend>Versicherung</legend><div class="radios"><label class="rad"><input type="radio" name="ins" value="gesetzlich">Gesetzlich</label><label class="rad"><input type="radio" name="ins" value="privat">Privat</label></div><p class="err" id="b-ins-e"></p></fieldset>
               <fieldset class="field" id="b-known" aria-describedby="b-known-e"><legend>Waren Sie schon bei uns?</legend><div class="radios"><label class="rad"><input type="radio" name="known" value="ja">Ja</label><label class="rad"><input type="radio" name="known" value="nein">Nein, zum ersten Mal</label></div><p class="err" id="b-known-e"></p></fieldset>
               <div class="field full"><label for="b-note">Kurz zum Anliegen <span class="opt">(freiwillig)</span></label><textarea id="b-note" name="note" maxlength="300" aria-describedby="b-note-h"></textarea><span class="hint" id="b-note-h">Höchstens 300 Zeichen. Bitte keine ausführlichen Befunde.</span></div>
-              <div class="field full"><label class="check"><input type="checkbox" id="b-ok" name="ok" aria-describedby="b-ok-e"><span>Ich bin einverstanden, dass die Praxis meine Angaben zur Terminvergabe speichert. <a href="#">Datenschutzhinweise</a></span></label><p class="err" id="b-ok-e"></p></div>
+              <div class="field full"><label class="check"><input type="checkbox" id="b-ok" name="ok" aria-describedby="b-ok-e"><span>Ich bin einverstanden, dass die Praxis meine Angaben zur Terminvergabe speichert.</span></label><button type="button" class="linkbtn inl" data-legal="datenschutz">Datenschutzhinweise lesen</button><p class="err" id="b-ok-e"></p></div>
             </div>
           </div>
           <!-- Schritt 5 -->
@@ -704,7 +714,7 @@ html[data-fs="2"] .tabbar a { font-size: .72rem; }
             </div>
           </div>
 
-          <div class="field" style="margin-top:1.4rem"><label class="check"><input type="checkbox" id="r-ok" aria-describedby="r-ok-e"><span>Ich bin einverstanden, dass die Praxis meine Angaben zur Bearbeitung speichert. <a href="#">Datenschutzhinweise</a></span></label><p class="err" id="r-ok-e"></p></div>
+          <div class="field" style="margin-top:1.4rem"><label class="check"><input type="checkbox" id="r-ok" aria-describedby="r-ok-e"><span>Ich bin einverstanden, dass die Praxis meine Angaben zur Bearbeitung speichert.</span></label><button type="button" class="linkbtn inl" data-legal="datenschutz">Datenschutzhinweise lesen</button><p class="err" id="r-ok-e"></p></div>
           <div class="form-actions"><button type="submit" class="btn prim">Anfrage senden</button><span class="muted" style="font-size:.98rem">In der Demo wird nichts übertragen.</span></div>
         </form>
         <div id="rxDone" hidden tabindex="-1"></div>
@@ -897,9 +907,9 @@ html[data-fs="2"] .tabbar a { font-size: .72rem; }
       <div class="foot-brand"><b>Hausarztpraxis Dr. med. Muster</b><p>Lindenallee 14<br>12345 Musterstadt</p></div>
       <div><h2>Kontakt</h2><ul><li>Telefon <a href="tel:+49123456780">0123 456 78-0</a></li><li>Fax 0123 456 78-9</li><li>praxis@praxis-muster.example</li></ul></div>
       <div><h2>Notfall</h2><ul><li>Lebensgefahr: <a href="tel:112">112</a></li><li>Bereitschaftsdienst: <a href="tel:116117">116 117</a></li></ul></div>
-      <div><h2>Rechtliches</h2><ul><li><a href="#">Impressum</a></li><li><a href="#">Datenschutz</a></li><li><a href="#">Erklärung zur Barrierefreiheit</a></li></ul></div>
+      <div><h2>Rechtliches</h2><ul><li><button type="button" class="linkbtn" data-legal="impressum">Impressum</button></li><li><button type="button" class="linkbtn" data-legal="datenschutz">Datenschutz</button></li><li><button type="button" class="linkbtn" data-legal="barrierefreiheit">Erklärung zur Barrierefreiheit</button></li></ul></div>
     </div>
-    <div class="foot-bottom"><span>Beispiel-Website einer fiktiven Praxis. Alle Namen und Daten sind erfunden.</span><button type="button" class="linkbtn" id="resetBtn">Demo zurücksetzen</button></div>
+    <div class="foot-bottom"><span>Beispiel-Website. Name, Personen und Daten sind aus Datenschutzgründen geändert.</span><a href="../de/websites.html">Weitere Beispiele ansehen</a><button type="button" class="linkbtn" id="resetBtn">Demo zurücksetzen</button></div>
   </div>
 </footer>
 
@@ -910,6 +920,13 @@ html[data-fs="2"] .tabbar a { font-size: .72rem; }
   <a href="#anfahrt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0113 0c0 5-6.5 11-6.5 11z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>Anfahrt</a>
   <a class="call-tab" href="tel:+49123456780"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3.5h2.6l1.5 4-2 1.3a11 11 0 005.5 5.5l1.3-2 4 1.5v2.6a2 2 0 01-2.2 2A16 16 0 014.6 5.7a2 2 0 012-2.2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Anrufen</a>
 </nav>
+
+<dialog class="info" id="legalDlg" aria-labelledby="legalT">
+  <div class="info-in">
+    <div class="sheet-h"><h2 id="legalT">Impressum</h2><button type="button" class="x-btn" id="legalClose"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="sr">Schließen</span></button></div>
+    <div id="legalB"></div>
+  </div>
+</dialog>
 
 <div class="toast" id="toast" role="status" aria-live="polite"><span id="toastT"></span><button type="button" id="toastBtn" hidden>Rückgängig</button></div>
 
@@ -1337,13 +1354,13 @@ html[data-fs="2"] .tabbar a { font-size: .72rem; }
       '<p class="demo-note"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5v5.5M12 16.2v.3" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><span>Demo: Es wurde nichts gesendet. Der Termin ist nur in diesem Browser gespeichert. In einer echten Praxis bekämen Sie jetzt eine Bestätigung per E-Mail oder SMS.</span></p>' +
       '<div class="hero-actions"><button type="button" class="btn sage" id="icsBtn">In den Kalender eintragen</button><button type="button" class="btn quiet" id="againBtn">Weiteren Termin buchen</button></div>';
     $("#icsBtn").addEventListener("click", function () { downloadIcs(bk); });
-    $("#againBtn").addEventListener("click", resetBooking);
+    $("#againBtn").addEventListener("click", function () { resetBooking(); });
   }
-  function resetBooking() {
+  function resetBooking(focus) {
     B = { step: 1, anl: null, doc: null, day: null, slot: null, data: null, last: null };
     bookTried = false;
-    form.reset(); $$("[aria-invalid]", form).forEach(function (i) { i.removeAttribute("aria-invalid"); }); $$(".err", form).forEach(function (e) { e.textContent = ""; }); $("#bookErrSum").hidden = true;
-    renderAnl(); go(1);
+    form.reset(); $$("[aria-invalid]", form).forEach(function (i) { i.removeAttribute("aria-invalid"); }); $$(".err", form).forEach(function (e) { e.textContent = ""; }); $("#bookErrSum").hidden = true; hideErr(1); hideErr(2); hideErr(3);
+    renderAnl(); go(1, focus);
   }
   function downloadIcs(bk) {
     var a = anlById(bk.anl), d = fromKey(bk.date);
@@ -1386,7 +1403,7 @@ html[data-fs="2"] .tabbar a { font-size: .72rem; }
       '<button type="button" class="rm" data-rm="' + id + '"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="sr">Medikament entfernen</span></button>';
     $("#medList").appendChild(row);
     var mi = $("#" + id + "-n");
-    mi.addEventListener("blur", function () { if (rxTried) validateRx(false, mi.id); });
+    mi.addEventListener("blur", function () { if (rxTried && (mi.value.trim() || mi.getAttribute("aria-invalid") === "true")) validateRx(false, mi.id); });
     mi.addEventListener("input", function () { if (mi.getAttribute("aria-invalid") === "true") validateRx(false, mi.id); });
     syncRm();
     if (focus) $("#" + id + "-n").focus();
@@ -1460,13 +1477,14 @@ html[data-fs="2"] .tabbar a { font-size: .72rem; }
       '<p class="demo-note"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5v5.5M12 16.2v.3" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><span>Demo: Es wurde nichts gesendet. Die Anfrage ist nur in diesem Browser gespeichert.</span></p>' +
       '<div><button type="button" class="btn quiet" id="rxAgain">Weitere Anfrage stellen</button></div></div>';
     rx.hidden = true; done.hidden = false; done.focus();
-    $("#rxAgain").addEventListener("click", function () {
-      rx.reset(); rxTried = false; $("#medList").innerHTML = ""; medRow(false); $("#rxRezept").hidden = false; $("#rxUeber").hidden = true;
-      $$("[aria-invalid]", rx).forEach(function (i) { i.removeAttribute("aria-invalid"); }); $$(".err", rx).forEach(function (x) { x.textContent = ""; }); $("#rxErrSum").hidden = true;
-      done.hidden = true; rx.hidden = false; $("#r-name").focus();
-    });
+    $("#rxAgain").addEventListener("click", function () { resetRx(); $("#r-name").focus(); });
     renderRxList();
   });
+  function resetRx() {
+    rx.reset(); rxTried = false; $("#medList").innerHTML = ""; medRow(false); $("#rxRezept").hidden = false; $("#rxUeber").hidden = true;
+    $$("[aria-invalid]", rx).forEach(function (i) { i.removeAttribute("aria-invalid"); }); $$(".err", rx).forEach(function (x) { x.textContent = ""; }); $("#rxErrSum").hidden = true;
+    $("#rxDone").hidden = true; rx.hidden = false;
+  }
   function renderRxList() {
     var box = $("#rxListBox");
     if (!mem.requests.length) { box.innerHTML = '<p class="muted" style="font-size:1rem">Noch keine Anfrage in diesem Browser.</p>'; return; }
@@ -1503,7 +1521,7 @@ html[data-fs="2"] .tabbar a { font-size: .72rem; }
     if (b) { var open = b.getAttribute("aria-expanded") !== "true"; b.setAttribute("aria-expanded", String(open)); document.getElementById(b.getAttribute("aria-controls")).hidden = !open; syncSvcAll(); return; }
     var bk = e.target.closest("[data-book]");
     if (bk) {
-      resetBooking(); B.anl = bk.dataset.book; renderAnl(); updateSums();
+      resetBooking(false); B.anl = bk.dataset.book; renderAnl(); updateSums();
       go(2, false); $("#termin").scrollIntoView({ block: "start" }); var h = $('[data-panel="2"] h3'); h.focus({ preventScroll: true });
       toast("Anliegen gewählt: " + anlById(B.anl).name);
     }
@@ -1562,6 +1580,23 @@ html[data-fs="2"] .tabbar a { font-size: .72rem; }
   dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); if (e.target.closest && e.target.closest("nav a")) dlg.close(); });
   dlg.addEventListener("close", function () { $("#menuOpen").focus({ preventScroll: true }); });
 
+  /* Rechtliches (Platzhalter) */
+  var LEGAL = {
+    impressum: ["Impressum", "<p>Platzhalter für das Impressum.</p><ul><li>Name der Praxis und Anschrift</li><li>Berufsbezeichnung, zuständige Ärztekammer und Kassenärztliche Vereinigung</li><li>Berufsordnung und Aufsichtsbehörde</li><li>Telefon und E-Mail</li></ul>"],
+    datenschutz: ["Datenschutz", "<p>Platzhalter für die Datenschutzhinweise.</p><ul><li>Diese Beispiel-Website lädt keine Inhalte von fremden Servern und setzt keine Cookies.</li><li>Termine, Anfragen und die Schriftgröße werden nur in Ihrem Browser gespeichert und nie gesendet.</li><li>Mit „Demo zurücksetzen“ im Fußbereich löschen Sie diese Daten.</li></ul>"],
+    barrierefreiheit: ["Erklärung zur Barrierefreiheit", "<p>Platzhalter für die Erklärung zur Barrierefreiheit.</p><ul><li>Die Schrift lässt sich oben in drei Stufen vergrößern.</li><li>Alle Formulare sind mit der Tastatur bedienbar und zeigen Fehler mit Text an, nicht nur mit Farbe.</li><li>Auf einer echten Website stehen hier Ansprechperson und Schlichtungsstelle.</li></ul>"]
+  };
+  var ldlg = $("#legalDlg"), legalOpener = null;
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-legal]"); if (!b) return;
+    var L = LEGAL[b.dataset.legal]; legalOpener = b;
+    $("#legalT").textContent = L[0]; $("#legalB").innerHTML = L[1];
+    ldlg.showModal(); $("#legalClose").focus();
+  });
+  $("#legalClose").addEventListener("click", function () { ldlg.close(); });
+  ldlg.addEventListener("click", function (e) { if (e.target === ldlg) ldlg.close(); });
+  ldlg.addEventListener("close", function () { if (legalOpener) legalOpener.focus({ preventScroll: true }); });
+
   /* Sprungziele: Fokus auf die Überschrift */
   document.addEventListener("click", function (e) {
     var a = e.target.closest && e.target.closest("[data-goto]"); if (!a) return;
@@ -1572,7 +1607,7 @@ html[data-fs="2"] .tabbar a { font-size: .72rem; }
   /* ---------- Zurücksetzen ---------- */
   $("#resetBtn").addEventListener("click", function () {
     var backup = JSON.parse(JSON.stringify(mem));
-    mem = { fs: 0, bookings: [], requests: [] }; save(); setFs(0, false); resetBooking(); renderMy(); renderRxList();
+    mem = { fs: 0, bookings: [], requests: [] }; save(); setFs(0, false); resetBooking(false); resetRx(); renderMy(); renderRxList();
     toast("Demo wurde zurückgesetzt.", function () { mem = backup; save(); setFs(mem.fs, false); renderMy(); renderRxList(); toast("Wiederhergestellt."); });
   });
 

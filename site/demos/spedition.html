@@ -7,6 +7,7 @@
 <title>Nordline Logistik – Beispiel-Website</title>
 <meta name="description" content="Beispiel-Website einer Spedition: Frachtrechner mit Lademetern, Sendungsverfolgung, Abfahrtstafel und Liniennetz.">
 <meta name="theme-color" content="#16191D">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2316191D'/%3E%3Cpath d='M5 10h13v11H5zM18 14h5l4 4v3h-9z' fill='%23FFC20E'/%3E%3C/svg%3E">
 <style>
 /* Layout: Industrie-Raster mit Haarlinien, gelbe Signalflächen, kantige Formen. Ein bewusst helles Erscheinungsbild (Lkw-Beschriftung, Frachtpapiere). */
 @font-face { font-family: "Archivo"; font-style: normal; font-weight: 100 900; font-stretch: 62% 125%; font-display: swap; src: url(spedition-files/archivo.woff2) format("woff2"); }
@@ -144,7 +145,7 @@ button { cursor: pointer; }
 .calc { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); border: 1px solid var(--line); background: var(--white); }
 .calc form { padding: 28px; display: grid; gap: 18px; border-right: 1px solid var(--line); }
 .row2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-.row3 { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 16px; }
+.row3 { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, .8fr) minmax(0, 1fr); gap: 16px; }
 .f { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .f label, .f .lbl { font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
 .f input, .f select, .f textarea { border: 1.5px solid var(--line); border-radius: 0; background: var(--paper); padding: 11px 12px; min-height: 48px; width: 100%; min-width: 0; }
@@ -272,7 +273,17 @@ button { cursor: pointer; }
 .foot { background: var(--asphalt); color: var(--ink-inv-2); font-size: 14px; }
 .foot .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px 32px; padding-block: 28px calc(28px + env(safe-area-inset-bottom, 0px)); }
 .foot b { color: var(--ink-inv); }
-.foot a { color: var(--signal); }
+.foot a, .foot .lnk { color: var(--signal); }
+.foot nav { display: flex; flex-wrap: wrap; gap: 6px 22px; }
+.foot .lnk { background: none; border: 0; padding: 0; font: inherit; text-decoration: underline; min-height: 32px; }
+dialog.legal { border: 2px solid var(--ink); border-radius: 0; padding: 0; width: min(560px, calc(100vw - 32px)); max-height: calc(100dvh - 48px); background: var(--white); color: var(--ink); }
+dialog.legal::backdrop { background: rgba(22,25,29,.55); }
+.legal-h { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--line); }
+.legal-h h2 { font-family: var(--font-d); font-stretch: 85%; font-weight: 800; text-transform: uppercase; font-size: 24px; margin: 0; }
+.legal-x { width: 44px; height: 44px; border: 2px solid var(--ink); background: none; display: grid; place-items: center; flex: none; }
+.legal-b { padding: 18px 20px 22px; display: grid; gap: 12px; }
+.legal-b p { margin: 0; }
+.legal-b .muted { color: var(--ink-2); font-size: 15px; }
 </style>
 </head>
 <body>
@@ -302,7 +313,7 @@ button { cursor: pointer; }
         <a class="btn sig" href="#frachtrechner">Fracht berechnen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         <a class="btn" href="#tracking">Sendung verfolgen</a>
       </div>
-      <div class="facts"><div><b>86</b><span>eigene Lkw</span></div><div><b>24.000</b><span>Palettenstellplätze</span></div><div><b>98,7&nbsp;%</b><span>pünktlich zugestellt</span></div></div>
+      <div class="facts"><div><b>86</b><span>eigene Lkw</span></div><div><b>24.000</b><span>Paletten&shy;stellplätze</span></div><div><b>98,7&nbsp;%</b><span>pünktlich zugestellt</span></div></div>
     </div>
     <div class="board" aria-labelledby="boardTitle">
       <div class="board-h"><b id="boardTitle">Abfahrten heute · Hof Bielefeld</b><span class="clock" id="clock" aria-label="Uhrzeit">--:--</span></div>
@@ -327,7 +338,7 @@ button { cursor: pointer; }
           <div class="f"><label for="c-n">Anzahl</label><input id="c-n" name="c-n" type="number" inputmode="numeric" min="1" max="66" value="8"></div>
           <div class="f"><label for="c-kg">Gewicht kg</label><input id="c-kg" name="c-kg" type="number" inputmode="numeric" min="1" max="40000" step="10" value="4200"></div>
         </div>
-        <div class="checks"><label><input type="checkbox" id="c-st" name="c-st"> Stapelbar</label><label><input type="checkbox" id="c-adr" name="c-adr"> Gefahrgut (ADR)</label><label><input type="checkbox" id="c-exp" name="c-exp"> Express, Abholung heute</label></div>
+        <div class="checks"><label><input type="checkbox" id="c-st" name="c-st"> Stapelbar (bis 500 kg je Palette)</label><label><input type="checkbox" id="c-adr" name="c-adr"> Gefahrgut (ADR)</label><label><input type="checkbox" id="c-exp" name="c-exp"> Express, Abholung heute</label></div>
         <div class="row2">
           <div class="f"><label for="c-mail">E-Mail für das Angebot</label><input id="c-mail" name="c-mail" type="email" autocomplete="email" spellcheck="false" placeholder="z. B. einkauf@firma.de…"></div>
           <div class="f"><label for="c-date">Abholdatum</label><input id="c-date" name="c-date" type="date"></div>
@@ -444,7 +455,7 @@ button { cursor: pointer; }
         <div><span>Hof und Rampen</span><b>Am Güterbahnhof 7, Bielefeld</b><small>Beispieladresse · 14 Rampen, Einfahrt Tor 2</small></div>
       </div>
       <form id="contactForm" novalidate>
-        <div class="row2"><div class="f"><label for="k-name">Name</label><input id="k-name" name="k-name" autocomplete="name" placeholder="z. B. Anna Becker…"></div><div class="f"><label for="k-firma">Firma</label><input id="k-firma" name="k-firma" autocomplete="organization" placeholder="z. B. Becker Metallbau GmbH…"></div></div>
+        <div class="row2"><div class="f"><label for="k-name">Name</label><input id="k-name" name="k-name" autocomplete="name" placeholder="z. B. Anna Becker…"></div><div class="f"><label for="k-firma">Firma</label><input id="k-firma" name="k-firma" autocomplete="organization" placeholder="z. B. Muster GmbH 1…"></div></div>
         <div class="f"><label for="k-mail">E-Mail</label><input id="k-mail" name="k-mail" type="email" autocomplete="email" spellcheck="false" placeholder="z. B. anna.becker@firma.de…"></div>
         <div class="f"><label for="k-msg">Nachricht</label><textarea id="k-msg" name="k-msg" placeholder="z. B. Regelmäßig 10 Paletten pro Woche nach Wien…"></textarea></div>
         <div><button class="btn sig" type="submit">Nachricht senden</button></div>
@@ -455,7 +466,12 @@ button { cursor: pointer; }
 </section>
 </main>
 
-<footer class="foot"><div class="wrap"><span><b>Nordline Logistik</b> · Name und Daten aus Datenschutzgründen geändert.</span><a href="../de/websites.html">Weitere Beispiele ansehen</a></div></footer>
+<footer class="foot"><div class="wrap"><span><b>Nordline Logistik</b> · Beispiel-Website. Name, Personen und Daten sind aus Datenschutzgründen geändert.</span><nav aria-label="Rechtliches"><button type="button" class="lnk" data-legal="impressum">Impressum</button><button type="button" class="lnk" data-legal="datenschutz">Datenschutz</button><a href="../de/websites.html">Weitere Beispiele ansehen</a></nav></div></footer>
+
+<dialog class="legal" id="legalDlg" aria-labelledby="legalT">
+  <div class="legal-h"><h2 id="legalT">Impressum</h2><button type="button" class="legal-x" data-close aria-label="Schließen"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button></div>
+  <div class="legal-b" id="legalB"></div>
+</dialog>
 
 <script>
 (function () {
@@ -470,6 +486,7 @@ button { cursor: pointer; }
   var mb = $('menuBtn'), mn = $('mobileNav');
   mb.addEventListener('click', function () { var o = !mn.classList.contains('open'); mn.classList.toggle('open', o); mb.setAttribute('aria-expanded', String(o)); });
   mn.addEventListener('click', function (e) { if (e.target.tagName === 'A') { mn.classList.remove('open'); mb.setAttribute('aria-expanded', 'false'); } });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && mn.classList.contains('open')) { mn.classList.remove('open'); mb.setAttribute('aria-expanded', 'false'); mb.focus(); } });
 
   /* Abfahrtstafel */
   var TOURS = [['05:30', 'Hamburg · Hannover', '3'], ['06:45', 'Dortmund · Köln', '7'], ['08:15', 'Rotterdam', '11'], ['10:00', 'Berlin', '2'], ['12:30', 'Würzburg · München', '5'], ['14:00', 'Nürnberg · Wien', '9'], ['15:45', 'Köln', '7'], ['17:30', 'Warschau', '12'], ['19:15', 'Hamburg (Nachtlinie)', '3'], ['21:00', 'München (Nachtlinie)', '5'], ['22:30', 'Rotterdam (Nachtlinie)', '11']];
@@ -478,8 +495,7 @@ button { cursor: pointer; }
     var d = new Date(), now = d.getHours() * 60 + d.getMinutes();
     $('clock').textContent = TF.format(d);
     var idx = TOURS.findIndex(function (t) { return mins(t[0]) > now - 75; });
-    if (idx < 0) idx = TOURS.length - 8;
-    idx = Math.max(0, Math.min(idx - 1, TOURS.length - 8));
+    idx = idx < 0 ? TOURS.length - 8 : Math.max(0, Math.min(idx - 1, TOURS.length - 8));
     $('boardRows').innerHTML = TOURS.slice(idx, idx + 8).map(function (t) {
       var m = mins(t[0]), s = m < now - 20 ? ['on', 'Unterwegs'] : m <= now + 60 ? ['load', 'Verladung'] : ['plan', 'Geplant'];
       return '<tr><td class="t">' + t[0] + '</td><td class="ziel">' + t[1] + '</td><td class="rampe">' + t[2] + '</td><td><span class="st ' + s[0] + '">' + s[1] + '</span></td></tr>';
@@ -492,14 +508,15 @@ button { cursor: pointer; }
   function zone(plz) { return /^\d{5}$/.test(plz) ? +plz[0] : null; }
   function calc() {
     var lt = LT[$('c-lt').value], n = Math.max(0, Math.min(66, parseInt($('c-n').value, 10) || 0)), kg = Math.max(0, parseInt($('c-kg').value, 10) || 0);
-    var stack = $('c-st').checked && kg / Math.max(1, n) <= 500, adr = $('c-adr').checked, exp = $('c-exp').checked;
+    var heavy = kg / Math.max(1, n) > 500, stack = $('c-st').checked && !heavy, adr = $('c-adr').checked, exp = $('c-exp').checked;
     var places = stack ? Math.ceil(n / 2) : n, ldm = Math.round(places * lt.ldm * 10) / 10;
     var z1 = zone($('c-from').value.trim()), z2 = zone($('c-to').value.trim());
     var km = z1 === null || z2 === null ? null : Math.abs(z1 - z2) * 115 + 90;
     var ftl = ldm > 8 || kg > 12000;
-    var veh = kg > 24000 || ldm > 13.6 ? '2 Sattelzüge' : ftl ? 'Sattelzug' : ldm <= 2.4 && kg <= 1000 ? 'Transporter 3,5 t' : ldm <= 6.6 && kg <= 5000 ? 'Lkw 12 t' : 'Sattelzug (Teil)';
+    var trucks = Math.max(1, Math.ceil(ldm / 13.6 - 1e-9), Math.ceil(kg / 24000 - 1e-9));
+    var veh = trucks > 1 ? trucks + ' Sattelzüge' : ftl ? 'Sattelzug' : ldm <= 2.4 && kg <= 1000 ? 'Transporter 3,5 t' : ldm <= 6.6 && kg <= 5000 ? 'Lkw 12 t' : 'Sattelzug (Teil)';
     $('r-ldm').textContent = NF1.format(ldm) + ' m';
-    $('r-pl').textContent = NF0.format(places) + (stack ? ' (gestapelt)' : '');
+    $('r-pl').textContent = NF0.format(places) + (stack ? ' (gestapelt)' : $('c-st').checked && heavy ? ' (zu schwer zum Stapeln)' : '');
     $('r-veh').textContent = veh;
     $('r-lz').textContent = km === null ? '–' : exp ? 'heute / morgen' : km <= 450 ? '24 h' : '24–48 h';
     var t = '';
@@ -507,16 +524,21 @@ button { cursor: pointer; }
     $('trailer').innerHTML = t;
     $('trailer').setAttribute('aria-label', 'Belegung: ' + NF1.format(ldm) + ' von 13,6 Lademetern');
     if (km === null || n === 0) { $('r-price').textContent = '–'; $('r-type').textContent = 'Bitte gültige fünfstellige Postleitzahlen und eine Anzahl eingeben.'; return; }
-    var full = km * 1.45 + 140, price = ftl ? full : Math.max(95, full * Math.min(1, ldm / 13.6) * 1.3 + 45);
+    var full = km * 1.45 + 140, price = ftl ? full * trucks : Math.max(95, full * Math.min(1, ldm / 13.6) * 1.3 + 45);
     if (adr) price *= 1.18; if (exp) price *= 1.35;
     $('r-price').textContent = EUR.format(Math.round(price * 0.93 / 5) * 5) + ' – ' + EUR.format(Math.round(price * 1.07 / 5) * 5);
     $('r-type').textContent = (ftl ? 'Komplettladung' : 'Teilladung') + ' · ca. ' + NF0.format(km) + ' km · ' + NF0.format(n) + ' ' + lt.name + (adr ? ' · ADR' : '') + (exp ? ' · Express' : '');
   }
   ['c-from', 'c-to', 'c-lt', 'c-n', 'c-kg', 'c-st', 'c-adr', 'c-exp'].forEach(function (id) { $(id).addEventListener('input', calc); $(id).addEventListener('change', calc); });
-  try { var dd = new Date(); dd.setDate(dd.getDate() + 1); $('c-date').value = dd.toISOString().slice(0, 10); } catch (e) {}
+  function isoDay(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  var todayIso = isoDay(new Date());
+  $('c-date').min = todayIso;
+  (function () { var dd = new Date(); dd.setDate(dd.getDate() + 1); $('c-date').value = isoDay(dd); })();
+  $('c-exp').addEventListener('change', function () { if (this.checked) { $('c-date').value = todayIso; clearErr($('c-date')); } });
   calc();
 
   function fieldErr(id, msg) {
+    var form = $(id).form; if (form) form.querySelectorAll('.status').forEach(function (s) { s.hidden = true; });
     var el = $(id), e = $(id + '-err');
     if (!e) { e = document.createElement('span'); e.id = id + '-err'; e.className = 'err'; el.parentNode.appendChild(e); }
     e.textContent = msg; el.setAttribute('aria-invalid', 'true'); el.setAttribute('aria-describedby', e.id); el.focus();
@@ -527,13 +549,19 @@ button { cursor: pointer; }
     e.preventDefault();
     if (!/^\d{5}$/.test($('c-from').value.trim())) return fieldErr('c-from', 'Bitte eine fünfstellige Postleitzahl eingeben, z. B. 33602.');
     if (!/^\d{5}$/.test($('c-to').value.trim())) return fieldErr('c-to', 'Bitte eine fünfstellige Postleitzahl eingeben, z. B. 80331.');
-    var m = $('c-mail'); if (!m.value.trim() || !m.checkValidity()) return fieldErr('c-mail', 'Bitte eine gültige E-Mail-Adresse eingeben, an die das Angebot gehen soll.');
+    var cn = parseInt($('c-n').value, 10); if (!(cn >= 1 && cn <= 66)) return fieldErr('c-n', 'Bitte 1 bis 66 Ladungsträger eingeben.');
+    var ck = parseInt($('c-kg').value, 10); if (!(ck >= 1 && ck <= 40000)) return fieldErr('c-kg', 'Bitte das Gewicht in kg eingeben, höchstens 40.000.');
+    var m = $('c-mail'); if (!m.value.trim() || !m.checkValidity() || !/\.[a-z]{2,}$/i.test(m.value.trim())) return fieldErr('c-mail', 'Bitte eine gültige E-Mail-Adresse eingeben, an die das Angebot gehen soll.');
+    var dv = $('c-date').value; if (!dv) return fieldErr('c-date', 'Bitte ein Abholdatum wählen.');
+    if (dv < todayIso) return fieldErr('c-date', 'Das Abholdatum liegt in der Vergangenheit.');
+    if ($('c-exp').checked && dv !== todayIso) return fieldErr('c-date', 'Express heißt Abholung heute. Bitte das heutige Datum wählen oder Express abwählen.');
     var st = $('calcStatus'); st.textContent = 'Demo: In der echten Website ginge jetzt die Anfrage an die Disposition. Es wurde nichts gesendet.'; st.hidden = false;
   });
   $('contactForm').addEventListener('submit', function (e) {
     e.preventDefault();
     if (!$('k-name').value.trim()) return fieldErr('k-name', 'Bitte Ihren Namen eingeben.');
-    var m = $('k-mail'); if (!m.value.trim() || !m.checkValidity()) return fieldErr('k-mail', 'Bitte eine gültige E-Mail-Adresse eingeben, damit wir antworten können.');
+    var m = $('k-mail'); if (!m.value.trim() || !m.checkValidity() || !/\.[a-z]{2,}$/i.test(m.value.trim())) return fieldErr('k-mail', 'Bitte eine gültige E-Mail-Adresse eingeben, damit wir antworten können.');
+    if ($('k-msg').value.trim().length < 5) return fieldErr('k-msg', 'Bitte schreiben Sie kurz, worum es geht.');
     var st = $('contactStatus'); st.textContent = 'Demo: In der echten Website ginge die Nachricht jetzt an die Disposition. Es wurde nichts gesendet.'; st.hidden = false;
   });
 
@@ -541,7 +569,7 @@ button { cursor: pointer; }
   function at(h, m, dayOff) { var d = new Date(); d.setDate(d.getDate() + (dayOff || 0)); d.setHours(h, m, 0, 0); return d; }
   function fmtAt(d) { return DF.format(d).replace('.,', ',') + ', ' + TF.format(d); }
   var SHIP = {
-    'NL-48117': { stops: [['Abholung', 'Bielefeld'], ['Umschlag', 'Würzburg'], ['Zustellung', 'München']], cur: 1, eta: 'Heute, 10:00–12:00', ev: [[at(15, 40, -1), 'Abgeholt bei Becker Metallbau, Bielefeld · 8 Europaletten'], [at(19, 5, -1), 'Abfahrt Hof Bielefeld, Nachtlinie München'], [at(2, 50, 0), 'Umschlag Würzburg, Rampe 4'], [at(5, 30, 0), 'Auf Zustelltour, Fahrer informiert den Empfänger per Avis']] },
+    'NL-48117': { stops: [['Abholung', 'Bielefeld'], ['Umschlag', 'Würzburg'], ['Zustellung', 'München']], cur: 1, eta: 'Heute, 10:00–12:00', ev: [[at(15, 40, -1), 'Abgeholt bei Muster GmbH 1, Bielefeld · 8 Europaletten'], [at(19, 5, -1), 'Abfahrt Hof Bielefeld, Nachtlinie München'], [at(2, 50, 0), 'Umschlag Würzburg, Rampe 4'], [at(5, 30, 0), 'Auf Zustelltour, Fahrer informiert den Empfänger per Avis']] },
     'NL-48092': { stops: [['Abholung', 'Bielefeld'], ['Linie', 'Hannover'], ['Zustellung', 'Hamburg']], cur: 3, eta: 'Zugestellt', ev: [[at(14, 10, -2), 'Abgeholt im Lager Bielefeld · 3 Gitterboxen'], [at(5, 30, -1), 'Abfahrt Linie Hamburg'], [at(9, 47, -1), 'Zugestellt in Hamburg, unterschrieben von „T. Weber“'], [at(9, 52, -1), 'Ablieferbeleg als PDF bereitgestellt']] },
     'NL-48230': { stops: [['Abholung', 'Gütersloh'], ['Hof', 'Bielefeld'], ['Zustellung', 'Wien']], cur: 0, eta: 'Übermorgen, 08:00–14:00', ev: [[at(9, 12, 0), 'Auftrag angelegt, 14 Europaletten, ADR Klasse 3'], [at(9, 40, 0), 'Abholung geplant: morgen 07:00–09:00']] }
   };
@@ -560,6 +588,15 @@ button { cursor: pointer; }
     if (/^\d+$/.test(v)) v = 'NL-' + v;
     showShip(v);
   });
+  var LEGAL = {
+    impressum: ['Impressum', '<p>Platzhalter für das Impressum.</p><p class="muted">Auf einer echten Website stünden hier Firmenname, Anschrift, Geschäftsführung, Handelsregister, USt-IdNr. und Kontakt.</p>'],
+    datenschutz: ['Datenschutz', '<p>Platzhalter für die Datenschutzerklärung.</p><p class="muted">Diese Beispiel-Website lädt keine externen Schriften oder Skripte, setzt keine Cookies und sendet keine Formulardaten. Eingaben bleiben auf Ihrem Gerät.</p>']
+  };
+  var ldlg = $('legalDlg'), lastF = null;
+  document.querySelectorAll('[data-legal]').forEach(function (b) { b.addEventListener('click', function () { var L = LEGAL[b.dataset.legal]; lastF = b; $('legalT').textContent = L[0]; $('legalB').innerHTML = L[1]; ldlg.showModal(); ldlg.querySelector('[data-close]').focus(); }); });
+  ldlg.addEventListener('click', function (e) { if (e.target === ldlg || e.target.closest('[data-close]')) ldlg.close(); });
+  ldlg.addEventListener('close', function () { if (lastF) lastF.focus(); });
+
   document.querySelectorAll('.samples button').forEach(function (b) { b.addEventListener('click', function () { $('t-nr').value = b.dataset.nr; clearErr($('t-nr')); showShip(b.dataset.nr); }); });
 })();
 </script>

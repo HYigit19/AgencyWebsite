@@ -3,7 +3,7 @@
 
   // Remember language choice when switching.
   document.querySelectorAll(".lang a").forEach(function (a) {
-    a.addEventListener("click", function () { store("nexvio-lang", a.getAttribute("hreflang")); });
+    a.addEventListener("click", function () { store("devunox-lang", a.getAttribute("hreflang")); });
   });
 
   // Mobile menu

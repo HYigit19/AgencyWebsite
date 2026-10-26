@@ -5,7 +5,7 @@
 @font-face { font-family: "Onest"; font-weight: 100 900; font-display: swap; src: url(fonts/onest-ext.woff2) format("woff2");
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
 
-/* Nexvio "Signal hell": light, soft rounded surfaces with signal-orange actions and wide geometric display type.
+/* Devunox AI "Signal hell": light, soft rounded surfaces with signal-orange actions and wide geometric display type.
    The live automation feed in the hero is the one moving part; the demo screenshots carry the page. */
 :root {
   --ink: #141417;
@@ -85,6 +85,9 @@ a { color: inherit; }
 .top-in { display: flex; align-items: center; gap: 20px; padding-block: 12px; }
 .logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font: 700 1.2rem/1 var(--font-display); letter-spacing: -0.03em; color: inherit; }
 .logo svg { width: 32px; height: 32px; flex: none; }
+.logo .logo-ai { font-weight: inherit; color: var(--o-text); margin-left: 0.28em; }
+@media (max-width: 440px) { .logo { font-size: 0.95rem; gap: 7px; } .logo svg { width: 27px; height: 27px; } }
+@media (max-width: 370px) { .logo { font-size: 0.86rem; gap: 6px; } .logo svg { width: 25px; height: 25px; } }
 .pill-nav { display: flex; gap: 2px; margin-left: auto; background: var(--soft); border: 1px solid var(--line); border-radius: 999px; padding: 4px; }
 .pill-nav a { text-decoration: none; color: var(--muted); font-size: 0.92rem; font-weight: 500; padding: 9px 16px; border-radius: 999px; transition: color .2s, background .2s; }
 .pill-nav a:hover { color: var(--fg); background: var(--card); }

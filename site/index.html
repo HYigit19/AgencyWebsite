@@ -3,22 +3,22 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Nexvio</title>
+<title>Devunox AI</title>
 <meta name="robots" content="noindex, follow">
-<link rel="alternate" hreflang="de" href="https://www.nexvio.de/de/">
-<link rel="alternate" hreflang="en" href="https://www.nexvio.de/en/">
-<link rel="alternate" hreflang="x-default" href="https://www.nexvio.de/de/">
+<link rel="alternate" hreflang="de" href="https://www.devunox.ai/de/">
+<link rel="alternate" hreflang="en" href="https://www.devunox.ai/en/">
+<link rel="alternate" hreflang="x-default" href="https://www.devunox.ai/de/">
 <link rel="stylesheet" href="assets/styles.css?v=n6">
 </head>
 <body>
 <main class="w chooser">
-  <a class="logo" href="de/index.html" style="justify-content:center"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="16" fill="#ff5a1f"/><path d="M10.5 22.5v-7a5.25 5.25 0 0 1 10.5 0v7" fill="none" stroke="#141417" stroke-width="3.2" stroke-linecap="round"/><circle cx="24.6" cy="22.3" r="2.1" fill="#141417"/></svg><span>nexvio</span></a>
+  <a class="logo" href="de/index.html" style="justify-content:center"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="16" fill="#ff5a1f"/><circle cx="13.6" cy="18.2" r="4.9" fill="none" stroke="#141417" stroke-width="3.2"/><path d="M18.5 9.5v13" fill="none" stroke="#141417" stroke-width="3.2" stroke-linecap="round"/><circle cx="24.4" cy="22.3" r="2.1" fill="#141417"/></svg><span>devunox<b class="logo-ai">ai</b></span></a>
   <div class="row"><a class="btn btn-o" href="de/index.html" hreflang="de">Deutsch</a><a class="btn btn-line" href="en/index.html" hreflang="en">English</a></div>
 </main>
 <script>
 (function () {
   var pref = null;
-  try { pref = localStorage.getItem("nexvio-lang"); } catch (e) {}
+  try { pref = localStorage.getItem("devunox-lang"); } catch (e) {}
   var nav = (navigator.language || "de").slice(0, 2).toLowerCase();
   var lang = pref || (nav === "de" ? "de" : "en");
   location.replace(lang === "en" ? "en/index.html" : "de/index.html");

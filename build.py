@@ -1,4 +1,4 @@
-"""Baut die Nexvio-Website: kopiert den Ordner site/ nach dist/.
+"""Baut die Devunox-AI-Website: kopiert den Ordner site/ nach dist/.
 
 Cloudflare Pages ruft dieses Skript bei jedem Push auf (Build command: python3 build.py,
 Build output directory: dist). Es gibt keinen weiteren Build-Schritt.

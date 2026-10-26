@@ -56,6 +56,7 @@ a { color: var(--accent); text-underline-offset: .18em; text-decoration-thicknes
 img, svg { display: block; }
 [hidden] { display: none !important; }
 :focus-visible { outline: 2.5px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+a.sr.skip:focus { position: fixed !important; left: 12px; top: 12px; width: auto; height: auto; clip: auto; clip-path: none; z-index: 200; background: var(--surface); color: var(--accent); padding: 10px 14px; border-radius: 9px; box-shadow: var(--shadow-pop); font-weight: 600; }
 .sr { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
 .ico { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .ico.sm { width: 16px; height: 16px; }
@@ -622,7 +623,7 @@ dialog .dlg-form { display: flex; flex-direction: column; min-height: 0; flex: 1
   <symbol id="brandmark" viewBox="0 0 32 32"><rect x="3" y="3" width="26" height="26" rx="7" fill="#1B2130"/><rect x="8" y="15.5" width="16" height="6" rx="1.5" fill="#FFE14D" transform="rotate(-4 16 18.5)"/><path d="M9 11h14M9 15h9" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/><path d="M9 19h11" stroke="#1B2130" stroke-width="2.2" stroke-linecap="round"/></symbol>
 </svg>
 
-<a class="sr" href="#view" id="skip">Zum Inhalt springen</a>
+<a class="sr skip" href="#view" id="skip" data-act="skip">Zum Inhalt springen</a>
 <div class="app">
   <aside class="side" aria-label="Hauptnavigation">
     <a class="brand" href="#/start" aria-label="Muster GmbH Wissen, Startseite"><svg class="brand-mark"><use href="#brandmark"/></svg><div><b>Wissen</b><span>Muster GmbH</span></div></a>
@@ -1151,8 +1152,8 @@ const POPULAR = [
   'Wie viel Hotelkosten werden erstattet?'
 ];
 /* ---------- Suche: BM25 über Absätze, mit Umlaut-Faltung, grobem Stemming, Komposita und Synonymen ---------- */
-const STOP = new Set(('wann warum weshalb lange oft genau eigentlich immer welches aber alle allem allen aller alles als also am an andere anderen auch auf aus bei beim bin bis bitte bist da damit dann das dass dein deine dem den der des dessen die dies diese diesem diesen dieser dieses doch dort du durch ein eine einem einen einer eines einige er es etwa euch euer fur gibt gilt hab habe haben hat hatte hier ich ihr ihre ihrem ihren ihrer im in ins ist ja jede jedem jeden jeder jedes kann kein keine konnen mal man mich mir mit muss mussen nach nicht noch nur ob oder ohne sein seine sich sie sind so soll sollen sollte uber um und uns unser unter vom von vor war waren was weil welche welchem welchen welcher wenn wer werden wie wieviel viel viele wir wird wo woher wohin zu zum zur darf durfen tun mache machen bekomme bekommen geht gehe mein meine meinem meinen einen bzw etc ca gegen sowie wurde wurden werde lasst lassen bekommt').split(' '));
-const INTENT = new Set(['kummert', 'kummer', 'find', 'finde', 'liegt', 'zustandig', 'zustandigkeit', 'ansprechpartn', 'ansprechpartner', 'verantwortlich', 'kontakt', 'ablag', 'ablage', 'abgelegt', 'gespeichert']);
+const STOP = new Set(('wann warum weshalb lange oft genau eigentlich immer welches aber alle allem allen aller alles als also am an andere anderen auch auf aus bei beim bin bis bitte bist da damit dann das dass dein deine dem den der des dessen die dies diese diesem diesen dieser dieses doch dort du durch ein eine einem einen einer eines einige er es etwa euch euer fur gibt gilt hab habe haben hat hatte hier ich ihr ihre ihrem ihren ihrer im in ins ist ja jede jedem jeden jeder jedes kann kein keine konnen mal man mich mir mit muss mussen nach nicht noch nur ob oder ohne sein seine sich sie sind so soll sollen sollte uber um und uns unser unter vom von vor war waren was weil welche welchem welchen welcher wenn wer werden wie wieviel viel viele wir wird wo woher wohin zu zum zur darf durfen tun mache machen bekomme bekommen geht gehe mein meine meinem meinen einen bzw etc ca gegen sowie wurde wurden werde lasst lassen bekommt hoch hohe hoher bedeutet bedeuten bedeutung heisst meint nehmen nehme passiert brauche braucht brauchen gelten genau').split(' '));
+const INTENT = new Set(['kummert', 'kummer', 'find', 'finde', 'liegt', 'zustandig', 'zustandigkeit', 'ansprechpartn', 'ansprechpartner', 'verantwortlich', 'kontakt', 'ablag', 'ablage', 'abgelegt', 'gespeichert', 'erlaubt', 'moglich', 'zulassig']);
 const SYN_GROUPS = [
   ['urlaub', 'ferien', 'freistellung', 'abwesenheit', 'urlaubstag'],
   ['beantrag', 'antrag', 'anmeld'],
@@ -1180,7 +1181,7 @@ const SYN_GROUPS = [
   ['meld', 'anmeld', 'gemeldet'],
   ['arbeitszeit', 'gleitzeit', 'kernzeit'],
   ['essen', 'kantin', 'mittagess', 'speiseplan'],
-  ['unfall', 'arbeitsunfall', 'verletzung', 'ersthelf', 'erst'],
+  ['unfall', 'arbeitsunfall', 'verletzung', 'ersthelf'],
   ['skonto', 'zahlungsziel', 'zahlungsbeding'],
   ['wlan', 'internet', 'netz'],
   ['schlussel', 'zutrittskart', 'ausweis']
@@ -1191,7 +1192,7 @@ function fold(s) {
     .replace(/ä/g, 'a').replace(/ö/g, 'o').replace(/ü/g, 'u').replace(/ß/g, 'ss')
     .normalize('NFD').replace(/[̀-ͯ]/g, '')
     .replace(/ae/g, 'a').replace(/oe/g, 'o').replace(/ue/g, 'u')
-    .replace(/%/g, ' prozent ').replace(/€/g, ' euro ');
+    .replace(/%/g, ' prozent ').replace(/€/g, ' euro ').replace(/±/g, ' toleranz ');
 }
 function stem(w) {
   if (/^\d/.test(w) || w.length <= 4) return w;
@@ -1239,6 +1240,7 @@ function expand(t) {
       if (v.startsWith(t)) add(v, 0.7);
       else if (v.includes(t)) add(v, t.length >= 5 ? 0.55 : 0.5);
       else if (v.length >= 5 && t.startsWith(v)) add(v, 0.45);
+      else if (v.length >= 5 && t.length - v.length >= 3 && t.endsWith(v)) add(v, 0.5); // Kompositum: Verpflegungs|pauschale
     }
     if (SYN.has(t)) for (const s of SYN.get(t)) if (s.length >= 4) for (const v of IDX.vocab) if (v !== s && v.startsWith(s)) add(v, 0.5);
   }
@@ -1338,20 +1340,27 @@ function compose(q) {
   const top = pool[0];
   const chosen = [top];
   const perSource = new Map([[top.u.src, 1]]);
-  for (const x of pool.slice(1)) {
+  // Absätze aus demselben Abschnitt wie der beste Treffer zuerst (der Abschnittstitel passt zur Frage)
+  const sameSec = x => x.u.kind === 'doc' && x.u.src === top.u.src && x.u.si === top.u.si;
+  const rest = pool.slice(1).filter(x => sameSec(x) && x.score >= top.score * 0.4).concat(pool.slice(1).filter(x => !(sameSec(x) && x.score >= top.score * 0.4)));
+  for (const x of rest) {
     if (chosen.length >= 3) break;
-    if (x.score < top.score * 0.5) break;
-    if (!x.textCov) continue;
+    if (x.score < top.score * (sameSec(x) ? 0.4 : 0.5)) continue;
+    if (!x.textCov && !sameSec(x)) continue;
     if ((perSource.get(x.u.src) || 0) >= 2) continue;
     if ((x.u.kind === 'who' || x.u.kind === 'person') && chosen.some(c => c.u.kind === 'who' || c.u.kind === 'person') && x.score < top.score * 0.92) continue;
     chosen.push(x); perSource.set(x.u.src, (perSource.get(x.u.src) || 0) + 1);
   }
+  // Absätze desselben Abschnitts in Lesereihenfolge
+  const grp = c => c.u.kind === 'doc' ? c.u.src + ':' + c.u.si : c.u.key;
+  const rank = new Map(); chosen.forEach((c, i) => { if (!rank.has(grp(c))) rank.set(grp(c), i); });
+  chosen.sort((a, b) => rank.get(grp(a)) - rank.get(grp(b)) || (a.u.pi || 0) - (b.u.pi || 0));
   out.ok = true;
   chosen.forEach((c, i) => {
     const n = i + 1;
     const u = c.u;
     let used = [];
-    if (u.kind === 'who' || u.kind === 'person' || u.kind === 'where') used = [u.text];
+    if (u.kind === 'who' || u.kind === 'person' || u.kind === 'where' || (u.text.length <= 300 && !u.list)) used = [u.text];
     else {
       const ss = splitSentences(u.text);
       const scored = ss.map((s, j) => ({ s, j, sc: sentenceScore(s, r.terms) + (j === 0 ? 0.05 : 0) }));
@@ -1359,7 +1368,9 @@ function compose(q) {
       const pick = [best[0]];
       if (best[1] && best[1].sc > 0.5 && Math.abs(best[1].j - best[0].j) <= (i === 0 ? 2 : 1)) pick.push(best[1]);
       if (i === 0 && pick.length === 1 && ss.length > 1) { const nx = scored[best[0].j + 1]; if (nx && nx.s.length < 200) pick.push(nx); }
-      used = pick.sort((a, b) => a.j - b.j).map(p => p.s);
+      // Lücken schließen, damit die Sätze zusammenhängend bleiben
+      const js = pick.map(p => p.j); const lo = Math.min(...js), hi = Math.max(...js);
+      used = scored.slice(lo, hi + 1).map(p => p.s);
     }
     out.cites.push({ n, c, used });
     out.parts.push({ n, kind: u.kind, u, used });
@@ -1757,7 +1768,7 @@ function rebuildIndex() {
     mdBlocks(v.body).forEach((b, i) => {
       if (b.t === 'h') { head = inlinePlain(b.text); return; }
       const text = b.t === 'p' ? inlinePlain(b.text) : b.items.map(it => { const t = inlinePlain(it).trim(); return /[.!?:]$/.test(t) ? t : t + '.'; }).join(' ');
-      units.push({ key: `w:${w.slug}:${i}`, kind: 'wiki', src: 'w:' + w.slug, ref: w.slug, bi: i, title: v.title, head, text });
+      units.push({ key: `w:${w.slug}:${i}`, kind: 'wiki', src: 'w:' + w.slug, ref: w.slug, bi: i, title: v.title, head, text, list: b.t !== 'p' });
     });
   }
   for (const o of S.where) units.push({ key: 'o:' + o.id, kind: 'where', src: 'o:' + o.id, ref: o.id, title: o.topic, head: dn(o.area), text: `${o.topic}: ${o.place} (${o.system}).${o.hint ? ' ' + o.hint : ''}`, extra: 'ablage ablageort liegt finden' });
@@ -1773,19 +1784,19 @@ function rebuildIndex() {
 const dlg = $('#dlg');
 let LAST_FOCUS = null, DLG_CLOSE = null;
 function openDlg({ title, sub = '', body, foot = '', wide = false, form = '', data = '', onClose = null }) {
-  if (dlg.open) dlg.close();
+  const wasOpen = dlg.open;
+  if (wasOpen) { const cb = DLG_CLOSE; DLG_CLOSE = null; cb && cb(); } // Inhalt ersetzen, Dialog bleibt offen
   dlg.className = wide ? 'wide' : '';
   const inner = `<div class="dlg-body">${body}</div>${foot ? `<div class="dlg-foot">${foot}</div>` : ''}`;
   dlg.innerHTML = `<div class="dlg-head"><div style="flex:1;min-width:0"><h2 id="dlgTitle">${title}</h2>${sub ? `<p>${sub}</p>` : ''}</div><button type="button" class="btn sm icon quiet" data-act="dlg-close" aria-label="Schließen">${ico('x')}</button></div>` +
     (form ? `<form class="dlg-form" data-form="${form}" ${data} novalidate>${inner}</form>` : inner);
-  LAST_FOCUS = document.activeElement;
   DLG_CLOSE = onClose;
-  dlg.showModal();
+  if (!wasOpen) { LAST_FOCUS = document.activeElement; dlg.showModal(); }
   const f = dlg.querySelector('[autofocus]') || dlg.querySelector('.dlg-body input:not([type=file]):not(.sr), .dlg-body select, .dlg-body textarea, .dlg-body button') || dlg.querySelector('[data-act="dlg-close"]');
   f && f.focus();
 }
 function closeDlg() { if (dlg.open) dlg.close(); }
-dlg.addEventListener('close', () => { const cb = DLG_CLOSE; DLG_CLOSE = null; cb && cb(); if (LAST_FOCUS && document.contains(LAST_FOCUS)) LAST_FOCUS.focus(); });
+dlg.addEventListener('close', () => { const cb = DLG_CLOSE; DLG_CLOSE = null; if (LAST_FOCUS && document.contains(LAST_FOCUS)) LAST_FOCUS.focus(); cb && cb(); });
 dlg.addEventListener('click', e => { if (e.target === dlg) closeDlg(); });
 
 function toast(msg, action, ms) {
@@ -1804,7 +1815,7 @@ function guard(what, fn) {
   if (S.role === 'red') return fn();
   toast(`${what} ist in der Demo der Redaktion vorbehalten.`, { label: 'Als Redaktion fortfahren', fn: () => { setRole('red'); fn(); } });
 }
-function setRole(r) { S.role = r; save(); renderChrome(); render(true); announce(r === 'red' ? 'Rolle: Redaktion' : 'Rolle: Mitarbeiter'); }
+function setRole(r) { if (S.role === r) return; S.role = r; save(); renderChrome(); render(true); announce(r === 'red' ? 'Rolle: Redaktion' : 'Rolle: Mitarbeiter'); }
 
 /* ---------- Navigation ---------- */
 const NAV = [
@@ -1816,8 +1827,10 @@ const NAV = [
   { k: 'wer', label: 'Wer ist zuständig?', ico: 'who', href: '#/wer' }
 ];
 function route() {
-  const h = decodeURI(location.hash.slice(1)) || '/start';
-  const [path, qs] = h.split('?');
+  const raw = location.hash.slice(1) || '/start';
+  const qi = raw.indexOf('?');
+  let path = qi < 0 ? raw : raw.slice(0, qi); const qs = qi < 0 ? '' : raw.slice(qi + 1);
+  try { path = decodeURIComponent(path); } catch (e) { /* ungültige Kodierung: Rohwert */ }
   const parts = path.split('/').filter(Boolean);
   return { name: parts[0] || 'start', args: parts.slice(1), params: new URLSearchParams(qs || '') };
 }
@@ -1878,7 +1891,7 @@ function vStart() {
     <a class="stat" href="#/bibliothek"><b>${NF0.format(docs.length)}</b><span>Dokumente</span></a>
     <a class="stat" href="#/wiki"><b>${NF0.format(S.wiki.length)}</b><span>Wiki-Seiten</span></a>
     <div class="stat"><b>${NF0.format(weekCount())}</b><span>Fragen diese Woche</span></div>
-    <a class="stat open" href="#offen"><b>${NF0.format(oq.length)}</b><span>Fragen ohne Antwort</span></a>
+    <a class="stat open" href="#/start" data-act="to-open"><b>${NF0.format(oq.length)}</b><span>Fragen ohne Antwort</span></a>
   </div>
   <div class="home-grid">
     <div>
@@ -1893,11 +1906,12 @@ function vStart() {
 }
 
 let LAST_LOGGED = '';
+const qkey = q => fold(q).replace(/[^a-z0-9]+/g, ' ').trim();
+const logFind = q => { const k = qkey(q); return S.log.find(l => qkey(l.q) === k); };
 function logQuestion(q, ok, owner) {
-  const f = fold(q).replace(/[^a-z0-9]+/g, ' ').trim();
-  const ex = S.log.find(l => fold(l.q).replace(/[^a-z0-9]+/g, ' ').trim() === f);
+  const ex = logFind(q);
   const now = new Date().toISOString();
-  if (ex) { ex.count = (ex.count || 1) + 1; ex.ts = now; if (ok) ex.answered = true; else if (!ex.answered && !ex.owner) ex.owner = owner; save(); return ex; }
+  if (ex) { ex.count = (ex.count || 1) + 1; ex.ts = now; ex.answered = !!ok; if (ok) delete ex.reason; else if (!ex.owner) ex.owner = owner; save(); return ex; }
   const e = { id: 'q' + Date.now().toString(36), q, ts: now, answered: ok, owner: ok ? null : owner, count: 1, own: true };
   S.log.push(e); if (S.log.length > 80) S.log.splice(0, S.log.length - 80); save(); return e;
 }
@@ -1969,7 +1983,7 @@ function resultsHtml(A) {
     </article>
     <section class="sources" aria-labelledby="src-h"><h2 class="sec" id="src-h">Quellen</h2><ol class="list">${srcs}</ol></section>`;
   } else {
-    const l = S.log.find(x => fold(x.q) === fold(q)); const o = person((l && l.owner) || guessOwner(q));
+    const l = logFind(q); const o = person((l && l.owner) || guessOwner(q));
     main = `<article class="noanswer reveal"><h2>Dazu gibt es noch keine Antwort</h2>
       <p class="muted" style="margin:0 0 12px;max-width:62ch">In Dokumenten, Wiki, Ablageorten und Zuständigkeiten steht nichts, das Ihre Frage sicher beantwortet. Die Frage steht jetzt bei den offenen Fragen.</p>
       <p style="margin:0 0 14px">Ergänzen sollte das: ${plink(o.id)} <span class="muted small">${esc(dn(o.dept))}</span></p>
@@ -2100,10 +2114,19 @@ function notFound(msg, href, label) { return `<div class="page-head"><div><h1 id
 /* Wiki */
 function vWiki(R) {
   const slug = R.args[0];
-  if (slug === 'neu') return wikiEditor(null, R);
-  const w = wikiPage(slug || 'willkommen') || S.wiki[0];
-  if (!w) return notFound('Diese Wiki-Seite gibt es nicht.', '#/wiki', 'Zum Wiki');
-  if (R.args[1] === 'bearbeiten') { if (S.role !== 'red') { setTimeout(() => guard('Bearbeiten', () => go(`#/wiki/${w.slug}/bearbeiten`)), 0); } else return wikiEditor(w, R); }
+  if (slug === 'neu') {
+    if (S.role === 'red') return wikiEditor(null, R);
+    const want = location.hash; history.replaceState(null, '', '#/wiki');
+    setTimeout(() => guard(R.params.get('frage') ? 'Antworten anlegen' : 'Seiten anlegen', () => go(want)), 0);
+    return vWiki({ name: 'wiki', args: [], params: new URLSearchParams('') });
+  }
+  const w = slug ? wikiPage(slug) : (wikiPage('willkommen') || S.wiki[0]);
+  if (!w) return notFound('Diese Wiki-Seite gibt es nicht oder sie wurde umbenannt.', '#/wiki', 'Zum Wiki');
+  if (R.args[1] === 'bearbeiten') {
+    if (S.role === 'red') return wikiEditor(w, R);
+    const want = location.hash; history.replaceState(null, '', `#/wiki/${w.slug}`);
+    setTimeout(() => guard('Bearbeiten', () => go(want)), 0);
+  }
   pushRecent('wiki', w.slug);
   const v = wcur(w); const q = R.params.get('q') || ''; const b = R.params.has('b') ? Number(R.params.get('b')) : null;
   const refs = mdRefs(v.body);
@@ -2177,7 +2200,7 @@ function versionsDlg(slug, sel) {
 }
 
 /* Wo finde ich was? */
-const WO = { text: '', area: '' };
+const WO = { text: '', area: '', hash: '' };
 function dirTabs(cur) { return `<div class="seg dir-tabs" role="tablist" aria-label="Verzeichnis"><button type="button" role="tab" aria-selected="${cur === 'wo'}" data-act="nav" data-href="#/wo">Wo finde ich was?</button><button type="button" role="tab" aria-selected="${cur === 'wer'}" data-act="nav" data-href="#/wer">Wer ist zuständig?</button></div>`; }
 function pathHtml(o) {
   const isDrive = /^[A-Z]:\\/.test(o.place);
@@ -2185,6 +2208,11 @@ function pathHtml(o) {
 }
 function vWo(R) {
   const target = R.params.get('id');
+  if (WO.hash !== location.hash) { // Sprungziel aus einer Antwort: Filter, die es verdecken würden, lösen
+    WO.hash = location.hash;
+    const t = target && S.where.find(o => o.id === target);
+    if (t && ((WO.area && WO.area !== t.area) || (WO.text && !fold(`${t.topic} ${t.place} ${t.system} ${t.hint} ${dn(t.area)}`).includes(fold(WO.text))))) { WO.area = ''; WO.text = ''; }
+  }
   const f = fold(WO.text);
   const items = S.where.filter(o => (!WO.area || o.area === WO.area) && (!f || fold(`${o.topic} ${o.place} ${o.system} ${o.hint} ${dn(o.area)}`).includes(f)));
   const areas = DEPT_ORDER.filter(k => S.where.some(o => o.area === k));
@@ -2199,12 +2227,18 @@ function vWo(R) {
 }
 
 /* Wer ist zuständig? */
-const WER = { text: '', kind: '', mode: 'list' };
+const WER = { text: '', kind: '', mode: 'list', hash: '' };
 function vWer(R) {
   const target = R.params.get('id'); const ptarget = R.params.get('p');
-  if (R.params.get('ansicht') === 'org') WER.mode = 'org';
+  const matchT = (z, txt) => { const p = person(z.person), d = person(z.deputy); return !txt || fold(`${z.topic} ${z.kind} ${p.name} ${p.role} ${d.name} ${dn(p.dept)} ${z.note}`).includes(txt); };
+  if (WER.hash !== location.hash) { // Parameter nur beim Aufruf übernehmen, danach gelten die Schalter
+    WER.hash = location.hash;
+    if (R.params.get('ansicht') === 'org' || ptarget) { WER.mode = 'org'; if (ptarget && WER.text) WER.text = ''; }
+    const t = target && S.who.find(z => z.id === target);
+    if (t) { WER.mode = 'list'; if ((WER.kind && WER.kind !== t.kind) || !matchT(t, fold(WER.text))) { WER.kind = ''; WER.text = ''; } }
+  }
   const f = fold(WER.text);
-  const match = z => { const p = person(z.person), d = person(z.deputy); return !f || fold(`${z.topic} ${z.kind} ${p.name} ${p.role} ${d.name} ${dn(p.dept)} ${z.note}`).includes(f); };
+  const match = z => matchT(z, f);
   const items = S.who.filter(z => (!WER.kind || z.kind === WER.kind) && match(z));
   const kinds = ['Kunde', 'Lieferant', 'Prozess', 'Thema'];
   const kindLabel = { Kunde: 'Kunden', Lieferant: 'Lieferanten', Prozess: 'Prozesse', Thema: 'Themen' };
@@ -2284,12 +2318,13 @@ const MAX_BYTES = 30 * 1048576;
 function openUpload() {
   guard('Hochladen', () => {
     UP = { stage: 'pick' };
-    openDlg({ title: 'Dokument hochladen', sub: 'PDF, Word (DOCX), TXT oder Markdown. Der Text wird direkt im Browser ausgelesen und ist danach sofort durchsuchbar.', body: '', form: 'upload', foot: '<span></span>' });
+    openDlg({ title: 'Dokument hochladen', sub: 'PDF, Word (DOCX), TXT oder Markdown. Der Text wird direkt im Browser ausgelesen und ist danach sofort durchsuchbar.', body: '', form: 'upload', foot: '<span></span>', onClose: () => { UP = null; } });
     upRender();
   });
 }
 function upRender() {
-  const bodyEl = dlg.querySelector('.dlg-body'), footEl = dlg.querySelector('.dlg-foot'); if (!bodyEl || !UP) return;
+  if (!UP || !dlg.open || !dlg.querySelector('[data-form="upload"]')) return;
+  const bodyEl = dlg.querySelector('.dlg-body'), footEl = dlg.querySelector('.dlg-foot'); if (!bodyEl) return;
   let b = '', f = '';
   if (UP.stage === 'pick') {
     b = `<label class="drop" for="upFile" id="dropZone">${ico('upload', 'lg')}<b>Datei hierher ziehen oder auswählen</b><span class="muted">PDF, DOCX, TXT oder MD, höchstens 30 MB</span></label>
@@ -2320,7 +2355,7 @@ function upRender() {
   }
   if (UP.stage === 'review') { const t = $('#mTitle'); t && t.focus(); }
 }
-function upFail(msg, title) { UP = { stage: 'pick', error: msg, errorTitle: title }; upRender(); announce(msg); const dz = $('#dropZone'); dz && dz.focus(); }
+function upFail(msg, title) { if (!UP || !dlg.open) return; UP = { stage: 'pick', error: msg, errorTitle: title }; upRender(); announce(msg); const fi = $('#upFile'); fi && fi.focus(); }
 async function upHandle(file, isSample) {
   const ext = (file.name.match(/\.([a-z0-9]+)$/i) || [, ''])[1].toLowerCase();
   if (ext === 'doc') return upFail('Alte Word-Dateien (.doc) bitte in Word unter „Speichern unter“ als DOCX speichern und erneut hochladen.', 'Dateityp nicht unterstützt');
@@ -2338,7 +2373,7 @@ async function upHandle(file, isSample) {
     if (!UP || UP.token !== token) return;
     return upFail(e instanceof UserError ? e.message : 'Die Datei konnte nicht gelesen werden. Vermutlich ist sie beschädigt oder hat ein unerwartetes Format.', 'Datei nicht übernommen');
   }
-  if (!UP || UP.token !== token || !dlg.open) return;
+  if (!UP || UP.token !== token || !dlg.open || !dlg.querySelector('[data-form="upload"]')) return;
   let chars = 0, truncated = false;
   for (const s of parsed.sections) { s.x = s.x.filter(p => { if (chars > 400000) { truncated = true; return false; } chars += p.t.length; return true; }); }
   parsed.sections = parsed.sections.filter(s => s.x.length || s.h);
@@ -2437,7 +2472,7 @@ const ACT = {
   },
   'role-pick': el => { setRole(el.dataset.role); $$('[data-act="role-pick"]', dlg).forEach(b => b.setAttribute('aria-pressed', String(b.dataset.role === S.role))); },
   reset: () => openDlg({ title: 'Demo zurücksetzen?', body: '<p style="margin:0">Alle Beispieldaten werden neu geladen. Hochgeladene Dokumente, Wiki-Änderungen und gestellte Fragen gehen dabei verloren.</p>', foot: `<button type="button" class="btn" data-act="dlg-close">Abbrechen</button><button type="button" class="btn primary" data-act="reset-do">Demo zurücksetzen</button>` }),
-  'reset-do': () => { store.del(); idbClear(); ORIG.clear(); S = seed(); save(); Object.assign(LIB, { dept: '', type: '', tag: '', text: '', sel: null }); WO.text = WO.area = ''; WER.text = WER.kind = ''; closeDlg(); go('#/start'); toast('Demo zurückgesetzt.'); },
+  'reset-do': () => { store.del(); idbClear(); ORIG.clear(); S = seed(); save(); Object.assign(LIB, { dept: '', type: '', tag: '', text: '', sel: null }); WO.text = WO.area = ''; WER.text = WER.kind = ''; WER.mode = 'list'; HIDE_MARKS = false; MORE_FILTER = ''; LAST_LOGGED = ''; closeDlg(); go('#/start'); toast('Demo zurückgesetzt.'); },
   ask: el => go('#/fragen?q=' + encodeURIComponent(el.dataset.q)),
   refocus: () => { const i = $('#q-page'); if (i) { i.focus(); i.select(); } },
   cite: (el, e) => { e.preventDefault(); const t = $('#src-' + el.dataset.n); if (t) { $$('.src.on').forEach(x => x.classList.remove('on')); t.classList.add('on'); t.scrollIntoView({ block: 'nearest', behavior: reduceMotion() ? 'auto' : 'smooth' }); const a = t.querySelector('h3 a, h3 button'); a && a.focus({ preventScroll: true }); } },
@@ -2446,7 +2481,7 @@ const ACT = {
     const box = el.closest('.helpful');
     if (el.dataset.v === '1') { box.innerHTML = `<span>${ico('check', 'sm')}</span><span>Danke für die Rückmeldung.</span>`; announce('Danke für die Rückmeldung.'); }
     else {
-      const l = S.log.find(x => fold(x.q) === fold(q));
+      const l = logFind(q);
       if (l) { l.answered = false; l.owner = l.owner || guessOwner(q); l.reason = 'Antwort war nicht hilfreich'; save(); }
       box.innerHTML = `<span>Danke. Die Frage steht jetzt bei den offenen Fragen, ${esc(person(l ? l.owner : 'p2').name)} ergänzt die Antwort.</span>`;
       announce('Frage an die Redaktion übergeben.');
@@ -2518,20 +2553,27 @@ const ACT = {
     ta.dispatchEvent(new Event('input')); closeDlg();
   },
   'wo-area': el => { WO.area = el.dataset.v; render(true); const b = $(`[data-act="wo-area"][data-v="${WO.area}"]`); b && b.focus(); },
-  copy: async el => { const v = el.dataset.v; let ok = false; try { await navigator.clipboard.writeText(v); ok = true; } catch (e) { ok = false; } toast(ok ? 'Pfad kopiert.' : `Kopieren nicht möglich. Pfad: ${v}`); },
+  copy: async el => {
+    const v = el.dataset.v; let ok = false;
+    try { await navigator.clipboard.writeText(v); ok = true; } catch (e) { ok = false; }
+    if (!ok) { try { const ta = document.createElement('textarea'); ta.value = v; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0'; document.body.appendChild(ta); ta.select(); ok = document.execCommand('copy'); ta.remove(); el.focus(); } catch (e) { ok = false; } }
+    toast(ok ? `Pfad kopiert: ${v}` : `Kopieren nicht möglich. Pfad: ${v}`);
+  },
   'where-edit': el => guard('Bearbeiten', () => whereDlg(el.dataset.id)),
   'where-del': el => { const id = el.dataset.id; const i = S.where.findIndex(x => x.id === id); const [o] = S.where.splice(i, 1); save(); closeDlg(); render(true); toast(`„${o.topic}“ entfernt.`, { label: 'Rückgängig', fn: () => { S.where.splice(i, 0, o); save(); render(true); } }); },
   'who-edit': el => guard('Zuständigkeiten pflegen', () => whoDlg(el.dataset.id)),
   'who-del': el => { const id = el.dataset.id; const i = S.who.findIndex(x => x.id === id); const [z] = S.who.splice(i, 1); save(); closeDlg(); render(true); toast(`„${z.topic}“ entfernt.`, { label: 'Rückgängig', fn: () => { S.who.splice(i, 0, z); save(); render(true); } }); },
   'wer-mode': el => { WER.mode = el.dataset.v; render(true); const b = $(`[data-act="wer-mode"][data-v="${WER.mode}"]`); b && b.focus(); },
   'wer-kind': el => { WER.kind = el.dataset.v; render(true); const b = $(`[data-act="wer-kind"][data-v="${WER.kind}"]`); b && b.focus(); },
-  nav: el => go(el.dataset.href)
+  nav: el => go(el.dataset.href),
+  skip: (el, e) => { e.preventDefault(); const v = $('#view'); const h = $('#h1'); (h || v).focus(); (h || v).scrollIntoView({ block: 'start' }); },
+  'to-open': (el, e) => { e.preventDefault(); const t = $('#offen'); if (t) { t.scrollIntoView({ block: 'start', behavior: reduceMotion() ? 'auto' : 'smooth' }); t.focus({ preventScroll: true }); } }
 };
 let PICK = null;
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-act]'); if (!el) return;
   const fn = ACT[el.dataset.act]; if (!fn) return;
-  if (el.tagName === 'A' && !['cite', 'toc', 'lib-tag'].includes(el.dataset.act)) { if (el.dataset.act === 'dlg-go') closeDlg(); return; }
+  if (el.tagName === 'A' && !['cite', 'toc', 'lib-tag', 'skip', 'to-open'].includes(el.dataset.act)) { if (el.dataset.act === 'dlg-go') closeDlg(); return; }
   fn(el, e);
 });
 const SUBMIT = {
@@ -2539,6 +2581,7 @@ const SUBMIT = {
   topsearch: f => { const q = f.q.value.trim(); if (!q) return; MORE_FILTER = ''; f.q.value = ''; f.q.blur(); go('#/fragen?q=' + encodeURIComponent(q)); },
   upload: f => { if (UP && UP.stage === 'review') upSave(f); },
   'wiki-save': f => {
+    if (S.role !== 'red') return guard('Speichern', () => SUBMIT['wiki-save'](f));
     const v = readForm(f);
     if (!v.title) { const e = $('#wTitleErr'); e.textContent = 'Bitte einen Titel eingeben.'; e.hidden = false; $('#wTitle').setAttribute('aria-invalid', 'true'); $('#wTitle').focus(); return; }
     let slug = f.dataset.slug; const now = new Date().toISOString();
@@ -2553,8 +2596,9 @@ const SUBMIT = {
     setErr(f, 'zDeputy', v.deputy === v.person ? 'Die Vertretung muss eine andere Person sein.' : ''); if (v.deputy === v.person) bad = true;
     if (bad) { (f.querySelector('[aria-invalid="true"]') || f).focus(); return; }
     const id = f.dataset.id;
-    if (id) Object.assign(S.who.find(x => x.id === id), v); else S.who.unshift({ id: 'z' + Date.now().toString(36), ...v });
-    save(); closeDlg(); WER.mode = 'list'; render(true); toast(id ? 'Zuständigkeit gespeichert.' : 'Zuständigkeit hinzugefügt. Die Suche kennt sie ab sofort.');
+    const nid = id || 'z' + Date.now().toString(36);
+    if (id) Object.assign(S.who.find(x => x.id === id), v); else S.who.unshift({ id: nid, ...v });
+    save(); closeDlg(); WER.hash = ''; go('#/wer?id=' + nid); toast(id ? 'Zuständigkeit gespeichert.' : 'Zuständigkeit hinzugefügt. Die Suche kennt sie ab sofort.');
   },
   'where-save': f => {
     const v = readForm(f); let bad = false;
@@ -2562,8 +2606,9 @@ const SUBMIT = {
     setErr(f, 'oPlace', v.place ? '' : 'Bitte den Ablageort eingeben.'); if (!v.place) bad = true;
     if (bad) { (f.querySelector('[aria-invalid="true"]') || f).focus(); return; }
     const id = f.dataset.id;
-    if (id) Object.assign(S.where.find(x => x.id === id), v); else S.where.push({ id: 'o' + Date.now().toString(36), ...v });
-    save(); closeDlg(); render(true); toast(id ? 'Eintrag gespeichert.' : 'Eintrag hinzugefügt.');
+    const nid = id || 'o' + Date.now().toString(36);
+    if (id) Object.assign(S.where.find(x => x.id === id), v); else S.where.push({ id: nid, ...v });
+    save(); closeDlg(); WO.hash = ''; go('#/wo?id=' + nid); toast(id ? 'Eintrag gespeichert.' : 'Eintrag hinzugefügt. Die Suche kennt ihn ab sofort.');
   },
   'meta-save': f => {
     const v = readForm(f);
@@ -2600,7 +2645,7 @@ document.addEventListener('keydown', e => {
     else if ($('#topQ').offsetParent) { e.preventDefault(); $('#topQ').focus(); }
   }
 });
-addEventListener('hashchange', () => { const R = route(); if (R.name !== 'fragen') MORE_FILTER = ''; if (dlg.open) closeDlg(); render(); });
+addEventListener('hashchange', () => { MORE_FILTER = ''; if (dlg.open) closeDlg(); render(); });
 addEventListener('scroll', () => { $('#top').classList.toggle('scrolled', window.scrollY > 4); }, { passive: true });
 addEventListener('storage', e => { if (e.key === KEY) { const n = store.get(); if (n) { S = n; IDX.dirty = true; render(true); } } });
 

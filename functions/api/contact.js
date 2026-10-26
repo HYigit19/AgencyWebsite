@@ -2,9 +2,10 @@
  * Kontaktformular der devunoxAI-Website (Cloudflare Pages Function)
  * POST /api/contact  ->  E-Mail an CONTACT_TO (Standard: yigit@devunox-consulting.com)
  *
- * Versand über Cloudflare Email Service, in dieser Reihenfolge:
- *   1. Binding "EMAIL" (send_email), falls im Pages-Projekt verfügbar
- *   2. REST-API mit CF_ACCOUNT_ID und CF_EMAIL_TOKEN (Secret)
+ * Versand, in dieser Reihenfolge:
+ *   1. Service-Binding "MAILER" auf den Worker devunox-kontakt-mailer (workers/kontakt-mailer, kostenlos über Email Routing)
+ *   2. Binding "EMAIL" (send_email), falls im Pages-Projekt verfügbar
+ *   3. Cloudflare Email Service REST-API mit CF_ACCOUNT_ID und CF_EMAIL_TOKEN (Secret, Workers Paid)
  *
  * Variablen im Pages-Projekt (Settings → Variables and Secrets):
  *   CF_ACCOUNT_ID   Cloudflare-Konto-ID
@@ -72,6 +73,11 @@ export async function onRequestPost({ request, env }) {
 <p style="color:#5c5c6b;font-size:13px;margin-top:16px">Antworten: einfach auf diese E-Mail antworten oder an <a href="mailto:${esc(email)}">${esc(email)}</a> schreiben.</p></div>`;
 
   try {
+    // Kostenloser Weg: Mail-Worker "devunox-kontakt-mailer" über Service-Binding MAILER (Email Routing)
+    if (env.MAILER && typeof env.MAILER.send === "function") {
+      await env.MAILER.send({ subject, text, html, replyTo: email, replyName: name });
+      return json({ ok: true });
+    }
     if (env.EMAIL && typeof env.EMAIL.send === "function") {
       await env.EMAIL.send({ to, from: { email: from, name: "devunoxAI Website" }, replyTo: { email, name }, subject, text, html });
       return json({ ok: true });

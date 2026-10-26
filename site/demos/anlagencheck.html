@@ -6,6 +6,7 @@
 <meta name="description" content="AnlagenCheck: Prüfungen und Wartung per QR-Code am Handy, mit Leitstand für Instandhaltung und Büro.">
 <meta name="theme-color" content="#E4E7E5">
 <title>AnlagenCheck</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='2' width='28' height='28' rx='7' fill='%23005A61'/%3E%3Cpath d='M8 8h6v6H8zM18 8h6v6h-6zM8 18h6v6H8zM18 18h2v2h-2zM22 22h2v2h-2zM18 22h2v2h-2zM22 18h2v2h-2z' fill='%23fff'/%3E%3C/svg%3E">
 <style>
 /* Gestaltung: Hallengrau (RAL-7035-Anmutung) als Grund, Wasserblau als Arbeitsfarbe.
    Das prägende Element ist das Anlagen-Typenschild (gebürstetes Aluminium, Nieten, QR) und die Prüfplakette.
@@ -653,10 +654,12 @@ dialog.dlg-s{width:min(520px,calc(100vw - 32px))}
   .vf .laser{display:none}
 }
 @media print{
-  body *{visibility:hidden}
-  dialog.dlg[open],dialog.dlg[open] *{visibility:visible}
-  dialog.dlg[open]{position:absolute;left:0;top:0;width:100%;max-height:none;box-shadow:none}
-  .dlg-h button{display:none}
+  body>*:not(dialog){display:none!important}
+  body{background:#fff}
+  dialog.dlg[open]{position:static;width:100%;max-height:none;overflow:visible;box-shadow:none;border-radius:0}
+  dialog.dlg::backdrop{background:none}
+  .dlg-toasts{display:none}
+  .dlg-h button,dialog.dlg .btn{display:none}
 }
 </style>
 </head>
@@ -1054,8 +1057,13 @@ function save(now) {
       } catch (e2) { storageOk = false; }
     }
   };
-  if (now) run(); else saveT = setTimeout(run, 250);
+  if (now) { savePending = false; run(); } else { savePending = true; saveT = setTimeout(() => { savePending = false; run(); }, 250); }
 }
+let savePending = false;
+// Beim Schließen oder Wegwechseln nichts verlieren
+const flushSave = () => { if (savePending && S) save(true); };
+window.addEventListener('pagehide', flushSave);
+document.addEventListener('visibilitychange', () => { if (document.hidden) flushSave(); });
 let ui = { lsTab: 'maengel', mFilter: 'offen', pFilter: 'alle' };
 try { const u = JSON.parse(localStorage.getItem(UIKEY) || 'null'); if (u) ui = Object.assign(ui, u); } catch (e) {}
 const saveUi = () => { try { localStorage.setItem(UIKEY, JSON.stringify(ui)); } catch (e) {} };
@@ -1096,6 +1104,9 @@ function weekStats() {
 }
 const tolText = it => it.min == null ? 'Zählerstand' : it.min === 0 ? `bis ${nfd(it.max, it.dec)} ${it.u}` : `${nfd(it.min, it.dec)} bis ${nfd(it.max, it.dec)} ${it.u}`;
 const evalVal = (it, v) => v == null || isNaN(v) ? null : it.min == null ? 'io' : (v >= it.min && v <= it.max ? 'io' : 'nio');
+// Zählerstand darf nicht unter dem letzten Stand liegen
+const counterLow = (it, v) => it.min == null && v != null && S.draft && v < ST(S.draft.anlage).bh;
+const evalItem = (it, v) => counterLow(it, v) ? null : evalVal(it, v);
 const parseNum = s => { s = String(s || '').trim().replace(/\s/g, '').replace(/\.(?=\d{3}(\D|$))/g, '').replace(',', '.'); if (!s || !/^-?\d*\.?\d+$/.test(s)) return null; return parseFloat(s); };
 
 /* ================= QR und Fotos ================= */
@@ -1306,6 +1317,7 @@ sheetLayer.addEventListener('keydown', e => {
 });
 
 /* ---------- Bildschirm: Aufgaben ---------- */
+function shift(t = Date.now()) { const h = new Date(t).getHours(); return h >= 6 && h < 14 ? 'Frühschicht' : h >= 14 && h < 22 ? 'Spätschicht' : 'Nachtschicht'; }
 function greet() { const h = new Date().getHours(); return h < 11 ? 'Guten Morgen' : h < 18 ? 'Guten Tag' : 'Guten Abend'; }
 function taskRow(t) {
   const a = DEF(t.id);
@@ -1316,7 +1328,7 @@ SCREENS.aufgaben = v => {
   const d = S.draft;
   const showDemo = isMobile() && !S.demo.done && !S.demo.dismissed;
   v.innerHTML = `
-  <div class="lt"><div class="lt-row"><div style="flex:1;min-width:0"><p class="lt-sub">${fLong.format(Date.now())}, Frühschicht</p><h1>${greet()}, Jonas</h1></div>
+  <div class="lt"><div class="lt-row"><div style="flex:1;min-width:0"><p class="lt-sub">${fLong.format(Date.now())}, ${shift()}</p><h1>${greet()}, Jonas</h1></div>
   <button class="a-ic only-m" type="button" data-a="to-ls" aria-label="Leitstand ansehen">${ic('monitor')}</button></div></div>
   ${showDemo ? `<div class="demo-task" role="note"><div><b>Ihre Aufgabe in dieser Demo</b><p>Scannen Sie den QR-Code an Maschine <strong>CNC-07</strong> und führen Sie die Wochenprüfung durch.</p></div><button class="x" type="button" data-a="demo-dismiss" aria-label="Hinweis ausblenden">${ic('x')}</button></div>` : ''}
   ${d ? `<div class="a-sec"><div class="a-card" style="padding:14px;display:flex;gap:12px;align-items:center;box-shadow:inset 0 0 0 2px var(--accent)"><span class="tag-id">${d.anlage}</span><div style="flex:1;min-width:0"><div style="font-weight:700">${esc(ST(d.anlage).plans[d.plan].art)} läuft</div><div style="font-size:13.5px;color:var(--ink-2)">${answered(d)} von ${CL[d.cl].items.length} Punkten erfasst</div></div><button class="go" type="button" data-a="resume" style="border:0;border-radius:12px;background:var(--accent);color:#fff;font-weight:700;min-height:44px;padding:0 14px">Fortsetzen</button></div></div>` : ''}
@@ -1396,6 +1408,7 @@ function simulateScan(id) {
   setTimeout(() => scanHit(qrCode(id), vf), 700);
 }
 function scanHit(raw, vf) {
+  if (cur().name !== 'scan' || !$('#scan-state')) { scanBusy = false; stopCamera(); return; }
   scanBusy = true;
   vf = vf || $('#vf');
   const mt = /^ANLAGE:([A-Z]{3}-\d{2})$/.exec(String(raw).trim());
@@ -1413,9 +1426,9 @@ function scanHit(raw, vf) {
   if (a.id === 'CNC-07' && !S.demo.scanned) S.demo.scanned = true;
   addFeed({ kind: 'scan', anlage: a.id, t: `${a.id} gescannt`, s: `${ME}, Handy`, src: 'app' });
   changed([a.id]);
-  setTimeout(() => { go('akte', { id: a.id, scanned: true }); }, 650);
+  setTimeout(() => { if (cur().name === 'scan') go('akte', { id: a.id, scanned: true }); }, 650);
 }
-function startLoopAgain() { const st = $('#scan-state'); if (st) st.textContent = 'Kamera aktiv. QR-Schild in den Rahmen halten.'; startCamera(); }
+function startLoopAgain() { if (cur().name !== 'scan') { stopCamera(); return; } const st = $('#scan-state'); if (st) st.textContent = 'Kamera aktiv. QR-Schild in den Rahmen halten.'; stopCamera(); startCamera(); }
 
 /* ---------- Bildschirm: Anlagenakte ---------- */
 SCREENS.akte = (v, { id, scanned }) => {
@@ -1441,7 +1454,7 @@ SCREENS.akte = (v, { id, scanned }) => {
   <div class="big-act"><button class="abtn warn" type="button" data-a="melden" data-v="${id}">${ic('alert')}Mangel melden</button></div>
   <div class="a-sec"><h2>Zähler</h2><div class="a-card counter"><div><div class="v">${nf0.format(s.bh)}<small>h</small></div><div class="s">Betriebsstunden</div></div><button class="go ghost" type="button" data-a="zaehler" data-v="${id}" style="border:0;border-radius:12px;background:var(--surface-2);box-shadow:inset 0 0 0 1px var(--line);font-weight:700;min-height:44px;padding:0 14px">Stand erfassen</button></div></div>
   <div class="a-sec"><h2>Offene Mängel <span class="c">${om.length}</span></h2>${om.length ? `<ul class="a-list">${om.map(x => `<li class="plan-row" style="align-items:flex-start"><span class="pr pr-${x.prio}">${PRIO[x.prio]}</span><div class="grow"><div class="t" style="font-size:15px">${esc(x.titel)}</div><div class="s">${x.id}, ${esc(x.von)}, ${relTime(x.ts)}${x.zust ? `<br>${MSTAT[x.status]}: ${esc(x.zust)}` : ''}</div></div>${x.foto ? `<img src="${imgSrc(x.foto)}" alt="Foto zu ${x.id}" style="width:56px;height:42px;object-fit:cover;border-radius:8px">` : ''}</li>`).join('')}</ul>` : `<div class="a-card a-empty">Keine offenen Mängel.</div>`}</div>
-  <div class="a-sec"><h2>Letzte Prüfungen</h2>${prs.length ? `<ul class="a-list">${prs.map(p => `<li><button class="a-row" type="button" data-a="proto" data-v="${p.id}"><span class="grow"><span class="t" style="display:block">${esc(p.art)}</span><span class="s" style="display:block">${fDs.format(p.ts)}, ${fT.format(p.ts)}, ${esc(p.pruefer)}</span></span><span class="res ${p.gesamt}">${p.gesamt === 'io' ? 'i. O.' : p.maengel.length + ' Mangel'}</span>${ic('right', 'chev')}</button></li>`).join('')}</ul>` : `<div class="a-card a-empty">Noch keine Prüfung erfasst.</div>`}</div>
+  <div class="a-sec"><h2>Letzte Prüfungen</h2>${prs.length ? `<ul class="a-list">${prs.map(p => `<li><button class="a-row" type="button" data-a="proto" data-v="${p.id}"><span class="grow"><span class="t" style="display:block">${esc(p.art)}</span><span class="s" style="display:block">${fDs.format(p.ts)}, ${fT.format(p.ts)}, ${esc(p.pruefer)}</span></span><span class="res ${p.gesamt}">${p.gesamt === 'io' ? 'i. O.' : p.maengel.length + (p.maengel.length === 1 ? ' Mangel' : ' Mängel')}</span>${ic('right', 'chev')}</button></li>`).join('')}</ul>` : `<div class="a-card a-empty">Noch keine Prüfung erfasst.</div>`}</div>
   <div class="a-sec"><h2>Kenndaten</h2><dl class="a-card kv2"><dt>Bezeichnung</dt><dd>${esc(a.modell)}</dd><dt>Hersteller</dt><dd>${esc(a.her)}</dd><dt>Baujahr</dt><dd>${a.bj}</dd><dt>Serien-Nr.</dt><dd>${esc(a.sn)}</dd><dt>Inventar-Nr.</dt><dd>${esc(a.inv)}</dd><dt>Standort</dt><dd>${esc(a.halle)}, ${esc(a.linie)}, ${esc(a.platz)}</dd></dl></div>
   <div class="a-sec"><h2>Dokumente</h2><ul class="a-list">${DOCS(a.typ).map(d => `<li><button class="a-row" type="button" data-a="doc" data-v="${id}" data-k="${d.k}"><span class="doc-ic ${d.f === 'PDF' ? 'pdf' : ''}">${d.f}</span><span class="grow"><span class="t" style="display:block">${esc(d.t)}</span><span class="s" style="display:block">${esc(d.k === 'pp' ? CL[a.typ].code + ', Version ' + CL[a.typ].ver + ', ' + cl0.items.length + ' Punkte' : d.s)}</span></span>${ic('right', 'chev')}</button></li>`).join('')}</ul></div>
   <div style="height:20px"></div>`;
@@ -1461,7 +1474,7 @@ function startPruefung(id, pi) {
   const p = ST(id).plans[pi];
   S.draft = { anlage: id, plan: pi, cl: p.cl, start: Date.now(), items: {}, sig: null, ok: false, fed: {} };
   CL[p.cl].items.forEach(it => { S.draft.items[it.id] = { res: null, val: null, raw: '', note: '', fotos: [], prio: it.prio, stop: it.stop, noteOpen: false }; });
-  if (id === 'CNC-07') S.demo.started = true;
+  if (id === 'CNC-07' && pi === 0) S.demo.started = true;
   addFeed({ kind: 'start', anlage: id, t: `${p.art} an ${id} gestartet`, s: `${ME}, Handy`, src: 'app' });
   changed([id]);
   go('check');
@@ -1499,7 +1512,7 @@ SCREENS.check = v => {
   const d = S.draft;
   if (!d) { v.innerHTML = appBar('Prüfung') + `<div class="a-sec"><div class="a-card a-empty">Keine Prüfung offen.</div></div>`; return; }
   const a = DEF(d.anlage), p = ST(d.anlage).plans[d.plan], cl = CL[d.cl];
-  v.innerHTML = appBar(esc(p.art), `<span class="id" style="font-size:17px;padding-right:8px">${a.id}</span>`, `<div class="prog-t" id="prog-t"></div><div class="prog"><i id="prog-i"></i></div>`, 'Anlage') + `
+  v.innerHTML = appBar(esc(p.art), `<span class="id" style="font-size:17px;padding-right:8px">${a.id}</span>`, `<div class="prog-t" id="prog-t"></div><div class="prog"><i id="prog-i"></i></div>`, nav.stack.length > 1 && nav.stack[nav.stack.length - 2].name === 'akte' ? 'Anlage' : 'Zurück') + `
   <div class="cl-intro"><b>${a.id} ${esc(a.name)}</b><br>Prüfplan ${cl.code}, Version ${cl.ver}, etwa ${cl.min} Minuten. Jede Eingabe wird sofort gespeichert.</div>
   ${cl.items.map((it, i) => itemHTML(it, i, d.items[it.id])).join('')}
   <div class="dock"><p class="hint" id="dock-hint"></p><button class="abtn" type="button" data-a="to-sign" id="to-sign">Weiter zur Unterschrift</button></div>`;
@@ -1514,6 +1527,7 @@ function updateProgress(v) {
   const nio = Object.values(d.items).filter(x => x.res === 'nio').length;
   if (h) h.textContent = n < tot ? `Noch ${tot - n} ${tot - n === 1 ? 'Punkt' : 'Punkte'} offen` : nio ? `${nio} ${nio === 1 ? 'Abweichung wird' : 'Abweichungen werden'} als Mangel gemeldet` : 'Alle Punkte erfasst';
   if (b) b.setAttribute('aria-disabled', n < tot ? 'true' : 'false');
+  if (isDemoDraft(d)) { renderTaskcard(); renderLsTask(); }
 }
 function updateItem(iid, v) {
   v = v || viewsEl.querySelector('.view:not(.leaving)');
@@ -1525,9 +1539,10 @@ function updateItem(iid, v) {
     const mi = $('#mi-' + iid, v), me = $('#me-' + iid, v), mk = $('#mk-' + iid, v), na = card.querySelector('.na-btn'), inp = $('#v-' + iid, v);
     na.setAttribute('aria-pressed', di.res === 'na');
     inp.disabled = di.res === 'na';
-    mi.classList.toggle('bad', di.res === 'nio'); mi.classList.toggle('good', di.res === 'io');
+    mi.classList.toggle('bad', di.res === 'nio' || (di.res !== 'na' && counterLow(it, di.val))); mi.classList.toggle('good', di.res === 'io');
     if (di.res === 'na') { me.className = 'mess-eval'; me.textContent = 'Nicht anwendbar'; }
     else if (di.val == null) { me.className = 'mess-eval'; me.textContent = di.raw ? 'Bitte eine Zahl eingeben, zum Beispiel 48,5.' : ''; }
+    else if (counterLow(it, di.val)) { me.className = 'mess-eval bad'; me.textContent = `Kleiner als der letzte Stand von ${nf0.format(ST(d.anlage).bh)} h. Bitte Zähler erneut ablesen.`; }
     else if (it.min == null) { me.className = 'mess-eval good'; me.textContent = 'Zählerstand erfasst'; }
     else if (di.res === 'io') { me.className = 'mess-eval good'; me.textContent = `${nfd(di.val, it.dec)} ${it.u} liegt in der Toleranz`; }
     else { const dir = di.val < it.min ? 'unter' : 'über'; const diff = di.val < it.min ? it.min - di.val : di.val - it.max; me.className = 'mess-eval bad'; me.textContent = `Außerhalb der Toleranz: ${nfd(diff, it.dec)} ${it.u} ${dir} dem Grenzwert`; }
@@ -1677,7 +1692,7 @@ function finish() {
   created.forEach(mg => addFeed({ kind: 'mangel', anlage: a.id, ref: mg.id, t: `Mangel ${mg.id} gemeldet: ${mg.titel}`, s: `Aus Prüfung ${pid}, Priorität ${PRIO[mg.prio]}`, src: 'app' }));
   const stop = created.find(mg => mg.still);
   if (stop && !s.still) { s.still = true; s.stillTs = now; s.stillRef = stop.id; addFeed({ kind: 'still', anlage: a.id, ref: stop.id, t: `${a.id} stillgelegt`, s: `Wegen ${stop.id}, ${ME}, Handy`, src: 'app' }); }
-  if (a.id === 'CNC-07') { S.demo.done = true; S.demo.pid = pid; }
+  if (isDemoDraft(d) && !S.demo.done) { S.demo.done = true; S.demo.pid = pid; }
   S.draft = null;
   lastNew.pruef = pid;
   save(true);
@@ -1704,7 +1719,7 @@ SCREENS.fertig = (v, { pid }) => {
   const s = ST(p.anlage), next = nextDue(s.plans[p.plan]);
   v.innerHTML = `<div class="done-wrap"><div class="plakette drop">${plaketteSVG(next)}</div>
   <h1 style="font-family:var(--f-id);font-size:32px;font-weight:800;margin:10px 0 6px;line-height:1.05">Prüfung abgeschlossen</h1>
-  <p>${esc(p.art)} ${p.anlage} ist als Protokoll ${p.id} gespeichert.${p.maengel.length ? ` ${p.maengel.length} ${p.maengel.length === 1 ? 'Mangel ist' : 'Mängel sind'} gemeldet.` : ''} Der Leitstand sieht es sofort.</p></div>
+  <p>${esc(p.art)} ${p.anlage} ist als Protokoll <span style="white-space:nowrap">${p.id}</span> gespeichert.${p.maengel.length ? ` ${p.maengel.length} ${p.maengel.length === 1 ? 'Mangel ist' : 'Mängel sind'} gemeldet.` : ''} Der Leitstand sieht es sofort.</p></div>
   <div class="big-act" style="margin-top:22px">
     <button class="abtn" type="button" data-a="ls-show" data-v="${p.id}">${ic('monitor')}Im Leitstand ansehen</button>
     <button class="abtn sec" type="button" data-a="proto" data-v="${p.id}">${ic('doc')}Protokoll ansehen</button>
@@ -1762,13 +1777,13 @@ SCREENS.melden = (v, prm) => {
 
 /* ---------- Bildschirm: Verlauf ---------- */
 SCREENS.verlauf = v => {
-  const mine = S.pruef.filter(p => p.pruefer === ME).sort((x, y) => y.ts - x.ts).slice(0, 40);
+  const mine = S.pruef.filter(p => p.pruefer === ME && p.ts >= TODAY - 30 * DAY).sort((x, y) => y.ts - x.ts);
   const ws = weekStart(), wk = mine.filter(p => p.ts >= ws).length;
   const groups = []; let lastD = null;
   mine.forEach(p => { const dl = dayLabel(p.ts); if (dl !== lastD) { groups.push({ dl, items: [] }); lastD = dl; } groups[groups.length - 1].items.push(p); });
   v.innerHTML = `<div class="lt"><p class="lt-sub">Meine erledigten Prüfungen</p><h1>Verlauf</h1></div>
   <div class="sum3" style="grid-template-columns:1fr 1fr"><div><b>${wk}</b><span>diese Woche</span></div><div><b>${mine.length}</b><span>letzte 30 Tage</span></div></div>
-  ${groups.map(g => `<div class="a-sec"><h2>${g.dl}</h2><ul class="a-list">${g.items.map(p => { const a = DEF(p.anlage); return `<li><button class="a-row" type="button" data-a="proto" data-v="${p.id}"><span class="tag-id">${p.anlage}</span><span class="grow"><span class="t" style="display:block">${esc(p.art)}${p.neu ? ' <span class="feed-new">Neu</span>' : ''}</span><span class="s" style="display:block">${fT.format(p.ts)} Uhr, ${esc(a.name)}, ${p.id}</span></span><span class="res ${p.gesamt}">${p.gesamt === 'io' ? 'i. O.' : p.maengel.length + ' Mangel'}</span></button></li>`; }).join('')}</ul></div>`).join('') || `<div class="a-sec"><div class="a-card a-empty">Noch keine Prüfungen. Scannen Sie eine Anlage, um zu starten.</div></div>`}
+  ${groups.map(g => `<div class="a-sec"><h2>${g.dl}</h2><ul class="a-list">${g.items.map(p => { const a = DEF(p.anlage); return `<li><button class="a-row" type="button" data-a="proto" data-v="${p.id}"><span class="tag-id">${p.anlage}</span><span class="grow"><span class="t" style="display:block">${esc(p.art)}${p.neu ? ' <span class="feed-new">Neu</span>' : ''}</span><span class="s" style="display:block">${fT.format(p.ts)} Uhr, ${esc(a.name)}, ${p.id}</span></span><span class="res ${p.gesamt}">${p.gesamt === 'io' ? 'i. O.' : p.maengel.length + (p.maengel.length === 1 ? ' Mangel' : ' Mängel')}</span></button></li>`; }).join('')}</ul></div>`).join('') || `<div class="a-sec"><div class="a-card a-empty">Noch keine Prüfungen. Scannen Sie eine Anlage, um zu starten.</div></div>`}
   <div style="height:16px"></div>`;
 };
 
@@ -1834,7 +1849,7 @@ appEl.addEventListener('click', e => {
     case 'finish': finish(); break;
     case 'sig-auto': sigAuto(el.closest('.view')); break;
     case 'sig-clear': { const v = el.closest('.view'), cv = $('#sig', v); cv.getContext('2d').clearRect(0, 0, cv.width, cv.height); S.draft.sig = null; $('#sig-ph', v).hidden = false; save(); break; }
-    case 'na': { const di = S.draft.items[val], it = CL[S.draft.cl].items.find(x => x.id === val); if (di.res === 'na') { di.res = evalVal(it, di.val); updateItem(val); save(); } else setRes(val, 'na', true); break; }
+    case 'na': { const di = S.draft.items[val], it = CL[S.draft.cl].items.find(x => x.id === val); if (di.res === 'na') { di.res = evalItem(it, di.val); updateItem(val); save(); } else setRes(val, 'na', true); break; }
     case 'note': { const box = $('#nt-' + val), di = S.draft.items[val]; di.noteOpen = box.hidden; box.hidden = !box.hidden; el.setAttribute('aria-expanded', !box.hidden); if (!box.hidden) $('#ta-' + val).focus(); save(); break; }
     case 'foto': { const it = CL[S.draft.cl].items.find(x => x.id === val); fotoSheet(data => { S.draft.items[val].fotos.push(data || newDemoPhoto(S.draft.anlage)); updateItem(val); save(); appToast('Foto hinzugefügt'); }, `Punkt: ${it.t}`); break; }
     case 'foto-del': { const di = S.draft.items[val], k = +el.dataset.k, f = di.fotos.splice(k, 1)[0]; updateItem(val); save(); appToast('Foto entfernt', { label: 'Rückgängig', fn: () => { di.fotos.splice(k, 0, f); updateItem(val); save(); } }); break; }
@@ -1860,7 +1875,7 @@ function commitMess(inp, final) {
   const iid = inp.dataset.m, d = S.draft, di = d.items[iid], it = CL[d.cl].items.find(x => x.id === iid);
   di.raw = inp.value;
   di.val = parseNum(inp.value);
-  const r = evalVal(it, di.val);
+  const r = evalItem(it, di.val);
   if (final) { if (r) setRes(iid, r, false); else { di.res = null; updateItem(iid); save(); } }
   else {
     // während der Eingabe sofort bewerten, Mangel-Feed erst beim Verlassen des Feldes
@@ -1908,14 +1923,16 @@ function renderLS() {
 }
 function renderClock() {
   const n = Date.now();
-  $('#ls-clock').innerHTML = `<b>${fT.format(n)} Uhr</b>${fDs.format(n)}, KW ${isoWeek(n)}, Frühschicht`;
+  $('#ls-clock').innerHTML = `<b>${fT.format(n)} Uhr</b>${fDs.format(n)}, KW ${isoWeek(n)}, ${shift(n)}`;
   const sb = $('#sb-time'); if (sb) sb.textContent = new Intl.DateTimeFormat('de-DE', { hour: 'numeric', minute: '2-digit' }).format(n);
 }
+const isDemoDraft = dr => !!dr && dr.anlage === 'CNC-07' && dr.plan === 0;
+const demoChecked = () => isDemoDraft(S.draft) && answered(S.draft) === CL[S.draft.cl].items.length;
 function demoSteps() {
   const d = S.demo;
   return [
     ['QR-Code an CNC-07 scannen', d.scanned || d.done],
-    ['Wochenprüfung durchführen', d.done],
+    ['Wochenprüfung durchführen', d.done || demoChecked()],
     ['Unterschreiben und abschließen', d.done],
     ['Ergebnis im Leitstand ansehen', !!d.viewed]];
 }
@@ -1926,11 +1943,10 @@ function renderTaskcard() {
   tc.innerHTML = `<h2>${done ? 'Prüfung erledigt' : 'Ihre Aufgabe'}</h2>
   <p>${done ? `Protokoll <strong>${S.demo.pid}</strong> ist gespeichert. Schieben Sie das Handy zur Seite und sehen Sie, was im Leitstand angekommen ist.` : 'Scannen Sie den QR-Code an Maschine <strong>CNC-07</strong> und führen Sie die Wochenprüfung durch.'}</p>
   <ol class="tsteps">${st.map((s, i) => `<li class="${s[1] ? 'on' : i === curI ? 'cur' : ''}">${s[0]}</li>`).join('')}</ol>
-  ${done ? `<button class="btn btn-pri" type="button" data-shell="side" style="width:100%">${ic('side')}Leitstand ansehen</button>` : `<p class="note">Ohne zweites Handy: In der App auf Scannen tippen und das Schild CNC-07 wählen. Die Kamera funktioniert auch echt.</p>`}`;
+  ${done ? `<button class="btn btn-pri" type="button" data-shell="side" style="width:100%">${ic('side')}Leitstand ansehen</button>` : `<p class="note">Ohne zweites Handy: In der App auf Scannen tippen und das Schild CNC-07 wählen. Wo der Browser QR-Codes erkennt, etwa Chrome auf Android, geht auch die echte Kamera.</p>`}`;
 }
 function renderLsTask() {
   const box = $('#ls-task'), st = demoSteps();
-  if (S.demo.done && S.demo.viewed && S.demo.lsDismiss) { box.innerHTML = ''; return; }
   box.innerHTML = S.demo.done
     ? `<div class="ls-task done"><p><b>Aufgabe erledigt.</b> Protokoll ${S.demo.pid} ist eingegangen. Prüfquote, Hallenplan und Feed haben sich aktualisiert.</p><div class="steps-mini" aria-hidden="true">${st.map(s => `<i class="${s[1] ? 'on' : ''}"></i>`).join('')}</div><button class="btn btn-s" type="button" data-ls="proto" data-v="${S.demo.pid}">Protokoll ansehen</button></div>`
     : `<div class="ls-task"><p><b>Aufgabe:</b> Scannen Sie den QR-Code an Maschine CNC-07 und führen Sie die Wochenprüfung durch. Der Leitstand zeigt jede Eingabe sofort.</p><div class="steps-mini" aria-hidden="true">${st.map(s => `<i class="${s[1] ? 'on' : ''}"></i>`).join('')}</div><button class="btn btn-s btn-pri only-d" type="button" data-shell="center">${ic('phone')}Handy öffnen</button><button class="btn btn-s btn-pri only-m" type="button" data-ls="to-app">${ic('phone')}Zur App</button></div>`;
@@ -2033,7 +2049,7 @@ function panelProtokolle() {
   ${list.length > pLimit ? `<div class="toolbar" style="justify-content:center"><button class="btn" type="button" data-ls="p-more">Weitere ${Math.min(25, list.length - pLimit)} anzeigen</button></div>` : ''}`;
 }
 function panelQR() {
-  return `<p class="qr-hint">Diese Schilder hängen an den Anlagen. Öffnen Sie die Demo auf einem zweiten Handy, tippen Sie auf Scannen und halten Sie die Kamera auf ein Schild. Der Code enthält zum Beispiel ANLAGE:CNC-07.</p>
+  return `<p class="qr-hint">Diese Schilder hängen an den Anlagen. Öffnen Sie die Demo auf einem zweiten Handy, tippen Sie auf Scannen und halten Sie die Kamera auf ein Schild. Der Code enthält zum Beispiel ANLAGE:CNC-07. Der Kamera-Scan braucht einen Browser mit QR-Erkennung, etwa Chrome auf Android.</p>
   <div class="qr-grid">${ANL.map(a => `<button type="button" class="plate" data-ls="anl" data-v="${a.id}" aria-label="QR-Schild ${a.id}, Details öffnen" style="background:none;box-shadow:none;border-radius:9px">${plateHTML(a.id)}</button>`).join('')}</div>`;
 }
 
@@ -2041,7 +2057,9 @@ function panelQR() {
 const dlg = $('#dlg');
 function openDlg(html, small) {
   dlg.className = 'dlg' + (small ? ' dlg-s' : '');
+  const keep = dlg.querySelector('.dlg-toasts');
   dlg.innerHTML = html;
+  if (keep && dlg.open) dlg.appendChild(keep);
   if (!dlg.open) dlg.showModal();
   dlg.scrollTop = 0;
   const x = dlg.querySelector('.x'); if (x) x.focus();
@@ -2053,7 +2071,7 @@ function openAnlageDlg(id) {
     ${plateHTML(id)}
     <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">${s.still ? `<button class="btn btn-pri" type="button" data-ls="release" data-v="${id}">${ic('unlock')}Anlage freigeben</button>` : ''}<button class="btn" type="button" data-ls="print">${ic('print')}Drucken</button></div>
     <h3 class="sec-t">Kenndaten</h3><dl class="kv"><dt>Bezeichnung</dt><dd>${esc(a.modell)}</dd><dt>Hersteller</dt><dd>${esc(a.her)}</dd><dt>Baujahr</dt><dd>${a.bj}</dd><dt>Serien-Nr.</dt><dd>${esc(a.sn)}</dd><dt>Standort</dt><dd>${esc(a.halle)}, ${esc(a.linie)}, ${esc(a.platz)}</dd><dt>Betriebsstunden</dt><dd>${nf0.format(s.bh)} h</dd></dl></div>
-    <div>${s.still ? `<div class="banner off" style="margin:0 0 6px">${ic('lock')}<div><b>Stillgelegt seit ${fDm.format(s.stillTs)}, ${fT.format(s.stillTs)} Uhr</b>Grund: ${s.stillRef}. Freigabe nur nach Behebung.</div></div>` : ''}
+    <div>${s.still ? `<div class="banner off" style="margin:0 0 6px">${ic('lock')}<div><b>Stillgelegt seit ${fDm.format(s.stillTs)}, ${fT.format(s.stillTs)} Uhr</b>Grund: ${s.stillRef}. Erst freigeben, wenn der Mangel behoben ist.</div></div>` : ''}
     <h3 class="sec-t">Prüfungen und Wartung</h3><ul class="mini-list">${s.plans.map(p => { const dd = dayDiff(nextDue(p)); return `<li><span class="grow"><b>${esc(p.art)}</b><div class="muted" style="font-size:12.5px;color:var(--ink-2)">${CL[p.cl].code}, zuletzt ${fDm.format(p.last)}, alle ${p.int} Tage</div></span><span class="due-t ${dueCls(dd)}">${fDm.format(nextDue(p))}, ${dueText(dd)}</span></li>`; }).join('')}</ul>
     <h3 class="sec-t">Offene Mängel</h3>${om.length ? `<ul class="mini-list">${om.map(x => `<li><span class="pr pr-${x.prio}">${PRIO[x.prio]}</span><span class="grow"><b>${x.id}</b> ${esc(x.titel)}<div style="font-size:12.5px;color:var(--ink-2)">${esc(x.von)}, ${relTime(x.ts)}${x.zust ? `, ${esc(x.zust)}` : ''}</div></span></li>`).join('')}</ul>` : '<p class="muted" style="margin:0;color:var(--ink-2)">Keine offenen Mängel.</p>'}
     <h3 class="sec-t">Prüfprotokolle</h3><ul class="mini-list">${prs.map(p => `<li><span class="grow"><button class="link" type="button" data-ls="proto" data-v="${p.id}" style="border:0;background:none;padding:0;color:var(--accent-strong);font-weight:700;text-decoration:underline;text-underline-offset:3px">${p.id}</button> ${esc(p.art)}<div style="font-size:12.5px;color:var(--ink-2)">${fDs.format(p.ts)}, ${fT.format(p.ts)} Uhr, ${esc(p.pruefer)}</div></span><span class="res ${p.gesamt}">${p.gesamt === 'io' ? 'i. O.' : 'Mängel'}</span></li>`).join('')}</ul>
@@ -2062,7 +2080,7 @@ function openAnlageDlg(id) {
 function openProtoDlg(pid) {
   const p = S.pruef.find(x => x.id === pid); if (!p) return;
   if (p.id === S.demo.pid && !S.demo.viewed) { S.demo.viewed = true; save(); renderLsTask(); renderTaskcard(); }
-  openDlg(dlgHead(`Prüfprotokoll ${p.id}`) + `<div class="dlg-b">${protoHTML(p)}<div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap"><button class="btn" type="button" data-ls="print">${ic('print')}Drucken</button><button class="btn" type="button" data-ls="anl" data-v="${p.anlage}">Anlagenakte ${p.anlage}</button></div></div>`);
+  openDlg(dlgHead(`Prüfprotokoll ${p.id}`) + `<div class="dlg-b">${protoHTML(p, isMobile())}<div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap"><button class="btn" type="button" data-ls="print">${ic('print')}Drucken</button><button class="btn" type="button" data-ls="anl" data-v="${p.anlage}">Anlagenakte ${p.anlage}</button></div></div>`);
 }
 function openExport() {
   openDlg(dlgHead('CSV-Export') + `<div class="dlg-b"><p style="margin:0 0 14px;color:var(--ink-2)">Semikolon-getrennt mit deutschem Dezimalkomma, direkt in Excel lesbar.</p>
@@ -2097,8 +2115,16 @@ function exportCSV(kind) {
 }
 
 /* ---------- Toast Leitstand ---------- */
+// Bei offenem Dialog ist der Rest der Seite gesperrt: Toasts dann im Dialog zeigen, damit Rückgängig klickbar bleibt
+function toastBox() {
+  if (!dlg.open) return $('#ls-toasts');
+  let b = dlg.querySelector('.dlg-toasts');
+  if (!b) { b = document.createElement('div'); b.className = 'ls-toasts dlg-toasts'; b.setAttribute('aria-live', 'polite'); dlg.appendChild(b); }
+  return b;
+}
+dlg.addEventListener('close', () => { const b = dlg.querySelector('.dlg-toasts'); if (b) { [...b.children].forEach(t => $('#ls-toasts').appendChild(t)); b.remove(); } });
 function lsToast(msg, act) {
-  const box = $('#ls-toasts'), t = document.createElement('div');
+  const box = toastBox(), t = document.createElement('div');
   t.className = 'toast'; t.setAttribute('role', 'status');
   t.innerHTML = `<span style="flex:1">${esc(msg)}</span>${act ? `<button type="button">${esc(act.label)}</button>` : ''}`;
   if (act) t.querySelector('button').onclick = () => { t.remove(); act.fn(); };

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="App-Suite: Workflow Management, Kundenreklamation und Lieferantenreklamation (8D) in einer App.">
 <title>Workflow und Reklamationen</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='2' width='28' height='28' rx='8' fill='%236E4AF2'/%3E%3Cpath d='M10 16.5l4 4 8-9' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 </head>
 <body>
@@ -139,6 +140,7 @@ h1, h2, h3 { font-family: var(--font-d); text-wrap: balance; margin: 0; }
 .me-card { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); }
 .me-card select { border: 0; background: none; font-weight: 600; width: 100%; min-width: 0; padding: 0; }
 .me-card small { display: block; color: var(--ink-2); font-size: 12px; }
+.me-card .as-l { font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em; font-weight: 600; }
 .me-card > div { min-width: 0; flex: 1; }
 .bell-btn { position: relative; }
 .badge { position: absolute; top: 4px; left: 26px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--crit); color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; }
@@ -161,7 +163,8 @@ h1, h2, h3 { font-family: var(--font-d); text-wrap: balance; margin: 0; }
   .rail .lbl, .rail .brand > div, .rail .cnt, .me-card > div { display: none; }
   .rail .nav-i { justify-content: center; padding: 11px; }
   .rail .brand { justify-content: center; padding: 4px 0 14px; }
-  .me-card { justify-content: center; padding: 6px; }
+  .rail .me-card { display: none; }
+  .rail .me-compact { display: grid; place-items: center; }
   .rail .badge { left: auto; right: 6px; }
 }
 @media (max-width: 760px) {
@@ -343,6 +346,7 @@ h1, h2, h3 { font-family: var(--font-d); text-wrap: balance; margin: 0; }
 .chain-big { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
 .chain-big li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 16px; position: relative; }
 .chain-big li + li::before { content: ""; position: absolute; left: 35px; top: -10px; height: 20px; width: 2px; background: var(--line); }
+.chain-big .who { display: block; min-width: 0; }
 .chain-big .who b { display: block; }
 .chain-big .who small { color: var(--ink-2); }
 .chain-big .note { grid-column: 2 / -1; font-size: 13px; background: var(--surface-2); border-radius: 10px; padding: 6px 10px; margin-top: -4px; }
@@ -505,6 +509,22 @@ td.chg-cell { background: var(--warn-soft); }
 .chain-ed li span.n { font-family: var(--font-m); font-size: 12px; color: var(--ink-2); width: 18px; text-align: center; }
 .chain-ed li b { flex: 1; min-width: 0; font-weight: 600; }
 .more-list { display: flex; flex-direction: column; gap: 6px; }
+.chain-ed li .ce-t { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.chain-ed li .ce-t small { color: var(--ink-2); font-size: 12px; }
+.i.up { transform: rotate(90deg); }
+.me-compact { display: none; border: 0; background: none; padding: 4px; border-radius: 50%; justify-self: center; align-self: center; }
+.me-compact:hover .av { box-shadow: 0 0 0 3px var(--accent-soft); }
+.demo-bar { padding: 12px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.demo-t { flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.as-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.as-b { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 3px 12px 3px 3px; text-align: left; color: var(--ink); min-width: 0; }
+.as-b > span:not(.av) { display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
+.as-b b { font-size: 13px; } .as-b small { font-size: 11.5px; color: var(--ink-2); }
+.as-b:hover { border-color: var(--accent); }
+.as-b.on { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+.btn.ghost { border-style: dashed; color: var(--ink-2); }
+.btn.ghost .av { width: 20px; height: 20px; font-size: 9px; }
+.more-list + .field .as-row { flex-direction: column; } .more-list + .field .as-b { border-radius: 12px; padding: 6px 12px 6px 6px; }
 .more-list .nav-i { border: 1px solid var(--line); }
 
 .bell-panel { position: fixed; z-index: 45; top: calc(env(safe-area-inset-top, 0px) + 60px); right: max(16px, env(safe-area-inset-right, 0px)); width: min(400px, calc(100vw - 32px)); background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; }
@@ -571,6 +591,15 @@ h1, h2, h3 { font-weight: var(--head-w); }
 .focus-t span { opacity: .9; font-weight: 600; }
 .focus .btn { background: var(--accent-ink); color: var(--accent); border: 0; padding: 11px 20px; font-size: 15px; font-weight: 800; }
 .focus.calm { background: var(--good-soft); color: var(--good); }
+.focus-l { list-style: none; margin: 0; padding: 0; flex: 1 1 100%; min-width: 0; max-width: 100%; display: flex; flex-direction: column; gap: 4px; }
+.focus-l li { min-width: 0; }
+.focus-l button { width: 100%; min-width: 0; overflow: hidden; display: flex; align-items: center; gap: 10px; text-align: left; border: 0; border-radius: 10px; padding: 7px 10px; background: color-mix(in srgb, var(--accent-ink) 14%, transparent); color: inherit; font-weight: 600; }
+.focus-l button:hover { background: color-mix(in srgb, var(--accent-ink) 24%, transparent); }
+.focus-l .mono { opacity: .85; flex: none; }
+@media (max-width: 520px) { .focus-l .mono { display: none; } }
+.focus-l .fl-t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.focus-l .fl-d { flex: none; font-size: 12.5px; border-radius: 999px; padding: 1px 8px; background: var(--accent-ink); color: var(--accent); }
+.focus-l .fl-d.over { color: var(--crit); }
 .focus.calm .focus-n { background: var(--good); color: var(--surface); }
 .cols3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
 @media (max-width: 980px) { .cols3 { grid-template-columns: minmax(0, 1fr); } }
@@ -717,7 +746,7 @@ button.bcard:hover { box-shadow: 0 0 0 2px var(--accent-soft), var(--card-shadow
 <div class="toast" id="toast" role="status" hidden></div>
 <script src="shared-files/xlsx.full.min.js"></script>
 <script>
-const KEY = 'devunox-apps-demo-v2';
+const KEY = 'qw-suite-demo-v3';
 const ICONS = {
   home: '<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',
   flow: '<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/><path d="M10 6.5h4a3 3 0 0 1 3 3V14"/>',
@@ -769,7 +798,7 @@ const RSTATUS = {
   freigabe: { l: 'Zur Freigabe', c: 'accent' }, abgeschlossen: { l: 'Abgeschlossen', c: 'good' }, abgelehnt: { l: 'Abgelehnt', c: 'muted' }
 };
 const WSTATUS = {
-  laeuft: { l: 'In Freigabe', c: 'info' }, inarbeit: { l: 'In Arbeit', c: 'warn' }, freigegeben: { l: 'Freigegeben', c: 'good' }, zurueckgewiesen: { l: 'Zurückgewiesen', c: 'crit' }, abgeschlossen: { l: 'Abgeschlossen', c: 'muted' }
+  laeuft: { l: 'In Freigabe', c: 'info' }, inarbeit: { l: 'In Arbeit', c: 'warn' }, freigegeben: { l: 'Freigegeben', c: 'good' }, zurueckgewiesen: { l: 'Zurückgewiesen', c: 'crit' }, abgeschlossen: { l: 'Abgeschlossen', c: 'muted' }, zurueckgezogen: { l: 'Zurückgezogen', c: 'muted' }
 };
 const ROPEN = ['neu', 'bewertung', 'bearbeitung', 'freigabe'];
 const WOPEN = ['laeuft', 'inarbeit', 'freigegeben', 'zurueckgewiesen'];
@@ -778,11 +807,11 @@ const KOSTENARTEN = ['Sortierung', 'Nacharbeit', 'Ausschuss', 'Prüfung', 'Frach
 const MTYPEN = ['Sofort', 'Abstell', 'Vorbeuge'];
 const MTYP = { Sofort: { p: 'S', l: 'Sofortmaßnahmen', c: 'warn' }, Abstell: { p: 'A', l: 'Abstellmaßnahmen', c: 'info' }, Vorbeuge: { p: 'V', l: 'Vorbeugemaßnahmen', c: 'accent' } };
 const WF_TYPES = {
-  'Dokumentenfreigabe': { chain: [['a', 'Qualität']], tage: 3, hint: 'Arbeitsanweisung, Prüfanweisung, Formular freigeben lassen' },
-  'Änderungsantrag': { chain: [['a', 'Konstruktion'], ['a', 'Qualität'], ['a', 'Fertigung']], tage: 10, hint: 'Zeichnung, Toleranz oder Prozess ändern' },
-  'Investitionsantrag': { chain: [['lead', ''], ['a', 'Geschäftsführung']], tage: 7, hint: 'Anschaffung beantragen, Abteilungsleitung und Geschäftsführung geben frei' },
-  'Allgemeine Freigabe': { chain: [['lead', '']], tage: 5, hint: 'Beliebige Entscheidung einholen' },
-  'Aufgabe': { chain: [], tage: 7, hint: 'Aufgaben verteilen, ohne Freigabekette' }
+  'Dokumentenfreigabe': { chain: [['a', 'Qualität']], tage: 3, hint: 'Arbeitsanweisung, Prüfanweisung, Formular von der Qualität freigeben lassen' },
+  'Änderungsantrag': { chain: [['a', 'Fertigung'], ['a', 'Qualität'], ['a', 'Geschäftsführung']], tage: 10, hint: 'Zeichnung, Toleranz oder Prozess ändern. Fertigung, Qualität und Geschäftsführung geben nacheinander frei.' },
+  'Investitionsantrag': { chain: [['lead', ''], ['a', 'Geschäftsführung']], tage: 7, hint: 'Anschaffung beantragen. Deine Abteilungsleitung (wenn du sie nicht selbst bist) und die Geschäftsführung geben frei.' },
+  'Allgemeine Freigabe': { chain: [['lead', '']], tage: 5, hint: 'Beliebige Entscheidung bei deiner Abteilungsleitung einholen. Leitest du selbst, geht sie an die nächste Leitung.' },
+  'Aufgabe': { chain: [], tage: 7, hint: 'Aufgaben verteilen, ohne Freigabekette. Bitte unten eine erste Aufgabe vergeben.' }
 };
 
 /* Stammdaten-Definition: steuert Tabellen, Formulare und den Massenupload */
@@ -858,6 +887,7 @@ const daysBetween = (a, b) => Math.round((new Date(b.slice(0, 10) + 'T12:00:00')
 const stamp = () => { const d = new Date(); return `${iso(d)} ${pad(d.getHours())}:${pad(d.getMinutes())}`; };
 const eur = n => (Number(n) || 0).toLocaleString('de-DE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
 const tage = n => `${n} ${n === 1 ? 'Tag' : 'Tagen'}`;
+const tageN = n => `${n} ${n === 1 ? 'Tag' : 'Tage'}`;
 const norm = s => String(s ?? '').toLowerCase().replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss').replace(/[^a-z0-9]/g, '');
 let seq = 500;
 const uid = p => (p || 'x') + (++seq).toString(36) + Math.random().toString(36).slice(2, 6);
@@ -878,30 +908,22 @@ const fmtStamp = s => s ? fmt(s.slice(0, 10)) + (s.length > 10 ? ', ' + s.slice(
 function seedMD() {
   return {
     abteilungen: [
-      { name: 'Qualität', leitung: 'Dr. Sabine Roth' }, { name: 'Fertigung', leitung: 'Jonas Weber' }, { name: 'Konstruktion', leitung: 'Elif Demir' },
-      { name: 'Einkauf', leitung: 'Tobias Klein' }, { name: 'Vertrieb', leitung: 'Lena Vogt' }, { name: 'Geschäftsführung', leitung: 'Peter Hahn' }, { name: 'IT', leitung: 'Anna Berger' }
+      { name: 'Qualität', leitung: 'Dr. Sabine Roth' }, { name: 'Fertigung', leitung: 'Jonas Weber' }, { name: 'Geschäftsführung', leitung: 'Peter Hahn' }
     ],
     mitarbeiter: [
-      { name: 'Murat Kaya', abteilung: 'Qualität', rolle: 'QM', email: 'm.kaya@firma.example' },
       { name: 'Dr. Sabine Roth', abteilung: 'Qualität', rolle: 'QM-Leitung', email: 's.roth@firma.example' },
-      { name: 'Lena Vogt', abteilung: 'Vertrieb', rolle: 'Mitarbeiter', email: 'l.vogt@firma.example' },
       { name: 'Jonas Weber', abteilung: 'Fertigung', rolle: 'Mitarbeiter', email: 'j.weber@firma.example' },
-      { name: 'Elif Demir', abteilung: 'Konstruktion', rolle: 'Mitarbeiter', email: 'e.demir@firma.example' },
-      { name: 'Tobias Klein', abteilung: 'Einkauf', rolle: 'Mitarbeiter', email: 't.klein@firma.example' },
-      { name: 'Peter Hahn', abteilung: 'Geschäftsführung', rolle: 'Mitarbeiter', email: 'p.hahn@firma.example' },
-      { name: 'Anna Berger', abteilung: 'IT', rolle: 'Admin', email: 'a.berger@firma.example' }
+      { name: 'Peter Hahn', abteilung: 'Geschäftsführung', rolle: 'Admin', email: 'p.hahn@firma.example' }
     ],
     kunden: [
       { nr: 'K-10001', name: 'Fiktive GmbH 1', ort: 'Bielefeld', land: 'DE', kontakt: 'Herr Krause', email: 'qs@fiktive-1.example' },
       { nr: 'K-10002', name: 'Fiktive GmbH 2', ort: 'Osnabrück', land: 'DE', kontakt: 'Frau Lüders', email: 'reklamation@fiktive-2.example' },
-      { nr: 'K-10003', name: 'Fiktive GmbH 3', ort: 'Ulm', land: 'DE', kontakt: 'Herr Sommer', email: 'qm@fiktive-3.example' },
-      { nr: 'K-10004', name: 'Fiktive GmbH 4', ort: 'Dortmund', land: 'DE', kontakt: 'Frau Lindner', email: 'einkauf@fiktive-4.example' }
+      { nr: 'K-10003', name: 'Fiktive GmbH 3', ort: 'Ulm', land: 'DE', kontakt: 'Herr Sommer', email: 'qm@fiktive-3.example' }
     ],
     lieferanten: [
       { nr: 'L-20001', name: 'Muster GmbH 1', ort: 'Siegen', land: 'DE', kontakt: 'Herr Brandl', email: 'qs@muster-1.example' },
       { nr: 'L-20002', name: 'Muster GmbH 2', ort: 'Duisburg', land: 'DE', kontakt: 'Herr Ademi', email: 'qualitaet@muster-2.example' },
-      { nr: 'L-20003', name: 'Muster GmbH 3', ort: 'Lüdenscheid', land: 'DE', kontakt: 'Frau Albers', email: 'qm@muster-3.example' },
-      { nr: 'L-20004', name: 'Muster GmbH 4', ort: 'Bremen', land: 'DE', kontakt: 'Herr Petersen', email: 'service@muster-4.example' }
+      { nr: 'L-20003', name: 'Muster GmbH 3', ort: 'Lüdenscheid', land: 'DE', kontakt: 'Frau Albers', email: 'qm@muster-3.example' }
     ],
     material: [
       { nr: '4711-220', bez: 'Lagerflansch Ø 22 H7', einheit: 'Stk.', gruppe: 'DREH' },
@@ -928,7 +950,7 @@ function seedMD() {
     ].map(([code, gruppe, text]) => ({ code, gruppe, text }))
   };
 }
-function makeSteps(eingang, doneCount, texts, lead, qm = 'Murat Kaya', leit = 'Dr. Sabine Roth') {
+function makeSteps(eingang, doneCount, texts, lead, qm = 'Dr. Sabine Roth', leit = 'Dr. Sabine Roth') {
   const owners = [qm, lead, lead, lead, lead, lead, qm, leit];
   const out = {};
   STEPS.forEach(([k, , off], i) => {
@@ -940,128 +962,138 @@ function makeSteps(eingang, doneCount, texts, lead, qm = 'Murat Kaya', leit = 'D
 const M = (code, typ, text, owner, due, status, extra) => Object.assign({ id: uid('m'), code, typ, text, owner, due, status, doneAt: status === 'erledigt' ? due : null, reminded: null }, extra || {});
 const CM = (who, when, text, likes) => ({ id: uid('c'), at: when, who, text, likes: likes || [] });
 
-function seedItems() {
-  const I = [];
+function seedItems(md) {
+  const I = [], SR = 'Dr. Sabine Roth', JW = 'Jonas Weber', PH = 'Peter Hahn';
   const rk = o => {
-    const it = Object.assign({ massnahmen: [], kosten: [], weiterbelastung: 0, comments: [], berechtigt: null, begruendung: '', abschluss: null, lead: '', ref: '', charge: '', einheit: 'Stk.', erfasser: 'Lena Vogt', l8d: { angefordert: null, eingegangen: null } }, o);
+    const it = Object.assign({ massnahmen: [], kosten: [], weiterbelastung: 0, comments: [], berechtigt: null, begruendung: '', abschluss: null, lead: '', ref: '', charge: '', einheit: 'Stk.', erfasser: PH, l8d: { angefordert: null, eingegangen: null } }, o);
     it.created = it.created || it.eingang + ' 08:14';
     it.kundenfrist = it.kundenfrist || (it.app === 'kr' ? addDays(it.eingang, 30) : '');
     it.log = [{ at: it.created, who: it.erfasser, text: 'Reklamation angelegt' }].concat(it.log || []);
-    it.followers = [...new Set([it.erfasser, it.lead, 'Murat Kaya'].filter(Boolean))];
+    it.followers = [...new Set([it.erfasser, it.lead, SR].filter(Boolean))];
     it.id = it.nr; I.push(it);
   };
   rk({ app: 'kr', nr: `KR-${YEAR}-0049`, titel: 'Ventil schließt nicht vollständig', partnerNr: 'K-10003', ref: 'QS-311', matNr: '7020-015', charge: 'C-26-1902', menge: 60, fehlerCode: 'FU01', fehlerort: 'Kunde', prio: 'kritisch',
     beschreibung: 'Kunde meldet bei der Druckprüfung 6 von 60 Ventilen mit Leckage über 0,5 l/min bei 160 bar. Die Linie beim Kunden steht teilweise.',
-    eingang: TODAY, created: at(0, '08:14'), kundenfrist: rel(2), status: 'neu', steps: makeSteps(TODAY, 0, [], 'Jonas Weber'),
-    comments: [CM('Lena Vogt', at(0, '08:20'), '@Murat Kaya bitte heute noch bewerten, der Kunde braucht bis übermorgen eine erste Antwort.', ['Dr. Sabine Roth'])] });
+    eingang: TODAY, created: at(0, '08:14'), kundenfrist: rel(2), status: 'neu', steps: makeSteps(TODAY, 0, [], JW),
+    comments: [CM(PH, at(0, '08:20'), '@Dr. Sabine Roth bitte heute noch bewerten, der Kunde braucht bis übermorgen eine erste Antwort.', [JW])] });
   rk({ app: 'kr', nr: `KR-${YEAR}-0047`, titel: 'Bohrungsdurchmesser außer Toleranz', partnerNr: 'K-10001', ref: 'KR-88213', matNr: '4711-220', charge: 'C-26-1843', menge: 240, fehlerCode: 'MA01', fehlerort: 'Kunde', prio: 'hoch',
     beschreibung: 'Wareneingangsprüfung beim Kunden: Bohrung Ø 22 H7 zu groß. Teile lassen sich nicht mit Presspassung montieren.',
-    eingang: rel(-6), status: 'bearbeitung', berechtigt: true, lead: 'Jonas Weber',
+    eingang: rel(-6), status: 'bearbeitung', berechtigt: true, lead: JW,
     steps: makeSteps(rel(-6), 3, [
-      'Teamleitung Jonas Weber (Fertigung), Elif Demir (Konstruktion), Murat Kaya (QM).',
+      'Teamleitung Jonas Weber (Fertigung), Dr. Sabine Roth (Qualität), Peter Hahn (Kundenkontakt).',
       'Bohrung Ø 22 H7 bei 31 von 240 geprüften Teilen über Toleranz (+0,018 bis +0,026 mm). Charge C-26-1843, gefertigt auf BAZ 4.',
-      'Restbestand 1.180 Stk. gesperrt. 100-%-Prüfung beim Kunden durch Sortierdienst. Ersatzlieferung 240 Stk. aus geprüfter Charge C-26-1851.'], 'Jonas Weber'),
+      'Restbestand 1.180 Stk. gesperrt. 100-%-Prüfung beim Kunden durch Sortierdienst. Ersatzlieferung 240 Stk. aus geprüfter Charge C-26-1851.'], JW),
     massnahmen: [
-      M('S01', 'Sofort', 'Bestand sperren (1.180 Stk.)', 'Jonas Weber', rel(-5), 'erledigt'),
-      M('S03', 'Sofort', 'Ersatzlieferung aus Charge C-26-1851', 'Murat Kaya', rel(-4), 'erledigt'),
-      M('A04', 'Abstell', 'Bohrwerkzeug an BAZ 4 prüfen und tauschen', 'Jonas Weber', rel(1), 'offen'),
-      M('A07', 'Abstell', 'Toleranzlage der Bohrung mit Kunde abstimmen', 'Elif Demir', rel(-3), 'offen'),
-      M('A01', 'Abstell', 'Prüfplan: Bohrung Ø 22 H7 an jedem 20. Teil messen', 'Murat Kaya', rel(6), 'offen')],
+      M('S01', 'Sofort', 'Bestand sperren (1.180 Stk.)', JW, rel(-5), 'erledigt'),
+      M('S03', 'Sofort', 'Ersatzlieferung aus Charge C-26-1851', SR, rel(-4), 'erledigt'),
+      M('A04', 'Abstell', 'Bohrwerkzeug an BAZ 4 prüfen und tauschen', JW, rel(1), 'offen'),
+      M('A07', 'Abstell', 'Toleranzlage der Bohrung mit dem Kunden abstimmen', PH, rel(-3), 'offen'),
+      M('A01', 'Abstell', 'Prüfplan: Bohrung Ø 22 H7 an jedem 20. Teil messen', SR, rel(6), 'offen')],
     kosten: [{ art: 'Sortierung', betrag: 1480 }, { art: 'Fracht', betrag: 320 }],
     comments: [
-      CM('Lena Vogt', at(-2, '14:31'), 'Kunde fragt nach dem Zwischenstand bis Freitag. Kann ich den Bericht nach D3 schicken?'),
-      CM('Murat Kaya', at(-2, '15:02'), 'Ja, Zwischenbericht ist freigegeben. @Lena Vogt bitte mit Hinweis, dass D4 bis nächste Woche folgt.', ['Lena Vogt', 'Jonas Weber']),
-      CM('Jonas Weber', at(-1, '09:40'), 'Werkzeugverschleiß an BAZ 4 ist der Hauptverdacht. Neues Werkzeug ist bestellt.', ['Murat Kaya'])],
-    log: [{ at: at(-6, '10:20'), who: 'Murat Kaya', text: 'Als berechtigt bewertet, Teamleitung Jonas Weber' }, { at: at(-5, '16:05'), who: 'Jonas Weber', text: 'D3 erledigt' }] });
+      CM(PH, at(-2, '14:31'), 'Kunde fragt nach dem Zwischenstand bis Freitag. Kann ich den Bericht nach D3 schicken?'),
+      CM(SR, at(-2, '15:02'), 'Ja, Zwischenbericht ist freigegeben. @Peter Hahn bitte mit Hinweis, dass D4 bis nächste Woche folgt.', [PH, JW]),
+      CM(JW, at(-1, '09:40'), 'Werkzeugverschleiß an BAZ 4 ist der Hauptverdacht. Neues Werkzeug ist bestellt.', [SR])],
+    log: [{ at: at(-6, '10:20'), who: SR, text: 'Als berechtigt bewertet, Teamleitung Jonas Weber' }, { at: at(-5, '16:05'), who: JW, text: 'D3 erledigt' }] });
   rk({ app: 'kr', nr: `KR-${YEAR}-0045`, titel: 'Teile verkratzt durch beschädigte Verpackung', partnerNr: 'K-10002', ref: 'BR-4471', matNr: '2210-310', charge: 'C-26-1710', menge: 120, fehlerCode: 'VP01', fehlerort: 'Kunde', prio: 'mittel',
-    beschreibung: '18 Abdeckbleche mit Kratzern, Kartons an den Ecken eingedrückt.', eingang: rel(-52), status: 'abgeschlossen', abschluss: rel(-14), berechtigt: true, lead: 'Jonas Weber',
-    steps: makeSteps(rel(-52), 8, ['Teamleitung Jonas Weber (Fertigung), Murat Kaya (QM).', '18 von 120 Abdeckblechen mit Kratzern, Karton an zwei Ecken eingedrückt.', 'Ersatzlieferung 18 Stk., Kunde informiert.',
-      'Zwischenlagen fehlten, Kartons ohne Kantenschutz gestapelt.', 'Verpackungsvorschrift mit Zwischenlagen und Kantenschutz.', 'Vier Folgelieferungen ohne Befund.', 'Verpackungsvorschrift auf drei ähnliche Blechteile übertragen.', 'Team gewürdigt, Bericht an Kunden versendet.'], 'Jonas Weber'),
-    massnahmen: [M('S03', 'Sofort', 'Ersatzlieferung 18 Stk.', 'Murat Kaya', rel(-50), 'erledigt'), M('', 'Abstell', 'Verpackungsvorschrift mit Zwischenlagen und Kantenschutz', 'Jonas Weber', rel(-38), 'erledigt', { wirksam: true }), M('V02', 'Vorbeuge', 'Verpackungsvorschrift auf ähnliche Blechteile übertragen', 'Jonas Weber', rel(-22), 'erledigt')],
+    beschreibung: '18 Abdeckbleche mit Kratzern, Kartons an den Ecken eingedrückt.', eingang: rel(-52), status: 'abgeschlossen', abschluss: rel(-14), berechtigt: true, lead: JW,
+    steps: makeSteps(rel(-52), 8, ['Teamleitung Jonas Weber (Fertigung), Dr. Sabine Roth (Qualität).', '18 von 120 Abdeckblechen mit Kratzern, Karton an zwei Ecken eingedrückt.', 'Ersatzlieferung 18 Stk., Kunde informiert.',
+      'Zwischenlagen fehlten, Kartons ohne Kantenschutz gestapelt.', 'Verpackungsvorschrift mit Zwischenlagen und Kantenschutz.', 'Vier Folgelieferungen ohne Befund.', 'Verpackungsvorschrift auf drei ähnliche Blechteile übertragen.', 'Team gewürdigt, Bericht an Kunden versendet.'], JW),
+    massnahmen: [M('S03', 'Sofort', 'Ersatzlieferung 18 Stk.', SR, rel(-50), 'erledigt'), M('', 'Abstell', 'Verpackungsvorschrift mit Zwischenlagen und Kantenschutz', JW, rel(-38), 'erledigt', { wirksam: true }), M('V02', 'Vorbeuge', 'Verpackungsvorschrift auf ähnliche Blechteile übertragen', JW, rel(-22), 'erledigt')],
     kosten: [{ art: 'Gutschrift', betrag: 540 }, { art: 'Fracht', betrag: 180 }],
-    log: [{ at: at(-14, '10:03'), who: 'Dr. Sabine Roth', text: 'Freigegeben und abgeschlossen' }] });
+    log: [{ at: at(-15, '16:40'), who: JW, text: 'Zur Freigabe gesendet' }, { at: at(-14, '10:03'), who: SR, text: 'Freigegeben und abgeschlossen' }] });
   rk({ app: 'kr', nr: `KR-${YEAR}-0044`, titel: 'Falsche Etikettierung', partnerNr: 'K-10001', ref: 'KR-87950', matNr: '4711-180', charge: 'C-26-1655', menge: 80, fehlerCode: 'KE01', fehlerort: 'Kunde', prio: 'niedrig',
     beschreibung: 'Etikett zeigt Artikelnummer 4711-180, Kunde erwartet 4711-181.', eingang: rel(-20), status: 'abgelehnt', berechtigt: false,
     begruendung: 'Etikett entspricht der Bestellung. Der Kunde hat die alte Artikelnummer bestellt; Hinweis an den Einkauf des Kunden gegeben.',
-    steps: makeSteps(rel(-20), 0, [], 'Jonas Weber'), log: [{ at: at(-19, '13:22'), who: 'Murat Kaya', text: 'Als unberechtigt bewertet' }] });
+    steps: makeSteps(rel(-20), 0, [], JW), log: [{ at: at(-19, '13:22'), who: SR, text: 'Als unberechtigt bewertet' }] });
 
-  rk({ app: 'lr', nr: `LR-${YEAR}-0048`, titel: 'Grat am Dichtring, Montage undicht', partnerNr: 'L-20003', ref: 'LS 88120', matNr: '6100-020', charge: 'A-77102', menge: 5000, fehlerCode: 'OB03', fehlerort: 'Wareneingang', prio: 'mittel', erfasser: 'Jonas Weber',
+  rk({ app: 'lr', nr: `LR-${YEAR}-0048`, titel: 'Grat am Dichtring, Montage undicht', partnerNr: 'L-20003', ref: 'LS 88120', matNr: '6100-020', charge: 'A-77102', menge: 5000, fehlerCode: 'OB03', fehlerort: 'Wareneingang', prio: 'mittel', erfasser: JW,
     beschreibung: 'Spritzgrat an der Trennebene, Stichprobe 13 von 200 Teilen betroffen. Bei der Montage entstehen Undichtigkeiten.',
-    eingang: rel(-1), created: at(-1, '07:48'), status: 'bewertung', steps: makeSteps(rel(-1), 0, [], 'Tobias Klein'),
-    log: [{ at: at(-1, '09:02'), who: 'Murat Kaya', text: 'Bewertung gestartet' }] });
-  rk({ app: 'lr', nr: `LR-${YEAR}-0046`, titel: 'Lackabplatzer an Gehäusedeckel', partnerNr: 'L-20001', ref: 'LS 50418', matNr: '3120-045', charge: 'K-50418', menge: 400, fehlerCode: 'OB02', fehlerort: 'Wareneingang', prio: 'mittel', erfasser: 'Murat Kaya',
-    beschreibung: 'Lack platzt an den Kanten ab, sichtbar bei der Wareneingangsprüfung. Teile nicht verbaubar.', eingang: rel(-34), status: 'freigabe', berechtigt: true, lead: 'Elif Demir',
+    eingang: rel(-1), created: at(-1, '07:48'), status: 'bewertung', steps: makeSteps(rel(-1), 0, [], JW),
+    log: [{ at: at(-1, '09:02'), who: SR, text: 'Bewertung gestartet' }] });
+  rk({ app: 'lr', nr: `LR-${YEAR}-0046`, titel: 'Lackabplatzer an Gehäusedeckel', partnerNr: 'L-20001', ref: 'LS 50418', matNr: '3120-045', charge: 'K-50418', menge: 400, fehlerCode: 'OB02', fehlerort: 'Wareneingang', prio: 'mittel', erfasser: SR,
+    beschreibung: 'Lack platzt an den Kanten ab, sichtbar bei der Wareneingangsprüfung. Teile nicht verbaubar.', eingang: rel(-34), status: 'freigabe', berechtigt: true, lead: JW,
     l8d: { angefordert: rel(-33), eingegangen: rel(-27) },
-    steps: makeSteps(rel(-34), 7, ['Teamleitung Elif Demir (Konstruktion), Murat Kaya (QM), Ansprechpartner bei Muster GmbH 1: Hr. Brandl.', 'Lackabplatzer an den Kanten, 46 von 400 Stk. betroffen.', 'Lieferung gesperrt, 100-%-Sichtprüfung, 46 Stk. an Lieferant zurück.',
+    steps: makeSteps(rel(-34), 7, ['Teamleitung Jonas Weber (Fertigung), Dr. Sabine Roth (Qualität), Ansprechpartner bei Muster GmbH 1: Herr Brandl.', 'Lackabplatzer an den Kanten, 46 von 400 Stk. betroffen.', 'Lieferung gesperrt, 100-%-Sichtprüfung, 46 Stk. an Lieferant zurück.',
       'Entstehung: Entfettungsbad beim Lieferanten verbraucht. Nichtentdeckung: keine Haftprüfung (Gitterschnitt) beim Lieferanten.', 'Badwechsel nach Durchsatz statt nach Zeit. Gitterschnittprüfung je Los beim Lieferanten.',
-      'Drei Folgelieferungen ohne Befund, Gitterschnitt GT0 bis GT1 dokumentiert.', 'Qualitätssicherungsvereinbarung um Haftprüfung ergänzt, Prüfplan Wareneingang aktualisiert.'], 'Elif Demir'),
-    massnahmen: [M('S01', 'Sofort', 'Lieferung sperren', 'Murat Kaya', rel(-33), 'erledigt'), M('A05', 'Abstell', '8D-Bericht von Muster GmbH 1 anfordern', 'Murat Kaya', rel(-31), 'erledigt'),
-      M('', 'Abstell', 'Lieferant: Badwechsel nach Durchsatz statt nach Zeit', 'Elif Demir', rel(-20), 'erledigt', { wirksam: true }), M('V03', 'Vorbeuge', 'QSV um Haftprüfung (Gitterschnitt) ergänzen', 'Murat Kaya', rel(-6), 'erledigt', { wirksam: true })],
+      'Drei Folgelieferungen ohne Befund, Gitterschnitt GT0 bis GT1 dokumentiert.', 'Qualitätssicherungsvereinbarung um Haftprüfung ergänzt, Prüfplan Wareneingang aktualisiert.'], JW),
+    massnahmen: [M('S01', 'Sofort', 'Lieferung sperren', SR, rel(-33), 'erledigt'), M('A05', 'Abstell', '8D-Bericht von Muster GmbH 1 anfordern', SR, rel(-31), 'erledigt'),
+      M('', 'Abstell', 'Lieferant: Badwechsel nach Durchsatz statt nach Zeit', JW, rel(-20), 'erledigt', { wirksam: true }), M('V03', 'Vorbeuge', 'QSV um Haftprüfung (Gitterschnitt) ergänzen', SR, rel(-6), 'erledigt', { wirksam: true })],
     kosten: [{ art: 'Sortierung', betrag: 1240 }, { art: 'Nacharbeit', betrag: 860 }], weiterbelastung: 2100,
-    comments: [CM('Elif Demir', at(-2, '11:15'), 'Alle Nachweise hängen an D6. Von meiner Seite fertig.', ['Murat Kaya'])],
-    log: [{ at: at(-33, '11:40'), who: 'Murat Kaya', text: 'Als berechtigt bewertet, Teamleitung Elif Demir' }, { at: at(-33, '11:45'), who: 'Murat Kaya', text: '8D beim Lieferanten angefordert' }, { at: at(-1, '15:12'), who: 'Murat Kaya', text: 'Zur Freigabe gesendet' }] });
-  rk({ app: 'lr', nr: `LR-${YEAR}-0043`, titel: 'Härte unter Spezifikation', partnerNr: 'L-20002', ref: 'LS 77420', matNr: '5530-118', charge: 'S-77420', menge: 600, fehlerCode: 'WE01', fehlerort: 'Wareneingang', prio: 'hoch', erfasser: 'Murat Kaya',
-    beschreibung: 'Härteprüfung im Wareneingang: 48 bis 51 HRC statt 54 bis 58 HRC.', eingang: rel(-25), status: 'bearbeitung', berechtigt: true, lead: 'Tobias Klein',
+    comments: [CM(JW, at(-2, '11:15'), 'Alle Nachweise hängen an D6. Von meiner Seite fertig.', [SR])],
+    log: [{ at: at(-33, '11:40'), who: SR, text: 'Als berechtigt bewertet, Teamleitung Jonas Weber' }, { at: at(-33, '11:45'), who: SR, text: '8D beim Lieferanten angefordert' }, { at: at(-1, '15:12'), who: JW, text: 'Zur Freigabe gesendet' }] });
+  rk({ app: 'lr', nr: `LR-${YEAR}-0043`, titel: 'Härte unter Spezifikation', partnerNr: 'L-20002', ref: 'LS 77420', matNr: '5530-118', charge: 'S-77420', menge: 600, fehlerCode: 'WE01', fehlerort: 'Wareneingang', prio: 'hoch', erfasser: SR,
+    beschreibung: 'Härteprüfung im Wareneingang: 48 bis 51 HRC statt 54 bis 58 HRC.', eingang: rel(-25), status: 'bearbeitung', berechtigt: true, lead: JW,
     l8d: { angefordert: rel(-24), eingegangen: null },
-    steps: makeSteps(rel(-25), 4, ['Teamleitung Tobias Klein (Einkauf), Murat Kaya (QM), Lieferant Muster GmbH 2.', 'Härte bei 12 von 50 Stichproben 48 bis 51 HRC statt 54 bis 58 HRC. Werkszeugnis 3.1 weist Sollwerte aus.',
-      'Charge S-77420 (600 Stk.) gesperrt, Lieferant informiert, Ersatz aus Lager nach Härteprüfung freigegeben.', 'Entstehung: Ofenprofil beim Vergüten nach Wartung falsch eingestellt. Nichtentdeckung: Lieferant prüft nur 1 Teil je Los.'], 'Tobias Klein'),
-    massnahmen: [M('S01', 'Sofort', 'Charge S-77420 sperren', 'Murat Kaya', rel(-24), 'erledigt'), M('A05', 'Abstell', '8D-Bericht von Muster GmbH 2 anfordern', 'Tobias Klein', rel(-20), 'erledigt'),
-      M('', 'Abstell', 'Lieferant: Ofenprofil korrigieren, Freigabe nach Erstmuster', 'Tobias Klein', rel(-4), 'offen'), M('A01', 'Abstell', 'Prüfplan Wareneingang: Härte an 5 Teilen je Los', 'Murat Kaya', rel(5), 'offen'),
-      M('V03', 'Vorbeuge', 'QSV: Härteprüfung je Ofencharge vereinbaren', 'Tobias Klein', rel(12), 'offen')],
+    steps: makeSteps(rel(-25), 4, ['Teamleitung Jonas Weber (Fertigung), Dr. Sabine Roth (Qualität), Peter Hahn (Lieferantenvertrag), Lieferant Muster GmbH 2.', 'Härte bei 12 von 50 Stichproben 48 bis 51 HRC statt 54 bis 58 HRC. Werkszeugnis 3.1 weist Sollwerte aus.',
+      'Charge S-77420 (600 Stk.) gesperrt, Lieferant informiert, Ersatz aus Lager nach Härteprüfung freigegeben.', 'Entstehung: Ofenprofil beim Vergüten nach Wartung falsch eingestellt. Nichtentdeckung: Lieferant prüft nur 1 Teil je Los.'], JW),
+    massnahmen: [M('S01', 'Sofort', 'Charge S-77420 sperren', SR, rel(-24), 'erledigt'), M('A05', 'Abstell', '8D-Bericht von Muster GmbH 2 anfordern', SR, rel(-20), 'erledigt'),
+      M('', 'Abstell', 'Lieferant: Ofenprofil korrigieren, Freigabe nach Erstmuster', JW, rel(-4), 'offen'), M('A01', 'Abstell', 'Prüfplan Wareneingang: Härte an 5 Teilen je Los', SR, rel(5), 'offen'),
+      M('V03', 'Vorbeuge', 'QSV: Härteprüfung je Ofencharge vereinbaren', PH, rel(12), 'offen')],
     kosten: [{ art: 'Prüfung', betrag: 640 }, { art: 'Fracht', betrag: 410 }], weiterbelastung: 1050,
-    comments: [CM('Tobias Klein', at(-3, '16:20'), 'Lieferant sagt Erstmuster für nächste Woche zu. 8D-Bericht fehlt weiterhin.'), CM('Dr. Sabine Roth', at(-1, '08:05'), '@Tobias Klein bitte schriftlich nachfordern und Termin setzen.', ['Murat Kaya'])],
-    log: [{ at: at(-24, '09:15'), who: 'Murat Kaya', text: 'Als berechtigt bewertet, Teamleitung Tobias Klein' }, { at: at(-24, '09:20'), who: 'Murat Kaya', text: '8D beim Lieferanten angefordert' }] });
+    comments: [CM(JW, at(-3, '16:20'), 'Lieferant sagt Erstmuster für nächste Woche zu. 8D-Bericht fehlt weiterhin.'), CM(SR, at(-1, '08:05'), '@Peter Hahn bitte über die Geschäftsführung nachfordern und einen Termin setzen.', [JW])],
+    log: [{ at: at(-24, '09:15'), who: SR, text: 'Als berechtigt bewertet, Teamleitung Jonas Weber' }, { at: at(-24, '09:20'), who: SR, text: '8D beim Lieferanten angefordert' }] });
+  I.forEach(it => { if (it.app === 'kr' || it.app === 'lr') follow(it, it.lead); });
 
   const wf = o => {
     const it = Object.assign({ app: 'wf', prio: 'mittel', docs: [], tasks: [], comments: [], bezug: '', doneAt: null }, o);
     it.log = [{ at: it.created, who: it.creator, text: 'Workflow gestartet' }].concat(it.log || []);
-    it.followers = [...new Set([it.creator].concat(it.chain.filter(s => s.kind === 'p').map(s => s.who)))];
+    it.followers = wfFollowers(it, md);
     it.id = it.nr; I.push(it);
   };
   const st = (kind, who, status, when, by, note) => ({ kind, who, status, at: when || null, by: by || null, note: note || '' });
-  wf({ nr: `WF-${YEAR}-0018`, typ: 'Dokumentenfreigabe', titel: 'Arbeitsanweisung AA-114 Fräsen Linie 3, Rev. C', creator: 'Jonas Weber', created: at(-1, '13:10'), due: rel(2),
+  wf({ nr: `WF-${YEAR}-0018`, typ: 'Dokumentenfreigabe', titel: 'Arbeitsanweisung AA-114 Fräsen Linie 3, Rev. C', creator: JW, created: at(-1, '13:10'), due: rel(2),
     beschreibung: 'Neue Revision nach dem Gratproblem: Entgraten nach Operation 30 ergänzt, Prüfintervall auf jedes 10. Teil verkürzt. Bitte freigeben.',
     chain: [st('a', 'Qualität', 'aktiv')], docs: [{ name: 'AA-114_RevC.pdf', size: 421000 }, { name: 'Änderungsübersicht_AA-114.xlsx', size: 18400 }] });
-  wf({ nr: `WF-${YEAR}-0017`, typ: 'Änderungsantrag', titel: 'Toleranz Bohrung Ø 22 von H7 auf H6 ändern', creator: 'Elif Demir', created: at(-4, '10:00'), due: rel(3), bezug: `KR-${YEAR}-0047`, prio: 'hoch',
-    beschreibung: 'Aus der Kundenreklamation zur Bohrung: Wir verschieben die Toleranzlage auf H6, damit die Presspassung sicher hält. Zeichnung 4711-220 Rev. F hängt an.',
-    chain: [st('a', 'Konstruktion', 'ok', at(-4, '10:00'), 'Elif Demir'), st('a', 'Qualität', 'ok', at(-2, '17:30'), 'Murat Kaya', 'Prüfmittel für H6 vorhanden, Lehrdorn wird bestellt.'), st('a', 'Fertigung', 'aktiv')],
+  wf({ nr: `WF-${YEAR}-0017`, typ: 'Änderungsantrag', titel: 'Toleranz Bohrung Ø 22 von H7 auf H6 ändern', creator: SR, created: at(-4, '10:00'), due: rel(3), bezug: `KR-${YEAR}-0047`, prio: 'hoch',
+    beschreibung: 'Aus der Kundenreklamation zur Bohrung: Wir verschieben die Toleranzlage auf H6, damit die Presspassung sicher hält. Zeichnung 4711-220 Rev. F hängt an. Der neue Lehrdorn kostet rund 900 €.',
+    chain: [st('a', 'Fertigung', 'ok', at(-2, '17:30'), JW, 'NC-Programm BAZ 4 wird angepasst, das Werkzeug ist vorhanden.'), st('a', 'Geschäftsführung', 'aktiv')],
     docs: [{ name: 'Zeichnung_4711-220_RevF.pdf', size: 612000 }],
-    tasks: [{ id: uid('t'), text: 'Lehrdorn Ø 22 H6 bestellen', owner: 'Murat Kaya', due: rel(5), status: 'offen', doneAt: null, reminded: null },
-      { id: uid('t'), text: 'NC-Programm BAZ 4 auf neue Toleranz anpassen', owner: 'Jonas Weber', due: rel(-1), status: 'offen', doneAt: null, reminded: null }],
-    comments: [CM('Murat Kaya', at(-2, '17:31'), 'Von QM freigegeben. @Jonas Weber jetzt du.', ['Elif Demir'])],
-    log: [{ at: at(-2, '17:30'), who: 'Murat Kaya', text: 'Freigegeben für Qualität' }] });
-  wf({ nr: `WF-${YEAR}-0016`, typ: 'Investitionsantrag', titel: 'Härteprüfgerät für den Wareneingang, 18.500 €', creator: 'Murat Kaya', created: at(-9, '09:30'), due: rel(-2),
-    beschreibung: 'Nach der Lieferantenreklamation zur Härte wollen wir jede Ofencharge selbst prüfen. Angebot und Amortisationsrechnung anbei.',
-    chain: [st('p', 'Dr. Sabine Roth', 'ok', at(-7, '12:00'), 'Dr. Sabine Roth', 'Sinnvoll, Amortisation unter 2 Jahren.'), st('a', 'Geschäftsführung', 'aktiv')],
-    docs: [{ name: 'Angebot_Härteprüfer.pdf', size: 236000 }, { name: 'Amortisation.xlsx', size: 22100 }],
-    log: [{ at: at(-7, '12:00'), who: 'Dr. Sabine Roth', text: 'Freigegeben' }] });
-  wf({ nr: `WF-${YEAR}-0015`, typ: 'Dokumentenfreigabe', titel: 'Prüfanweisung PA-07 Sichtprüfung Lackteile', creator: 'Murat Kaya', created: at(-6, '08:40'), due: rel(1), status: 'zurueckgewiesen',
-    beschreibung: 'Neue Prüfanweisung für die Sichtprüfung lackierter Teile im Wareneingang.',
-    chain: [st('p', 'Dr. Sabine Roth', 'nok', at(-3, '16:10'), 'Dr. Sabine Roth', 'Grenzmuster fehlen. Bitte Fotos für i.O. und n.i.O. ergänzen.')],
-    docs: [{ name: 'PA-07_Entwurf.pdf', size: 188000 }], log: [{ at: at(-3, '16:10'), who: 'Dr. Sabine Roth', text: 'Zurückgewiesen' }] });
-  wf({ nr: `WF-${YEAR}-0014`, typ: 'Allgemeine Freigabe', titel: 'Lieferantenaudit bei Muster GmbH 2 durchführen', creator: 'Tobias Klein', created: at(-15, '11:00'), due: rel(-8), status: 'abgeschlossen', doneAt: rel(-9),
+    tasks: [{ id: uid('t'), text: 'Lehrdorn Ø 22 H6 bestellen', owner: SR, due: rel(5), status: 'offen', doneAt: null, reminded: null },
+      { id: uid('t'), text: 'NC-Programm BAZ 4 auf neue Toleranz anpassen', owner: JW, due: rel(-1), status: 'offen', doneAt: null, reminded: null }],
+    comments: [CM(JW, at(-2, '17:31'), 'Von der Fertigung freigegeben. @Peter Hahn jetzt du.', [SR])],
+    log: [{ at: at(-2, '17:30'), who: JW, text: 'Freigegeben für Fertigung' }] });
+  wf({ nr: `WF-${YEAR}-0016`, typ: 'Investitionsantrag', titel: 'Härteprüfgerät für den Wareneingang, 18.500 €', creator: SR, created: at(-9, '09:30'), due: rel(-2),
+    beschreibung: 'Nach der Lieferantenreklamation zur Härte wollen wir jede Ofencharge selbst prüfen. Angebot und Amortisationsrechnung anbei, Amortisation unter 2 Jahren.',
+    chain: [st('a', 'Geschäftsführung', 'aktiv')],
+    docs: [{ name: 'Angebot_Härteprüfer.pdf', size: 236000 }, { name: 'Amortisation.xlsx', size: 22100 }] });
+  wf({ nr: `WF-${YEAR}-0015`, typ: 'Dokumentenfreigabe', titel: 'Prüfanweisung PA-07 Sichtprüfung Lackteile', creator: JW, created: at(-6, '08:40'), due: rel(1), status: 'zurueckgewiesen',
+    beschreibung: 'Neue Prüfanweisung für die Sichtprüfung lackierter Teile vor der Montage.',
+    chain: [st('a', 'Qualität', 'nok', at(-3, '16:10'), SR, 'Grenzmuster fehlen. Bitte Fotos für i.O. und n.i.O. ergänzen.')],
+    docs: [{ name: 'PA-07_Entwurf.pdf', size: 188000 }], log: [{ at: at(-3, '16:10'), who: SR, text: 'Zurückgewiesen' }] });
+  wf({ nr: `WF-${YEAR}-0014`, typ: 'Allgemeine Freigabe', titel: 'Lieferantenaudit bei Muster GmbH 2 durchführen', creator: SR, created: at(-15, '11:00'), due: rel(-8), status: 'abgeschlossen', doneAt: rel(-9),
     beschreibung: 'Prozessaudit Vergüten beim Lieferanten im nächsten Monat. Reisekosten ca. 600 €.',
-    chain: [st('p', 'Dr. Sabine Roth', 'ok', at(-12, '09:00'), 'Dr. Sabine Roth')],
-    tasks: [{ id: uid('t'), text: 'Auditplan an Lieferanten senden', owner: 'Tobias Klein', due: rel(-10), status: 'erledigt', doneAt: rel(-10), reminded: null }],
-    log: [{ at: at(-12, '09:00'), who: 'Dr. Sabine Roth', text: 'Freigegeben' }, { at: at(-9, '14:00'), who: 'Tobias Klein', text: 'Abgeschlossen' }] });
+    chain: [st('p', PH, 'ok', at(-12, '09:00'), PH, 'Einverstanden.')],
+    tasks: [{ id: uid('t'), text: 'Auditplan an Lieferanten senden', owner: SR, due: rel(-10), status: 'erledigt', doneAt: rel(-10), reminded: null }],
+    log: [{ at: at(-12, '09:00'), who: PH, text: 'Freigegeben' }, { at: at(-9, '14:00'), who: SR, text: 'Abgeschlossen' }] });
   I.forEach(it => { if (it.app === 'wf' && !it.status) it.status = 'laeuft'; });
   return I;
 }
 const RULES_DEFAULT = { vorab: true, vorabTage: 1, faellig: true, esk1: 1, esk2: 3, esk3: 5, mail: true };
 const LV = { on: false, ready: false, seeded: false, ro: false, err: '', db: null, user: null, assets: null, mcp: null, uid: null, prof: null, owner: false, canWrite: null, as: '',
   synced: new Map(), remote: new Map(), mine: new Set(), pending: new Map(), inflight: new Set(), queue: [], unsub: [] };
+function wfFollowers(it, md) {
+  const mem = d => (md || S.md).mitarbeiter.filter(p => p.abteilung === d).map(p => p.name);
+  return [...new Set([it.creator].concat(...it.chain.map(s => s.kind === 'p' ? [s.who] : mem(s.who)), (it.tasks || []).map(t => t.owner)))];
+}
 function seed() {
+  const md = seedMD();
+  const n = (to, text, ref, when, read) => ({ id: uid('n'), to, text, ref, at: when, read: !!read });
   return {
-    v: 1, user: 'Murat Kaya', route: { p: 'start', id: null }, tab: '', openStep: null,
+    v: 1, user: 'Dr. Sabine Roth', route: { p: 'start', id: null }, tab: '', openStep: null,
     feedF: { wf: 'alle', kr: 'alle', lr: 'alle' }, q: { wf: '', kr: '', lr: '' },
     tf: 'offen', tp: '', tapp: '', mdObj: 'kunden', mdQ: '', lastAuto: '',
     rules: Object.assign({}, RULES_DEFAULT),
-    md: seedMD(), items: seedItems(),
+    md, items: seedItems(md),
     notes: [
-      { id: uid('n'), to: 'Dr. Sabine Roth', text: `LR-${YEAR}-0046 wartet auf Ihre Freigabe`, ref: `LR-${YEAR}-0046`, at: at(-1, '15:12'), read: false },
-      { id: uid('n'), to: 'Murat Kaya', text: `Lena Vogt hat Sie in KR-${YEAR}-0049 erwähnt`, ref: `KR-${YEAR}-0049`, at: at(0, '08:20'), read: false },
-      { id: uid('n'), to: 'Peter Hahn', text: `WF-${YEAR}-0016 wartet auf Freigabe durch die Geschäftsführung`, ref: `WF-${YEAR}-0016`, at: at(-7, '12:00'), read: false },
-      { id: uid('n'), to: 'Murat Kaya', text: `WF-${YEAR}-0015 wurde zurückgewiesen: Grenzmuster fehlen`, ref: `WF-${YEAR}-0015`, at: at(-3, '16:10'), read: true }
+      n('Dr. Sabine Roth', `Peter Hahn hat dich in KR-${YEAR}-0049 erwähnt: bitte heute noch bewerten`, `KR-${YEAR}-0049`, at(0, '08:20')),
+      n('Dr. Sabine Roth', `Jonas Weber hat LR-${YEAR}-0046 zur Freigabe gesendet`, `LR-${YEAR}-0046`, at(-1, '15:12')),
+      n('Dr. Sabine Roth', `WF-${YEAR}-0018 wartet auf deine Freigabe: Arbeitsanweisung AA-114 Fräsen Linie 3, Rev. C`, `WF-${YEAR}-0018`, at(-1, '13:10')),
+      n('Peter Hahn', `Dr. Sabine Roth hat dich in LR-${YEAR}-0043 erwähnt: bitte über die Geschäftsführung nachfordern`, `LR-${YEAR}-0043`, at(-1, '08:05')),
+      n('Peter Hahn', `Jonas Weber hat WF-${YEAR}-0017 freigegeben, jetzt wartet die Abteilung Geschäftsführung`, `WF-${YEAR}-0017`, at(-2, '17:30')),
+      n('Peter Hahn', `WF-${YEAR}-0016 wartet auf deine Freigabe: Härteprüfgerät für den Wareneingang, 18.500 €`, `WF-${YEAR}-0016`, at(-9, '09:30')),
+      n('Jonas Weber', `WF-${YEAR}-0015 wurde zurückgewiesen: Grenzmuster fehlen. Bitte Fotos für i.O. und n.i.O. ergänzen.`, `WF-${YEAR}-0015`, at(-3, '16:10')),
+      n('Jonas Weber', `Dr. Sabine Roth hat WF-${YEAR}-0017 gestartet, Abteilung Fertigung soll freigeben`, `WF-${YEAR}-0017`, at(-4, '10:00'), true)
     ],
     uploads: []
   };
@@ -1112,10 +1144,13 @@ function overdueSteps(it) {
 }
 const wfCur = it => it.chain.find(s => s.status === 'aktiv');
 const stepLabel = s => s.kind === 'a' ? `Abteilung ${s.who}` : s.who;
+/* Wer darf einen Schritt freigeben? Nie die Person, die den Workflow gestartet hat. */
+const approversOf = (s, creator) => !s ? [] : (s.kind === 'p' ? [s.who].filter(n => person(n)) : members(s.who)).filter(n => n !== creator);
+const stepWho = (s, creator) => { const l = approversOf(s, creator); return s.kind === 'a' ? `Abteilung ${s.who}${l.length ? ` (${l.join(', ')})` : ''}` : s.who; };
 function canApprove(it) {
   if (it.app !== 'wf' || it.status !== 'laeuft') return false;
   const c = wfCur(it); if (!c) return false;
-  return c.kind === 'p' ? c.who === me() : deptOf(me()) === c.who;
+  return approversOf(c, it.creator).includes(me());
 }
 const isOpen = it => isR(it) ? ROPEN.includes(it.status) : WOPEN.includes(it.status);
 const statusOf = it => isR(it) ? RSTATUS[it.status] : WSTATUS[it.status];
@@ -1123,7 +1158,7 @@ const creatorOf = it => isR(it) ? it.erfasser : it.creator;
 function involved(it, n) {
   if (creatorOf(it) === n || it.lead === n || it.followers.includes(n)) return true;
   if (isR(it)) return it.massnahmen.some(m => m.owner === n && m.status !== 'erledigt') || (it.status === 'bearbeitung' && Object.values(it.steps).some(s => s.owner === n && !s.done));
-  return it.tasks.some(t => t.owner === n) || it.chain.some(s => (s.kind === 'p' ? s.who === n : s.who === deptOf(n)) && s.status === 'aktiv');
+  return it.tasks.some(t => t.owner === n) || it.chain.some(s => s.status === 'aktiv' && approversOf(s, it.creator).includes(n));
 }
 function itemOverdue(it) {
   if (!isOpen(it)) return false;
@@ -1142,10 +1177,11 @@ function dueInfo(it) {
     return { t: 'Alle Schritte erledigt', cls: 'acc' };
   }
   if (it.status === 'abgeschlossen') return { t: `Abgeschlossen ${fmt(it.doneAt)}`, cls: 'ok' };
-  if (it.status === 'freigegeben') return { t: 'Freigegeben, bereit zum Abschluss', cls: 'acc' };
+  if (it.status === 'zurueckgezogen') return { t: `Zurückgezogen ${fmt(it.doneAt)}`, cls: '' };
+  if (it.status === 'freigegeben') return { t: it.tasks.some(t => t.status !== 'erledigt') ? 'Freigegeben, Aufgaben laufen' : 'Freigegeben, bereit zum Abschluss', cls: 'acc' };
   if (it.status === 'zurueckgewiesen') return { t: 'Zurück beim Ersteller', cls: 'over' };
   const d = daysBetween(TODAY, it.due);
-  if (it.status === 'inarbeit') return d < 0 ? { t: `Seit ${tage(-d)} überfällig`, cls: 'over' } : { t: `Erledigen bis ${fmt(it.due)}`, cls: d <= 1 ? 'soon' : '' };
+  if (it.status === 'inarbeit') return !it.tasks.some(t => t.status !== 'erledigt') ? { t: 'Aufgaben erledigt, bereit zum Abschluss', cls: 'acc' } : d < 0 ? { t: `Seit ${tage(-d)} überfällig`, cls: 'over' } : { t: `Erledigen bis ${fmt(it.due)}`, cls: d <= 1 ? 'soon' : '' };
   return d < 0 ? { t: `Freigabe seit ${tage(-d)} überfällig`, cls: 'over' } : { t: d === 0 ? 'Freigabe heute fällig' : `Freigabe bis ${fmt(it.due)}`, cls: d <= 1 ? 'soon' : '' };
 }
 function nextNr(app) {
@@ -1164,7 +1200,7 @@ function notify(to, text, ref, escal) {
   return 1;
 }
 const tell = (to, text, ref) => { if (to && to !== me()) notify(to, text, ref); };
-const tellStep = (s, text, ref) => { if (!s) return; if (s.kind === 'a') members(s.who).forEach(n => tell(n, text, ref)); else tell(s.who, text, ref); };
+const tellStep = (it, s, text) => approversOf(s, it.creator).forEach(n => tell(n, text, it.id));
 const tellFollowers = (it, text) => it.followers.forEach(n => tell(n, text, it.id));
 function log(it, text) { it.log.push({ at: stamp(), who: me(), text }); }
 function follow(it, n) { if (n && !it.followers.includes(n)) it.followers.push(n); }
@@ -1181,25 +1217,28 @@ function allTasks() {
     } else {
       it.tasks.forEach(t => out.push({ kind: 't', it, t, ref: 't:' + t.id, code: '', typ: 'Aufgabe', text: t.text, owner: t.owner, dept: false, due: t.due, done: t.status === 'erledigt', doneAt: t.doneAt, reminded: t.reminded }));
       const c = wfCur(it);
-      if (it.status === 'laeuft' && c) out.push({ kind: 'f', it, ref: 'f', code: '', typ: 'Freigabe', text: `Freigabe: ${it.titel}`, owner: c.who, dept: c.kind === 'a', due: it.due, done: false, doneAt: null, reminded: c.reminded || null });
+      if (it.status === 'laeuft' && c) out.push({ kind: 'f', it, ref: 'f', code: '', typ: 'Freigabe', text: `Freigabe: ${it.titel}`, owner: c.who, dept: c.kind === 'a', excl: it.creator, due: it.due, done: false, doneAt: null, reminded: c.reminded || null });
       if (it.status === 'zurueckgewiesen') out.push({ kind: 'r', it, ref: 'r', code: '', typ: 'Überarbeiten', text: `Überarbeiten: ${it.titel}`, owner: it.creator, dept: false, due: it.due, done: false, doneAt: null, reminded: null });
+      if (['freigegeben', 'inarbeit'].includes(it.status) && !it.tasks.some(t => t.status !== 'erledigt')) out.push({ kind: 'c', it, ref: 'c', code: '', typ: 'Abschluss', text: `Abschließen: ${it.titel}`, owner: it.creator, dept: false, due: it.due < TODAY ? TODAY : it.due, done: false, doneAt: null, reminded: null });
     }
   });
   return out;
 }
-const mineTask = (t, n) => t.dept ? deptOf(n) === t.owner : t.owner === n;
+const mineTask = (t, n) => t.dept ? deptOf(n) === t.owner && n !== t.excl : t.owner === n;
+const ownersOf = t => t.dept ? members(t.owner).filter(n => n !== t.excl) : [t.owner];
 const findTask = (id, ref) => allTasks().find(t => t.it.id === id && t.ref === ref);
 const isOver = t => !t.done && t.due < TODAY;
 const isSoon = t => !t.done && t.due >= TODAY && daysBetween(TODAY, t.due) <= 7;
 const taskLabel = t => t.kind === 'm' ? `Maßnahme „${t.text}“` : t.kind === 's' ? `${t.k} ${t.text}` : t.kind === 't' ? `Aufgabe „${t.text}“` : t.text;
 const ownerLabel = t => t.dept ? `Abteilung ${t.owner}` : t.owner;
 function notifyOwner(t, text, escal) {
-  if (t.dept) return members(t.owner).reduce((a, n) => a + notify(n, text, t.it.id, escal), 0);
+  if (t.dept) return ownersOf(t).reduce((a, n) => a + notify(n, text, t.it.id, escal), 0);
   return notify(t.owner, text, t.it.id, escal);
 }
 function setReminded(t) {
   const s = stamp();
   if (t.kind === 'm') t.m.reminded = s; else if (t.kind === 's') t.it.steps[t.k].reminded = s; else if (t.kind === 't') t.t.reminded = s; else if (t.kind === 'f') { const c = wfCur(t.it); if (c) c.reminded = s; } else if (t.kind === 'b' || t.kind === 'g') t.it.reminded = s;
+  else return;
 }
 function remindTask(t) {
   notifyOwner(t, `Erinnerung von ${me()}: ${taskLabel(t)} (${t.it.nr}), Termin ${fmt(t.due)}`);
@@ -1239,7 +1278,7 @@ const opts = (list, val) => list.map(v => `<option${v === val ? ' selected' : ''
 const optsKV = (list, val) => list.map(([v, l]) => `<option value="${esc(v)}"${v === val ? ' selected' : ''}>${esc(l)}</option>`).join('');
 const codeTag = c => c ? `<span class="code">${esc(c)}</span>` : '<span class="code free">Freitext</span>';
 const prioDot = p => PRIO[p] === 'crit' || PRIO[p] === 'warn' ? `<span class="prio-dot ${PRIO[p]}" title="Priorität ${esc(p)}"></span>` : '';
-const mentionify = t => esc(t).replace(/@([A-ZÄÖÜ][\wäöüß.]*(?:\s[A-ZÄÖÜ][\wäöüß]+)?)/g, (m, n) => people().includes(n) ? `<span class="mention">@${n}</span>` : m);
+const mentionify = t => { let h = esc(t); people().slice().sort((a, b) => b.length - a.length).forEach(n => { h = h.split('@' + esc(n)).join(`<span class="mention">@\u2060${esc(n)}</span>`); }); return h.replace(/\u2060/g, ''); };
 const kb = n => n > 1e6 ? (n / 1e6).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(n / 1000)) + ' KB';
 const refBtn = it => `<button class="ref" data-action="open" data-id="${esc(it.id)}"><span class="dotc ${it.app}"></span><span class="mono">${esc(it.nr)}</span><span>${esc(it.titel)}</span></button>`;
 
@@ -1252,8 +1291,9 @@ function navCount(p) {
 }
 function meCard(u) {
   if (LV.on && !LV.owner) return `<div class="me-card">${av(me() || '?', 's')}<div><b class="me-n">${esc(me() || (LV.ro ? 'Nur lesen' : 'Nicht zugeordnet'))}</b><small>${esc(u.rolle || '')}${u.abteilung ? ' · ' + esc(u.abteilung) : ''}</small></div></div>`;
-  const lab = LV.on ? 'Ansicht als (Test)' : 'Angemeldet als';
-  return `<label class="me-card">${av(me() || '?', 's')}<div><span class="sr">${lab}</span>${LV.on ? '<small class="as-l">Ansicht als (Test)</small>' : ''}<select id="userSel" data-role="user">${optsKV(people().map(n => [n, n]), me())}</select><small>${esc(u.rolle || '')} · ${esc(u.abteilung || '')}</small></div></label>`;
+  const lab = LV.on ? 'Ansicht als (Test)' : 'Ansicht als';
+  return `<label class="me-card">${av(me() || '?', 's')}<div><small class="as-l">${lab}</small><select id="userSel" data-role="user">${optsKV(people().map(n => [n, n]), me())}</select><small>${esc(u.rolle || '')} · ${esc(u.abteilung || '')}</small></div></label>
+    <button class="me-compact" data-action="more" aria-label="${esc(lab)}: ${esc(me())}. Person wechseln" title="${esc(lab)}: ${esc(me())}">${av(me() || '?', 's')}</button>`;
 }
 function renderFrame() {
   const r = S.route.p, th = effTheme();
@@ -1299,8 +1339,11 @@ function appStats(app) {
   const mine = allTasks().filter(t => !t.done && t.it.app === app && mineTask(t, me()));
   return { open: open.length, mine: mine.length, over: open.filter(itemOverdue).length };
 }
-const wTask = t => { const o = isOver(t), d = daysBetween(TODAY, t.due); return `<li><button class="w-item" data-action="goto" data-id="${esc(t.it.id)}" data-ref="${t.ref}"><b>${esc(t.text)}</b><small><span class="mono">${esc(t.it.nr)}</span> · <span class="due ${o ? 'over' : d <= 1 ? 'soon' : ''}">${o ? `${tage(-d)} überfällig` : d === 0 ? 'heute' : fmt(t.due)}</span></small></button></li>`; };
-const demoCard = () => `<section class="card"><div class="card-b"><b>Demo</b><span class="hint">Beispieldaten. Benutzer unten links wechseln, um Rollen zu testen (z. B. Dr. Sabine Roth für Freigaben, Tobias Klein mit überfälligen Aufgaben).</span><button class="linkbtn" data-action="reset">Demo zurücksetzen</button></div></section>`;
+const wTask = t => { const o = isOver(t), d = daysBetween(TODAY, t.due); return `<li><button class="w-item" data-action="goto" data-id="${esc(t.it.id)}" data-ref="${t.ref}"><b>${esc(t.text)}</b><small><span class="mono">${esc(t.it.nr)}</span> · <span class="due ${o ? 'over' : d <= 1 ? 'soon' : ''}">${o ? `${tageN(-d)} überfällig` : d === 0 ? 'heute' : fmt(t.due)}</span></small></button></li>`; };
+const roleLabel = n => [deptOf(n), roleOf(n) === 'Mitarbeiter' ? (deptLead(deptOf(n)) === n ? 'Leitung' : '') : roleOf(n)].filter(Boolean).join(' · ');
+const asBtns = () => `<div class="as-row" role="group" aria-label="Ansicht als">${people().map(n => `<button class="as-b${n === me() ? ' on' : ''}" data-action="as" data-n="${esc(n)}" aria-pressed="${n === me()}">${av(n, 's')}<span><b>${esc(n)}</b><small>${esc(roleLabel(n))}</small></span></button>`).join('')}</div>`;
+const demoCard = () => LV.on ? '' : `<section class="card demo-bar" aria-label="Demo"><div class="demo-t"><b>Demo zum Durchspielen</b><span class="hint">Beispieldaten mit drei Personen. Starte z. B. als Jonas Weber einen Änderungsantrag, wechsle dann zu Dr. Sabine Roth und Peter Hahn und gib frei. Alles bleibt in diesem Browser.</span></div>${asBtns()}<button class="linkbtn" data-action="reset">Demo zurücksetzen</button></section>`;
+const asLink = n => !LV.on && n && n !== me() && person(n) ? `<button class="btn ghost" data-action="as" data-n="${esc(n)}">${av(n, 'xs')} Demo: Ansicht als ${esc(n)}</button>` : '';
 
 /* ---------- Feed einer App ---------- */
 function feedList(app) {
@@ -1349,7 +1392,7 @@ function sideApp(app) {
   let k3, k4;
   if (app === 'wf') {
     const waiting = allTasks().filter(t => t.kind === 'f' && t.it.app === 'wf' && mineTask(t, me())).length;
-    const fin = list.filter(i => i.doneAt);
+    const fin = list.filter(i => i.doneAt && i.status === 'abgeschlossen');
     const dl = fin.length ? Math.round(fin.reduce((a, i) => a + daysBetween(i.created, i.doneAt), 0) / fin.length) : null;
     k3 = `<div class="kpi"><div class="kpi-l">Wartet auf dich</div><div class="kpi-v${waiting ? ' warn' : ''}">${waiting}</div><div class="kpi-s">Freigaben</div></div>`;
     k4 = `<div class="kpi"><div class="kpi-l">Ø Dauer</div><div class="kpi-v">${dl === null ? '–' : dl + ' T'}</div><div class="kpi-s">bis Abschluss</div></div>`;
@@ -1404,11 +1447,11 @@ function rActions(it) {
   else if (it.status === 'bewertung') a.push(canQM() ? '<button class="btn primary" data-action="r-eval">Bewerten</button>' : '<span class="hint">QM prüft, ob die Reklamation berechtigt ist.</span>');
   else if (it.status === 'bearbeitung') {
     const rest = openKeys(it).length;
-    if (canQM()) { a.push(`<button class="btn primary" data-action="r-submit"${rest ? ' disabled' : ''}>Zur Freigabe senden</button>`); if (rest) a.push(`<span class="hint">Noch ${rest} von 7 Schritten offen.</span>`); }
+    if (canQM() || it.lead === me()) { a.push(`<button class="btn primary" data-action="r-submit"${rest ? ' disabled' : ''}>Zur Freigabe senden</button>`); if (rest) a.push(`<span class="hint">Noch ${rest} von 7 Schritten offen.</span>`); }
     else a.push(`<span class="hint">8D-Team arbeitet, ${7 - rest} von 7 Schritten erledigt.</span>`);
   } else if (it.status === 'freigabe') {
     if (isLead()) { a.push('<button class="btn primary" data-action="r-approve">Freigeben und abschließen</button>'); a.push('<button class="btn danger" data-action="r-reject">Zurückweisen</button>'); }
-    else a.push('<span class="hint">Wartet auf Freigabe durch die QM-Leitung.</span>');
+    else a.push(`<span class="hint">Wartet auf Freigabe durch die QM-Leitung (${esc(leitName())}).</span>`);
   } else if (it.status === 'abgeschlossen' && isLead()) a.push('<button class="btn" data-action="r-reopen">Wieder öffnen</button>');
   a.push('<button class="btn" data-action="report">8D-Bericht</button>');
   return a.join('');
@@ -1456,7 +1499,7 @@ function tab8D(it) {
   return `<ul class="steps">${STEPS.map(([k, name]) => {
     const s = it.steps[k], over = od.includes(k), open = S.openStep === k;
     const cls = s.done ? 'done' : over ? 'over' : k === nx ? 'now' : '';
-    const state = s.done ? '<span class="step-s done">Erledigt</span>' : over ? `<span class="step-s over">${tage(daysBetween(s.due, TODAY))} über Frist</span>` : `<span class="step-s">Frist ${fmt(s.due)}</span>`;
+    const state = s.done ? '<span class="step-s done">Erledigt</span>' : over ? `<span class="step-s over">${tageN(daysBetween(s.due, TODAY))} über Frist</span>` : `<span class="step-s">Frist ${fmt(s.due)}</span>`;
     let body = '';
     if (open) {
       if (stepEditable(it, k)) {
@@ -1520,15 +1563,21 @@ function tabK(it) {
 
 /* ---------- Detail: Workflow ---------- */
 function wActions(it) {
-  const a = [];
+  const a = [], c = wfCur(it);
   if (canApprove(it)) { a.push('<button class="btn primary" data-action="w-ok">Freigeben</button>'); a.push('<button class="btn danger" data-action="w-nok">Zurückweisen</button>'); }
-  else if (it.status === 'laeuft') { const c = wfCur(it); a.push(`<span class="hint">Wartet auf ${esc(c ? stepLabel(c) : '–')}.</span>`); if (c && (it.creator === me() || canQM())) a.push(`<button class="btn" data-action="remind" data-id="${esc(it.id)}" data-ref="f">Erinnern</button>`); }
-  if (['freigegeben', 'inarbeit'].includes(it.status) && (it.creator === me() || canQM())) {
-    const openT = it.tasks.filter(t => t.status !== 'erledigt').length;
-    a.push(`<button class="btn primary" data-action="w-close"${openT ? ' disabled' : ''}>Abschließen</button>`);
-    if (openT) a.push(`<span class="hint">Noch ${openT} Aufgaben offen.</span>`);
+  else if (it.status === 'laeuft') {
+    a.push(`<span class="hint">Wartet auf ${esc(c ? stepWho(c, it.creator) : '–')}.${c && c.reminded ? ` Erinnert ${esc(ago(c.reminded))}.` : ''}</span>`);
+    if (c && (it.creator === me() || canQM())) a.push(`<button class="btn" data-action="remind" data-id="${esc(it.id)}" data-ref="f">Erinnern</button>`);
+    if (c) a.push(asLink(approversOf(c, it.creator)[0]));
   }
-  if (it.status === 'zurueckgewiesen') a.push(it.creator === me() ? '<button class="btn primary" data-action="w-resend">Überarbeitet, neu senden</button>' : `<span class="hint">Liegt zur Überarbeitung bei ${esc(it.creator)}.</span>`);
+  if (['freigegeben', 'inarbeit'].includes(it.status)) {
+    const openT = it.tasks.filter(t => t.status !== 'erledigt').length;
+    if (it.creator === me() || canQM()) {
+      a.push(`<button class="btn primary" data-action="w-close"${openT ? ' disabled' : ''}>Abschließen</button>`);
+      if (openT) a.push(`<span class="hint">Noch ${openT} ${openT === 1 ? 'Aufgabe' : 'Aufgaben'} offen.</span>`);
+    } else a.push(`<span class="hint">${it.status === 'freigegeben' ? 'Vollständig freigegeben. ' : ''}${esc(it.creator)} schließt ab${openT ? `, sobald ${openT === 1 ? 'die Aufgabe erledigt ist' : 'alle Aufgaben erledigt sind'}` : ''}.</span>${openT ? '' : asLink(it.creator)}`);
+  }
+  if (it.status === 'zurueckgewiesen') a.push(it.creator === me() ? '<button class="btn primary" data-action="w-resend">Überarbeitet, neu senden</button><button class="btn" data-action="w-close-early">Zurückziehen</button>' : `<span class="hint">Liegt zur Überarbeitung bei ${esc(it.creator)}.</span>${asLink(it.creator)}`);
   if (it.status === 'laeuft' && it.creator === me()) a.push('<button class="btn" data-action="w-close-early">Zurückziehen</button>');
   return a.join('') || '<span class="hint">Keine Aktion nötig.</span>';
 }
@@ -1548,8 +1597,8 @@ function pageWDetail(it) {
       ${bz ? `<div><span class="lbl">Bezug</span><br>${refBtn(bz)}</div>` : ''}
     </div>
     ${it.chain.length ? `<div class="card-h" style="border-top:1px solid var(--line)"><div><h2>Freigabekette</h2><p>${it.chain.filter(s => s.status === 'ok').length} von ${it.chain.length} freigegeben</p></div></div>
-    <ol class="chain-big">${it.chain.map(s => `<li>${av(s.who, 's', s.kind === 'a')}<div class="who"><b>${esc(stepLabel(s))}</b><small>${s.status === 'ok' ? `Freigegeben${s.by && s.by !== s.who ? ' von ' + esc(s.by) : ''} · ${esc(fmtStamp(s.at))}` : s.status === 'nok' ? `Zurückgewiesen${s.by && s.by !== s.who ? ' von ' + esc(s.by) : ''} · ${esc(fmtStamp(s.at))}` : s.status === 'aktiv' ? 'Ist jetzt dran' : 'Wartet'}</small></div>
-      ${s.status === 'ok' ? pill('✓', 'good') : s.status === 'nok' ? pill('✕', 'crit') : s.status === 'aktiv' ? pill('Jetzt', 'accent') : pill('Später', 'muted')}
+    <ol class="chain-big">${it.chain.map(s => `<li>${av(s.who, 's', s.kind === 'a')}<div class="who"><b>${esc(stepLabel(s))}</b><small>${s.status === 'ok' ? `Freigegeben${s.by && s.by !== s.who ? ' von ' + esc(s.by) : ''} · ${esc(fmtStamp(s.at))}` : s.status === 'nok' ? `Zurückgewiesen${s.by && s.by !== s.who ? ' von ' + esc(s.by) : ''} · ${esc(fmtStamp(s.at))}` : s.status === 'aktiv' ? `Ist jetzt dran${s.kind === 'a' ? ': ' + esc(approversOf(s, it.creator).join(', ')) : ''}` : it.status === 'laeuft' ? 'Danach' : '–'}</small></div>
+      ${s.status === 'ok' ? pill('Freigegeben', 'good') : s.status === 'nok' ? pill('Zurückgewiesen', 'crit') : s.status === 'aktiv' ? pill('Jetzt dran', 'accent') : pill(it.status === 'laeuft' ? 'Später' : 'Entfällt', 'muted')}
       ${s.note ? `<div class="note">„${esc(s.note)}“</div>` : ''}</li>`).join('')}</ol>` : ''}
     <div class="actions">${wActions(it)}</div>
   </article>
@@ -1561,7 +1610,7 @@ function tabT(it) {
   return `${it.tasks.length ? `<ul class="tasks">${it.tasks.map(t => {
     const over = t.status !== 'erledigt' && t.due < TODAY, mine = t.owner === me();
     return `<li class="task">${av(t.owner, 's')}<div class="task-m"><div class="task-t">${esc(t.text)}</div><div class="task-x">${esc(t.owner)}${mine ? ' (ich)' : ''}${t.reminded && t.status !== 'erledigt' ? ` · erinnert ${esc(ago(t.reminded))}` : ''}</div></div>
-      <div class="task-s"><span class="due ${t.status === 'erledigt' ? 'ok' : over ? 'over' : ''}">${t.status === 'erledigt' ? 'Erledigt ' + fmt(t.doneAt) : over ? `${tage(daysBetween(t.due, TODAY))} überfällig` : 'bis ' + fmt(t.due)}</span>
+      <div class="task-s"><span class="due ${t.status === 'erledigt' ? 'ok' : over ? 'over' : ''}">${t.status === 'erledigt' ? 'Erledigt ' + fmt(t.doneAt) : over ? `${tageN(daysBetween(t.due, TODAY))} überfällig` : 'bis ' + fmt(t.due)}</span>
       <div class="cell-acts">${WOPEN.includes(it.status) && (mine || edit) ? `<button class="mini${t.status === 'erledigt' ? ' ok' : ''}" data-action="t-toggle" data-tid="${t.id}">${t.status === 'erledigt' ? '✓ Erledigt' : 'Erledigt?'}</button>` : ''}${t.status !== 'erledigt' && !mine && (canQM() || it.creator === me()) ? `<button class="mini acc" data-action="remind" data-id="${esc(it.id)}" data-ref="t:${t.id}">Erinnern</button>` : ''}</div></div></li>`;
   }).join('')}</ul>` : '<p class="empty">Keine Aufgaben. Verteile Arbeit direkt aus dem Workflow.</p>'}
   ${edit ? `<form class="sub-form" id="tForm" novalidate><h3>Aufgabe zuweisen</h3>
@@ -1605,7 +1654,7 @@ function pageTasks() {
     <div class="card-h"><div><h2>Wer hat was offen</h2><p>Sortiert nach Überfälligkeit. Name antippen filtert die Liste.</p></div>
       <div class="row-acts"><span class="legend"><span><i style="background:var(--crit)"></i>überfällig</span><span><i style="background:var(--bar)"></i>im Plan</span></span>${ed && over.length ? '<button class="btn" data-action="remind-all">Alle Überfälligen erinnern</button>' : ''}${ed && over.length && r.mail ? `<button class="btn" data-action="remind-mail">${ic('mail', 's')} Per E-Mail</button>` : ''}</div></div>
     ${stats.length ? `<ul class="people">${stats.map(s => `<li class="person${S.tp === s.n ? ' sel' : ''}">
-      <button class="person-n" data-action="tp" data-p="${esc(s.n)}" aria-pressed="${S.tp === s.n}">${av(s.n, 's', s.dept)}<span><b>${esc(s.dept ? 'Abteilung ' + s.n : s.n)}</b><small>${esc(s.dept ? members(s.n).length + ' Personen' : (person(s.n) || {}).abteilung || '')}</small></span></button>
+      <button class="person-n" data-action="tp" data-p="${esc(s.n)}" aria-pressed="${S.tp === s.n}">${av(s.n, 's', s.dept)}<span><b>${esc(s.dept ? 'Abteilung ' + s.n : s.n)}</b><small>${esc(s.dept ? members(s.n).join(', ') || 'niemand zugeordnet' : (person(s.n) || {}).abteilung || '')}</small></span></button>
       <div class="bar-w"><div class="bar" role="img" aria-label="${s.open} offen, ${s.over} überfällig"><span class="b-over" style="width:${s.over / maxO * 100}%"></span><span class="b-open" style="width:${(s.open - s.over) / maxO * 100}%"></span></div>
       <div class="bar-t">${s.open} offen${s.over ? ` · <b>${s.over} überfällig</b>, älteste seit ${tage(s.oldest)}` : ''}</div></div>
       <div>${ed && s.n !== me() ? `<button class="mini acc" data-action="remind-owner" data-p="${esc(s.n)}">Erinnern</button>` : ''}</div></li>`).join('')}</ul>` : '<p class="empty">Keine offenen Aufgaben.</p>'}
@@ -1631,14 +1680,14 @@ function pageTasks() {
 }
 function taskRow(t) {
   const over = isOver(t), d = daysBetween(TODAY, t.due), mine = mineTask(t, me());
-  const dueT = t.done ? `Erledigt ${fmt(t.doneAt)}` : over ? `${tage(-d)} überfällig` : d === 0 ? 'heute fällig' : `bis ${fmt(t.due)}`;
+  const dueT = t.done ? `Erledigt ${fmt(t.doneAt)}` : over ? `${tageN(-d)} überfällig` : d === 0 ? 'heute fällig' : `bis ${fmt(t.due)}`;
   const acts = [];
   if (!t.done) {
     if ((t.kind === 'm' || t.kind === 't') && (mine || canQM() || t.it.lead === me() || t.it.creator === me())) acts.push(`<button class="mini" data-action="task-done" data-id="${esc(t.it.id)}" data-ref="${t.ref}">Erledigt</button>`);
-    if (['s', 'f', 'r', 'b', 'g'].includes(t.kind)) acts.push(`<button class="mini" data-action="goto" data-id="${esc(t.it.id)}" data-ref="${t.ref}">${mine ? 'Bearbeiten' : 'Öffnen'}</button>`);
-    if (canQM() && !mine && t.kind !== 'r') acts.push(`<button class="mini acc" data-action="remind" data-id="${esc(t.it.id)}" data-ref="${t.ref}">Erinnern</button>`);
+    if (['s', 'f', 'r', 'b', 'g', 'c'].includes(t.kind)) acts.push(`<button class="mini" data-action="goto" data-id="${esc(t.it.id)}" data-ref="${t.ref}">${mine ? 'Bearbeiten' : 'Öffnen'}</button>`);
+    if (canQM() && !mine && !['r', 'c'].includes(t.kind)) acts.push(`<button class="mini acc" data-action="remind" data-id="${esc(t.it.id)}" data-ref="${t.ref}">Erinnern</button>`);
   }
-  const tag = t.kind === 'm' ? codeTag(t.code) : t.kind === 's' ? `<span class="code">${t.k}</span>` : t.kind === 'f' || t.kind === 'g' ? pill('Freigabe', 'info') : t.kind === 'b' ? pill('Bewertung', 'warn') : t.kind === 'r' ? pill('Überarbeiten', 'crit') : pill('Aufgabe', 'muted');
+  const tag = t.kind === 'm' ? codeTag(t.code) : t.kind === 's' ? `<span class="code">${t.k}</span>` : t.kind === 'f' || t.kind === 'g' ? pill('Freigabe', 'info') : t.kind === 'b' ? pill('Bewertung', 'warn') : t.kind === 'r' ? pill('Überarbeiten', 'crit') : t.kind === 'c' ? pill('Abschluss', 'good') : pill('Aufgabe', 'muted');
   return `<li class="task">${av(t.owner, 's', t.dept)}<div class="task-m"><div class="task-t">${tag}<span>${esc(t.text)}</span></div>
     <div class="task-x"><span>${esc(ownerLabel(t))}${mine ? ' (ich)' : ''}</span><span>${esc(t.typ)}</span>${t.reminded && !t.done ? `<span>erinnert ${esc(ago(t.reminded))}</span>` : ''}</div>
     <div class="task-x">${refBtn(t.it)}</div></div>
@@ -1653,11 +1702,11 @@ function usage(obj, r) {
   if (obj === 'material') return I.filter(i => i.matNr === r.nr).length;
   if (obj === 'fehler') return I.filter(i => i.fehlerCode === r.code).length;
   if (obj === 'massnahmen') return I.filter(isR).reduce((a, i) => a + i.massnahmen.filter(m => m.code === r.code).length, 0);
-  if (obj === 'abteilungen') return members(r.name).length;
+  if (obj === 'abteilungen') return members(r.name).length + I.filter(i => i.app === 'wf' && isOpen(i) && i.chain.some(c => c.kind === 'a' && c.who === r.name)).length;
   if (obj === 'mitarbeiter') return allTasks().filter(t => t.owner === r.name).length + I.filter(i => creatorOf(i) === r.name).length;
   return 0;
 }
-const usageLabel = { kunden: 'Reklamationen', lieferanten: 'Reklamationen', material: 'Vorgänge', fehler: 'Vorgänge', massnahmen: 'Verwendet', abteilungen: 'Personen', mitarbeiter: 'Vorgänge' };
+const usageLabel = { kunden: 'Reklamationen', lieferanten: 'Reklamationen', material: 'Vorgänge', fehler: 'Vorgänge', massnahmen: 'Verwendet', abteilungen: 'Verwendet', mitarbeiter: 'Vorgänge' };
 const fmtVal = (f, v) => f.type === 'bool' ? (v ? 'ja' : 'nein') : v ?? '';
 function pageMD() {
   const o = S.mdObj, D = MD[o];
@@ -1739,7 +1788,7 @@ function loadParsed(p, name) {
   automap(); renderAll(); window.scrollTo(0, 0);
 }
 function pageUp() {
-  if (!canMD()) return `<div class="page-h"><div><h1>Massenupload</h1><p>Nur QM und Admin können Stammdaten hochladen. Wechsle unten links den Benutzer, z. B. zu Anna Berger (Admin).</p></div></div>`;
+  if (!canMD()) return `<div class="page-h"><div><h1>Massenupload</h1><p>Nur QM und Admin können Stammdaten hochladen. Wechsle die Ansicht, z. B. zu Peter Hahn (Admin) oder Dr. Sabine Roth (QM-Leitung).</p></div></div>`;
   const steps = ['Objekt', 'Datei laden', 'Zuordnen & prüfen', 'Ergebnis'];
   const head = `<div class="page-h"><div><h1>Massenupload</h1><p>Stammdaten aus Excel laden wie mit der SAP-LSMW, nur in vier Schritten: Objekt wählen, Datei hochladen, Spalten zuordnen und prüfen, übernehmen. Jeder Upload lässt sich rückgängig machen.</p></div></div>
     <ol class="stepper">${steps.map((s, i) => `<li class="${U.step === i + 1 ? 'on' : U.step > i + 1 ? 'done' : ''}"><span>${U.step > i + 1 ? '✓' : i + 1}</span>${s}</li>`).join('')}</ol>`;
@@ -1885,18 +1934,19 @@ function pageTheme() {
 }
 
 /* ---------- Mein Tag (Startseite) ---------- */
-function focusTasks() { return allTasks().filter(t => !t.done && mineTask(t, me()) && ['f', 'b', 'g', 'r'].includes(t.kind)).sort((a, b) => a.due.localeCompare(b.due)); }
+function focusTasks() { return allTasks().filter(t => !t.done && mineTask(t, me()) && ['f', 'b', 'g', 'r', 'c'].includes(t.kind)).sort((a, b) => a.due.localeCompare(b.due)); }
 function verbTitle(t) {
   const ti = t.it.titel;
   if (t.kind === 'f' || t.kind === 'g') return `${ti} freigeben`;
   if (t.kind === 'b') return `${ti} bewerten`;
   if (t.kind === 'r') return `${ti} überarbeiten`;
+  if (t.kind === 'c') return `${ti} abschließen`;
   if (t.kind === 's') return `${t.k} ${t.text}`;
   return t.text;
 }
 function dueShort(due) {
   const d = daysBetween(TODAY, due);
-  if (d < 0) return { t: `${tage(-d)} drüber`, c: 'over' };
+  if (d < 0) return { t: `${tageN(-d)} drüber`, c: 'over' };
   if (d === 0) return { t: 'heute', c: 'soon' };
   if (d === 1) return { t: 'morgen', c: 'soon' };
   return { t: new Date(due + 'T12:00:00').toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' }), c: 'week' };
@@ -1905,7 +1955,7 @@ function taskCard(t) {
   const ds = dueShort(t.due);
   const btn = (t.kind === 'm' || t.kind === 't')
     ? `<button class="mini" data-action="task-done" data-id="${esc(t.it.id)}" data-ref="${t.ref}">Erledigt</button>`
-    : `<button class="mini acc" data-action="goto" data-id="${esc(t.it.id)}" data-ref="${t.ref}">${{ f: 'Freigeben', g: 'Freigeben', b: 'Bewerten', r: 'Bearbeiten', s: 'Öffnen' }[t.kind]}</button>`;
+    : `<button class="mini acc" data-action="goto" data-id="${esc(t.it.id)}" data-ref="${t.ref}">${{ f: 'Freigeben', g: 'Freigeben', b: 'Bewerten', r: 'Überarbeiten', c: 'Abschließen', s: 'Öffnen' }[t.kind]}</button>`;
   const sub = ['s', 'm', 't'].includes(t.kind) ? t.it.titel : isR(t.it) ? partnerName(t.it) : t.it.typ;
   return `<div class="bcard"><div class="bc-top"><span class="apill ${t.it.app}">${APPS[t.it.app].short || 'Workflow'}</span>${av(creatorOf(t.it), 'xs')}</div>
     <div class="bc-t">${esc(verbTitle(t))}</div><div class="bc-s">${esc(sub)}</div>
@@ -1918,9 +1968,10 @@ function pageStart() {
   const week = mine.filter(t => t.due > TODAY && daysBetween(TODAY, t.due) <= 7), later = mine.filter(t => daysBetween(TODAY, t.due) > 7);
   const foc = focusTasks();
   const cnt = k => foc.filter(t => k.includes(t.kind)).length;
-  const parts = [[cnt('fg'), 'Freigabe', 'Freigaben'], [cnt('b'), 'Bewertung', 'Bewertungen'], [cnt('r'), 'Überarbeitung', 'Überarbeitungen']].filter(p => p[0]).map(p => `${p[0]} ${p[0] === 1 ? p[1] : p[2]}`).join(' · ');
+  const parts = [[cnt('fg'), 'Freigabe', 'Freigaben'], [cnt('b'), 'Bewertung', 'Bewertungen'], [cnt('r'), 'Überarbeitung', 'Überarbeitungen'], [cnt('c'), 'Abschluss', 'Abschlüsse']].filter(p => p[0]).map(p => `${p[0]} ${p[0] === 1 ? p[1] : p[2]}`).join(' · ');
   const focus = foc.length
-    ? `<section class="focus" aria-label="Wartet nur auf dich"><span class="focus-n">${foc.length}</span><div class="focus-t"><b>${foc.length === 1 ? 'wartet' : 'warten'} nur auf dich</b><span>${parts}</span></div><button class="btn" data-action="goto" data-id="${esc(foc[0].it.id)}" data-ref="${foc[0].ref}">Jetzt starten</button></section>`
+    ? `<section class="focus" aria-label="Wartet nur auf dich"><span class="focus-n">${foc.length}</span><div class="focus-t"><b>${foc.length === 1 ? 'wartet' : 'warten'} nur auf dich</b><span>${parts}</span></div><button class="btn" data-action="goto" data-id="${esc(foc[0].it.id)}" data-ref="${foc[0].ref}">Jetzt starten</button>
+      <ul class="focus-l">${foc.slice(0, 6).map(t => { const ds = dueShort(t.due); return `<li><button data-action="goto" data-id="${esc(t.it.id)}" data-ref="${t.ref}"><span class="mono">${esc(t.it.nr)}</span><span class="fl-t">${esc(verbTitle(t))}</span><span class="fl-d ${ds.c}">${esc(ds.t)}</span></button></li>`; }).join('')}${foc.length > 6 ? `<li><button data-action="person" data-p="${esc(me())}"><span class="fl-t">+ ${foc.length - 6} weitere in den Aufgaben</span></button></li>` : ''}</ul></section>`
     : `<section class="focus calm"><span class="focus-n">✓</span><div class="focus-t"><b>Nichts wartet nur auf dich</b><span>${mine.length ? `${mine.length} Aufgaben laufen im Plan` : 'Alles erledigt'}</span></div></section>`;
   const col = (cls, label, list) => `<section class="col" aria-label="${label}"><h2 class="col-h ${cls}">${label}<span>${list.length}</span></h2>
     ${list.length ? list.slice(0, 5).map(taskCard).join('') : '<div class="col-empty">Nichts</div>'}
@@ -1929,6 +1980,7 @@ function pageStart() {
   return `
   <div class="hello"><div><h1>Hallo ${esc(first)}</h1><p>${new Date().toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' })}</p></div>
     <div class="quick-row2"><button class="qbtn wf" data-action="new" data-app="wf">${ic('plus', 's')} Workflow</button><button class="qbtn kr" data-action="new" data-app="kr">${ic('plus', 's')} Kundenreklamation</button><button class="qbtn lr" data-action="new" data-app="lr">${ic('plus', 's')} Lieferantenreklamation</button></div></div>
+  ${demoCard()}
   ${focus}
   <div class="cols3">${col('over', 'Überfällig', over)}${col('today', 'Heute', today)}${col('week', 'Diese Woche', week)}</div>
   ${later.length ? `<p class="hint" style="margin:0">Später: ${later.length} weitere Aufgaben · <button class="linkbtn" data-action="person" data-p="${esc(me())}">Alle Aufgaben</button></p>` : ''}
@@ -1937,12 +1989,13 @@ function pageStart() {
 
 /* ---------- App-Ansichten: Board, Liste, Feed ---------- */
 const BOARD = {
-  wf: [['In Freigabe', ['laeuft'], 'info'], ['In Arbeit', ['inarbeit', 'freigegeben'], 'warn'], ['Zurückgewiesen', ['zurueckgewiesen'], 'crit'], ['Abgeschlossen', ['abgeschlossen'], 'good']],
+  wf: [['In Freigabe', ['laeuft'], 'info'], ['Zurückgewiesen', ['zurueckgewiesen'], 'crit'], ['Freigegeben / in Arbeit', ['inarbeit', 'freigegeben'], 'warn'], ['Abgeschlossen', ['abgeschlossen', 'zurueckgezogen'], 'good']],
   r: [['Neu', ['neu', 'bewertung'], 'info'], ['In Bearbeitung', ['bearbeitung'], 'warn'], ['Zur Freigabe', ['freigabe'], 'accent'], ['Erledigt', ['abgeschlossen', 'abgelehnt'], 'good']]
 };
 function respOf(it) {
   if (isR(it)) return it.status === 'freigabe' ? leitName() : ['neu', 'bewertung'].includes(it.status) ? qmName() : (it.lead || it.erfasser);
-  const c = wfCur(it); return it.status === 'laeuft' && c ? c.who : it.creator;
+  const c = wfCur(it); if (it.status === 'laeuft' && c) return c.who;
+  const t = it.tasks.find(x => x.status !== 'erledigt'); return ['freigegeben', 'inarbeit'].includes(it.status) && t ? t.owner : it.creator;
 }
 const respIsDept = it => { const c = !isR(it) && wfCur(it); return !!(c && it.status === 'laeuft' && c.kind === 'a'); };
 function itemCard(it) {
@@ -2022,6 +2075,12 @@ function gotoTask(id, ref) {
   else openItem(id, { tab: 'c' });
 }
 let toastT;
+function setUser(n) {
+  if (!person(n)) return;
+  S.user = n; closeSheet(); $('bellPanel').hidden = true; if (S.route.p === 'aufg') S.tp = ''; S.openStep = null;
+  const it = S.route.id ? item(S.route.id) : null; if (it && isR(it) && isOpen(it)) S.openStep = nextOpen(it);
+  commit('Ansicht als ' + n + (roleLabel(n) ? ' (' + roleLabel(n) + ')' : ''));
+}
 function toast(t) { const el = $('toast'); el.textContent = t; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { el.hidden = true; }, 2800); }
 function commit(msg) { save(); renderAll(); if (msg) toast(msg); }
 
@@ -2062,12 +2121,21 @@ function newRekla(app) {
   </div>${foot('Erfassen')}</form>`);
 }
 let WFC = [];
+/* Freigabekette aus der Vorlage: Schritte, die nur ich selbst freigeben könnte, entfallen (keine Selbstfreigabe). */
 function wfChainFor(typ) {
-  const lead = deptLead(deptOf(me()));
-  return WF_TYPES[typ].chain.map(([k, w]) => k === 'lead' ? (lead && lead !== me() ? { kind: 'p', who: lead } : { kind: 'p', who: leitName() }) : { kind: k, who: w });
+  const m = me(), lead = deptLead(deptOf(m)), out = [];
+  WF_TYPES[typ].chain.forEach(([k, w]) => {
+    const s = k === 'lead' ? (lead ? { kind: 'p', who: lead } : null) : { kind: k, who: w };
+    if (s && approversOf(s, m).length && !out.some(x => x.kind === s.kind && x.who === s.who)) out.push(s);
+  });
+  if (!out.length && WF_TYPES[typ].chain.length) {
+    const f = [leitName(), deptLead('Geschäftsführung')].concat(S.md.abteilungen.map(a => a.leitung), people()).find(n => n && n !== m && person(n));
+    if (f) out.push({ kind: 'p', who: f });
+  }
+  return out;
 }
 function chainEd() {
-  return WFC.length ? WFC.map((s, i) => `<li><span class="n">${i + 1}</span>${av(s.who, 'xs', s.kind === 'a')}<b>${esc(stepLabel(s))}</b><button type="button" class="close" data-action="wf-rm" data-i="${i}" aria-label="Entfernen">${ic('x', 's')}</button></li>`).join('') : '<li class="hint" style="border-style:dashed">Keine Freigabe nötig, nur Aufgaben</li>';
+  return WFC.length ? WFC.map((s, i) => `<li><span class="n">${i + 1}</span>${av(s.who, 'xs', s.kind === 'a')}<span class="ce-t"><b>${esc(stepLabel(s))}</b>${s.kind === 'a' ? `<small>${esc(approversOf(s, me()).join(', '))}</small>` : ''}</span>${i ? `<button type="button" class="close" data-action="wf-up" data-i="${i}" aria-label="Nach vorne">${ic('back', 's up')}</button>` : ''}<button type="button" class="close" data-action="wf-rm" data-i="${i}" aria-label="${esc(stepLabel(s))} entfernen">${ic('x', 's')}</button></li>`).join('') : '<li class="hint" style="border-style:dashed">Keine Freigabe nötig, nur Aufgaben</li>';
 }
 function newWorkflow() {
   const typ = 'Dokumentenfreigabe'; WFC = wfChainFor(typ);
@@ -2077,8 +2145,8 @@ function newWorkflow() {
     <div class="field"><label for="w-titel">Titel *</label><input id="w-titel" placeholder="Worum geht es?"></div>
     <div class="field"><label for="w-beschr">Beschreibung *</label><textarea id="w-beschr" placeholder="Was soll entschieden oder erledigt werden?"></textarea></div>
     <div class="field"><span class="lbl">Freigabekette (der Reihe nach)</span><ul class="chain-ed" id="w-chain">${chainEd()}</ul>
-      <div class="row-acts" style="margin-top:6px"><select class="sel" id="w-add" aria-label="Empfänger hinzufügen"><optgroup label="Abteilungen">${S.md.abteilungen.map(a => `<option value="a|${esc(a.name)}">Abteilung ${esc(a.name)}</option>`).join('')}</optgroup><optgroup label="Personen">${people().filter(n => n !== me()).map(n => `<option value="p|${esc(n)}">${esc(n)}</option>`).join('')}</optgroup></select><button type="button" class="btn" data-action="wf-add">Hinzufügen</button></div>
-      <span class="help">An eine Abteilung geschickt, kann jede Person dieser Abteilung freigeben.</span></div>
+      <div class="row-acts" style="margin-top:6px"><select class="sel" id="w-add" aria-label="Empfänger hinzufügen"><optgroup label="Abteilungen">${S.md.abteilungen.filter(a => approversOf({ kind: 'a', who: a.name }, me()).length).map(a => `<option value="a|${esc(a.name)}">Abteilung ${esc(a.name)}</option>`).join('')}</optgroup><optgroup label="Personen">${people().filter(n => n !== me()).map(n => `<option value="p|${esc(n)}">${esc(n)}</option>`).join('')}</optgroup></select><button type="button" class="btn" data-action="wf-add">Hinzufügen</button></div>
+      <span class="help">Die Kette läuft der Reihe nach. An eine Abteilung geschickt, kann jede Person dieser Abteilung freigeben, außer dir selbst.</span></div>
     <div class="grid2"><div class="field"><label for="w-due">Frist</label><input id="w-due" type="date" value="${rel(WF_TYPES[typ].tage)}"></div>
       <div class="field"><label for="w-prio">Priorität</label><select id="w-prio">${opts(['niedrig', 'mittel', 'hoch', 'kritisch'], 'mittel')}</select></div>
       <div class="field"><label for="w-bezug">Bezug (optional)</label><select id="w-bezug"><option value="">–</option>${bez.map(i => `<option value="${esc(i.id)}">${esc(i.nr)} · ${esc(i.titel)}</option>`).join('')}</select></div></div>
@@ -2092,9 +2160,16 @@ function evalSheet(it) {
   openSheet(`${sheetH('Reklamation bewerten')}<form id="evalF" novalidate><div class="sheet-b">
     <p class="muted" style="margin:0">${esc(it.nr)} · ${esc(it.titel)}</p>
     <div class="radio-row"><label class="radio"><input type="radio" name="ev" value="ja" checked> Berechtigt, 8D starten</label><label class="radio"><input type="radio" name="ev" value="nein"> Unberechtigt, ablehnen</label></div>
-    <div class="field" id="ev-lead-f"><label for="ev-lead">Teamleitung</label><select id="ev-lead">${opts(people().filter(n => !['QM-Leitung'].includes(roleOf(n))), it.app === 'lr' ? 'Tobias Klein' : 'Jonas Weber')}</select><span class="help">Die Teamleitung erhält D2 bis D6 als Aufgaben.</span></div>
+    <div class="field" id="ev-lead-f"><label for="ev-lead">Teamleitung</label><select id="ev-lead">${opts(people().filter(n => roleOf(n) !== 'QM-Leitung'), deptLead('Fertigung') || '')}</select><span class="help">Die Teamleitung erhält D2 bis D6 als Aufgaben und sendet den Bericht zur Freigabe.</span></div>
     <div class="field" id="ev-why-f" hidden><label for="ev-why">Begründung *</label><textarea id="ev-why"></textarea><span class="err" id="ev-err" hidden>Bitte eine Begründung eintragen.</span></div>
   </div>${foot('Speichern')}</form>`);
+}
+function rejSheet(it) {
+  openSheet(`${sheetH('Zurückweisen')}<form id="rejR" novalidate><div class="sheet-b">
+    <p class="muted" style="margin:0">${esc(it.nr)} · ${esc(it.titel)}</p>
+    <div class="field"><label for="rj-step">Welcher Schritt muss nachgearbeitet werden?</label><select id="rj-step">${optsKV(STEPS.slice(0, 7).map(([k, n]) => [k, `${k} ${n} · ${it.steps[k].owner}`]), 'D6')}</select><span class="help">Der Schritt wird wieder geöffnet und landet bei der verantwortlichen Person als Aufgabe.</span></div>
+    <div class="field"><label for="nt-text">Was fehlt? *</label><textarea id="nt-text" placeholder="z. B. Wirksamkeitsnachweis fehlt"></textarea><span class="err" id="nt-err" hidden>Bitte ausfüllen.</span></div>
+  </div>${foot('Zurückweisen', 'danger')}</form>`);
 }
 function noteSheet(id, title, label, req, btn, cls, placeholder) {
   openSheet(`${sheetH(title)}<form id="${id}" novalidate><div class="sheet-b"><div class="field"><label for="nt-text">${label}${req ? ' *' : ''}</label><textarea id="nt-text" placeholder="${esc(placeholder || '')}"></textarea><span class="err" id="nt-err" hidden>Bitte ausfüllen.</span></div></div>${foot(btn, cls)}</form>`);
@@ -2111,7 +2186,7 @@ function mdSheet(obj, key) {
 function moreSheet() {
   openSheet(`${sheetH('Mehr')}<div class="sheet-b"><div class="more-list">
     ${[['aufg', 'Aufgaben', 'tasks'], ['md', 'Stammdaten', 'db'], ['up', 'Massenupload', 'upload'], ['theme', 'Darstellung', 'palette']].map(([k, l, i]) => { const c = navCount(k); return `<button class="nav-i" data-action="go" data-p="${k}">${ic(i)}<span class="lbl">${l}</span>${c.n ? `<span class="cnt${c.crit ? ' crit' : ''}">${c.n}</span>` : ''}</button>`; }).join('')}</div>
-    ${!LV.on || LV.owner ? `<div class="field"><label for="userSel2">${LV.on ? 'Ansicht als (Test)' : 'Angemeldet als (Demo)'}</label><select id="userSel2" data-role="user">${optsKV(people().map(n => [n, `${n} · ${roleOf(n)} · ${deptOf(n)}`]), me())}</select></div>` : `<p class="hint">Angemeldet als <b>${esc(me())}</b></p>`}
+    ${!LV.on ? `<div class="field"><span class="lbl">Ansicht als (Demo)</span>${asBtns()}</div>` : LV.owner ? `<div class="field"><label for="userSel2">Ansicht als (Test)</label><select id="userSel2" data-role="user">${optsKV(people().map(n => [n, `${n} · ${roleOf(n)} · ${deptOf(n)}`]), me())}</select></div>` : `<p class="hint">Angemeldet als <b>${esc(me())}</b></p>`}
     ${LV.on ? '' : '<button class="linkbtn" data-action="reset">Demo zurücksetzen</button>'}</div>`);
 }
 function reportText(it) {
@@ -2151,25 +2226,38 @@ function setTask(it, t) {
   if (t.status === 'erledigt') tell(it.creator, `${me()} hat „${t.text}“ (${it.nr}) erledigt`, it.id);
 }
 function wApprove(it, note) {
-  const c = wfCur(it); Object.assign(c, { status: 'ok', at: stamp(), by: me(), note: note || '' });
-  log(it, `Freigegeben${c.kind === 'a' ? ' für ' + c.who : ''}`); follow(it, me());
+  const c = wfCur(it); Object.assign(c, { status: 'ok', at: stamp(), by: me(), note: note || '', reminded: null });
+  log(it, `Freigegeben${c.kind === 'a' ? ' für ' + c.who : ''}${note ? ': ' + note : ''}`); follow(it, me());
   const nx = it.chain[it.chain.indexOf(c) + 1];
-  if (nx) { nx.status = 'aktiv'; tellStep(nx, `${it.nr} wartet auf Ihre Freigabe: ${it.titel}`, it.id); tell(it.creator, `${me()} hat ${it.nr} freigegeben, weiter an ${stepLabel(nx)}`, it.id); }
-  else { it.status = 'freigegeben'; tellFollowers(it, `${it.nr} ist vollständig freigegeben`); }
+  if (nx) {
+    nx.status = 'aktiv'; tellStep(it, nx, `${it.nr} wartet auf deine Freigabe: ${it.titel}`);
+    tell(it.creator, `${me()} hat ${it.nr} freigegeben, weiter an ${stepWho(nx, it.creator)}`, it.id);
+  } else {
+    it.status = 'freigegeben';
+    const open = it.tasks.filter(t => t.status !== 'erledigt').length;
+    tell(it.creator, `${it.nr} ist vollständig freigegeben. ${open ? `Noch ${open} ${open === 1 ? 'Aufgabe' : 'Aufgaben'} offen, danach abschließen.` : 'Du kannst den Workflow jetzt abschließen.'}`, it.id);
+    it.followers.filter(n => n !== it.creator).forEach(n => tell(n, `${it.nr} ist vollständig freigegeben`, it.id));
+  }
 }
 function wReject(it, note) {
-  const c = wfCur(it); Object.assign(c, { status: 'nok', at: stamp(), by: me(), note });
-  it.status = 'zurueckgewiesen'; log(it, 'Zurückgewiesen'); follow(it, me());
-  notify(it.creator, `${it.nr} wurde zurückgewiesen: ${note}`, it.id);
+  const c = wfCur(it); Object.assign(c, { status: 'nok', at: stamp(), by: me(), note, reminded: null });
+  it.status = 'zurueckgewiesen'; log(it, `Zurückgewiesen: ${note}`); follow(it, me());
+  tell(it.creator, `${me()} hat ${it.nr} zurückgewiesen: ${note}`, it.id);
 }
 function wResend(it, note) {
   const c = it.chain.find(s => s.status === 'nok');
-  if (c) Object.assign(c, { status: 'aktiv', at: null, by: null, note: '' });
+  if (c) Object.assign(c, { status: 'aktiv', at: null, by: null, note: '', reminded: null });
   it.status = c ? 'laeuft' : 'inarbeit';
   if (it.due < TODAY) it.due = rel(3);
   it.comments.push(CM(me(), stamp(), 'Überarbeitet: ' + note, []));
   log(it, 'Überarbeitet und neu gesendet');
-  if (c) tellStep(c, `${it.nr} wurde überarbeitet und wartet auf Ihre Freigabe`, it.id);
+  if (c) tellStep(it, c, `${it.nr} wurde überarbeitet und wartet wieder auf deine Freigabe: ${note}`);
+}
+function wWithdraw(it) {
+  const c = wfCur(it);
+  if (c) { tellStep(it, c, `${me()} hat ${it.nr} zurückgezogen, deine Freigabe ist nicht mehr nötig`); c.status = 'offen'; }
+  it.status = 'zurueckgezogen'; it.doneAt = TODAY; log(it, 'Zurückgezogen');
+  it.followers.filter(n => !c || !approversOf(c, it.creator).includes(n)).forEach(n => tell(n, `${it.nr} wurde zurückgezogen`, it.id));
 }
 
 /* ---------- Ereignisse ---------- */
@@ -2188,6 +2276,7 @@ document.addEventListener('click', e => {
     case 'read-all': S.notes.forEach(n => { if (n.to === me()) n.read = true; }); save(); renderFrame(); break;
     case 'note': { const n = S.notes.find(x => x.id === d.nid); if (n) { n.read = true; bp.hidden = true; if (item(n.ref)) openItem(n.ref, { tab: n.text.includes('erwähnt') || n.text.includes('kommentiert') ? 'c' : '' }); else commit(); } break; }
     case 'more': moreSheet(); break;
+    case 'as': if (!LV.on) setUser(d.n); break;
     case 'new': if (d.app === 'wf') newWorkflow(); else newRekla(d.app); break;
     case 'compose': { const p = S.route.p; if (p === 'wf') newWorkflow(); else if (APPS[p]) newRekla(p); break; }
     case 'follow': { const x = item(d.id); const i = x.followers.indexOf(me()); if (i >= 0) x.followers.splice(i, 1); else x.followers.push(me()); commit(i >= 0 ? 'Nicht mehr gefolgt' : 'Du folgst jetzt ' + x.nr); break; }
@@ -2213,12 +2302,12 @@ document.addEventListener('click', e => {
     /* Reklamation */
     case 'r-start': it.status = 'bewertung'; log(it, 'Bewertung gestartet'); tell(it.erfasser, `${it.nr} wird von QM bewertet`, it.id); commit('Bewertung gestartet'); break;
     case 'r-eval': evalSheet(it); break;
-    case 'r-submit': it.status = 'freigabe'; log(it, 'Zur Freigabe gesendet'); tell(leitName(), `${it.nr} wartet auf Ihre Freigabe`, it.id); S.openStep = null; commit('An die QM-Leitung gesendet'); break;
+    case 'r-submit': if (openKeys(it).length) { toast('Erst alle Schritte D1 bis D7 erledigen.'); break; } it.status = 'freigabe'; log(it, 'Zur Freigabe gesendet'); tell(leitName(), `${me()} hat ${it.nr} zur Freigabe gesendet`, it.id); S.openStep = null; commit(leitName() === me() ? 'Zur Freigabe gestellt' : `An ${leitName()} (QM-Leitung) gesendet`); break;
     case 'r-approve':
       it.status = 'abgeschlossen'; it.abschluss = TODAY;
       Object.assign(it.steps.D8, { done: true, doneAt: TODAY, text: it.steps.D8.text || 'Bericht freigegeben, Team gewürdigt, Vorgang abgeschlossen.' });
       log(it, 'Freigegeben und abgeschlossen'); tellFollowers(it, `${it.nr} ist freigegeben und abgeschlossen`); commit('Freigegeben und abgeschlossen'); break;
-    case 'r-reject': noteSheet('rejR', 'Zurückweisen', 'Was fehlt?', true, 'Zurückweisen', 'danger', 'z. B. Wirksamkeitsnachweis D6 fehlt'); break;
+    case 'r-reject': rejSheet(it); break;
     case 'r-reopen': it.status = 'bearbeitung'; it.abschluss = null; Object.assign(it.steps.D8, { done: false, doneAt: null }); log(it, 'Wieder geöffnet'); tell(qmName(), `${it.nr} wurde wieder geöffnet`, it.id); commit('Wieder geöffnet'); break;
     case 'l8-req': mail8DRequest(it); break;
     case 'l8-in': it.l8d.eingegangen = TODAY; log(it, '8D-Bericht vom Lieferanten eingegangen'); tellFollowers(it, `8D-Bericht von ${partnerName(it)} zu ${it.nr} ist da`); commit('Eingang vermerkt'); break;
@@ -2240,10 +2329,11 @@ document.addEventListener('click', e => {
     case 'w-nok': noteSheet('nokW', 'Zurückweisen', 'Begründung', true, 'Zurückweisen', 'danger', 'Was muss geändert werden?'); break;
     case 'w-resend': noteSheet('resW', 'Neu senden', 'Was hast du geändert?', true, 'Neu senden'); break;
     case 'w-close': it.status = 'abgeschlossen'; it.doneAt = TODAY; log(it, 'Abgeschlossen'); tellFollowers(it, `${it.nr} ist abgeschlossen`); commit('Abgeschlossen'); break;
-    case 'w-close-early': it.status = 'abgeschlossen'; it.doneAt = TODAY; const c0 = wfCur(it); if (c0) c0.status = 'offen'; log(it, 'Zurückgezogen'); tellFollowers(it, `${it.nr} wurde zurückgezogen`); commit('Zurückgezogen'); break;
+    case 'w-close-early': if (!a.dataset.confirm) { a.dataset.confirm = '1'; a.textContent = 'Wirklich zurückziehen?'; return; } wWithdraw(it); commit('Zurückgezogen'); break;
     case 't-toggle': { const t = it.tasks.find(x => x.id === d.tid); setTask(it, t); commit(t.status === 'erledigt' ? 'Aufgabe erledigt' : 'Wieder offen'); break; }
-    case 'wf-add': { const [k, w] = $('w-add').value.split('|'); if (!WFC.some(s => s.kind === k && s.who === w)) WFC.push({ kind: k, who: w }); $('w-chain').innerHTML = chainEd(); break; }
+    case 'wf-add': { const val = $('w-add').value; if (!val) break; const [k, w] = val.split('|'); if (WFC.some(s => s.kind === k && s.who === w)) { toast(`${k === 'a' ? 'Abteilung ' + w : w} ist schon in der Kette.`); break; } WFC.push({ kind: k, who: w }); $('w-chain').innerHTML = chainEd(); $('w-err').hidden = true; break; }
     case 'wf-rm': WFC.splice(+d.i, 1); $('w-chain').innerHTML = chainEd(); break;
+    case 'wf-up': { const i = +d.i; if (i > 0) { [WFC[i - 1], WFC[i]] = [WFC[i], WFC[i - 1]]; $('w-chain').innerHTML = chainEd(); } break; }
     /* Aufgaben */
     case 'task-done': { const t = findTask(d.id, d.ref); if (t) { if (t.kind === 'm') setMeasure(t.it, t.m); else setTask(t.it, t.t); commit('Erledigt'); } break; }
     case 'remind': { const t = findTask(d.id, d.ref); if (t) { remindTask(t); commit(`Erinnerung an ${ownerLabel(t)} gesendet`); } break; }
@@ -2304,7 +2394,7 @@ document.addEventListener('input', e => {
 document.addEventListener('change', e => {
   const t = e.target, d = t.dataset, it = S.route.id ? item(S.route.id) : null;
   if (d.role === 'user' && LV.on) { const mine = (myPerson() || {}).name; LV.as = t.value === mine ? '' : t.value; closeSheet(); $('bellPanel').hidden = true; S.tp = ''; renderAll(); toast(LV.as ? 'Testansicht: ' + LV.as : 'Wieder als ' + mine); return; }
-  if (d.role === 'user') { S.user = t.value; closeSheet(); $('bellPanel').hidden = true; if (S.route.p === 'aufg') S.tp = ''; commit('Angemeldet als ' + S.user); return; }
+  if (d.role === 'user') { setUser(t.value); return; }
   if (t.id === 'brandColor') { if (setTheme('brand', t.value)) commit('Firmenfarbe gesetzt'); return; }
   if (t.id === 'orgName') { S.org.name = t.value.trim() || 'Muster GmbH'; commit('Firmenname gespeichert'); return; }
   if (t.id === 'allowUser') { S.org.allowUser = t.checked; commit(t.checked ? 'Mitarbeitende dürfen umschalten' : 'Darstellung für alle festgelegt'); return; }
@@ -2364,21 +2454,29 @@ document.addEventListener('submit', e => {
       massnahmen: [], kosten: [], weiterbelastung: 0, comments: [], l8d: { angefordert: null, eingegangen: null }, log: [{ at: stamp(), who: me(), text: 'Reklamation angelegt' }], followers: [...new Set([me(), qmName()])] };
     const nf = [...(($('n-files') || {}).files || [])];
     S.items.push(x); tell(qmName(), `Neue ${APPS[app].s} ${nr} von ${me()}: ${x.titel}`, nr);
-    closeSheet(); if (nf.length) attachFiles(nr, nf); S.feedF[app] = 'alle'; S.q[app] = ''; openItem(nr, { tab: 'c' }); toast(`${nr} erfasst`);
+    closeSheet(); if (nf.length) attachFiles(nr, nf, true); S.feedF[app] = 'alle'; S.q[app] = ''; openItem(nr, { tab: 'c' }); toast(`${nr} erfasst`);
   }
   else if (id === 'newW') {
     const need = [['w-titel', 'Titel'], ['w-beschr', 'Beschreibung']].filter(([x]) => !v(x));
     if (need.length) { $('w-err').hidden = false; $('w-err').textContent = 'Bitte ausfüllen: ' + need.map(n => n[1]).join(', ') + '.'; $(need[0][0]).focus(); return; }
+    const wErr = t => { $('w-err').hidden = false; $('w-err').textContent = t; };
+    const bad = WFC.find(s => !approversOf(s, me()).length);
+    if (bad) { wErr(`${stepLabel(bad)} kann nicht freigeben: Dort ist niemand außer dir. Bitte aus der Kette entfernen.`); return; }
+    if (!WFC.length && !v('w-task')) { wErr('Bitte jemanden in die Freigabekette aufnehmen oder eine erste Aufgabe vergeben.'); $('w-task').focus(); return; }
+    const due = v('w-due') || rel(7);
+    if (due < TODAY) { wErr('Die Frist liegt in der Vergangenheit.'); $('w-due').focus(); return; }
     const nr = nextNr('wf');
     const chain = WFC.map((s, i) => ({ kind: s.kind, who: s.who, status: i === 0 ? 'aktiv' : 'offen', at: null, by: null, note: '' }));
-    const x = { app: 'wf', id: nr, nr, typ: v('w-typ'), titel: v('w-titel'), beschreibung: v('w-beschr'), creator: me(), created: stamp(), due: v('w-due') || rel(7), prio: v('w-prio'), bezug: v('w-bezug'),
+    const x = { app: 'wf', id: nr, nr, typ: v('w-typ'), titel: v('w-titel'), beschreibung: v('w-beschr'), creator: me(), created: stamp(), due, prio: v('w-prio'), bezug: v('w-bezug'),
       chain, status: chain.length ? 'laeuft' : 'inarbeit', docs: [], tasks: [], comments: [], doneAt: null,
-      log: [{ at: stamp(), who: me(), text: 'Workflow gestartet' }], followers: [me()] };
+      log: [{ at: stamp(), who: me(), text: chain.length ? `Workflow gestartet, Freigabekette: ${chain.map(c => stepLabel(c)).join(' › ')}` : 'Workflow gestartet' }], followers: [] };
     if (v('w-task')) x.tasks.push({ id: uid('t'), text: v('w-task'), owner: v('w-towner'), due: x.due, status: 'offen', doneAt: null, reminded: null });
-    x.tasks.forEach(t => { follow(x, t.owner); tell(t.owner, `Neue Aufgabe für dich (${nr}): ${t.text}`, nr); });
+    x.followers = wfFollowers(x);
+    x.tasks.forEach(t => tell(t.owner, `Neue Aufgabe für dich (${nr}): ${t.text}, bis ${fmt(t.due)}`, nr));
     const wfiles = [...($('w-files').files || [])];
-    S.items.push(x); if (chain.length) tellStep(chain[0], `${nr} wartet auf Ihre Freigabe: ${x.titel}`, nr);
-    closeSheet(); if (wfiles.length) attachFiles(nr, wfiles); S.feedF.wf = 'alle'; S.q.wf = ''; openItem(nr, { tab: 'c' }); toast(`${nr} gestartet`);
+    S.items.push(x); if (chain.length) tellStep(x, chain[0], `${me()} bittet um deine Freigabe (${nr}): ${x.titel}`);
+    closeSheet(); if (wfiles.length) attachFiles(nr, wfiles, true); S.feedF.wf = 'alle'; S.q.wf = ''; openItem(nr, { tab: 'c' });
+    toast(chain.length ? `${nr} gestartet. Wartet auf ${stepWho(chain[0], me())}.` : `${nr} gestartet`);
   }
   else if (id === 'evalF') {
     if (document.querySelector('input[name=ev]:checked').value === 'ja') {
@@ -2392,7 +2490,16 @@ document.addEventListener('submit', e => {
       closeSheet(); S.openStep = null; commit('Abgelehnt');
     }
   }
-  else if (id === 'rejR') { const n = noteVal(true); if (n === null) return; it.status = 'bearbeitung'; addComment(it, 'Zurückgewiesen: ' + n); log(it, 'Zurückgewiesen an das 8D-Team'); closeSheet(); S.tab = 'c'; commit('Zurückgewiesen'); }
+  else if (id === 'rejR') {
+    const n = noteVal(true); if (n === null) return;
+    const k = v('rj-step'), st = it.steps[k];
+    Object.assign(st, { done: false, doneAt: null, due: st.due < TODAY ? rel(3) : st.due, reminded: null });
+    it.status = 'bearbeitung'; log(it, `Zurückgewiesen an das 8D-Team, ${k} nacharbeiten: ${n}`);
+    tell(st.owner, `${me()} hat ${it.nr} zurückgewiesen: ${k} bitte nacharbeiten (${n})`, it.id);
+    if (it.lead && it.lead !== st.owner) tell(it.lead, `${me()} hat ${it.nr} zurückgewiesen: ${k} nacharbeiten (${n})`, it.id);
+    it.comments.push(CM(me(), stamp(), `Zurückgewiesen, ${k} nacharbeiten: ${n}`, []));
+    closeSheet(); S.tab = '8d'; S.openStep = k; commit('Zurückgewiesen');
+  }
   else if (id === 'okW') { const n = noteVal(false); wApprove(it, n); if (n) addComment(it, 'Freigegeben: ' + n); closeSheet(); commit('Freigegeben'); }
   else if (id === 'nokW') { const n = noteVal(true); if (n === null) return; wReject(it, n); closeSheet(); commit('Zurückgewiesen'); }
   else if (id === 'resW') { const n = noteVal(true); if (n === null) return; wResend(it, n); closeSheet(); commit('Neu gesendet'); }
@@ -2712,11 +2819,12 @@ async function uploadFiles(files) {
   }
   return out;
 }
-async function attachFiles(id, files) {
+async function attachFiles(id, files, quiet) {
   const list = await uploadFiles([...files]);
   const it = item(id); if (!it || !list.length) return;
   it.docs = (it.docs || []).concat(list);
   log(it, `${list.length} ${list.length === 1 ? 'Datei' : 'Dateien'} angehängt`);
+  if (quiet) { save(); renderAll(); return; }
   tellFollowers(it, `${me()} hat ${list.length === 1 ? 'eine Datei' : list.length + ' Dateien'} an ${it.nr} angehängt`);
   commit(list.length === 1 ? 'Angehängt' : `${list.length} Dateien angehängt`);
 }
@@ -2737,6 +2845,7 @@ async function delDoc(aid) {
 
 /* Download: im Viewer über die Freigabe, sonst direkt im Browser */
 async function saveFile(filename, data) {
+  filename = filename.replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/Ä/g, 'Ae').replace(/Ö/g, 'Oe').replace(/Ü/g, 'Ue').replace(/ß/g, 'ss').replace(/[^\w.\-]/g, '_');
   if (DL) {
     try { await DL.save({ filename, data }); toast('Gespeichert'); }
     catch (e) { if (e && e.code === 'declined') return; toast(e && e.code === 'rate_limited' ? 'Bitte kurz warten und erneut versuchen.' : 'Download nicht möglich.'); }
@@ -2873,7 +2982,7 @@ function mailSheet(m) {
     <div class="field"><label for="ml-sub">Betreff</label><input id="ml-sub" value="${esc(m.subject || '')}"></div>
     <div class="field"><label for="ml-body">Text</label><textarea id="ml-body" rows="9">${esc(m.body || '')}</textarea></div>
     ${m.pdf ? `<p class="hint">${ic('file', 's')} Anhang: 8D_${esc(m.pdf.nr)}.pdf${canMail() ? '' : ' (in der Demo nicht möglich, bitte selbst anhängen)'}</p>` : ''}
-    <p class="hint">${canMail() ? 'Wird über Ihr Gmail-Konto gesendet. Beim ersten Mal fragt claude.ai nach Ihrer Freigabe.' : 'Öffnet Ihr E-Mail-Programm mit dem vorbereiteten Text.'}</p>
+    <p class="hint">${canMail() ? 'Wird über Ihr Gmail-Konto gesendet. Beim ersten Mal fragt claude.ai nach Ihrer Freigabe.' : 'Öffnet dein E-Mail-Programm mit dem vorbereiteten Text. In der Demo wird nichts automatisch versendet.'}</p>
     <p class="hint" id="ml-err" style="color:var(--crit)" hidden></p>
   </div><div class="sheet-f">${m.alt ? `<button type="button" class="btn" data-action="mail-alt" style="margin-right:auto">${esc(m.alt)}</button>` : ''}<button type="button" class="btn" data-action="close">Abbrechen</button><button type="submit" class="btn primary" id="ml-go">${canMail() ? 'Über Gmail senden' : 'E-Mail öffnen'}</button></div></form>`, true);
 }
@@ -2898,7 +3007,7 @@ async function submitMail() {
   const err = t => { $('ml-err').textContent = t; $('ml-err').hidden = false; };
   if (!to.length || bad.length) { err(bad.length ? `Ungültige Adresse: ${bad.join(', ')}` : 'Bitte mindestens eine Adresse eingeben.'); return; }
   if (!canMail()) {
-    const a = document.createElement('a'); a.href = `mailto:${to.join(',')}?subject=${encodeURIComponent(sub)}&body=${encodeURIComponent(body)}`; a.target = '_blank'; a.rel = 'noopener'; document.body.appendChild(a); a.click(); a.remove();
+    const a = document.createElement('a'); a.href = `mailto:${to.join(',')}?subject=${encodeURIComponent(sub)}&body=${encodeURIComponent(body)}`; document.body.appendChild(a); a.click(); a.remove();
     closeSheet(); if (m.onSent) m.onSent(false); return;
   }
   const btn = $('ml-go'); btn.disabled = true; btn.textContent = 'Sende …';
@@ -2947,7 +3056,7 @@ function remindMailSheet() {
     <ul class="mail-l">${ok.map(x => `<li>${av(x.n, 's')}<span><b>${esc(x.n)}</b><small>${esc(x.email)} · ${x.over} überfällig, ${x.count} offen</small></span></li>`).join('')}</ul>
     ${no.length ? `<p class="hint">Ohne E-Mail-Adresse, werden übersprungen: ${no.map(x => esc(x.n)).join(', ')}. Adresse unter Stammdaten → Mitarbeiter ergänzen.</p>` : ''}
     <details><summary>Vorschau</summary><pre class="mail-pre">${esc(ok[0] ? `Betreff: ${ok[0].subject}\n\n${ok[0].body}` : '')}</pre></details>
-    <p class="hint">${canMail() ? 'Versand über Ihr Gmail-Konto.' : 'In der Demo werden keine E-Mails versendet. Im Pilot gehen sie über Ihr Gmail-Konto raus.'}</p>
+    <p class="hint">${canMail() ? 'Versand über Ihr Gmail-Konto.' : 'In der Demo werden keine E-Mails versendet. Im echten Betrieb gehen sie über das E-Mail-Konto des Absenders raus.'}</p>
   </div>${foot(canMail() ? `${ok.length} senden` : 'Verstanden', 'primary')}</form>`, true);
 }
 async function sendReminders() {
@@ -2999,7 +3108,12 @@ try { new MutationObserver(() => applyTheme()).observe(document.documentElement,
 try { window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme); } catch (e) {}
 renderAll();
 /* Direktlinks: #workflow, #kunden, #lieferanten, #aufgaben, #stammdaten */
-{ const h = (location.hash || '').slice(1).toLowerCase(), R = { workflow: 'wf', wf: 'wf', kunden: 'kr', kr: 'kr', kundenreklamation: 'kr', lieferanten: 'lr', lr: 'lr', lieferantenreklamation: 'lr', aufgaben: 'aufg', stammdaten: 'md' }; if (R[h]) { S.route = { p: R[h], id: null }; renderAll(); } }
+function hashRoute() {
+  const h = (location.hash || '').slice(1).toLowerCase(), R = { start: 'start', workflow: 'wf', workflows: 'wf', wf: 'wf', kunden: 'kr', kr: 'kr', kundenreklamation: 'kr', lieferanten: 'lr', lr: 'lr', lieferantenreklamation: 'lr', aufgaben: 'aufg', stammdaten: 'md', upload: 'up', massenupload: 'up', darstellung: 'theme' };
+  if (R[h]) { closeSheet(); $('bellPanel').hidden = true; S.route = { p: R[h], id: null }; S.tab = ''; S.openStep = null; renderAll(); window.scrollTo(0, 0); }
+}
+hashRoute();
+window.addEventListener('hashchange', hashRoute);
 lvBoot();
 </script>
 </body>

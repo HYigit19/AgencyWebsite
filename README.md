@@ -1,6 +1,6 @@
-# Devunox AI Website
+# devunoxAI Website
 
-Zweisprachige Website (DE/EN) für KI-Automatisierung, Websites, Web-Apps und Dashboards, mit klickbaren Demos. Devunox AI ist eine Marke der DEVUNOX SOLUTIONS Sp. z o.o.
+Zweisprachige Website (DE/EN) für KI-Automatisierung, Websites, Web-Apps und Dashboards, mit klickbaren Demos. devunoxAI ist eine Marke der DEVUNOX SOLUTIONS Sp. z o.o.
 
 ## Struktur
 

@@ -32,6 +32,7 @@
 
   --font-display: "Unbounded", "Arial Black", "Helvetica Neue", Arial, sans-serif;
   --font-body: "Onest", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --mark-bg: #141417;
   --wrap: 1240px;
   color-scheme: light;
   padding-top: env(safe-area-inset-top, 0px);
@@ -39,12 +40,12 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #111114; --card: #1d1d23; --soft: #17171b; --fg: #f4f4f6; --muted: #a6a6b4; --line: #2f2f38; --o-soft: #3b2219; --o-text: #ff7a47; --ok: #3ddc97; --ok-soft: #173327; --shadow: 0 30px 70px -36px rgba(0, 0, 0, .7);
+    --bg: #111114; --mark-bg: #2a2a31; --card: #1d1d23; --soft: #17171b; --fg: #f4f4f6; --muted: #a6a6b4; --line: #2f2f38; --o-soft: #3b2219; --o-text: #ff7a47; --ok: #3ddc97; --ok-soft: #173327; --shadow: 0 30px 70px -36px rgba(0, 0, 0, .7);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #111114; --card: #1d1d23; --soft: #17171b; --fg: #f4f4f6; --muted: #a6a6b4; --line: #2f2f38; --o-soft: #3b2219; --o-text: #ff7a47; --ok: #3ddc97; --ok-soft: #173327; --shadow: 0 30px 70px -36px rgba(0, 0, 0, .7);
+  --bg: #111114; --mark-bg: #2a2a31; --card: #1d1d23; --soft: #17171b; --fg: #f4f4f6; --muted: #a6a6b4; --line: #2f2f38; --o-soft: #3b2219; --o-text: #ff7a47; --ok: #3ddc97; --ok-soft: #173327; --shadow: 0 30px 70px -36px rgba(0, 0, 0, .7);
   color-scheme: dark;
 }
 
@@ -85,7 +86,7 @@ a { color: inherit; }
 .top-in { display: flex; align-items: center; gap: 20px; padding-block: 12px; }
 .logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font: 700 1.2rem/1 var(--font-display); letter-spacing: -0.03em; color: inherit; }
 .logo svg { width: 32px; height: 32px; flex: none; }
-.logo .logo-ai { font-weight: inherit; color: var(--o-text); margin-left: 0.28em; }
+.logo .logo-ai { font-weight: inherit; color: var(--o-text); margin-left: 0.06em; }
 @media (max-width: 440px) { .logo { font-size: 0.95rem; gap: 7px; } .logo svg { width: 27px; height: 27px; } }
 @media (max-width: 370px) { .logo { font-size: 0.86rem; gap: 6px; } .logo svg { width: 25px; height: 25px; } }
 .pill-nav { display: flex; gap: 2px; margin-left: auto; background: var(--soft); border: 1px solid var(--line); border-radius: 999px; padding: 4px; }

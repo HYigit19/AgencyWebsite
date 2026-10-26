@@ -17,11 +17,13 @@
     });
   }
 
-  // Running log on the home page; every row stays readable at rest.
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  document.querySelectorAll(".log-list[data-anim]").forEach(function (list) {
-  var rows = Array.prototype.slice.call(list.querySelectorAll(".log-row"));
-  if (!reduce && rows.length) {
+
+  // Live feed in the hero: steps complete one after another, then the cycle restarts.
+  // Every step is readable at rest; the animation only starts after a pause.
+  document.querySelectorAll(".feed-list[data-anim]").forEach(function (list) {
+    var rows = Array.prototype.slice.call(list.querySelectorAll(".fi"));
+    if (reduce || !rows.length) return;
     var i = 0;
     var paint = function () {
       rows.forEach(function (r, idx) {
@@ -35,10 +37,9 @@
       if (i > rows.length) {
         rows.forEach(function (r) { r.classList.remove("active", "pending"); r.classList.add("done"); });
       } else { paint(); }
-      setTimeout(tick, i === rows.length ? 2600 : 1100);
+      setTimeout(tick, i === rows.length ? 2800 : 1100);
     };
-    setTimeout(tick, 2200);
-  }
+    setTimeout(function () { i = 0; paint(); setTimeout(tick, 1100); }, 2400);
   });
 
   // Web design example: colour options cycle on their own and can be clicked.
@@ -50,24 +51,13 @@
     };
     var auto = !reduce, v = 1;
     buttons.forEach(function (b) { b.addEventListener("click", function () { auto = false; set(b.dataset.v); }); });
-    if (auto) {
-      setInterval(function () { if (!auto) return; v = v % 3 + 1; set(v); }, 2600);
-    }
+    if (auto) setInterval(function () { if (!auto) return; v = v % 3 + 1; set(v); }, 2600);
   });
 
-  // Booking calendar: only load Google after the visitor clicks (privacy).
-  var bookBtn = document.getElementById("booking-load");
-  if (bookBtn) {
-    bookBtn.addEventListener("click", function () {
-      var box = document.getElementById("booking");
-      var f = document.createElement("iframe");
-      f.src = box.dataset.src;
-      f.title = bookBtn.textContent;
-      f.loading = "lazy";
-      box.innerHTML = "";
-      box.appendChild(f);
-    });
-  }
+  // Service video: no autoplay when the viewer prefers reduced motion.
+  document.querySelectorAll(".video-frame video").forEach(function (v) {
+    if (reduce) { v.removeAttribute("autoplay"); try { v.pause(); } catch (e) {} }
+  });
 
   // Contact form: no backend yet, so validate and say so plainly.
   var form = document.getElementById("contact-form");

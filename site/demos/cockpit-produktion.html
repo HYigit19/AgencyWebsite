@@ -6,6 +6,7 @@
 <meta name="description" content="Produktions- und Qualitäts-Cockpit: OEE, Ausschuss, Stillstand, Liefertreue, Reklamationen und Prüflose je Linie und Maschine.">
 <meta name="theme-color" content="#F2F1F9">
 <title>Produktions-Cockpit</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='2' width='28' height='28' rx='8' fill='%236C2BF0'/%3E%3Cpath d='M8.5 21.5a8 8 0 1 1 15 0' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round'/%3E%3Cpath d='M16 17l4-4' stroke='%23fff' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
 <style>
 @font-face{font-family:'Sora';src:url('cockpit-produktion-files/sora-latin-wght-normal.woff2') format('woff2');font-weight:100 800;font-style:normal;font-display:swap}
 @font-face{font-family:'Instrument Sans';src:url('cockpit-produktion-files/instrument-sans-latin-wght-normal.woff2') format('woff2');font-weight:400 700;font-style:normal;font-display:swap}
@@ -148,6 +149,10 @@ svg{display:block}
 .kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:18px}
 .card{background:var(--surface);border-radius:var(--r-card);box-shadow:var(--shadow);min-width:0}
 .kpi{padding:18px 18px 16px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:start;text-align:left;border:0;width:100%;font:inherit;color:inherit;cursor:default}
+.kpi{position:relative}
+.kpi .kpi-go{position:absolute;inset:0;z-index:1;border:0;background:none;border-radius:inherit;cursor:pointer;padding:0}
+.kpi .kpi-go:focus-visible{outline:2px solid var(--violet);outline-offset:2px}
+@media (hover:hover){.kpi:hover{box-shadow:0 0 0 1.5px var(--violet)}}
 .kpi h3{margin:0;font:500 13.5px/1.3 var(--f-b);color:var(--ink-2);grid-column:1}
 .kpi .val{grid-column:1;font:600 30px/1.1 var(--f-d);letter-spacing:-.025em;margin-top:6px;white-space:nowrap}
 .kpi .val small{font-size:16px;font-weight:500;letter-spacing:0;color:var(--ink-2);margin-left:2px}
@@ -486,6 +491,8 @@ dialog.side-sheet{margin:0 0 0 auto;height:100dvh;max-height:100dvh}
 
 /* ---------- Print ---------- */
 @media print{
+  .kpi .kpi-go{display:none}
+  .kpi:hover{box-shadow:none}
   @page{size:A4 landscape;margin:12mm}
   body{background:#fff;font-size:11px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .app{display:block}
@@ -1198,9 +1205,10 @@ function showTip(x,y,c){
 }
 function hideTip(){tip.hidden=true}
 function tipText(c){return [c.title].concat((c.rows||[]).map(r=>(r.label?r.label+': ':'')+r.value)).concat(c.note?[c.note]:[]).join(', ')}
-document.addEventListener('pointerdown',e=>{if(!e.target.closest('.chart')) hideTip()},{passive:true});
+document.addEventListener('pointerdown',e=>{if(!e.target.closest('svg[tabindex]')) hideTip()},{passive:true});
 window.addEventListener('scroll',hideTip,{passive:true,capture:true});
 
+let tipOwner=null;
 function interact(svg,o){
   /* o: n, vbW, xAt(i), yAt(i), content(i), onPick(i), cross, onHi(i) */
   svg.setAttribute('tabindex','0');
@@ -1209,10 +1217,12 @@ function interact(svg,o){
   function set(i,key){
     cur=i;
     if(o.onHi) o.onHi(i);
-    if(i<0){hideTip();return}
+    /* Nur den eigenen Tooltip ausblenden: verliert ein anderes Diagramm den Fokus, bleibt dieser stehen */
+    if(i<0){if(tipOwner===svg) hideTip();return}
     const c=o.content(i);
     if(!c){hideTip();return}
     const {bb,s}=scale();
+    tipOwner=svg;
     showTip(bb.left+o.xAt(i)*s,bb.top+o.yAt(i)*s,c);
     if(key) announce(tipText(c));
   }
@@ -1223,9 +1233,12 @@ function interact(svg,o){
     return best;
   }
   svg.addEventListener('pointermove',e=>{const i=nearest(e);if(i!==cur) set(i)});
-  svg.addEventListener('pointerdown',e=>{set(nearest(e))});
+  /* Touch: erstes Tippen zeigt den Wert, zweites Tippen auf denselben Wert öffnet die Details */
+  let pend=-1;
+  svg.addEventListener('pointerdown',e=>{const i=nearest(e);pend=-1;if(e.pointerType!=='mouse'&&o.onPick&&i>=0&&i===cur&&!tip.hidden){pend=i;return}set(i)});
   svg.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'&&document.activeElement!==svg) set(-1)});
-  svg.addEventListener('click',e=>{if(o.onPick){const i=nearest(e);if(i>=0&&e.pointerType!=='touch') o.onPick(i)}});
+  /* Öffnen erst im click, sonst landet der Klick des Fingers auf dem gerade geöffneten Dialog und schließt ihn */
+  svg.addEventListener('click',e=>{if(o.onPick){const i=nearest(e);const touch=e.pointerType==='touch'||e.pointerType==='pen';if(i>=0&&(!touch||i===pend)){hideTip();o.onPick(i)}pend=-1}});
   svg.addEventListener('focus',()=>{if(svg.matches(':focus-visible')) set(cur<0?(o.start!=null?o.start:o.n-1):cur,true)});
   svg.addEventListener('blur',()=>set(-1));
   svg.addEventListener('keydown',e=>{
@@ -1504,7 +1517,7 @@ function heatmap(host,cfg){
       const sx=scroll;const cx=+ce.rect.getAttribute('x');if(cx<sx.scrollLeft) sx.scrollLeft=cx-8;else if(cx+cw>sx.scrollLeft+sx.clientWidth) sx.scrollLeft=cx+cw-sx.clientWidth+8},
     content:k=>{const ce=flat(k),M=MACH[ce.mi],b=sc.buckets[ce.c];
       if(!ce.has) return {title:M.id+', '+b.long,rows:[{value:b.future?'Schicht noch nicht begonnen':'keine Schicht geplant'}]};
-      return {title:M.id+', '+b.long,rows:[{value:F.p100(ce.v),label:'OEE'},{value:F.pct(ce.a.A),label:'Verfügbarkeit'},{value:F.pct(ce.a.P),label:'Leistung'},{value:F.pct(ce.a.Q,2),label:'Qualität'},{value:F.min(ce.a.down),label:'Stillstand'}],note:'Klicken öffnet die Maschine'}},
+      return {title:M.id+', '+b.long,rows:[{value:F.p100(ce.v),label:'OEE'},{value:F.pct(ce.a.A),label:'Verfügbarkeit'},{value:F.pct(ce.a.P),label:'Leistung'},{value:F.pct(ce.a.Q,2),label:'Qualität'},{value:F.min(ce.a.down),label:'Stillstand'}],note:'Klicken oder erneut tippen öffnet die Maschine'}},
     onPick:k=>openMachine(flat(k).mi)});
 }
 
@@ -1600,6 +1613,15 @@ function kpiDetail(k,c){
   }
   return '';
 }
+/* Drilldown je Kennzahl-Karte */
+const KPI_GO={
+  oee:{txt:'Kennzahlen je Maschine öffnen',go:()=>setView('prod','p-mach')},
+  ppm:{txt:'Ausschuss je Fehlerart öffnen',go:()=>setView('qual','p-defects')},
+  otd:{txt:'Lieferungen im Zeitraum öffnen',go:()=>openDeliveries()},
+  rek:{txt:'Offene Reklamationen öffnen',go:()=>{state.rekOpen='offen';state.rekType='alle';save();setView('rek','p-rekTbl')}},
+  down:{txt:'Stillstandsgründe öffnen',go:()=>setView('prod','p-pareto')},
+  fpy:{txt:'First Pass Yield im Verlauf öffnen',go:()=>setView('qual','p-trend-fpy')}
+};
 function renderKpis(){
   const c=CTX,{v,p}=kpiValues(c);
   const host=$('#kpis');host.replaceChildren();
@@ -1621,7 +1643,8 @@ function renderKpis(){
       ]),
       el('div',{class:'meta'},[statusPill(st),el('span',{class:'tgt',text:tgtTxt})]),
       el('div',{class:'split'},[el('span',{text:kpiDetail(d.k,c)})]),
-      el('span',{class:'sr-only',text:'Zielerreichung '+(Number.isFinite(re)?nfmt(re*100,0)+' Prozent':'unbekannt')})
+      el('span',{class:'sr-only',text:'Zielerreichung '+(Number.isFinite(re)?nfmt(re*100,0)+' Prozent':'unbekannt')}),
+      el('button',{type:'button',class:'kpi-go','aria-label':d.label+' '+big+' '+unit+', '+STATUS_TXT[st]+'. '+KPI_GO[d.k].txt,onclick:KPI_GO[d.k].go})
     );
     host.append(card);
   });
@@ -1840,7 +1863,7 @@ function segControl(name,legend,opts,cur,onChange){
 }
 function cardLots(cls){
   const counts={alle:CTX.lots.length};VE.forEach(v=>counts[v.k]=CTX.lots.filter(l=>l.ve===v.k).length);
-  const top=el('div',{class:'subseg'},[segControl('lotVe','Verwendungsentscheid filtern',[{k:'alle',label:'Alle '+counts.alle}].concat(VE.map(v=>({k:v.k,label:v.label+' '+counts[v.k]}))),state.lotVe,k=>{state.lotVe=k;save();redrawPanel('lots')})]);
+  const top=el('div',{class:'subseg'},[segControl('lotVe','Verwendungsentscheid filtern',[{k:'alle',label:'Alle '+F.int(counts.alle)}].concat(VE.map(v=>({k:v.k,label:v.label+' '+F.int(counts[v.k])}))),state.lotVe,k=>{state.lotVe=k;save();redrawPanel('lots')})]);
   top.querySelector('.seg').parentNode.className='subseg fl-wrap';
   return panel({id:'lots',cls,title:'Prüflose',sub:'Wareneingang (01) und Endprüfung aus Fertigung (04)',top,
     draw:b=>{
@@ -1971,8 +1994,11 @@ function buildTodos(){
   const t=[];
   const overdue=COMPLAINTS.filter(cOverdue).sort((a,b)=>a.d-b.d);
   if(overdue[0]){const o=overdue[0];t.push({id:'8d-'+o.id,ic:'i-alert',tone:'c',title:'8D-Bericht '+o.id+' überfällig',meta:o.partner+', seit '+cAge(o)+' Tagen offen, Schritt D'+(cDone(o,PD)+1),open:()=>openRek(o)})}
-  const lotsOpen=LOTS.filter(l=>l.ve==='O'&&PD-l.d>=2);
-  if(lotsOpen.length) t.push({id:'ve-'+PD,ic:'i-clip',tone:'y',title:lotsOpen.length+' Prüflose ohne Verwendungsentscheid',meta:'Älter als 2 Tage, Freigabe fehlt',open:()=>{state.lotVe='O';state.period='quartal';state.line=0;state.machine=null;save();setView('qual','p-lots')}});
+  /* Gleiche Menge wie die Liste, die der Link öffnet (Quartal, alle Linien, ohne Entscheid) */
+  const qsc=scopeFor('quartal');
+  const lotsO=lotsIn(qsc.start,qsc.end,{line:0,machine:null},PD).filter(l=>l.ve==='O');
+  const lotsOld=lotsO.filter(l=>PD-l.d>=2).length;
+  if(lotsOld) t.push({id:'ve-'+PD,ic:'i-clip',tone:'y',title:F.int(lotsO.length)+' Prüflose ohne Verwendungsentscheid',meta:'Davon '+F.int(lotsOld)+' älter als 2 Tage, Freigabe fehlt',open:()=>{state.lotVe='O';state.period='quartal';state.line=0;state.machine=null;save();setView('qual','p-lots')}});
   let el7=0;for(let d=PD-6;d<=PD;d++) for(let s=0;s<3;s++){const r=rec(7,d,s);if(r) el7+=r.down[2]*(d===PD?fracShift(s):1)}
   t.push({id:'cnc203-'+(PD-((PD+3)%7)),ic:'i-wrench',tone:'v',title:'Elektrische Störungen an CNC-203 klären',meta:F.min(el7)+' in 7 Tagen, Instandhaltung einbinden',open:()=>openMachine(7)});
   const story=COMPLAINTS.find(c=>c.note);
@@ -2129,6 +2155,21 @@ function openRek(cm){
     s2.append(ol);b.append(s2);
   }});
 }
+function openDeliveries(){
+  const c=CTX,sc=c.sc,d=c.del;
+  const late=d.list.filter(x=>!x.ok).sort((a,b)=>(b.d-a.d)||(b.minute-a.minute));
+  openDetail({title:'Liefertreue',sub:'Kundenlieferungen, '+periodText(sc)+', '+filterText(),render:b=>{
+    b.append(el('div',{class:'dkpis'},[dk('Liefertreue',F.pct(d.rate,1),el('div',{style:'margin-top:4px'},statusPill(statusOf('otd',d.rate*100)))),dk('Pünktlich',F.int(d.ok)+' von '+F.int(d.n)),dk('Verspätet',F.int(d.n-d.ok))]));
+    const s1=dsec('Je Linie');
+    const ul=el('ul',{class:'blist'});
+    linesFor(c.f).forEach(li=>{const ls=d.list.filter(x=>x.line===li),okn=ls.filter(x=>x.ok).length,r=ls.length?okn/ls.length:NaN;
+      ul.append(el('li',null,el('div',{class:'brow'},[el('span',{class:'bl'},[el('i',{class:'ldot',style:'background:'+LINES[li-1].color}),el('span',{text:LINES[li-1].name+' '+LINES[li-1].area})]),el('span',{class:'bv'},[el('b',{text:F.pct(r,1)}),' '+F.int(okn)+' von '+F.int(ls.length)]),el('span',{class:'track'},[el('i',{style:'width:'+(Number.isFinite(r)?r*100:0)+'%;background:'+LINES[li-1].color})])])))});
+    s1.append(ul);b.append(s1);
+    const s2=dsec('Verspätete Lieferungen',late.length?null:'Alle Lieferungen im Zeitraum waren pünktlich.');
+    if(late.length) s2.append(dataTable({caption:'Verspätete Lieferungen',head:['Datum','Linie','Kunde','Produkt','Menge'],right:[4],rows:late.map(x=>[fWD(x.d)+' '+fDM(x.d)+' '+hm(360+x.minute),LINES[x.line-1].name,'Fiktive GmbH '+x.cust,x.product,F.int(x.qty)])}));
+    b.append(s2);
+  }});
+}
 function openLot(l){
   openDetail({title:'Prüflos '+l.id,sub:(l.art==='01'?'Wareneingangsprüfung':'Endprüfung aus Fertigung')+', '+l.material,foot:l.mi!=null?[el('button',{type:'button',class:'btn primary',onclick:()=>openMachine(l.mi)},'Maschine '+MACH[l.mi].id+' öffnen')]:[],render:b=>{
     b.append(el('div',{style:'margin-bottom:14px'},veTag(l.ve)));
@@ -2186,7 +2227,7 @@ function openSettings(){
   setOpener=document.activeElement;
   fillSettings(state.targets);
   setDlg.showModal();
-  setTimeout(()=>{const f=$('#set-oee-t');if(f) f.focus()},30);
+  const f=$('#set-oee-t');if(f) f.focus();
 }
 setDlg.addEventListener('close',()=>{if(setOpener&&document.contains(setOpener)) setOpener.focus();setOpener=null});
 $('#setDefaults').addEventListener('click',()=>{fillSettings(defaultTargets());announce('Standardwerte eingesetzt. Zum Übernehmen speichern.')});

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Geschäftsführungs-Cockpit: Vertrieb, Produktion, Qualität, Einkauf und Finanzen auf einen Blick.">
 <title>Cockpit</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='2' width='28' height='28' rx='8' fill='%236E4AF2'/%3E%3Cpath d='M9 22V10l7 7 7-7v12' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 </head>
 <body>
@@ -139,6 +140,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 h1, h2, h3 { font-family: var(--font-d); text-wrap: balance; margin: 0; }
+h1[tabindex="-1"]:focus, h2[tabindex="-1"]:focus { outline: none; }
 .muted { color: var(--ink-2); }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .i { width: 20px; height: 20px; flex: none; }
@@ -255,6 +257,10 @@ h1, h2, h3 { font-family: var(--font-d); text-wrap: balance; margin: 0; }
 .ch-a { display: flex; gap: 6px; align-items: center; flex: none; }
 .take { margin: 3px 0 0; font-size: 13px; color: var(--ink-2); }
 .take b { color: var(--ink); }
+.ch-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.t-l .pill { margin-left: 4px; vertical-align: 1px; }
+.dd-q { padding: 10px 16px; border-bottom: 1px solid var(--line); }
+.dd-q input { width: 100%; max-width: 360px; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; background: var(--surface); }
 .ch-b { padding: 4px 16px 14px; }
 .chart { min-height: 40px; }
 .lg { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--ink-2); margin: 2px 0 6px; }
@@ -283,6 +289,9 @@ svg.viz { display: block; overflow: visible; max-width: 100%; }
 .viz .hc { stroke: none; }
 .viz .hc.dd { cursor: pointer; }
 .viz .hc:hover { stroke: var(--ink); stroke-width: 1.5; }
+.viz .bar.kf, .viz .hc.kf { stroke: var(--ink); stroke-width: 2; }
+svg.viz[tabindex]:focus { outline: none; }
+svg.viz[tabindex]:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
 .viz text.hk-lo { fill: var(--s-ink-lo); font-weight: 600; font-size: 10.5px; }
 .viz text.hk-hi { fill: var(--s-ink-hi); font-weight: 600; font-size: 10.5px; }
 .q1 { fill: var(--s1); } .q2 { fill: var(--s2); } .q3 { fill: var(--s3); } .q4 { fill: var(--s4); } .q5 { fill: var(--s5); } .q6 { fill: var(--s6); } .q7 { fill: var(--s7); }
@@ -396,6 +405,7 @@ td.bad { background: var(--crit-soft); }
 <div class="overlay" id="overlay" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
 <div class="tip" id="tip" role="tooltip" hidden></div>
 <div class="toast" id="toast" role="status" hidden></div>
+<div class="sr" id="live" aria-live="polite"></div>
 <script src="shared-files/xlsx.full.min.js"></script>
 <script>
 /* ---------- Grundlagen ---------- */
@@ -565,10 +575,26 @@ const MSS = () => periodOf(ownAnchor());
 const perLabel = ms => ms.length === 1 ? mLong(ms[0]) : `${mLab(ms[0])} – ${mLab(ms[ms.length - 1])}`;
 const DIMS = [['werk', 'Werk', 'Alle Werke'], ['region', 'Region', 'Alle Regionen'], ['pg', 'Produktgruppe', 'Alle Produktgruppen']];
 const dimActive = () => DIMS.some(([d]) => S.f[d]);
-function flt(rows, months) {
-  const set = months ? new Set(months) : null;
-  return rows.filter(r => (!set || set.has(r.m)) && DIMS.every(([d]) => !S.f[d] || r[d] === undefined || r[d] === S.f[d]));
+/* Ein Filter wirkt nur auf Daten, die dieses Merkmal überhaupt haben (z. B. hat die Produktion keine Region).
+   Wo er nicht greift, zeigt die Karte „ungefiltert: …“. */
+const META = new WeakMap();
+function meta(rows) { let m = META.get(rows); if (!m) { m = { months: new Set(rows.map(r => r.m)) }; META.set(rows, m); } return m; }
+function dimSet(rows, d) { const m = meta(rows); if (!m[d]) { m[d] = new Set(); rows.forEach(r => { if (r[d] != null && r[d] !== '') m[d].add(r[d]); }); } return m[d]; }
+const dimApplies = (rows, d) => !!S.f[d] && dimSet(rows, d).has(S.f[d]);
+const covers = (rows, ms) => { const s = meta(rows).months; return ms.length > 0 && ms.every(k => s.has(k)); };
+function flt(rows, months, base) {
+  const set = months ? new Set(months) : null, act = DIMS.map(([d]) => d).filter(d => dimApplies(base || rows, d));
+  return rows.filter(r => (!set || set.has(r.m)) && act.every(d => r[d] === S.f[d]));
 }
+function nfDims(srcs) { return DIMS.filter(([d]) => S.f[d] && srcs.some(rows => !dimApplies(rows, d))).map(([, l]) => l); }
+function nfPill(srcs, cls) {
+  const l = nfDims(srcs); if (!l.length) return '';
+  return `<span class="pill muted${cls ? ' ' + cls : ''}" title="Diese Daten enthalten kein Merkmal ${esc(l.join(' / '))} oder diesen Wert. Der Filter wirkt hier nicht.">ungefiltert: ${esc(l.join(', '))}</span>`;
+}
+/* Ziele für Summen (Umsatz, Auftragseingang, Forderungen) gelten für das ganze Unternehmen, nicht für einen gefilterten Teil */
+const scoped = rows => DIMS.some(([d]) => dimApplies(rows, d));
+const NOT_SCOPED = 'gilt nur ohne Filter';
+const opRows = k => flt(opAsOf(mEnd(k)), null, D.sales);
 const lastN = (anchor, n) => Array.from({ length: n }, (_, i) => mAdd(anchor, i - n + 1));
 
 /* ---------- Kennzahlen ---------- */
@@ -577,7 +603,7 @@ const kAE = ms => sum(flt(D.ae, ms), r => r.betrag);
 const kOEE = ms => { const p = flt(D.prod, ms); const pl = sum(p, r => r.plan); return pl ? sum(p, r => r.plan * r.oee) / pl : null; };
 const kPPM = ms => { const mg = sum(flt(D.sales, ms), r => r.menge); return mg ? sum(flt(D.rekla, ms), r => r.menge) / mg * 1e6 : null; };
 const kLT = ms => { const l = flt(D.lief, ms); const n = sum(l, r => r.lieferungen); return n ? sum(l, r => r.puenktlich) / n : null; };
-const kOP = k => sum(flt(opAsOf(mEnd(k))).filter(r => r.tage > 0), r => r.betrag);
+const kOP = k => sum(opRows(k).filter(r => r.tage > 0), r => r.betrag);
 const kDLZ = ms => { const l = flt(D.rekla, ms); return l.length ? sum(l, r => r.dlz) / l.length : null; };
 function amp(v, t, higher, tol = .05) {
   if (v == null || t == null) return '';
@@ -749,13 +775,14 @@ const COLS = {
   lief: [['m', 'Monat', mLab], ['lieferant', 'Lieferant'], ['werk', 'Werk'], ['lieferungen', 'Lieferungen', v => de(v), 1], ['puenktlich', 'Pünktlich', v => de(v), 1], ['lt', 'Liefertreue', v => fPct(v), 1], ['volumen', 'Volumen €', v => de(v), 1]],
   op: [['nr', 'Rechnung'], ['kunde', 'Kunde'], ['region', 'Region'], ['d', 'Rechnungsdatum', fDate], ['faellig', 'Fällig', fDate], ['tage', 'Tage überfällig', v => v > 0 ? de(v) : '–', 1], ['betrag', 'Betrag €', v => de(v, 2), 1]]
 };
-function dd(title, set, rows) { const k = 'd' + (ddN++); DD[k] = { title, set, rows }; return k; }
+/* Drilldown nur, wenn es Zeilen gibt (sonst führt ein Klick ins Leere) */
+function dd(title, set, rows) { if (!rows || !rows.length) return ''; const k = 'd' + (ddN++); DD[k] = { title, set, rows }; return k; }
 function card(id, title, take, chartFn, table, opt = {}) {
   CH[id] = chartFn; TB[id] = Object.assign({ title }, table);
-  const nf = opt.nf && dimActive() ? '<span class="pill muted" title="Diese Kennzahl ist nicht nach Werk, Region oder Produktgruppe aufgeteilt">ohne Filter</span>' : '';
+  const nf = nfPill(opt.src || []);
   const smp = opt.sample && S.own ? '<span class="pill muted">Beispieldaten</span>' : '';
-  return `<section class="card${opt.span ? ' span2' : ''}" aria-labelledby="h-${id}"><div class="ch-h"><div><h2 id="h-${id}">${esc(title)}</h2>${take ? `<p class="take">${take}</p>` : ''}</div>
-    <div class="ch-a">${nf}${smp}<button class="mini" data-action="tbl" data-id="${id}" aria-label="${esc(title)} als Tabelle">${ic('table', 's')}<span class="sr">Tabelle</span></button></div></div>
+  return `<section class="card${opt.span ? ' span2' : ''}" aria-labelledby="h-${id}"><div class="ch-h"><div><h2 id="h-${id}">${esc(title)}</h2>${take ? `<p class="take">${take}</p>` : ''}${nf || smp ? `<div class="ch-pills">${nf}${smp}</div>` : ''}</div>
+    <div class="ch-a"><button class="mini" data-action="tbl" data-id="${id}" aria-label="${esc(title)} als Tabelle">${ic('table', 's')}<span class="sr">Tabelle</span></button></div></div>
     <div class="ch-b">${opt.legend || ''}<div class="chart" data-chart="${id}"></div>${opt.foot || ''}</div></section>`;
 }
 function drawCharts() {
@@ -763,7 +790,23 @@ function drawCharts() {
     const f = CH[el.dataset.chart]; if (!f) return;
     const w = Math.max(260, Math.floor(el.clientWidth || 640));
     el.innerHTML = f(w);
+    const svg = el.querySelector('svg.viz');
+    if (svg && svg.querySelector('[data-tip]')) {
+      svg.setAttribute('tabindex', '0');
+      svg.setAttribute('aria-label', (svg.getAttribute('aria-label') || 'Diagramm') + '. Mit den Pfeiltasten durch die Werte gehen' + (svg.querySelector('[data-dd]') ? ', Eingabetaste öffnet die Details.' : '.'));
+    }
   });
+}
+/* Diagramme per Tastatur: Pfeiltasten wandern durch die Werte, Eingabe öffnet den Drilldown */
+function vizItems(svg) { return [...svg.querySelectorAll('[data-tip]')]; }
+function vizShow(svg, i) {
+  const items = vizItems(svg); if (!items.length) return;
+  i = Math.max(0, Math.min(items.length - 1, i)); svg.dataset.ki = i;
+  svg.querySelectorAll('.kf').forEach(x => x.classList.remove('kf'));
+  const it = items[i]; it.classList.add('kf');
+  const r = it.getBoundingClientRect();
+  showTip(it, r.left + r.width / 2, Math.max(r.top, 0));
+  const live = $('live'); if (live) { live.textContent = ''; setTimeout(() => { live.textContent = it.getAttribute('data-tip').split('\n').join(', '); }, 30); }
 }
 const signed = (d, digits = 1) => (d >= 0 ? '+' : '−') + de(Math.abs(d * 100), digits) + ' %';
 const signedPP = d => (d >= 0 ? '+' : '−') + de(Math.abs(d * 100), 1) + ' Pp.';
@@ -782,7 +825,7 @@ function renderFrame() {
   $('mtop').innerHTML = `<div class="brand"><span class="logo" aria-hidden="true">M</span><div><div class="brand-name">Muster GmbH</div><div class="brand-sub">${esc(TITLES[p] || '')}</div></div></div>
     <button class="icon-btn" data-action="filters" aria-label="Filter">${ic('filter')}</button>`;
   const tabs = [['ueb', 'Übersicht', 'grid'], ['vt', 'Vertrieb', 'trend'], ['pr', 'Produktion', 'factory'], ['qu', 'Qualität', 'shield'], ['more', 'Mehr', 'more']];
-  $('tabbar').innerHTML = tabs.map(([k, l, i]) => `<button class="tab-i${k === p || (k === 'more' && ['ek', 'fi', 'daten', 'ziele'].includes(p)) ? ' on' : ''}" data-action="${k === 'more' ? 'more' : 'go'}" data-p="${k}">${ic(i)}<span>${l}</span></button>`).join('');
+  $('tabbar').innerHTML = tabs.map(([k, l, i]) => `<button class="tab-i${k === p || (k === 'more' && ['ek', 'fi', 'daten', 'ziele'].includes(p)) ? ' on' : ''}"${k === p ? ' aria-current="page"' : ''} data-action="${k === 'more' ? 'more' : 'go'}" data-p="${k}">${ic(i)}<span>${l}</span></button>`).join('');
 }
 function pageHead(title, sub, extra) {
   return `<div class="page-h"><div><h1>${esc(title)}</h1>${sub ? `<p>${sub}</p>` : ''}</div><div class="row-acts">${extra || ''}
@@ -815,17 +858,20 @@ const ownBanner = () => S.own ? `<div class="banner" role="note">${ic('sheet')}<
 /* ---------- Übersicht ---------- */
 function kpiDefs() {
   const ms = MS(), mss = MSS(), z = S.ziele, a = ms[ms.length - 1], as = mss[mss.length - 1];
-  const u = kUmsatz(mss), uv = kUmsatz(vjOf(mss)), e = kAE(ms), ev = kAE(vjOf(ms));
-  const o = kOEE(ms), ov = kOEE(vjOf(ms)), p = kPPM(ms), pv = kPPM(vjOf(ms)), l = kLT(ms), lv = kLT(vjOf(ms));
+  // Vergleich mit dem Vorjahr nur, wenn für jeden Monat des Vorjahreszeitraums Daten vorliegen
+  const vj = (f, rows, m) => covers(rows, vjOf(m)) ? f(vjOf(m)) : null;
+  const u = kUmsatz(mss), uv = vj(kUmsatz, salesRows(), mss), e = kAE(ms), ev = vj(kAE, D.ae, ms);
+  const o = kOEE(ms), ov = vj(kOEE, D.prod, ms), p = kPPM(ms), pv = vj(kPPM, D.sales, ms), l = kLT(ms), lv = vj(kLT, D.lief, ms);
   const op = kOP(a), opv = kOP(mAdd(a, -1));
-  const sp = (f, anchor) => lastN(anchor, 12).map(k => f([k]));
+  const sp = (f, anchor, rows) => lastN(anchor, 12).map(k => covers(rows, [k]) ? f([k]) : null);
+  const uS = sum(flt(D.sales, ms), r => r.betrag);
   return [
-    { id: 'umsatz', l: 'Umsatz', v: u, txt: fMio(u), d: uv ? (u / uv - 1) : null, dTxt: 'ggü. Vorjahr', good: 1, t: z.umsatz * mss.length / 12, tTxt: fMio(z.umsatz * mss.length / 12), hi: true, spark: sp(kUmsatz, as), page: 'vt', own: true },
-    { id: 'ae', l: 'Auftragseingang', v: e, txt: fMio(e), d: ev ? (e / ev - 1) : null, dTxt: 'ggü. Vorjahr', good: 1, t: z.ae * ms.length / 12, tTxt: fMio(z.ae * ms.length / 12), hi: true, spark: sp(kAE, a), page: 'vt', sub: u ? `Book-to-Bill ${de(e / kUmsatz(ms), 2)}` : '' },
-    { id: 'oee', l: 'OEE', v: o, txt: o != null ? fPct(o) : '–', d: o != null && ov != null ? o - ov : null, pp: true, dTxt: 'ggü. Vorjahr', good: 1, t: z.oee, tTxt: fPct(z.oee, 0), hi: true, spark: sp(kOEE, a), page: 'pr' },
-    { id: 'ppm', l: 'PPM Kunde', v: p, txt: p != null ? de(p) : '–', d: p != null && pv ? p / pv - 1 : null, dTxt: 'ggü. Vorjahr', good: -1, t: z.ppm, tTxt: 'max. ' + de(z.ppm), hi: false, spark: sp(kPPM, a), page: 'qu' },
-    { id: 'lt', l: 'Liefertreue Lieferanten', v: l, txt: l != null ? fPct(l) : '–', d: l != null && lv != null ? l - lv : null, pp: true, dTxt: 'ggü. Vorjahr', good: 1, t: z.lt, tTxt: fPct(z.lt, 0), hi: true, spark: sp(kLT, a), page: 'ek' },
-    { id: 'op', l: 'Überfällige Forderungen', v: op, txt: fMio(op), d: opv ? op / opv - 1 : null, dTxt: 'ggü. Vormonat', good: -1, t: z.op, tTxt: 'max. ' + fMio(z.op), hi: false, spark: lastN(a, 12).map(k => kOP(k)), page: 'fi', snap: true }
+    { id: 'umsatz', l: 'Umsatz', v: u, txt: fMio(u), d: uv ? (u / uv - 1) : null, dTxt: 'ggü. Vorjahr', good: 1, t: scoped(salesRows()) ? null : z.umsatz * mss.length / 12, tTxt: scoped(salesRows()) ? NOT_SCOPED : fMio(z.umsatz * mss.length / 12), hi: true, spark: sp(kUmsatz, as, salesRows()), page: 'vt', own: true, src: [salesRows()] },
+    { id: 'ae', l: 'Auftragseingang', v: e, txt: fMio(e), d: ev ? (e / ev - 1) : null, dTxt: 'ggü. Vorjahr', good: 1, t: scoped(D.ae) ? null : z.ae * ms.length / 12, tTxt: scoped(D.ae) ? NOT_SCOPED : fMio(z.ae * ms.length / 12), hi: true, spark: sp(kAE, a, D.ae), page: 'vt', sub: uS ? `Book-to-Bill ${de(e / uS, 2)}` : '', src: [D.ae] },
+    { id: 'oee', l: 'OEE', v: o, txt: o != null ? fPct(o) : '–', d: o != null && ov != null ? o - ov : null, pp: true, dTxt: 'ggü. Vorjahr', good: 1, t: z.oee, tTxt: fPct(z.oee, 0), hi: true, spark: sp(kOEE, a, D.prod), page: 'pr', src: [D.prod] },
+    { id: 'ppm', l: 'PPM Kunde', v: p, txt: p != null ? de(p) : '–', d: p != null && pv ? p / pv - 1 : null, dTxt: 'ggü. Vorjahr', good: -1, t: z.ppm, tTxt: 'max. ' + de(z.ppm), hi: false, spark: sp(kPPM, a, D.sales), page: 'qu', src: [D.rekla, D.sales] },
+    { id: 'lt', l: 'Liefertreue Lieferanten', v: l, txt: l != null ? fPct(l) : '–', d: l != null && lv != null ? l - lv : null, pp: true, dTxt: 'ggü. Vorjahr', good: 1, t: z.lt, tTxt: fPct(z.lt, 0), hi: true, spark: sp(kLT, a, D.lief), page: 'ek', src: [D.lief] },
+    { id: 'op', l: 'Überfällige Forderungen', v: op, txt: fMio(op), d: opv ? op / opv - 1 : null, dTxt: 'ggü. Vormonat', good: -1, t: scoped(D.sales) ? null : z.op, tTxt: scoped(D.sales) ? NOT_SCOPED : 'max. ' + fMio(z.op), hi: false, spark: lastN(a, 12).map(k => kOP(k)), page: 'fi', snap: true, src: [D.sales] }
   ];
 }
 function tileHtml(k) {
@@ -834,9 +880,9 @@ function tileHtml(k) {
   if (k.d != null && isFinite(k.d)) {
     const good = Math.sign(k.d) * k.good > 0, flat = Math.abs(k.d) < .0005;
     delta = `<span class="${flat ? '' : good ? 'good-t' : 'bad-t'}"><b class="${k.d >= 0 ? 'up' : 'dn'}" aria-hidden="true">${k.d >= 0 ? '▲' : '▼'}</b> ${k.pp ? signedPP(k.d) : signed(k.d)}</span> ${k.dTxt}`;
-  } else delta = '<span>Kein Vorjahreswert</span>';
-  const smp = S.own && !k.own ? ' <span class="pill muted">Beispiel</span>' : '';
-  return `<button class="tile" data-action="go" data-p="${k.page}" aria-label="${esc(k.l)}: ${esc(k.txt)}, ${ST_TXT[st] || ''}. Zum Bereich">
+  } else delta = `<span>${k.dTxt === 'ggü. Vormonat' ? 'Kein Vormonatswert' : 'Kein Vorjahreswert'}</span>`;
+  const smp = (S.own && !k.own ? ' <span class="pill muted">Beispiel</span>' : '') + nfPill(k.src || []);
+  return `<button class="tile" data-action="go" data-p="${k.page}" aria-label="${esc(k.l)}: ${esc(k.txt)}, ${ST_TXT[st] || ''}${nfDims(k.src || []).length ? ', ungefiltert: ' + esc(nfDims(k.src).join(', ')) : ''}. Zum Bereich">
     <span class="t-top"><span class="t-l">${esc(k.l)}${smp}</span>${st ? `<span class="amp ${st}"><span class="ai">${stSvg(st)}</span>${ST_TXT[st]}</span>` : ''}</span>
     <span class="t-v">${esc(k.txt)}</span>
     <span class="t-d">${delta}${k.sub ? ` · ${esc(k.sub)}` : ''}</span>
@@ -845,7 +891,7 @@ function tileHtml(k) {
 function insights() {
   const ms = MS(), mss = MSS(), out = [], z = S.ziele, last = ms[ms.length - 1];
   // 1 Umsatz und Treiber
-  const cur = flt(salesRows(), mss), prev = flt(salesRows(), vjOf(mss));
+  const cur = flt(salesRows(), mss), prev = covers(salesRows(), vjOf(mss)) ? flt(salesRows(), vjOf(mss)) : [];
   const u = sum(cur, r => r.betrag), up = sum(prev, r => r.betrag);
   if (up > 0 && u > 0) {
     const d = u / up - 1, gc = groupSum(cur, r => r.pg || 'Ohne Gruppe', 'betrag'), gp = groupSum(prev, r => r.pg || 'Ohne Gruppe', 'betrag');
@@ -872,7 +918,7 @@ function insights() {
     out.push({ st: 'warn', sev: 2.5, t: `PPM im ${MONL[mM(ppmM.k)]} bei <b>${de(ppmM.v)}</b>${top ? `, vor allem ${esc(top[0])} (${de(top[1])} Teile)` : ''}.`, small: 'Qualität', dd: dd(`Reklamationen ${mLong(ppmM.k)}`, 'rekla', rk) });
   }
   // 5 Forderungen über 90 Tage
-  const op = flt(opAsOf(mEnd(last))).filter(r => r.tage > 90);
+  const op = opRows(last).filter(r => r.tage > 90);
   if (op.length) {
     const byK = [...groupSum(op, 'kunde', 'betrag')].sort((a, b) => b[1] - a[1]);
     out.push({ st: 'crit', sev: 3.5, t: `${op.length} ${op.length === 1 ? 'Rechnung' : 'Rechnungen'} über 90 Tage offen: <b>${fMio(sum(op, r => r.betrag))}</b>, davon ${fMio(byK[0][1])} ${esc(byK[0][0])}.`, small: 'Finanzen', dd: dd('Forderungen über 90 Tage', 'op', op) });
@@ -885,8 +931,9 @@ function insightsHtml(list) {
 }
 function pageUeb() {
   const mss = MSS(), z = S.ziele, kp = kpiDefs();
-  const cur = mss.map(k => sum(flt(salesRows(), [k]), r => r.betrag)), vj = vjOf(mss).map(k => { const v = sum(flt(salesRows(), [k]), r => r.betrag); return v || null; });
-  const tm = z.umsatz / 12, labels = mss.map(mLab);
+  const vjOk = covers(salesRows(), vjOf(mss));
+  const cur = mss.map(k => sum(flt(salesRows(), [k]), r => r.betrag)), vj = vjOf(mss).map(k => vjOk ? sum(flt(salesRows(), [k]), r => r.betrag) : null);
+  const tm = scoped(salesRows()) ? null : z.umsatz / 12, labels = mss.map(mLab);
   const u = sum(cur), uv = sum(vj.filter(Boolean)), best = cur.indexOf(Math.max(...cur));
   const ddM = mss.map(k => dd(`Umsatz ${mLong(k)}`, 'sales', flt(salesRows(), [k])));
   const top = [...groupSum(flt(salesRows(), mss), r => r.kunde || '–', 'betrag')].sort((a, b) => b[1] - a[1]).slice(0, 5);
@@ -896,13 +943,13 @@ function pageUeb() {
     <div class="kpis6">${kp.map(tileHtml).join('')}</div>
     <div class="grid-ch">
     ${card('u-trend', 'Umsatz je Monat', uv ? `<b>${signed(u / uv - 1)}</b> ggü. Vorjahr, stärkster Monat ${mLong(mss[best])}.` : `Summe ${fMio(u)}.`,
-      w => lineSvg(w, { labels, series: [{ name: 'Umsatz', vals: cur, cls: 's1' }].concat(uv ? [{ name: 'Vorjahr', vals: vj, cls: 'sp' }] : []), fmt: fTsd, ax: fAx, target: { v: tm, label: 'Ziel je Monat' }, dd: ddM, area: true, aria: 'Umsatz je Monat mit Vorjahr und Ziel', tipLabels: mss.map(mLong) }),
-      { head: ['Monat', 'Umsatz €', 'Vorjahr €', 'Ziel €'], rows: mss.map((k, i) => [mLong(k), cur[i], vj[i] || '', tm]), num: [1, 2, 3] },
-      { span: true, legend: legend([['c1', 'Umsatz', 'line']].concat(uv ? [['cp', 'Vorjahr', 'line']] : []).concat([['', 'Ziel je Monat', 'target']])) })}
+      w => lineSvg(w, { labels, series: [{ name: 'Umsatz', vals: cur, cls: 's1' }].concat(uv ? [{ name: 'Vorjahr', vals: vj, cls: 'sp' }] : []), fmt: fTsd, ax: fAx, target: tm != null ? { v: tm, label: 'Ziel je Monat' } : null, dd: ddM, area: true, aria: 'Umsatz je Monat mit Vorjahr und Ziel', tipLabels: mss.map(mLong) }),
+      { head: ['Monat', 'Umsatz €', 'Vorjahr €', 'Ziel €'], rows: mss.map((k, i) => [mLong(k), cur[i], vj[i] ?? '', tm ?? '']), num: [1, 2, 3] },
+      { span: true, src: [salesRows()], legend: legend([['c1', 'Umsatz', 'line']].concat(uv ? [['cp', 'Vorjahr', 'line']] : []).concat(tm != null ? [['', 'Ziel je Monat', 'target']] : [])) })}
     <section class="card" aria-labelledby="h-ins"><div class="ch-h"><div><h2 id="h-ins">Hinweise</h2><p class="take">Automatisch aus den Zahlen erkannt.</p></div><span class="ch-a">${ic('bulb')}</span></div><div class="ch-b">${insightsHtml(insights())}</div></section>
     ${card('u-top', 'Top 5 Kunden', top.length ? `${esc(top[0][0])} mit ${fPct(top[0][1] / (u || 1), 0)} Anteil.` : '',
       () => hbars(top.map(([k, v]) => ({ label: k, val: v, txt: fTsd(v), sub: fPct(v / (u || 1), 0), dd: dd(`Umsatz ${k}`, 'sales', flt(salesRows(), mss).filter(r => (r.kunde || '–') === k)), tip: `${k}\n${fEur(v)}` }))),
-      { head: ['Kunde', 'Umsatz €', 'Anteil'], rows: top.map(([k, v]) => [k, v, v / (u || 1)]), num: [1], pct: [2] })}
+      { head: ['Kunde', 'Umsatz €', 'Anteil'], rows: top.map(([k, v]) => [k, v, v / (u || 1)]), num: [1], pct: [2] }, { src: [salesRows()] })}
     </div>`;
 }
 
@@ -914,7 +961,7 @@ function pageVt() {
   const main = pgs.slice(0, 4), other = pgs.slice(4);
   const series = main.map((pg, j) => ({ name: pg, cls: 's' + (j + 1), vals: mss.map(k => sum(rows.filter(r => r.m === k && r.pg === pg), r => r.betrag)) }));
   if (other.length) series.push({ name: other.length === 1 ? other[0] : 'Weitere', cls: 's5', vals: mss.map(k => sum(rows.filter(r => r.m === k && other.includes(r.pg)), r => r.betrag)) });
-  const prevRows = flt(salesRows(), vjOf(mss)), gp = groupSum(prevRows, 'pg', 'betrag'), gc = groupSum(rows, 'pg', 'betrag');
+  const prevRows = covers(salesRows(), vjOf(mss)) ? flt(salesRows(), vjOf(mss)) : [], gp = groupSum(prevRows, 'pg', 'betrag'), gc = groupSum(rows, 'pg', 'betrag');
   const growth = pgs.map(p => [p, gp.get(p) ? gc.get(p) / gp.get(p) - 1 : null]).filter(x => x[1] != null).sort((a, b) => b[1] - a[1])[0];
   const kun = hasK ? [...groupSum(rows, 'kunde', 'betrag')].sort((a, b) => b[1] - a[1]) : [];
   const reg = hasReg ? [...groupSum(rows, 'region', 'betrag')].sort((a, b) => b[1] - a[1]) : [];
@@ -930,20 +977,20 @@ function pageVt() {
       w => hasPg ? barSvg(w, { labels, series, stacked: true, fmt: fTsd, ax: fAx, tipLabels: mss.map(mLong), dd: (i, j) => dd(`${series[j].name} · ${mLong(mss[i])}`, 'sales', rows.filter(r => r.m === mss[i] && (j < main.length ? r.pg === main[j] : other.includes(r.pg)))), aria: 'Umsatz je Monat nach Produktgruppe, gestapelt' })
         : barSvg(w, { labels, series: [{ name: 'Umsatz', cls: 's1', vals: mss.map(k => sum(rows.filter(r => r.m === k), r => r.betrag)) }], fmt: fTsd, ax: fAx, tipLabels: mss.map(mLong), dd: i => dd(`Umsatz ${mLong(mss[i])}`, 'sales', rows.filter(r => r.m === mss[i])), aria: 'Umsatz je Monat' }),
       { head: ['Monat'].concat(series.map(s => s.name + ' €')), rows: mss.map((k, i) => [mLong(k)].concat(series.map(s => s.vals[i]))), num: series.map((_, i) => i + 1) },
-      { span: true, legend: hasPg ? legend(series.map(s => ['c' + s.cls.slice(1), s.name])) : '' })}
+      { span: true, src: [salesRows()], legend: hasPg ? legend(series.map(s => ['c' + s.cls.slice(1), s.name])) : '' })}
     ${card('v-kun', 'Top 10 Kunden', top10.length ? `Die Top 10 bringen <b>${fPct(sum(top10, x => x[1]) / (u || 1), 0)}</b> des Umsatzes.` : '',
       () => hasK ? hbars(top10.map(([k, v]) => ({ label: k, val: v, txt: fTsd(v), sub: fPct(v / (u || 1), 0), dd: dd(`Umsatz ${k}`, 'sales', rows.filter(r => r.kunde === k)), tip: `${k}\n${fEur(v)}` }))) : missing('Kunde'),
-      { head: ['Kunde', 'Umsatz €', 'Anteil'], rows: kun.map(([k, v]) => [k, v, v / (u || 1)]), num: [1], pct: [2] })}
+      { head: ['Kunde', 'Umsatz €', 'Anteil'], rows: kun.map(([k, v]) => [k, v, v / (u || 1)]), num: [1], pct: [2] }, { src: [salesRows()] })}
     ${card('v-reg', 'Umsatz nach Region', reg.length ? `<b>${esc(reg[0][0])}</b> ist die stärkste Region.` : '',
       () => hasReg ? hbars(reg.map(([k, v]) => ({ label: k, val: v, txt: fTsd(v), sub: fPct(v / (u || 1), 0), dd: dd(`Umsatz ${k}`, 'sales', rows.filter(r => r.region === k)), tip: `${k}\n${fEur(v)}` }))) : missing('Region'),
-      { head: ['Region', 'Umsatz €', 'Anteil'], rows: reg.map(([k, v]) => [k, v, v / (u || 1)]), num: [1], pct: [2] })}
+      { head: ['Region', 'Umsatz €', 'Anteil'], rows: reg.map(([k, v]) => [k, v, v / (u || 1)]), num: [1], pct: [2] }, { src: [salesRows()] })}
     ${card('v-ae', 'Auftragseingang und Umsatz', `Book-to-Bill <b>${de(btb, 2)}</b>: ${btb >= 1 ? 'Es kommen mehr Aufträge rein, als fakturiert wird.' : 'Der Auftragsbestand schrumpft.'}`,
       w => lineSvg(w, { labels, series: [{ name: 'Auftragseingang', vals: aeM, cls: 's1' }, { name: 'Umsatz', vals: uM, cls: 's2' }], fmt: fTsd, ax: fAx, tipLabels: mss.map(mLong), dd: mss.map(k => dd(`Auftragseingang ${mLong(k)}`, 'ae', flt(D.ae, [k]))), aria: 'Auftragseingang und Umsatz je Monat' }),
       { head: ['Monat', 'Auftragseingang €', 'Umsatz €'], rows: mss.map((k, i) => [mLong(k), aeM[i], uM[i]]), num: [1, 2] },
-      { sample: true, legend: legend([['c1', 'Auftragseingang', 'line'], ['c2', 'Umsatz', 'line']]) })}
+      { sample: true, src: [D.ae, D.sales], legend: legend([['c1', 'Auftragseingang', 'line'], ['c2', 'Umsatz', 'line']]) })}
     ${card('v-db', 'Deckungsbeitrag je Produktgruppe', dbPg.length ? `Beste Marge: <b>${esc(dbPg[0][0])}</b> mit ${fPct(dbPg[0][1], 0)}.` : '',
       () => dbPg.length ? hbars(dbPg.map(([k, m, v]) => ({ label: k, val: m, txt: fPct(m, 1), sub: fTsd(v), tip: `${k}\nDB-Marge ${fPct(m)}\nDB ${fEur(v)}` })), { max: Math.max(...dbPg.map(x => x[1])) * 1.05 }) : missing(hasPg ? 'Deckungsbeitrag' : 'Produktgruppe'),
-      { head: ['Produktgruppe', 'DB-Marge', 'DB €'], rows: dbPg.map(([k, m, v]) => [k, m, v]), num: [2], pct: [1] })}
+      { head: ['Produktgruppe', 'DB-Marge', 'DB €'], rows: dbPg.map(([k, m, v]) => [k, m, v]), num: [2], pct: [1] }, { src: [salesRows()] })}
   </div>`;
 }
 
@@ -951,32 +998,32 @@ function pageVt() {
 function pageProd() {
   const ms = MS(), labels = ms.map(mLab), z = S.ziele;
   const oee = ms.map(k => kOEE([k])), comp = ['va', 'le', 'qu'].map(c => ms.map(k => { const p = flt(D.prod, [k]); const pl = sum(p, r => r.plan); return pl ? sum(p, r => r.plan * r[c]) / pl : null; }));
-  const lines = LINES.filter(([w]) => !S.f.werk || w === S.f.werk).map(x => x[1]);
+  const lines = LINES.filter(([w]) => !dimApplies(D.prod, 'werk') || w === S.f.werk).map(x => x[1]);
   const pr = flt(D.prod, ms), stops = flt(D.stop, ms);
   const sg = [...groupSum(stops, 'grund', 'min')].sort((a, b) => b[1] - a[1]), st = sum(sg, x => x[1]);
   let cum = 0;
   const aus = lines.map(l => { const p = pr.filter(r => r.linie === l); return [l, sum(p, r => r.ausschuss) / (sum(p, r => r.stueck) || 1), sum(p, r => r.ausschuss)]; }).sort((a, b) => b[1] - a[1]);
-  const avg = kOEE(ms), avgV = kOEE(vjOf(ms));
+  const avg = kOEE(ms), avgV = covers(D.prod, vjOf(ms)) ? kOEE(vjOf(ms)) : null;
   const lo = .6, hi = .85;
-  return `${pageHead('Produktion', `${perLabel(ms)} · ${S.f.werk ? 'Werk ' + esc(S.f.werk) : 'Beide Werke'}`)}${filterBar()}${ownBanner()}
+  return `${pageHead('Produktion', `${perLabel(ms)} · ${dimApplies(D.prod, 'werk') ? 'Werk ' + esc(S.f.werk) : 'Beide Werke'}`)}${filterBar()}${ownBanner()}
   <div class="grid-ch">
     ${card('p-oee', 'OEE gesamt', `Durchschnitt <b>${avg != null ? fPct(avg) : '–'}</b>${avgV != null && avg != null ? `, ${signedPP(avg - avgV)} ggü. Vorjahr` : ''}. Ziel ${fPct(z.oee, 0)}.`,
       w => lineSvg(w, { labels, series: [{ name: 'OEE', vals: oee, cls: 's1' }], fmt: v => fPct(v), ax: fAxPct, target: { v: z.oee, label: 'Ziel' }, zero: false, tipLabels: ms.map(mLong), dd: ms.map(k => dd(`OEE ${mLong(k)}`, 'prod', flt(D.prod, [k]))), aria: 'OEE je Monat' }),
-      { head: ['Monat', 'OEE', 'Verfügbarkeit', 'Leistung', 'Qualität'], rows: ms.map((k, i) => [mLong(k), oee[i], comp[0][i], comp[1][i], comp[2][i]]), pct: [1, 2, 3, 4] }, { sample: true })}
+      { head: ['Monat', 'OEE', 'Verfügbarkeit', 'Leistung', 'Qualität'], rows: ms.map((k, i) => [mLong(k), oee[i], comp[0][i], comp[1][i], comp[2][i]]), pct: [1, 2, 3, 4] }, { sample: true, src: [D.prod] })}
     ${card('p-comp', 'OEE-Faktoren', 'Wo die Zeit verloren geht: meist bei der Verfügbarkeit.',
       w => lineSvg(w, { labels, series: [{ name: 'Qualität', vals: comp[2], cls: 's1' }, { name: 'Leistung', vals: comp[1], cls: 's2' }, { name: 'Verfügbarkeit', vals: comp[0], cls: 's3' }], fmt: v => fPct(v), ax: fAxPct, zero: false, max: 1, endLabel: false, tipLabels: ms.map(mLong), aria: 'Verfügbarkeit, Leistung und Qualität je Monat' }),
       { head: ['Monat', 'Verfügbarkeit', 'Leistung', 'Qualität'], rows: ms.map((k, i) => [mLong(k), comp[0][i], comp[1][i], comp[2][i]]), pct: [1, 2, 3] },
-      { sample: true, legend: legend([['c1', 'Qualität', 'line'], ['c2', 'Leistung', 'line'], ['c3', 'Verfügbarkeit', 'line']]) })}
+      { sample: true, src: [D.prod], legend: legend([['c1', 'Qualität', 'line'], ['c2', 'Leistung', 'line'], ['c3', 'Verfügbarkeit', 'line']]) })}
     ${card('p-heat', 'OEE je Linie und Monat', 'Dunkler ist besser. Feld anklicken für die Stillstände.',
       w => heatSvg(w, { rows: lines, cols: labels, tipCols: ms.map(mLong), name: 'OEE', val: (ri, ci) => { const r = pr.find(x => x.linie === lines[ri] && x.m === ms[ci]); return r ? r.oee : null; }, fmt: v => fPct(v), cellFmt: v => de(v * 100), lo, hi, dd: (ri, ci) => dd(`Stillstände ${lines[ri]} · ${mLong(ms[ci])}`, 'stop', stops.filter(r => r.linie === lines[ri] && r.m === ms[ci])), aria: 'OEE je Linie und Monat als Heatmap' }),
       { head: ['Linie'].concat(ms.map(mLong)), rows: lines.map(l => [l].concat(ms.map(k => { const r = pr.find(x => x.linie === l && x.m === k); return r ? r.oee : ''; }))), pct: ms.map((_, i) => i + 1) },
-      { span: true, sample: true, foot: heatScale(lo, hi, v => fPct(v, 0)) })}
+      { span: true, sample: true, src: [D.prod], foot: heatScale(lo, hi, v => fPct(v, 0)) })}
     ${card('p-stop', 'Stillstandsgründe', sg.length ? `<b>${esc(sg[0][0])}</b> und ${esc(sg[1][0])} machen ${fPct((sg[0][1] + sg[1][1]) / (st || 1), 0)} der Stillstände aus.` : '',
       () => hbars(sg.map(([k, v]) => { cum += v; return { label: k, val: v, txt: de(v / 60) + ' Std.', sub: `kum. ${fPct(cum / (st || 1), 0)}`, dd: dd(`Stillstand ${k}`, 'stop', stops.filter(r => r.grund === k)), tip: `${k}\n${de(v)} Minuten\nAnteil ${fPct(v / (st || 1))}` }; })),
-      { head: ['Grund', 'Minuten', 'Anteil'], rows: sg.map(([k, v]) => [k, v, v / (st || 1)]), num: [1], pct: [2] }, { sample: true })}
+      { head: ['Grund', 'Minuten', 'Anteil'], rows: sg.map(([k, v]) => [k, v, v / (st || 1)]), num: [1], pct: [2] }, { sample: true, src: [D.stop] })}
     ${card('p-aus', 'Ausschussquote je Linie', aus.length ? `Höchste Quote: <b>${esc(aus[0][0])}</b> mit ${fPct(aus[0][1])}.` : '',
       () => hbars(aus.map(([k, q, n]) => ({ label: k, val: q, txt: fPct(q), sub: de(n) + ' Stk.', dd: dd(`Produktion ${k}`, 'prod', pr.filter(r => r.linie === k)), tip: `${k}\nAusschuss ${fPct(q, 2)}\n${de(n)} Stück` }))),
-      { head: ['Linie', 'Ausschussquote', 'Ausschuss Stk.'], rows: aus.map(([k, q, n]) => [k, q, n]), num: [2], pct: [1] }, { sample: true })}
+      { head: ['Linie', 'Ausschussquote', 'Ausschuss Stk.'], rows: aus.map(([k, q, n]) => [k, q, n]), num: [2], pct: [1] }, { sample: true, src: [D.prod] })}
   </div>`;
 }
 
@@ -990,25 +1037,25 @@ function pageQual() {
   const kost = ms.map(k => sum(rk.filter(r => r.m === k), r => r.kosten) + sum(lr.filter(r => r.m === k), r => r.kosten));
   const avgPpm = kPPM(ms), over = ppm.filter(v => v != null && v > z.ppm).length;
   let cum = 0;
-  const dl = kDLZ(ms), dlv = kDLZ(vjOf(ms));
+  const dl = kDLZ(ms), dlv = covers(D.rekla, vjOf(ms)) ? kDLZ(vjOf(ms)) : null;
   return `${pageHead('Qualität', `${perLabel(ms)} · ${rk.length} Kunden- und ${lr.length} Lieferantenreklamationen`)}${filterBar()}${ownBanner()}
   <div class="grid-ch">
     ${card('q-ppm', 'PPM Kunde', `Durchschnitt <b>${avgPpm != null ? de(avgPpm) : '–'}</b>, ${over ? `${over} ${over === 1 ? 'Monat' : 'Monate'} über dem Ziel` : 'alle Monate im Ziel'} (max. ${de(z.ppm)}).`,
       w => barSvg(w, { labels, series: [{ name: 'PPM', vals: ppm, cls: 's1' }], fmt: v => de(v), ax: fAx, target: { v: z.ppm, label: 'Ziel' }, tipLabels: ms.map(mLong), dd: i => dd(`Reklamationen ${mLong(ms[i])}`, 'rekla', rk.filter(r => r.m === ms[i])), aria: 'PPM je Monat' }),
-      { head: ['Monat', 'PPM', 'Ziel'], rows: ms.map((k, i) => [mLong(k), ppm[i] != null ? Math.round(ppm[i]) : '', z.ppm]), num: [1, 2] }, { sample: true })}
+      { head: ['Monat', 'PPM', 'Ziel'], rows: ms.map((k, i) => [mLong(k), ppm[i] != null ? Math.round(ppm[i]) : '', z.ppm]), num: [1, 2] }, { sample: true, src: [D.rekla, D.sales] })}
     ${card('q-n', 'Reklamationen je Monat', `${rk.length} von Kunden, ${lr.length} an Lieferanten.`,
       w => barSvg(w, { labels, series: [{ name: 'Kunde', vals: nK, cls: 's1' }, { name: 'Lieferant', vals: nL, cls: 's2' }], fmt: v => de(v), ax: v => de(v), tipLabels: ms.map(mLong), dd: (i, j) => j === 0 ? dd(`Kundenreklamationen ${mLong(ms[i])}`, 'rekla', rk.filter(r => r.m === ms[i])) : dd(`Lieferantenreklamationen ${mLong(ms[i])}`, 'lrek', lr.filter(r => r.m === ms[i])), aria: 'Anzahl Reklamationen je Monat, Kunde und Lieferant' }),
       { head: ['Monat', 'Kunde', 'Lieferant'], rows: ms.map((k, i) => [mLong(k), nK[i], nL[i]]), num: [1, 2] },
-      { sample: true, legend: legend([['c1', 'Kunde'], ['c2', 'Lieferant']]) })}
+      { sample: true, src: [D.rekla, D.lrek], legend: legend([['c1', 'Kunde'], ['c2', 'Lieferant']]) })}
     ${card('q-fa', 'Fehlerarten', fa.length > 1 ? `<b>${esc(fa[0][0])}</b> und ${esc(fa[1][0])}: ${fPct((fa[0][1] + fa[1][1]) / (nfa || 1), 0)} aller Kundenreklamationen.` : '',
       () => hbars(fa.map(([k, v]) => { cum += v; return { label: k, val: v, txt: de(v), sub: `kum. ${fPct(cum / (nfa || 1), 0)}`, dd: dd(`Fehlerart ${k}`, 'rekla', rk.filter(r => r.fehlerart === k)), tip: `${k}\n${de(v)} Reklamationen` }; })),
-      { head: ['Fehlerart', 'Anzahl', 'Anteil'], rows: fa.map(([k, v]) => [k, v, v / (nfa || 1)]), num: [1], pct: [2] }, { sample: true })}
+      { head: ['Fehlerart', 'Anzahl', 'Anteil'], rows: fa.map(([k, v]) => [k, v, v / (nfa || 1)]), num: [1], pct: [2] }, { sample: true, src: [D.rekla] })}
     ${card('q-dlz', '8D-Durchlaufzeit', `Im Schnitt <b>${dl != null ? de(dl, 1) : '–'} Tage</b>${dl != null && dlv != null ? ` (Vorjahr ${de(dlv, 1)})` : ''}. Ziel max. ${de(z.dlz)} Tage.`,
       w => lineSvg(w, { labels, series: [{ name: 'Tage bis Abschluss', vals: dlz, cls: 's1' }], fmt: v => de(v, 1) + ' T.', ax: v => de(v), target: { v: z.dlz, label: 'Ziel' }, tipLabels: ms.map(mLong), aria: '8D-Durchlaufzeit je Monat' }),
-      { head: ['Monat', 'Ø Tage'], rows: ms.map((k, i) => [mLong(k), dlz[i] != null ? Math.round(dlz[i] * 10) / 10 : '']), num: [1] }, { sample: true })}
+      { head: ['Monat', 'Ø Tage'], rows: ms.map((k, i) => [mLong(k), dlz[i] != null ? Math.round(dlz[i] * 10) / 10 : '']), num: [1] }, { sample: true, src: [D.rekla] })}
     ${card('q-k', 'Reklamationskosten', `Zusammen <b>${fMio(sum(kost))}</b> im Zeitraum.`,
       w => barSvg(w, { labels, series: [{ name: 'Kosten', vals: kost, cls: 's1' }], fmt: fEur, ax: fAx, tipLabels: ms.map(mLong), dd: i => dd(`Reklamationen ${mLong(ms[i])}`, 'rekla', rk.filter(r => r.m === ms[i])), aria: 'Reklamationskosten je Monat' }),
-      { head: ['Monat', 'Kosten €'], rows: ms.map((k, i) => [mLong(k), kost[i]]), num: [1] }, { sample: true })}
+      { head: ['Monat', 'Kosten €'], rows: ms.map((k, i) => [mLong(k), kost[i]]), num: [1] }, { sample: true, src: [D.rekla, D.lrek] })}
   </div>`;
 }
 
@@ -1026,28 +1073,28 @@ function pageEk() {
   const withLt = rows => rows.map(r => Object.assign({ lt: r.puenktlich / r.lieferungen }, r));
   return `${pageHead('Einkauf', `${perLabel(ms)} · ${sup.length} Lieferanten`)}${filterBar()}${ownBanner()}
   <div class="grid-ch">
-    ${card('e-lt', 'Liefertreue je Lieferant', `Letzte 3 Monate. ${below ? `<b>${below}</b> unter dem Ziel von ${fPct(z.lt, 0)}.` : 'Alle im Ziel.'}`,
+    ${card('e-lt', 'Liefertreue je Lieferant', `${l3.length > 1 ? `${perLabel(l3)} (letzte 3 Monate)` : perLabel(l3)}. ${below ? `<b>${below}</b> unter dem Ziel von ${fPct(z.lt, 0)}.` : 'Alle im Ziel.'}`,
       () => hbars(lt.map(([k, v]) => ({ label: k, val: v, txt: fPct(v), cls: v < z.lt ? 'low' : '', icon: v < z.lt ? stIc(v < z.lt - .05 ? 'crit' : 'warn') : '', sub: v < z.lt ? 'unter Ziel' : '', dd: dd(`Lieferungen ${k}`, 'lief', withLt(flt(D.lief, ms).filter(r => r.lieferant === k))), tip: `${k}\n${fPct(v)} pünktlich` })), { min: .7, max: 1, marker: z.lt, markerLabel: `Ziel ${fPct(z.lt, 0)}` }),
-      { head: ['Lieferant', 'Liefertreue'], rows: lt.map(([k, v]) => [k, v]), pct: [1] }, { sample: true })}
+      { head: ['Lieferant', 'Liefertreue'], rows: lt.map(([k, v]) => [k, v]), pct: [1] }, { sample: true, src: [D.lief] })}
     ${card('e-ltm', 'Liefertreue gesamt', `Zuletzt <b>${ltM[ltM.length - 1] != null ? fPct(ltM[ltM.length - 1]) : '–'}</b>.`,
       w => lineSvg(w, { labels, series: [{ name: 'Liefertreue', vals: ltM, cls: 's1' }], fmt: v => fPct(v), ax: fAxPct, target: { v: z.lt, label: 'Ziel' }, zero: false, max: 1, tipLabels: ms.map(mLong), dd: ms.map(k => dd(`Lieferungen ${mLong(k)}`, 'lief', withLt(flt(D.lief, [k])))), aria: 'Liefertreue je Monat' }),
-      { head: ['Monat', 'Liefertreue'], rows: ms.map((k, i) => [mLong(k), ltM[i]]), pct: [1] }, { sample: true })}
+      { head: ['Monat', 'Liefertreue'], rows: ms.map((k, i) => [mLong(k), ltM[i]]), pct: [1] }, { sample: true, src: [D.lief] })}
     ${card('e-vol', 'Einkaufsvolumen je Lieferant', vol.length ? `<b>${esc(vol[0][0])}</b>: ${fPct(vol[0][1] / (vs || 1), 0)} des Volumens.` : '',
       () => hbars(vol.map(([k, v]) => ({ label: k, val: v, txt: fTsd(v), sub: fPct(v / (vs || 1), 0), dd: dd(`Lieferungen ${k}`, 'lief', withLt(all.filter(r => r.lieferant === k))), tip: `${k}\n${fEur(v)}` }))),
-      { head: ['Lieferant', 'Volumen €', 'Anteil'], rows: vol.map(([k, v]) => [k, v, v / (vs || 1)]), num: [1], pct: [2] }, { sample: true })}
+      { head: ['Lieferant', 'Volumen €', 'Anteil'], rows: vol.map(([k, v]) => [k, v, v / (vs || 1)]), num: [1], pct: [2] }, { sample: true, src: [D.lief] })}
     ${card('e-st', 'Stahlpreisindex', s0 != null ? `${signed(s1 / s0 - 1)} im Zeitraum. Basis 2021 = 100.` : '',
       w => lineSvg(w, { labels, series: [{ name: 'Index', vals: st, cls: 's1' }], fmt: v => de(v, 1), ax: v => de(v), zero: false, tipLabels: ms.map(mLong), aria: 'Stahlpreisindex je Monat' }),
-      { head: ['Monat', 'Index'], rows: ms.map((k, i) => [mLong(k), st[i]]), num: [1] }, { nf: true, sample: true })}
+      { head: ['Monat', 'Index'], rows: ms.map((k, i) => [mLong(k), st[i]]), num: [1] }, { sample: true, src: [D.stahl] })}
     ${card('e-lr', 'Reklamationen an Lieferanten', lrn.length ? `Am häufigsten: <b>${esc(lrn[0][0])}</b> (${lrn[0][1]}).` : 'Keine im Zeitraum.',
       () => hbars(lrn.map(([k, v]) => ({ label: k, val: v, txt: de(v), dd: dd(`Lieferantenreklamationen ${k}`, 'lrek', lr.filter(r => r.lieferant === k)), tip: `${k}\n${v} Reklamationen` }))),
-      { head: ['Lieferant', 'Anzahl'], rows: lrn, num: [1] }, { sample: true })}
+      { head: ['Lieferant', 'Anzahl'], rows: lrn, num: [1] }, { sample: true, src: [D.lrek] })}
   </div>`;
 }
 
 /* ---------- Finanzen ---------- */
 function pageFin() {
   const ms = MS(), labels = ms.map(mLab), z = S.ziele, last = ms[ms.length - 1];
-  const op = flt(opAsOf(mEnd(last))), tot = sum(op, r => r.betrag), over = op.filter(r => r.tage > 0), ov = sum(over, r => r.betrag);
+  const op = opRows(last), tot = sum(op, r => r.betrag), over = op.filter(r => r.tage > 0), ov = sum(over, r => r.betrag);
   const bk = BUCKETS.map(([l, f], i) => { const rr = op.filter(r => f(r.tage)); return [l, sum(rr, r => r.betrag), rr, 'o' + (i + 1)]; });
   const deb = [...groupSum(over, 'kunde', 'betrag')].sort((a, b) => b[1] - a[1]).slice(0, 8);
   const cash = ms.map(k => (D.cash.find(x => x.m === k) || {}).bestand ?? null), dso = ms.map(k => (D.dso.find(x => x.m === k) || {}).v ?? null);
@@ -1055,21 +1102,21 @@ function pageFin() {
   const avgRm = sum(sr, r => r.db) / (sum(sr, r => r.betrag) || 1);
   return `${pageHead('Finanzen', `${perLabel(ms)} · Offene Posten Stand ${fDate(mEnd(last))}`)}${filterBar()}${ownBanner()}
   <div class="grid-ch">
-    ${card('f-aging', 'Forderungen nach Fälligkeit', `Offen <b>${fMio(tot)}</b>, davon überfällig ${fMio(ov)} (Ziel max. ${fMio(z.op)}).`,
+    ${card('f-aging', 'Forderungen nach Fälligkeit', `Offen <b>${fMio(tot)}</b>, davon überfällig ${fMio(ov)}${scoped(D.sales) ? '' : ` (Ziel max. ${fMio(z.op)})`}.`,
       () => hbars(bk.map(([l, v, rr, cls]) => ({ label: l, val: v, txt: fTsd(v), sub: `${rr.length} Rechn.`, cls, dd: dd(`Forderungen ${l}`, 'op', rr), tip: `${l}\n${fEur(v)}\n${rr.length} Rechnungen` }))),
-      { head: ['Fälligkeit', 'Betrag €', 'Rechnungen'], rows: bk.map(([l, v, rr]) => [l, v, rr.length]), num: [1, 2] }, { sample: true })}
+      { head: ['Fälligkeit', 'Betrag €', 'Rechnungen'], rows: bk.map(([l, v, rr]) => [l, v, rr.length]), num: [1, 2] }, { sample: true, src: [D.sales] })}
     ${card('f-deb', 'Überfällig je Kunde', deb.length ? `<b>${esc(deb[0][0])}</b> mit ${fTsd(deb[0][1])} am höchsten.` : 'Nichts überfällig.',
       () => hbars(deb.map(([k, v]) => ({ label: k, val: v, txt: fTsd(v), dd: dd(`Überfällig ${k}`, 'op', over.filter(r => r.kunde === k)), tip: `${k}\n${fEur(v)} überfällig` }))),
-      { head: ['Kunde', 'Überfällig €'], rows: deb, num: [1] }, { sample: true })}
+      { head: ['Kunde', 'Überfällig €'], rows: deb, num: [1] }, { sample: true, src: [D.sales] })}
     ${card('f-cash', 'Liquidität', `Kontostand Ende ${MONL[mM(last)]}: <b>${cash[cash.length - 1] != null ? fMio(cash[cash.length - 1]) : '–'}</b>.`,
       w => lineSvg(w, { labels, series: [{ name: 'Kontostand', vals: cash, cls: 's1' }], fmt: fTsd, ax: fAx, area: true, tipLabels: ms.map(mLong), aria: 'Kontostand je Monatsende' }),
-      { head: ['Monat', 'Kontostand €'], rows: ms.map((k, i) => [mLong(k), cash[i]]), num: [1] }, { nf: true, sample: true })}
+      { head: ['Monat', 'Kontostand €'], rows: ms.map((k, i) => [mLong(k), cash[i]]), num: [1] }, { sample: true, src: [D.cash] })}
     ${card('f-dso', 'Zahlungsziel (DSO)', `Zuletzt <b>${dso[dso.length - 1] != null ? de(dso[dso.length - 1], 1) : '–'} Tage</b> bis zum Zahlungseingang. Ziel max. ${de(z.dso)}.`,
       w => lineSvg(w, { labels, series: [{ name: 'DSO', vals: dso, cls: 's1' }], fmt: v => de(v, 1) + ' Tage', ax: v => de(v), target: { v: z.dso, label: 'Ziel' }, zero: false, tipLabels: ms.map(mLong), aria: 'Days Sales Outstanding je Monat' }),
-      { head: ['Monat', 'DSO Tage'], rows: ms.map((k, i) => [mLong(k), dso[i]]), num: [1] }, { nf: true, sample: true })}
+      { head: ['Monat', 'DSO Tage'], rows: ms.map((k, i) => [mLong(k), dso[i]]), num: [1] }, { sample: true, src: [D.dso] })}
     ${card('f-rm', 'Rohertragsmarge', `Im Schnitt <b>${fPct(avgRm)}</b>.`,
       w => lineSvg(w, { labels, series: [{ name: 'Marge', vals: rm, cls: 's1' }], fmt: v => fPct(v), ax: fAxPct, zero: false, tipLabels: ms.map(mLong), dd: ms.map(k => dd(`Umsatz ${mLong(k)}`, 'sales', sr.filter(r => r.m === k))), aria: 'Rohertragsmarge je Monat' }),
-      { head: ['Monat', 'Marge'], rows: ms.map((k, i) => [mLong(k), rm[i]]), pct: [1] }, { sample: true, span: true })}
+      { head: ['Monat', 'Marge'], rows: ms.map((k, i) => [mLong(k), rm[i]]), pct: [1] }, { sample: true, span: true, src: [D.sales] })}
   </div>`;
 }
 
@@ -1079,7 +1126,7 @@ function pageZiele() {
   return `${pageHead('Ziele', 'Daraus berechnen sich Ampeln, Ziellinien und Hinweise.')}
   <form class="card card-p" id="zielF" novalidate><h2>Jahresziele ${mY(SAMPLE_ANCHOR)}</h2>
     <div class="goal-grid">
-      ${f('umsatz', 'Umsatz im Jahr (Mio. €)', '', (z.umsatz / 1e6).toFixed(1), '0.1', 'Für kürzere Zeiträume anteilig')}
+      ${f('umsatz', 'Umsatz im Jahr (Mio. €)', '', (z.umsatz / 1e6).toFixed(1), '0.1', 'Ganzes Unternehmen, für kürzere Zeiträume anteilig')}
       ${f('ae', 'Auftragseingang im Jahr (Mio. €)', '', (z.ae / 1e6).toFixed(1), '0.1', 'Anteilig je Zeitraum')}
       ${f('oee', 'OEE mindestens (%)', '', (z.oee * 100).toFixed(1), '0.5', 'Gesamtanlageneffektivität')}
       ${f('ppm', 'PPM Kunde höchstens', '', z.ppm, '10', 'Reklamierte Teile je Million gelieferter Teile')}
@@ -1221,29 +1268,36 @@ function templateFile() {
 }
 
 /* ---------- Tabellen und Drilldown ---------- */
-let SORT = { key: '', col: -1, dir: 1 };
+let SORT = { key: '', col: -1, dir: 1 }, DDQ = '';
+function ddRows(key) {
+  const d = DD[key], cols = COLS[d.set], q = DDQ.trim().toLowerCase();
+  if (!q) return d.rows;
+  return d.rows.filter(r => cols.some(c => { const v = r[c[0]]; return v != null && v !== '' && String(c[2] ? c[2](v) : v).toLowerCase().includes(q); }));
+}
 function openTable(id) {
   const t = TB[id]; if (!t) return;
-  const fmt = (v, i) => v === '' || v == null ? '–' : (t.pct || []).includes(i) ? fPct(v) : (t.num || []).includes(i) ? de(v) : esc(v);
+  const fmt = (v, i) => v === '' || v == null ? '–' : (t.pct || []).includes(i) ? fPct(v) : (t.num || []).includes(i) ? de(v, Math.abs(v) < 1000 && !Number.isInteger(v) ? 1 : 0) : esc(v);
   openSheet(`${sheetH(t.title, 'Werte zum Diagramm')}<div class="sheet-b flush"><div class="tbl"><table><thead><tr>${t.head.map((h, i) => `<th${i ? ' class="n"' : ''}>${esc(h)}</th>`).join('')}</tr></thead>
     <tbody>${t.rows.map(r => `<tr>${r.map((v, i) => `<td${i ? ' class="n"' : ''}>${fmt(v, i)}</td>`).join('')}</tr>`).join('')}</tbody></table></div></div>
     <div class="sheet-f"><button class="btn" data-action="close">Schließen</button><button class="btn primary" data-action="tbl-xl" data-id="${id}">${ic('download', 's')} Excel</button></div>`, true);
 }
 function ddBody(key) {
-  const d = DD[key], cols = COLS[d.set];
-  let rows = d.rows.slice();
+  const d = DD[key], cols = COLS[d.set], all = ddRows(key);
+  let rows = all.slice();
+  if (!rows.length) return `<p class="hint" style="padding:12px 16px">Keine Zeile enthält „${esc(DDQ.trim())}“.</p>`;
   if (SORT.key === key && SORT.col >= 0) { const c = cols[SORT.col][0]; rows.sort((a, b) => (a[c] > b[c] ? 1 : a[c] < b[c] ? -1 : 0) * SORT.dir); }
   const view = rows.slice(0, 400);
-  const sums = cols.map(c => c[3] && !['va', 'le', 'qu', 'oee', 'lt', 'tage', 'dlz'].includes(c[0]) ? sum(d.rows, r => Number(r[c[0]]) || 0) : null);
+  const sums = cols.map(c => c[3] && !['va', 'le', 'qu', 'oee', 'lt', 'tage', 'dlz'].includes(c[0]) ? sum(all, r => Number(r[c[0]]) || 0) : null);
   return `<div class="tbl"><table><thead><tr>${cols.map((c, i) => `<th${c[3] ? ' class="n"' : ''}${SORT.key === key && SORT.col === i ? ` aria-sort="${SORT.dir > 0 ? 'ascending' : 'descending'}"` : ''}><button data-action="dd-sort" data-k="${key}" data-c="${i}">${esc(c[1])}</button></th>`).join('')}</tr></thead>
     <tbody>${view.map(r => `<tr>${cols.map(c => `<td${c[3] ? ' class="n"' : ''}>${r[c[0]] === undefined || r[c[0]] === '' ? '–' : esc(c[2] ? c[2](r[c[0]]) : r[c[0]])}</td>`).join('')}</tr>`).join('')}</tbody>
-    ${d.rows.length > 1 ? `<tfoot><tr>${cols.map((c, i) => `<td${c[3] ? ' class="n"' : ''}>${i === 0 ? 'Summe' : sums[i] != null ? esc(c[2] ? c[2](sums[i]) : de(sums[i])) : ''}</td>`).join('')}</tr></tfoot>` : ''}</table></div>
-    ${d.rows.length > view.length ? `<p class="hint" style="padding:8px 16px">Angezeigt: ${view.length} von ${de(d.rows.length)} Zeilen. Der Export enthält alle.</p>` : ''}`;
+    ${all.length > 1 ? `<tfoot><tr>${cols.map((c, i) => `<td${c[3] ? ' class="n"' : ''}>${i === 0 ? 'Summe' : sums[i] != null ? esc(c[2] ? c[2](sums[i]) : de(sums[i])) : ''}</td>`).join('')}</tr></tfoot>` : ''}</table></div>
+    ${all.length > view.length || all.length < d.rows.length ? `<p class="hint" style="padding:8px 16px">Angezeigt: ${de(view.length)} von ${de(d.rows.length)} Zeilen${all.length < d.rows.length ? ` (${de(all.length)} passen zur Suche)` : ''}. Der Export enthält ${all.length < d.rows.length ? 'die passenden Zeilen' : 'alle'}.</p>` : ''}`;
 }
 function openDD(key) {
   const d = DD[key]; if (!d) return;
-  SORT = { key, col: -1, dir: 1 };
-  openSheet(`${sheetH(d.title, `${de(d.rows.length)} ${d.rows.length === 1 ? 'Zeile' : 'Zeilen'}${dimActive() ? ' · gefiltert' : ''}`)}<div class="sheet-b flush" id="ddBody">${ddBody(key)}</div>
+  SORT = { key, col: -1, dir: 1 }; DDQ = '';
+  const search = d.rows.length > 8 ? `<div class="dd-q"><label class="sr" for="ddQ">In diesen Zeilen suchen</label><input id="ddQ" type="search" data-k="${key}" placeholder="In diesen Zeilen suchen, z. B. Kunde" autocomplete="off"></div>` : '';
+  openSheet(`${sheetH(d.title, `${de(d.rows.length)} ${d.rows.length === 1 ? 'Zeile' : 'Zeilen'}${dimActive() ? ' · gefiltert' : ''}`)}${search}<div class="sheet-b flush" id="ddBody">${ddBody(key)}</div>
     <div class="sheet-f"><button class="btn" data-action="close">Schließen</button><button class="btn primary" data-action="dd-xl" data-k="${key}">${ic('download', 's')} Diese Zeilen als Excel</button></div>`, true);
 }
 let DL = null;
@@ -1270,7 +1324,7 @@ const fileSafe = s => s.replace(/[^\wäöüÄÖÜß-]+/g, '_').replace(/_+/g, '_
 function exportDD(key) {
   if (typeof XLSX === 'undefined') { toast('Excel-Export nicht verfügbar'); return; }
   const d = DD[key], cols = COLS[d.set];
-  const aoa = [cols.map(c => c[1])].concat(d.rows.map(r => cols.map(c => c[0] === 'd' || c[0] === 'faellig' ? (r[c[0]] ? new Date(r[c[0]] + 'T12:00:00') : '') : c[0] === 'm' ? mLong(r.m) : r[c[0]] ?? '')));
+  const aoa = [cols.map(c => c[1])].concat(ddRows(key).map(r => cols.map(c => c[0] === 'd' || c[0] === 'faellig' ? (r[c[0]] ? new Date(r[c[0]] + 'T12:00:00') : '') : c[0] === 'm' ? mLong(r.m) : r[c[0]] ?? '')));
   saveFile(`${fileSafe(d.title)}.xlsx`, xlsxBlob(d.title, aoa));
 }
 function exportTable(id) {
@@ -1292,8 +1346,9 @@ function openSheet(html, wide) {
   lastFocus = document.activeElement;
   $('sheet').className = 'sheet' + (wide ? ' wide' : '');
   $('sheet').innerHTML = html; $('overlay').hidden = false; hideTip();
-  const f = $('sheet').querySelector('input:not([type=file]), select, button:not(.close)') || $('sheet').querySelector('.close');
-  if (f) setTimeout(() => f.focus(), 30);
+  const h2 = $('sheet').querySelector('.sheet-h h2'); if (h2) { h2.id = 'sheetTitle'; $('sheet').setAttribute('aria-labelledby', 'sheetTitle'); }
+  const f = $('sheet').querySelector('input:not([type=file]):not([type=search]), select, button:not(.close)') || $('sheet').querySelector('.close');
+  if (f) f.focus();
 }
 function closeSheet() { $('overlay').hidden = true; $('sheet').innerHTML = ''; if (lastFocus && lastFocus.focus && document.contains(lastFocus)) lastFocus.focus(); }
 let toastT;
@@ -1320,7 +1375,20 @@ document.addEventListener('pointermove', e => {
 });
 document.addEventListener('pointerleave', hideTip);
 document.addEventListener('focusin', e => { const el = e.target.closest && e.target.closest('[data-tip]'); if (el && el.getAttribute('data-tip')) { const r = el.getBoundingClientRect(); showTip(el, r.left + r.width / 2, r.top); } });
-document.addEventListener('focusout', () => hideTip());
+document.addEventListener('focusout', e => { hideTip(); if (e.target.matches && e.target.matches('svg.viz')) e.target.querySelectorAll('.kf').forEach(x => x.classList.remove('kf')); });
+document.addEventListener('focusin', e => { const t = e.target; if (t.matches && t.matches('svg.viz[tabindex]') && t.matches(':focus-visible')) vizShow(t, t.dataset.ki != null ? +t.dataset.ki : vizItems(t).length - 1); });
+document.addEventListener('keydown', e => {
+  const svg = e.target; if (!svg.matches || !svg.matches('svg.viz[tabindex]')) return;
+  const n = vizItems(svg).length, cur = svg.dataset.ki != null ? +svg.dataset.ki : n - 1;
+  const k = e.key;
+  if (k === 'ArrowRight' || k === 'ArrowDown') vizShow(svg, cur + 1);
+  else if (k === 'ArrowLeft' || k === 'ArrowUp') vizShow(svg, cur - 1);
+  else if (k === 'Home') vizShow(svg, 0);
+  else if (k === 'End') vizShow(svg, n - 1);
+  else if (k === 'Enter' || k === ' ') { const it = vizItems(svg)[cur]; if (it && it.dataset.dd) openDD(it.dataset.dd); else vizShow(svg, cur); }
+  else return;
+  e.preventDefault();
+});
 window.addEventListener('scroll', hideTip, { passive: true });
 
 /* ---------- Ansichten, Filter-Dialog, Mehr ---------- */
@@ -1367,10 +1435,12 @@ async function pdfReport() {
     font(8.5, 'normal', RGB.ink2); doc.text(T(`Zeitraum ${perLabel(ms)}${dimActive() ? ' · Filter: ' + DIMS.filter(([d]) => S.f[d]).map(([d]) => S.f[d]).join(', ') : ''}${S.own ? ' · Umsatz aus ' + S.own.name : ''}`), W - M, M + 10, { align: 'right' });
     let y = M + 15; doc.setDrawColor(...RGB.acc); doc.setLineWidth(.7); doc.line(M, y, W - M, y); y += 7;
     // Kennzahlen-Tabelle: Monat, Vormonat, Vorjahresmonat, Zeitraum, Ziel, Status
-    const ytd = periodOf(mon);
+    const ytd = []; for (let k = mk(mY(mon), 0); k <= mon; k = mAdd(k, 1)) ytd.push(k);
+    // Werte nur für Monate, für die es Daten gibt (sonst „-“ statt 0)
+    const has = rows => f => k => covers(rows, k) ? f(k) : null;
     const rowsK = [
-      ['Umsatz', k => kUmsatz(k), fTsd, z.umsatz / 12, true], ['Auftragseingang', k => kAE(k), fTsd, z.ae / 12, true], ['OEE', k => kOEE(k), v => fPct(v), z.oee, true],
-      ['PPM Kunde', k => kPPM(k), v => de(v), z.ppm, false], ['Liefertreue', k => kLT(k), v => fPct(v), z.lt, true], ['Überfällige Forderungen', k => kOP(k[k.length - 1]), fTsd, z.op, false]
+      ['Umsatz', has(salesRows())(kUmsatz), fTsd, scoped(salesRows()) ? null : z.umsatz / 12, true], ['Auftragseingang', has(D.ae)(kAE), fTsd, scoped(D.ae) ? null : z.ae / 12, true], ['OEE', has(D.prod)(kOEE), v => fPct(v), z.oee, true],
+      ['PPM Kunde', has(D.sales)(kPPM), v => de(v), z.ppm, false], ['Liefertreue', has(D.lief)(kLT), v => fPct(v), z.lt, true], ['Überfällige Forderungen', has(D.sales)(k => kOP(k[k.length - 1])), fTsd, scoped(D.sales) ? null : z.op, false]
     ];
     font(11, 'bold'); doc.text('Kennzahlen', M, y); y += 5;
     const RX = [0, M + 82, M + 106, M + 130, M + 154], SX = M + 159, heads = ['Kennzahl', T(mLab(mon)), 'Vormonat', T(mLab(mAdd(mon, -12))), 'Ziel/Monat', 'Status'];
@@ -1384,7 +1454,7 @@ async function pdfReport() {
       if (st) { doc.setFillColor(...RGB[st]); doc.circle(SX + 1.6, y - 1.2, 1.6, 'F'); font(9, 'normal'); doc.text(T(ST_TXT[st]), SX + 5, y); }
       doc.setDrawColor(...RGB.line); doc.setLineWidth(.2); doc.line(M, y + 3, W - M, y + 3); y += 8;
     });
-    font(7.5, 'normal', RGB.ink2); doc.text(T(`Lfd. Jahr bis ${mLong(mon)}: Umsatz ${fMio(kUmsatz(ytd))}, Auftragseingang ${fMio(kAE(ytd))}, OEE ${kOEE(ytd) != null ? fPct(kOEE(ytd)) : '-'}.`), M, y); y += 8;
+    font(7.5, 'normal', RGB.ink2); doc.text(T(`Lfd. Jahr (${perLabel(ytd)}): Umsatz ${fMio(kUmsatz(ytd))}, Auftragseingang ${fMio(kAE(ytd))}, OEE ${kOEE(ytd) != null ? fPct(kOEE(ytd)) : '-'}.`), M, y); y += 8;
     // Hinweise
     font(11, 'bold'); doc.text('Hinweise', M, y); y += 5;
     insights().forEach(x => {
@@ -1421,7 +1491,7 @@ async function pdfReport() {
     };
     const half = (CW - 8) / 2, ch = 52;
     if (y + ch + 8 > H - 16) { doc.addPage(); y = M + 4; }
-    chartBox('Umsatz je Monat (blau) und Vorjahr (grau)', M, y, CW, ch, (x, yy, w, h) => linePdf(x, yy, w, h, mss.map(mLab), [{ vals: vjOf(mss).map(k => kUmsatz([k]) || null), c: RGB.vmut }, { vals: mss.map(k => kUmsatz([k])), c: RGB.v1 }], fAx, z.umsatz / 12));
+    chartBox('Umsatz je Monat (blau) und Vorjahr (grau)', M, y, CW, ch, (x, yy, w, h) => linePdf(x, yy, w, h, mss.map(mLab), [{ vals: vjOf(mss).map(k => kUmsatz([k]) || null), c: RGB.vmut }, { vals: mss.map(k => kUmsatz([k])), c: RGB.v1 }], fAx, scoped(salesRows()) ? null : z.umsatz / 12));
     y += ch + 10;
     const row = () => { if (y + ch > H - 16) { doc.addPage(); y = M + 4; } };
     row();
@@ -1430,7 +1500,7 @@ async function pdfReport() {
     y += ch + 10; row();
     const l3 = flt(D.lief, ms.slice(-3)), sup = [...new Set(l3.map(r => r.lieferant))].map(s => { const r = l3.filter(x => x.lieferant === s); return { l: s, v: sum(r, x => x.puenktlich) / sum(r, x => x.lieferungen) }; }).sort((a, b) => a.v - b.v).map(x => Object.assign(x, { c: x.v < z.lt ? RGB.crit : RGB.v1 }));
     chartBox('Liefertreue je Lieferant (3 Monate, Linie = Ziel)', M, y, half, ch, (x, yy, w, h) => hbarPdf(x, yy, w, h, sup, v => fPct(v, 0), z.lt, .7));
-    const op = flt(opAsOf(mEnd(mon))), ramp = [[134, 182, 239], [85, 152, 231], [37, 106, 191], [24, 79, 149], [13, 54, 107]];
+    const op = opRows(mon), ramp = [[134, 182, 239], [85, 152, 231], [37, 106, 191], [24, 79, 149], [13, 54, 107]];
     chartBox('Forderungen nach Fälligkeit', M + half + 8, y, half, ch, (x, yy, w, h) => hbarPdf(x, yy, w, h, BUCKETS.map(([l, f], i) => ({ l, v: sum(op.filter(r => f(r.tage)), r => r.betrag), c: ramp[i] })), fTsd));
     y += ch + 10; row();
     chartBox('Stillstandsgründe (Stunden)', M, y, half, ch, (x, yy, w, h) => hbarPdf(x, yy, w, h, [...groupSum(flt(D.stop, ms), 'grund', 'min')].sort((a, b) => b[1] - a[1]).map(([l, v]) => ({ l, v: v / 60 })), v => de(v)));
@@ -1513,7 +1583,17 @@ document.addEventListener('submit', e => {
     S.ziele = nz; save(); render(); toast('Ziele gespeichert');
   }
 });
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('overlay').hidden) closeSheet(); });
+document.addEventListener('keydown', e => {
+  if ($('overlay').hidden) return;
+  if (e.key === 'Escape') { closeSheet(); return; }
+  if (e.key === 'Tab') {
+    const f = [...$('sheet').querySelectorAll('button:not([disabled]), input, select, [tabindex]:not([tabindex="-1"])')].filter(x => x.offsetParent !== null);
+    if (!f.length) return;
+    if (e.shiftKey && (document.activeElement === f[0] || !$('sheet').contains(document.activeElement))) { e.preventDefault(); f[f.length - 1].focus(); }
+    else if (!e.shiftKey && (document.activeElement === f[f.length - 1] || !$('sheet').contains(document.activeElement))) { e.preventDefault(); f[0].focus(); }
+  }
+});
+document.addEventListener('input', e => { if (e.target.id === 'ddQ') { DDQ = e.target.value; $('ddBody').innerHTML = ddBody(e.target.dataset.k); } });
 $('overlay').addEventListener('click', e => { if (e.target.id === 'overlay') closeSheet(); });
 document.addEventListener('dragover', e => { const d = e.target.closest && e.target.closest('#drop'); if (d) { e.preventDefault(); d.classList.add('over'); } });
 document.addEventListener('dragleave', e => { const d = e.target.closest && e.target.closest('#drop'); if (d) d.classList.remove('over'); });

@@ -1,0 +1,10 @@
+# Cloudflare Pages: devunox-web (Website devunox.ai)
+# Build: python3 build.py -> dist (in den Pages-Einstellungen hinterlegt)
+name = "devunox-web"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-10-01"
+
+# Kontaktformular: Mail-Worker (workers/kontakt-mailer), aufgerufen per RPC aus functions/api/contact.js
+[[services]]
+binding = "MAILER"
+service = "devunox-kontakt-mailer"

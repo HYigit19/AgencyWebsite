@@ -34,3 +34,11 @@ Jede Änderung auf `main` (auch direkt auf github.com bearbeitet) wird automatis
 ## Texte ändern
 
 Die Texte stehen direkt in den HTML-Dateien unter `site/de/` und `site/en/`. Auf github.com die Datei öffnen, Stift-Symbol, Text ändern, „Commit changes“. Dabei nur den Text zwischen den spitzen Klammern ändern, nicht die Tags selbst.
+
+## Kontaktformular
+
+- `functions/api/contact.js` – Cloudflare Pages Function, nimmt das Formular entgegen (Spam-Schutz, Prüfung)
+- `workers/kontakt-mailer/` – eigener Worker `devunox-kontakt-mailer`, verschickt die Mail kostenlos über Cloudflare Email Routing an yigit@devunox-consulting.com (Absender kontakt@devunox.ai)
+- `wrangler.toml` – verbindet beides (Service-Binding `MAILER`)
+
+Voraussetzungen in Cloudflare: Email Routing auf devunox.ai aktiv (DNS-Einträge gesetzt) und yigit@devunox-consulting.com als bestätigte Zieladresse.

@@ -95,20 +95,6 @@
     });
   }
 
-  // Appointment booking: load Google Calendar only after a click (privacy)
-  document.querySelectorAll("[data-booking]").forEach(function (box) {
-    var load = box.querySelector(".booking-load");
-    if (!load) return;
-    load.addEventListener("click", function () {
-      var f = document.createElement("iframe");
-      f.src = box.dataset.booking;
-      f.title = box.dataset.title || "Google Calendar";
-      f.loading = "lazy";
-      f.setAttribute("frameborder", "0");
-      box.querySelector(".booking-ph").replaceWith(f);
-      box.classList.add("loaded");
-    });
-  });
 
   // Copy email address
   var copyBtn = document.getElementById("copy-mail");

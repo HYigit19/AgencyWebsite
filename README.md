@@ -8,7 +8,11 @@ Zweisprachige Website (DE/EN) für KI-Automatisierung, Websites, Web-Apps und Da
   - `site/de/`, `site/en/` – Seiten auf Deutsch und Englisch
   - `site/demos/` – die Demos zum Ausprobieren
   - `site/assets/` – Styles, Script, Schriften, Bilder und Video
-- `build.py` – kopiert `site/` nach `dist/` (für Cloudflare Pages)
+- `build.py` – kopiert `site/` nach `dist/` (für Cloudflare Pages) und erzeugt dabei `sitemap.xml` aus allen Seiten mit Canonical und ohne noindex
+- `site/assets/brand/` – Logo (Zeichen und Schriftzug), LinkedIn-Titelbild und Vorschaubilder für Social Media (`og-de.jpg`, `og-en.jpg`)
+- `site/robots.txt`, `site/404.html`, `site/_headers` (pages.dev-Adressen auf noindex), Favicons im Wurzelordner
+
+Hauptadresse ist https://www.devunox.ai (alle Canonicals zeigen dorthin). devunox.ai ohne www wird per Cloudflare-Weiterleitungsregel dorthin umgeleitet.
 
 ## Demos
 

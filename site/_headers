@@ -1,0 +1,9 @@
+# Vorschau- und pages.dev-Adressen nicht indexieren (nur www.devunox.ai soll bei Google erscheinen)
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex
+
+https://:version.:project.pages.dev/*
+  X-Robots-Tag: noindex
+
+/assets/brand/*
+  Cache-Control: public, max-age=604800

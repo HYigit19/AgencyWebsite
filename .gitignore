@@ -3,3 +3,7 @@ preview/
 dist/
 *.zip
 *.png
+
+# Logo- und Favicon-Dateien gehören zur Website
+!site/assets/brand/*.png
+!site/*.png

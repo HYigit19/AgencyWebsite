@@ -549,3 +549,17 @@ mark.ph { background: var(--o-soft); color: var(--fg); border-radius: 4px; paddi
 .booking-box { background: var(--card); border-radius: 30px; overflow: hidden; min-width: 0; }
 .booking-box iframe { display: block; width: 100%; height: 720px; border: 0; background: #ffffff; }
 @media (max-width: 560px) { .booking-box iframe { height: 820px; } }
+
+/* Datenschutz & Sicherheit (EU-Hosting, DSGVO) */
+.trust-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.trust-card { background: var(--card); border: 1px solid var(--line); border-radius: 26px; padding: 26px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.trust-ic { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: var(--o-soft); color: var(--o-text); margin-bottom: 6px; }
+.trust-ic svg { width: 24px; height: 24px; }
+.trust-card h3 { font-size: 1.12rem; font-weight: 650; line-height: 1.3; }
+.trust-card p { color: var(--muted); font-size: 0.95rem; }
+@media (max-width: 1040px) { .trust-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .trust-grid { grid-template-columns: minmax(0, 1fr); } .trust-card { padding: 22px; } }
+.f-trust, .form-trust { display: flex; align-items: flex-start; gap: 8px; color: var(--muted); font-size: 0.88rem; line-height: 1.45; }
+.f-trust svg, .form-trust svg { width: 18px; height: 18px; flex: none; color: var(--o-text); margin-top: 1px; }
+.f-intro .f-trust { margin-top: 14px; }
+.form-trust { margin-top: 12px; }

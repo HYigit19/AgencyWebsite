@@ -20,6 +20,35 @@ from localize_demos import localize
 for p in sorted((OUT / "demos").glob("*.html")):
     localize(p)
 
+# Interne Links auf die sauberen Adressen umstellen (/de/websites statt websites.html,
+# /de/ statt index.html). Cloudflare Pages leitet .html-Adressen per 308 um; mit sauberen
+# Links spart jeder Klick und jeder Crawler-Besuch diese Weiterleitung, und die Links
+# entsprechen genau den Canonical-Adressen. In site/ bleiben die Links relativ, damit die
+# Seiten auch lokal als Datei funktionieren.
+import posixpath, re as _re
+
+def clean_href(href, page_dir):
+    if _re.match(r'^(?:[a-z][a-z0-9+.-]*:|//|#)', href, _re.I):
+        return href
+    m = _re.match(r'^([^?#]*)(.*)$', href)
+    path, rest = m.group(1), m.group(2)
+    if not path.endswith(".html"):
+        return href
+    full = path if path.startswith("/") else posixpath.normpath(posixpath.join("/" + page_dir, path))
+    if full.endswith("/index.html"):
+        full = full[: -len("index.html")]
+    else:
+        full = full[: -len(".html")]
+    return full + rest
+
+for p in sorted(OUT.rglob("*.html")):
+    page_dir = p.parent.relative_to(OUT).as_posix()
+    page_dir = "" if page_dir == "." else page_dir
+    s = p.read_text(encoding="utf-8")
+    s2 = _re.sub(r'(<a\b[^>]*?\bhref=")([^"]+)(")', lambda m: m.group(1) + clean_href(m.group(2), page_dir) + m.group(3), s)
+    if s2 != s:
+        p.write_text(s2, encoding="utf-8")
+
 # sitemap.xml aus den Seiten erzeugen: jede Seite mit Canonical und ohne noindex,
 # mit ihren hreflang-Alternativen. Neue Seiten landen so automatisch in der Sitemap.
 import re
@@ -39,12 +68,25 @@ def sitemap_entries():
         for tag in re.findall(r'<link[^>]*hreflang="[^"]+"[^>]*>', head):
             if 'rel="alternate"' in tag:
                 alts.append((re.search(r'hreflang="([^"]+)"', tag).group(1), re.search(r'href="([^"]+)"', tag).group(1)))
-        yield loc, alts
+        yield loc, alts, "site/" + p.relative_to(OUT).as_posix()
+
+import subprocess
+
+def lastmod(rel):
+    """Datum der letzten Änderung der Quelldatei laut Git (leer, wenn keine Historie da ist)."""
+    try:
+        out = subprocess.run(["git", "log", "-1", "--format=%cs", "--", rel], cwd=ROOT,
+                             capture_output=True, text=True, timeout=20).stdout.strip()
+        return out
+    except Exception:
+        return ""
 
 urls = []
-for loc, alts in sitemap_entries():
+for loc, alts, rel in sitemap_entries():
     links = "".join(f'\n    <xhtml:link rel="alternate" hreflang="{escape(h)}" href="{escape(u)}"/>' for h, u in alts)
-    urls.append(f"  <url>\n    <loc>{escape(loc)}</loc>{links}\n  </url>")
+    lm = lastmod(rel)
+    lm = f"\n    <lastmod>{lm}</lastmod>" if lm else ""
+    urls.append(f"  <url>\n    <loc>{escape(loc)}</loc>{lm}{links}\n  </url>")
 (OUT / "sitemap.xml").write_text(
     '<?xml version="1.0" encoding="UTF-8"?>\n'
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'

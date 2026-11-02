@@ -21,7 +21,7 @@
   try { pref = localStorage.getItem("devunox-lang"); } catch (e) {}
   var nav = (navigator.language || "de").slice(0, 2).toLowerCase();
   var lang = pref || (nav === "de" ? "de" : "en");
-  location.replace(lang === "en" ? "en/index.html" : "de/index.html");
+  location.replace(lang === "en" ? "/en/" : "/de/");
 })();
 </script>
 </body>

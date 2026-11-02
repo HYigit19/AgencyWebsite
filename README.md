@@ -9,8 +9,10 @@ Zweisprachige Website (DE/EN) für KI-Automatisierung, Websites, Web-Apps und Da
   - `site/demos/` – die Demos zum Ausprobieren
   - `site/assets/` – Styles, Script, Schriften, Bilder und Video
 - `build.py` – kopiert `site/` nach `dist/` (für Cloudflare Pages) und erzeugt dabei `sitemap.xml` aus allen Seiten mit Canonical und ohne noindex
+  - stellt in `dist/` alle internen Links auf saubere Adressen um (`/de/websites` statt `websites.html`), passend zu den Canonicals; in `site/` bleiben die Links relativ
+  - trägt in der Sitemap `lastmod` aus der Git-Historie ein
 - `site/assets/brand/` – Logo (Zeichen und Schriftzug), LinkedIn-Titelbild und Vorschaubilder für Social Media (`og-de.jpg`, `og-en.jpg`)
-- `site/robots.txt`, `site/404.html`, `site/_headers` (pages.dev-Adressen auf noindex), Favicons im Wurzelordner
+- `site/robots.txt`, `site/404.html`, `site/_headers` (pages.dev-Adressen und `/demos/*` auf noindex), Favicons im Wurzelordner
 
 Hauptadresse ist https://www.devunox.ai (alle Canonicals zeigen dorthin). devunox.ai ohne www wird per Cloudflare-Weiterleitungsregel dorthin umgeleitet.
 
@@ -46,3 +48,11 @@ Die Texte stehen direkt in den HTML-Dateien unter `site/de/` und `site/en/`. Auf
 - `wrangler.toml` – verbindet beides (Service-Binding `MAILER`)
 
 Voraussetzungen in Cloudflare: Email Routing auf devunox.ai aktiv (DNS-Einträge gesetzt) und yigit@devunox-consulting.com als bestätigte Zieladresse.
+
+## SEO-Regeln
+
+- Titel höchstens 60 Zeichen, Beschreibung höchstens 160 Zeichen; `og:title`/`og:description` gleich lauten lassen
+- Jede Seite: Canonical auf https://www.devunox.ai/…, hreflang de/en/x-default (x-default = deutsche Seite)
+- Bilder mit Alt-Text (Demo-Screenshots: „Screenshot: <Name der Demo>“)
+- Demos unter `/demos/` werden nicht indexiert; gefunden werden sollen `/de/demos` und `/en/demos`
+- Impressum und Datenschutz stehen auf noindex

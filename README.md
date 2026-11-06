@@ -26,6 +26,7 @@ Hauptadresse ist https://www.devunox.ai (alle Canonicals zeigen dorthin). devuno
 | Arbeitsschutz-App | `site/demos/arbeitsschutz.html` | `arbeitsschutz-app` |
 | GeoAuftrag (Feldaufträge mit GPS-Nachweis) | `site/demos/geoauftrag.html` | `geoauftrag` |
 | Geschäftsführungs-Cockpit | `site/demos/cockpit.html` | `management-cockpit` |
+| QM-App: Qualitätsmanagement für KMU (DE/EN, `#de`/`#en`) | `site/demos/qm.html` | – (Quelle: Claude-Artifact „QM Modul – devunoxAI Demo“) |
 | Website für eine Spedition | `site/demos/spedition.html` | – |
 
 Neue Version einer App: deren `index.html` aus dem Quell-Repository hierher kopieren und unter dem Dateinamen oben speichern.

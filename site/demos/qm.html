@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>QM Modul – devunoxAI Demo</title>
+<meta name="robots" content="noindex">
+<style>
+@font-face { font-family: "Plus Jakarta Sans"; font-style: normal; font-weight: 200 800; font-display: swap; src: url(shared-files/plus-jakarta-sans-latin-wght-normal.woff2) format("woff2-variations"); }
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight: 100 800; font-display: swap; src: url(shared-files/jetbrains-mono-latin-wght-normal.woff2) format("woff2-variations"); }
+</style>
+<style>
+:root{
+  --bg:#F5F7FA;--surface:#fff;--surface-2:#F1F3F7;--line:#E3E6EC;--ink:#151821;--ink-2:#5E6372;
+  --accent:#2B5BE8;--accent-ink:#fff;--accent-soft:#E6EDFD;
+  --qm:#0E7C74;--qm-soft:#DDF2EF;--lr:#B4540A;--lr-soft:#FBEBDD;--kd:#7A3FC2;--kd-soft:#F0E8FB;
+  --good:#1D7445;--good-soft:#DDF1E4;--warn:#8F5300;--warn-soft:#FCEBCB;--crit:#B42331;--crit-soft:#FBE3E5;
+  --info:#2459C4;--info-soft:#E2EAFA;--muted-soft:#EEF0F4;
+  --a0:#0B7A71;--a1:#5A4FCF;--a2:#B4540A;--a3:#8A3FAE;--a4:#2A6FB0;
+  --shadow:0 14px 36px rgba(13,25,45,.18);
+  --font:'Geist',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:14px/1.45 var(--font);padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--surface);z-index:40}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h1,h2,h3{margin:0;text-wrap:balance;letter-spacing:-.01em}
+a{color:var(--accent)}
+.i{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.i.s{width:16px;height:16px}
+.i.xs{width:14px;height:14px;stroke-width:2.2}
+.mono,.code{font-family:var(--mono);font-size:12px;font-variant-numeric:tabular-nums}
+.code{padding:1px 6px;border-radius:5px;background:var(--muted-soft);white-space:nowrap}
+.muted{color:var(--ink-2)}
+.num{font-variant-numeric:tabular-nums}
+
+/* Rahmen */
+.shell{display:grid;grid-template-columns:236px minmax(0,1fr);gap:28px;max-width:1300px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.rail{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;height:calc(100vh - env(safe-area-inset-top,0px));display:flex;flex-direction:column;gap:3px;padding:18px 0}
+.center{min-width:0;padding:20px 0 64px;display:flex;flex-direction:column;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;padding:2px 8px 16px}
+.logo{width:38px;height:38px;border-radius:11px;background:var(--accent);color:#fff;display:grid;place-items:center;flex:none}
+.logo svg{width:20px;height:20px}
+.brand b{display:block;font-size:17px;line-height:1.1;letter-spacing:-.01em}
+.brand small{font-size:11.5px;color:var(--ink-2)}
+.nav-i{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;padding:10px 12px;border-radius:12px;font-weight:600;font-size:14.5px;text-align:left;color:var(--ink)}
+.nav-i:hover{background:var(--surface)}
+.nav-i.on{background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.07)}
+.nav-i.on .i{color:var(--accent)}
+.nav-i .lbl{flex:1;min-width:0}
+.cnt{font-size:11.5px;font-weight:700;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--muted-soft);color:var(--ink-2);display:inline-grid;place-items:center}
+.cnt.crit{background:var(--crit);color:#fff}
+.rail-foot{margin-top:auto;display:flex;flex-direction:column;gap:8px}
+.demo-box{border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:12px;font-size:12.5px;color:var(--ink-2);display:flex;flex-direction:column;gap:8px}
+.demo-box b{color:var(--ink);font-size:13px}
+.seg-sw{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface)}
+.seg-sw button{flex:1;border:0;background:none;padding:7px 10px;font-weight:700;font-size:12.5px;color:var(--ink-2)}
+.seg-sw button.on{background:var(--ink);color:#fff}
+.mtop{display:none;position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--surface);border-bottom:1px solid var(--line);align-items:center;gap:10px;padding:8px max(16px,env(safe-area-inset-right,0px)) 8px max(16px,env(safe-area-inset-left,0px))}
+.mtop .brand{padding:0;margin-right:auto}
+.tabbar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);padding:6px max(6px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px));justify-content:space-around}
+.tab-i{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10.5px;font-weight:600;color:var(--ink-2);padding:4px 2px;border-radius:10px;flex:1;position:relative;min-width:0}
+.tab-i.on{color:var(--accent)}
+.tab-i .cnt{position:absolute;top:-3px;right:calc(50% - 22px);min-width:17px;height:17px;font-size:10px}
+@media (max-width:880px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .rail{display:none}
+  .mtop{display:flex}
+  .tabbar{display:flex}
+  .center{padding:14px 0 calc(96px + env(safe-area-inset-bottom,0px))}
+}
+
+/* Bausteine */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;min-width:0}
+.card-h{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid var(--line)}
+.card-h h2{font-size:16px}
+.card-h p{margin:2px 0 0;font-size:12.5px;color:var(--ink-2)}
+.card-b{padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.card-f{display:flex;justify-content:space-between;gap:10px;padding:12px 16px;border-top:1px solid var(--line);flex-wrap:wrap}
+.page-h{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.page-h h1{font-size:26px;line-height:1.15}
+.page-h p{margin:4px 0 0;color:var(--ink-2);max-width:68ch}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border-radius:10px;padding:9px 14px;border:1px solid var(--line);background:var(--surface);font-weight:600;font-size:13.5px;white-space:nowrap;text-decoration:none;color:var(--ink)}
+.btn:hover{background:var(--surface-2)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.good{background:var(--good);border-color:var(--good);color:#fff}
+.btn.danger{color:var(--crit);border-color:var(--crit)}
+.btn.ghost{border-color:transparent;background:none}
+.btn[disabled]{opacity:.45;cursor:not-allowed;filter:none}
+.btn .i{width:17px;height:17px}
+.btn.lg{padding:12px 18px;font-size:15px;border-radius:12px}
+.ib{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:var(--surface);display:inline-grid;place-items:center;color:var(--ink-2);flex:none}
+.ib:hover{background:var(--surface-2);color:var(--ink)}
+.ib.on{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+.ib .i{width:17px;height:17px}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.pill.info{background:var(--info-soft);color:var(--info)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.crit{background:var(--crit-soft);color:var(--crit)}
+.pill.good{background:var(--good-soft);color:var(--good)}
+.pill.accent{background:var(--accent-soft);color:var(--accent)}
+.pill.muted{background:var(--muted-soft);color:var(--ink-2)}
+.pill.qm{background:var(--qm-soft);color:var(--qm)}
+.pill.lr{background:var(--lr-soft);color:var(--lr)}
+.pill.kd{background:var(--kd-soft);color:var(--kd)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips.scroll{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 13px;font-size:13px;font-weight:600;color:var(--ink-2);white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chip .n{opacity:.7;font-weight:500}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.dot.good{background:var(--good)}.dot.warn{background:#E0A030}.dot.crit{background:var(--crit)}.dot.info{background:var(--accent)}.dot.muted{background:#B7BCC8}
+.search{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;padding:0 14px;background:var(--surface);color:var(--ink-2)}
+.search input{border:0;background:none;padding:9px 0;width:100%;min-width:0;outline:none;color:var(--ink)}
+.search:focus-within{border-color:var(--accent)}
+.av{width:30px;height:30px;border-radius:50%;display:inline-grid;place-items:center;font-weight:700;font-size:11.5px;color:#fff;flex:none}
+.av.xs{width:24px;height:24px;font-size:10px}
+.av.c0{background:var(--a0)}.av.c1{background:var(--a1)}.av.c2{background:var(--a2)}.av.c3{background:var(--a3)}.av.c4{background:var(--a4)}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:980px){.grid2{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:700px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;text-align:left}
+.kpi span{font-size:12.5px;color:var(--ink-2);font-weight:600}
+.kpi b{font-size:28px;line-height:1.1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.kpi small{font-size:12px;color:var(--ink-2)}
+.kpi b.crit{color:var(--crit)}.kpi b.good{color:var(--good)}
+.row{display:flex;align-items:center;gap:12px;padding:11px 16px;border-top:1px solid var(--line);min-width:0}
+.row:first-child{border-top:0}
+.row.click{cursor:pointer;width:100%;background:none;border-left:0;border-right:0;border-bottom:0;text-align:left}
+.row.click:hover{background:var(--surface-2)}
+.row .main{flex:1;min-width:0}
+.row .main b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .main small{display:block;color:var(--ink-2);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .end{display:flex;align-items:center;gap:8px;flex:none}
+.empty{padding:28px 16px;text-align:center;color:var(--ink-2)}
+.hint{font-size:12.5px;color:var(--ink-2)}
+.bar{height:8px;border-radius:4px;background:var(--muted-soft);overflow:hidden;display:flex}
+.bar i{display:block;height:100%}
+.bar i.g{background:var(--good)}.bar i.r{background:var(--crit)}.bar i.a{background:var(--accent)}.bar i.w{background:#E0A030}
+.seg{width:72px}
+.due-over{color:var(--crit);font-weight:600}
+
+/* Start */
+.hero{background:linear-gradient(135deg,#1E3FB8 0%,#2B5BE8 55%,#3E7BF0 100%);color:#fff;border-radius:20px;padding:24px;display:flex;justify-content:space-between;align-items:flex-end;gap:18px;flex-wrap:wrap;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.08)}
+.hero h1{font-size:28px;line-height:1.15;max-width:22ch}
+.hero p{margin:8px 0 0;opacity:.9;max-width:56ch}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.85}
+.hero-act{display:flex;gap:8px;flex-wrap:wrap;position:relative;z-index:1}
+.hero .btn{border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff}
+.hero .btn:hover{background:rgba(255,255,255,.2)}
+.hero .btn.primary{background:#fff;color:#1E3FB8;border-color:#fff}
+.flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.flow{grid-template-columns:repeat(2,minmax(0,1fr))}.hero h1{font-size:23px}.hero{padding:20px}}
+.flow button{display:flex;gap:10px;align-items:center;padding:12px;border:1px solid var(--line);background:var(--surface);border-radius:14px;text-align:left;min-width:0}
+.flow button:hover{border-color:var(--accent)}
+.flow .no{width:30px;height:30px;border-radius:9px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:800;flex:none}
+.flow b{display:block;font-size:13.5px}
+.flow small{display:block;font-size:11.5px;color:var(--ink-2)}
+.pareto{display:flex;flex-direction:column;gap:9px}
+.pareto .pr{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,2fr) 28px;gap:10px;align-items:center;font-size:13px}
+.pareto .pr span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pareto .pr .bar{height:12px;border-radius:6px}
+.pareto .pr b{text-align:right;font-variant-numeric:tabular-nums}
+.grade{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-weight:800;font-size:13px}
+.grade.A{background:var(--good-soft);color:var(--good)}.grade.B{background:var(--warn-soft);color:var(--warn)}.grade.C{background:var(--crit-soft);color:var(--crit)}
+
+/* Builder */
+.builder{display:grid;grid-template-columns:300px minmax(0,1fr);gap:16px;align-items:start}
+.palette{position:sticky;top:calc(16px + env(safe-area-inset-top,0px))}
+@media (max-width:980px){.builder{grid-template-columns:minmax(0,1fr)}.palette{position:static}}
+.pal-list{display:flex;flex-direction:column;gap:6px}
+@media (max-width:980px){.pal-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}.pal .nm{white-space:normal;line-height:1.2;font-size:12.5px}}
+.pal{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;min-width:0;font-size:13px}
+.pal:hover{border-color:var(--accent);background:var(--accent-soft)}
+.tb{width:22px;height:22px;border-radius:6px;display:inline-grid;place-items:center;font-size:11px;font-weight:800;flex:none}
+.tb.q{background:var(--accent-soft);color:var(--accent)}.tb.a{background:var(--qm-soft);color:var(--qm)}.tb.s{background:var(--muted-soft);color:var(--ink-2)}
+.pal .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.pal .pl{color:var(--ink-2);flex:none}
+.zone{min-height:140px;display:flex;flex-direction:column;gap:8px;padding:12px;border:2px dashed transparent;border-radius:14px;transition:background .15s,border-color .15s}
+.zone.over{border-color:var(--accent);background:var(--accent-soft)}
+.zone.over .empty-drop{display:none}
+.empty-drop{border:2px dashed var(--line);border-radius:14px;padding:30px 16px;text-align:center;color:var(--ink-2);display:flex;flex-direction:column;align-items:center;gap:6px}
+.ph{height:58px;border-radius:12px;border:2px dashed var(--accent);background:rgba(43,91,232,.07);flex:none}
+.dnd-ghost{position:fixed!important;z-index:200;pointer-events:none;box-shadow:var(--shadow);transform:rotate(1.2deg);opacity:.96;margin:0!important}
+.dragging{display:none!important}
+body.is-dragging,body.is-dragging *{user-select:none!important;-webkit-user-select:none!important;cursor:grabbing!important}
+.pi{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 12px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.pi.flash{animation:fl 1.2s ease}
+@keyframes fl{0%{background:var(--accent-soft);border-color:var(--accent)}100%{background:var(--surface)}}
+.grip{touch-action:none;cursor:grab;color:var(--ink-2);padding:6px 4px;display:grid;place-items:center;border-radius:8px;user-select:none;-webkit-user-select:none}
+.grip:hover{background:var(--surface-2);color:var(--ink)}
+.grip .i{fill:currentColor;stroke:none}
+.no-b{width:24px;height:24px;border-radius:7px;background:var(--muted-soft);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--ink-2)}
+.pi-main{min-width:0}
+.pi-main b{display:flex;align-items:center;gap:6px;font-size:14px;min-width:0}
+.pi-main b span.t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pi-main small{display:block;color:var(--ink-2);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pi-ctl{display:flex;gap:6px;align-items:center}
+.stepper{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:9px;overflow:hidden;height:34px}
+.stepper button{border:0;background:none;width:30px;height:100%;font-size:16px;font-weight:700;color:var(--ink-2)}
+.stepper button:hover{background:var(--surface-2)}
+.stepper span{font-size:12.5px;font-weight:700;min-width:38px;text-align:center;font-variant-numeric:tabular-nums}
+.pi-ctl select{border:1px solid var(--line);border-radius:9px;height:34px;padding:0 8px;background:var(--surface);font-size:13px;max-width:150px}
+.pi-ctl input{border:1px solid var(--line);border-radius:9px;height:34px;width:62px;padding:0 8px;text-align:right;font-size:13px}
+@media (max-width:600px){.pi{grid-template-columns:auto auto minmax(0,1fr)}.pi-ctl{grid-column:1/-1;justify-content:flex-end;flex-wrap:wrap}}
+.plan-meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.plan-meta input{border:1px solid transparent;border-radius:8px;padding:4px 6px;margin-left:-6px;font-size:17px;font-weight:700;background:none;min-width:0;width:100%}
+.plan-meta input:hover,.plan-meta input:focus{border-color:var(--line);background:var(--surface-2);outline:none}
+.stats{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2)}
+.stats b{color:var(--ink)}
+
+/* Prüfung */
+.run-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.run-head h1{font-size:21px}
+.run-head .acts{display:flex;gap:8px;flex-wrap:wrap}
+@media (max-width:620px){.run-head .acts{width:100%}.run-head .acts .btn{flex:1}}
+.strip{display:flex;gap:6px;overflow-x:auto;padding:2px;scrollbar-width:none}
+.stp{flex:none;min-width:38px;height:38px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);font-weight:700;font-size:13px;color:var(--ink-2);display:grid;place-items:center;padding:0 8px}
+.stp.ok{background:var(--good-soft);border-color:var(--good);color:var(--good)}
+.stp.nok{background:var(--crit-soft);border-color:var(--crit);color:var(--crit)}
+.stp.cur{outline:2px solid var(--accent);outline-offset:2px}
+.spec{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.spec div{background:var(--surface-2);border-radius:10px;padding:8px 10px}
+.spec span{display:block;font-size:11.5px;color:var(--ink-2);font-weight:600}
+.spec b{font-size:16px;font-variant-numeric:tabular-nums}
+.tol svg{width:100%;max-width:480px;height:auto;display:block;margin:0 auto}
+.vins{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.vin-w{display:flex;flex-direction:column;gap:3px}
+.vin-w label{font-size:11.5px;font-weight:600;color:var(--ink-2)}
+.vin{font-size:18px;text-align:center;padding:11px 6px;border:1.5px solid var(--line);border-radius:11px;width:100%;background:var(--surface);font-variant-numeric:tabular-nums;min-width:0}
+.vin.ok{border-color:var(--good);background:var(--good-soft)}
+.vin.nok{border-color:var(--crit);background:var(--crit-soft)}
+.vin:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.qbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.qbtn{padding:20px 12px;border-radius:14px;border:2px solid var(--line);background:var(--surface);font-weight:800;font-size:17px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.qbtn .i{width:28px;height:28px}
+.qbtn.ok.on{border-color:var(--good);background:var(--good-soft);color:var(--good)}
+.qbtn.nok.on{border-color:var(--crit);background:var(--crit-soft);color:var(--crit)}
+.sec-h{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13.5px}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
+.thumbs button{padding:0;border:0;background:none;border-radius:10px;overflow:hidden;aspect-ratio:4/3}
+.thumbs img{width:100%;height:100%;object-fit:cover;display:block}
+.files{display:flex;flex-direction:column;gap:6px}
+.file{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;font-size:13px;min-width:0}
+.file span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file small{color:var(--ink-2)}
+.up-row{display:flex;gap:8px;flex-wrap:wrap}
+label.btn{cursor:pointer}
+textarea.note,.f textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:70px;resize:vertical;background:var(--surface);font-size:15px}
+.ud-opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+@media (max-width:620px){.ud-opts{grid-template-columns:minmax(0,1fr)}}
+.ud{border:2px solid var(--line);border-radius:14px;padding:12px;background:var(--surface);text-align:left;display:flex;flex-direction:column;gap:3px}
+.ud b{font-size:14.5px}
+.ud small{color:var(--ink-2);font-size:12px}
+.ud.acc.on{border-color:var(--good);background:var(--good-soft)}
+.ud.con.on{border-color:#E0A030;background:var(--warn-soft)}
+.ud.rej.on{border-color:var(--crit);background:var(--crit-soft)}
+.ud .rec{font-size:11px;font-weight:700;color:var(--accent)}
+.res-t{width:100%;border-collapse:collapse;font-size:13px}
+.res-t th{text-align:left;font-size:11.5px;color:var(--ink-2);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line)}
+.res-t td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.res-t tr:last-child td{border-bottom:0}
+.vals{display:flex;gap:4px;flex-wrap:wrap}
+.vals span{font-family:var(--mono);font-size:11.5px;padding:1px 6px;border-radius:5px;background:var(--good-soft);color:var(--good)}
+.vals span.nok{background:var(--crit-soft);color:var(--crit);font-weight:700}
+.info-g{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.info-g{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.info-g span{display:block;font-size:11.5px;color:var(--ink-2);font-weight:600}
+.info-g b{font-size:13.5px;font-weight:600}
+.warnbox{border:1px solid #F0C878;background:var(--warn-soft);color:var(--warn);border-radius:12px;padding:10px 12px;font-size:13px}
+.critbox{border:1px solid #F1A9B0;background:var(--crit-soft);color:var(--crit);border-radius:12px;padding:10px 12px;font-size:13px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.critbox span{flex:1;min-width:200px}
+.res-item{display:flex;flex-direction:column;gap:8px;padding:12px 16px;border-top:1px solid var(--line)}
+.res-item:first-child{border-top:0}
+.res-item .top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.res-item .top b{flex:1;min-width:0}
+
+/* Workflow-Zeitleiste */
+.tl{display:flex;flex-direction:column}
+.tl-s{display:grid;grid-template-columns:32px minmax(0,1fr);gap:12px;position:relative;padding-bottom:16px}
+.tl-s::before{content:"";position:absolute;left:15px;top:32px;bottom:0;width:2px;background:var(--line)}
+.tl-s:last-child::before{display:none}
+.tl-s.done::before{background:var(--good)}
+.tl-c{width:32px;height:32px;border-radius:50%;border:2px solid var(--line);background:var(--surface);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--ink-2);position:relative;z-index:1}
+.tl-s.done .tl-c{background:var(--good);border-color:var(--good);color:#fff}
+.tl-s.cur .tl-c{border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.tl-b{min-width:0;padding-top:4px;display:flex;flex-direction:column;gap:6px}
+.tl-b .t{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tl-b .t b{font-size:14px}
+.tl-b .m{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2)}
+.tl-cur{border:1px solid var(--accent);background:var(--accent-soft);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px}
+
+/* Zeugnis */
+.doc{background:#fff;color:#16181d;border:1px solid var(--line);border-radius:6px;padding:40px 44px;max-width:840px;width:100%;margin:0 auto;box-shadow:0 2px 10px rgba(0,0,0,.05);font-size:12.5px}
+@media (max-width:620px){.doc{padding:22px 18px;font-size:11.5px}}
+.doc-h{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;border-bottom:2px solid #16181d;padding-bottom:14px;flex-wrap:wrap}
+.doc-co{display:flex;gap:10px;align-items:center}
+.doc-co .lg{width:42px;height:42px;border-radius:8px;background:#1E3FB8;color:#fff;display:grid;place-items:center;font-weight:800}
+.doc-co b{display:block;font-size:14px}
+.doc-co small{color:#555}
+.doc-no{text-align:right;font-size:12px}
+.doc-t{margin:20px 0 4px;font-size:21px}
+.doc-st{color:#555;margin-bottom:16px}
+.doc-g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 24px;margin-bottom:18px}
+.doc-g div{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dotted #bbb;padding:3px 0}
+.doc-g span{color:#555}
+.doc table{width:100%;border-collapse:collapse;margin:8px 0 16px;font-size:inherit}
+.doc th{background:#F0F2F6;text-align:left;padding:6px 7px;font-weight:600;border:1px solid #D7DBE3}
+.doc td{padding:6px 7px;border:1px solid #D7DBE3;font-variant-numeric:tabular-nums}
+.doc .scroll{overflow-x:auto}
+.doc-sig{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-top:26px;flex-wrap:wrap}
+.doc-sig .sig{border-top:1px solid #16181d;padding-top:6px;min-width:220px}
+.doc-sig .sig i{font-family:'Brush Script MT','Segoe Script',cursive;font-size:24px;color:#1E3FB8;display:block;margin-bottom:2px;font-style:normal}
+.stamp{width:104px;height:104px;border-radius:50%;border:3px solid #1E3FB8;color:#1E3FB8;display:grid;place-items:center;text-align:center;font-weight:800;font-size:11px;line-height:1.2;transform:rotate(-12deg);opacity:.85}
+.doc-f{margin-top:22px;border-top:1px solid #ddd;padding-top:8px;color:#777;font-size:10.5px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+
+/* Modal, Toast */
+.scrim{position:fixed;inset:0;background:rgba(13,18,28,.45);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
+.sheet{background:var(--surface);border-radius:18px;width:100%;max-width:560px;max-height:calc(100vh - 32px);overflow:auto;box-shadow:var(--shadow)}
+.sheet.wide{max-width:880px}
+.sheet .card-h{position:sticky;top:0;background:var(--surface);z-index:1}
+@media (max-width:620px){.scrim{align-items:flex-end;padding:0}.sheet{border-radius:18px 18px 0 0;max-height:92vh;padding-bottom:env(safe-area-inset-bottom,0px)}}
+.f{display:flex;flex-direction:column;gap:12px}
+.f label{display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:600;color:var(--ink-2)}
+.f input:not([type=checkbox]):not([type=radio]),.f select{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface);font-size:16px;color:var(--ink);width:100%;min-width:0}
+.f input:focus,.f select:focus,.f textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.f .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.f .three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.f .chk{flex-direction:row;align-items:center;gap:8px;font-size:14px;color:var(--ink);font-weight:500}
+.f .chk input{width:18px;height:18px}
+.opt-g{display:grid;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;cursor:pointer;color:var(--ink)!important;font-weight:500!important;font-size:13.5px!important}
+.opt input{margin-top:3px}
+.opt:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.opt b{display:block;font-size:14px}
+.opt small{display:block;color:var(--ink-2);font-size:12px;font-weight:400}
+.err{color:var(--crit);font-size:13px;font-weight:600}
+.photo-big{width:100%;display:block;border-radius:12px;background:#111}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-weight:600;font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;z-index:300;max-width:calc(100vw - 32px);text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media (max-width:880px){#toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))}}
+.more-list{display:flex;flex-direction:column;gap:6px}
+.more-list .nav-i{border:1px solid var(--line);background:var(--surface)}
+
+/* ===== Theme v2: Dashboard-Stil ===== */
+:root{--bg:#F2F3F7;--surface:#fff;--surface-2:#F5F5F9;--line:#ECECF3;--ink:#14141C;--ink-2:#6D6D7E;
+  --accent:#6C3BFF;--accent-ink:#fff;--accent-soft:#EFE9FF;--coral:#FF5A3C;--coral-soft:#FFE6E0;--yellow:#FFCB2B;
+  --p-lav:#ECE5FF;--p-yel:#FFF3C4;--p-mint:#D8F5E7;--p-pink:#FFE2EA;
+  --good:#12804A;--good-soft:#DBF5E6;--crit:#E5383B;--crit-soft:#FFE4E4;--warn:#9A5B00;--warn-soft:#FFF1CC;--info:#6C3BFF;--info-soft:#EFE9FF;
+  --qm:#0D8F7E;--qm-soft:#D9F5EF;--lr:#E86A12;--lr-soft:#FFEBDD;--kd:#C2338F;--kd-soft:#FCE4F3;
+  --font:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --shadow-s:0 1px 2px rgba(20,20,45,.04),0 8px 24px rgba(20,20,45,.05);--shadow:0 24px 60px rgba(20,20,45,.2);}
+body{letter-spacing:-.003em}
+.shell{grid-template-columns:252px minmax(0,1fr);gap:0;max-width:none;padding:0}
+.rail{background:var(--surface);padding:22px 16px 18px;border-right:1px solid var(--line);gap:3px;overflow-y:auto}
+.content{min-width:0;width:100%;max-width:1280px;margin:0 auto;padding:0 28px}
+.center{padding:4px 0 56px;gap:18px}
+.brand{padding:0 8px 18px}
+.logo{background:#14141C;border-radius:13px}
+.brand b{font-weight:800}
+.nav-label{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:#A0A0B0;padding:16px 14px 6px;font-weight:700}
+.nav-i{border-radius:14px;padding:11px 14px;color:var(--ink-2);font-weight:600;font-size:14px}
+.nav-i:hover{background:var(--surface-2);color:var(--ink)}
+.nav-i.on{background:#14141C;color:#fff;box-shadow:0 8px 18px rgba(20,20,28,.18)}
+.nav-i.on .i{color:#fff}
+.nav-i.on .cnt{background:rgba(255,255,255,.16);color:#fff}
+.cnt.crit,.nav-i.on .cnt.crit{background:var(--coral);color:#fff}
+.rail-foot{gap:10px;padding-top:18px}
+.promo{background:linear-gradient(155deg,#7A45FF 0%,#9B3CF6 55%,#E2489F 110%);color:#fff;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden}
+.promo::after{content:"";position:absolute;right:-40px;top:-40px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.12)}
+.promo b{font-size:15px;line-height:1.25;position:relative;z-index:1}
+.promo span{font-size:12.5px;opacity:.88;position:relative;z-index:1}
+.promo .p-ic{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.18);display:grid;place-items:center}
+.promo .btn{background:#fff;color:#14141C;border:0;margin-top:4px;position:relative;z-index:1}
+.reset-l{justify-content:flex-start!important;color:var(--ink-2)!important;font-weight:600!important;padding:4px 10px!important}
+.topbar{display:flex;align-items:center;gap:12px;padding:18px 0 12px;flex-wrap:wrap}
+.crumb{display:flex;align-items:center;gap:6px;color:var(--ink-2);font-size:13px;font-weight:600;margin-right:auto}
+.crumb b{color:var(--ink)}
+.tb-r{display:flex;align-items:center;gap:10px}
+.lang{display:flex;align-items:center;gap:2px;background:var(--surface);border-radius:999px;padding:4px 4px 4px 10px;box-shadow:var(--shadow-s);color:var(--ink-2)}
+.lang button{border:0;background:none;border-radius:999px;padding:6px 11px;font-weight:800;font-size:12.5px;color:var(--ink-2)}
+.lang button.on{background:#14141C;color:#fff}
+.bell{position:relative;width:42px;height:42px;border-radius:50%;border:0;box-shadow:var(--shadow-s)}
+.bell .badge{position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;border-radius:9px;background:var(--coral);color:#fff;font-size:10.5px;font-weight:800;display:grid;place-items:center;padding:0 5px;border:2px solid var(--bg)}
+.me{display:flex;align-items:center;gap:9px;background:var(--surface);border-radius:999px;padding:5px 14px 5px 5px;box-shadow:var(--shadow-s)}
+.me .av{width:32px;height:32px}
+.me b{display:block;font-size:13px;line-height:1.1}
+.me small{font-size:11.5px;color:var(--ink-2)}
+@media (max-width:1100px){.me div{display:none}.me{padding:5px}}
+@media (max-width:880px){.content{padding:0 14px}.topbar{display:none}}
+.mtop{background:rgba(242,243,247,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:0}
+.tabbar{left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));border-radius:24px;border:0;box-shadow:0 10px 30px rgba(20,20,45,.16);padding:6px}
+.tab-i{border-radius:16px;padding:7px 2px 6px}
+.tab-i.on{background:#14141C;color:#fff}
+.tab-i .cnt{right:calc(50% - 24px)}
+@media (max-width:880px){.center{padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))}#toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}}
+
+.card{border:0;border-radius:24px;box-shadow:var(--shadow-s)}
+.card-h{border-bottom:0;padding:18px 20px 10px}
+.card-h h2{font-size:17px;font-weight:800;display:flex;align-items:center;gap:8px}
+.h-cnt{font-size:12px;font-weight:800;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:1px 8px}
+.card-b{padding:10px 20px 18px}
+.card-f{border-top:1px solid var(--line);padding:14px 20px}
+.row{padding:13px 20px}
+.row[style*="--s"]{position:relative}
+.row[style*="--s"]::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:4px;border-radius:0 4px 4px 0;background:var(--s)}
+.page-h h1{font-size:30px;font-weight:800;letter-spacing:-.025em}
+.btn{border-radius:999px;padding:9px 17px;font-weight:700}
+.btn.primary{background:var(--accent);border-color:var(--accent);box-shadow:0 8px 18px rgba(108,59,255,.28)}
+.btn.good{box-shadow:0 8px 18px rgba(18,128,74,.25)}
+.btn.lg{border-radius:999px}
+.ib{border-radius:12px;border-color:var(--line)}
+.ib.on{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.chip{border:1.5px solid transparent;background:transparent;color:var(--ink-2);font-weight:700;padding:7px 14px}
+.chip:has(.n){padding-right:6px}
+.chip .n{opacity:1;min-width:22px;height:22px;padding:0 7px;border-radius:999px;background:var(--surface);display:inline-grid;place-items:center;font-size:11.5px;font-weight:800;color:var(--ink-2);box-shadow:0 0 0 1px var(--line)}
+.chip:not(.on):hover{background:var(--surface)}
+.chip.on{background:var(--surface);border-color:var(--accent);color:var(--accent)}
+.chip.on .n{background:var(--accent);color:#fff;box-shadow:none}
+.pill{font-weight:700}
+.pill.coral{background:var(--coral);color:#fff}
+.search{border:0;box-shadow:var(--shadow-s)}
+.card .search{box-shadow:none;background:var(--surface-2)}
+.bar{border-radius:999px}
+.bar i.a{background:linear-gradient(90deg,#6C3BFF,#A23CF5)}
+.bar i.r{background:linear-gradient(90deg,#FF7A5C,#E5383B)}
+.bar i.w{background:var(--yellow)}
+.grade{border-radius:12px;width:32px;height:32px}
+.av{box-shadow:0 0 0 2px #fff}
+.av-stack{display:flex}.av-stack .av{margin-left:-7px}.av-stack .av:first-child{margin-left:0}
+/* Builder */
+.pal{border:0;background:var(--surface-2);border-radius:13px;padding:9px 10px}
+.pal:hover{background:var(--accent-soft);border:0}
+.tb{border-radius:8px;width:24px;height:24px}
+.zone{border-radius:20px;padding:4px 16px 16px}
+.zone.over{background:var(--accent-soft)}
+.pi{border:0;border-radius:18px;box-shadow:var(--shadow-s);position:relative;padding:11px 12px 11px 14px;border:1px solid var(--line)}
+.pi::before{content:"";position:absolute;left:-1px;top:12px;bottom:12px;width:4px;border-radius:0 4px 4px 0;background:var(--s,var(--accent))}
+.no-b{border-radius:9px}
+.stepper{border-radius:999px}
+.ph{border-radius:18px}
+.plan-meta input{font-weight:800;font-size:19px}
+/* Prüfung */
+.stp{border-radius:13px}
+.spec div{border-radius:14px}
+.vin{border-radius:14px}
+.qbtn{border-radius:20px}
+.ud{border-radius:18px}
+.warnbox,.critbox{border-radius:16px}
+.tl-cur{border-radius:16px}
+.sheet{border-radius:26px}
+@media (max-width:620px){.sheet{border-radius:26px 26px 0 0}}
+.f input:not([type=checkbox]):not([type=radio]),.f select,textarea.note,.f textarea{border-radius:13px}
+.opt{border-radius:14px}
+.kpi{border:0;border-radius:22px;box-shadow:var(--shadow-s)}
+/* Start */
+.greet{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
+.greet h1{font-size:34px;font-weight:800;letter-spacing:-.03em;line-height:1.1}
+.greet p{color:var(--ink-2);margin:6px 0 0;font-size:15px}
+.greet p b{color:var(--ink)}
+.week{display:flex;gap:4px;background:var(--surface);border-radius:24px;padding:8px;box-shadow:var(--shadow-s);overflow-x:auto;max-width:100%}
+.day{width:50px;flex:none;padding:8px 0 12px;border-radius:17px;display:flex;flex-direction:column;align-items:center;gap:1px;font-size:11.5px;color:var(--ink-2);font-weight:600;position:relative}
+.day b{font-size:18px;color:var(--ink);font-weight:800}
+.day.today{background:var(--yellow);color:#3A2A00}
+.day.today b{color:#14141C}
+.day i{width:5px;height:5px;border-radius:50%;background:var(--accent);position:absolute;bottom:5px}
+.day.today i{background:#14141C}
+.tiles4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+@media (max-width:1100px){.tiles4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tile{border:0;border-radius:24px;padding:18px;display:flex;flex-direction:column;gap:10px;min-height:156px;text-align:left;position:relative;overflow:hidden;color:var(--ink)}
+button.tile:hover{transform:translateY(-2px);transition:transform .15s}
+.tile.lav{background:var(--p-lav)}.tile.yel{background:var(--p-yel)}.tile.mint{background:var(--p-mint)}.tile.pink{background:var(--p-pink)}.tile.white{background:var(--surface);box-shadow:var(--shadow-s)}
+.t-h{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:700;font-size:13px}
+.t-ic{width:36px;height:36px;border-radius:12px;background:rgba(255,255,255,.75);display:grid;place-items:center;flex:none}
+.tile.white .t-ic{background:var(--surface-2)}
+.tile .big{font-size:38px;font-weight:800;letter-spacing:-.04em;line-height:1}
+.tile small{color:var(--ink-2);font-size:12px;font-weight:600}
+.t-f{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto;flex-wrap:wrap}
+.t-ring{display:flex;align-items:center;gap:14px;margin-top:auto}
+@media (max-width:520px){.tile .big{font-size:30px}.tile{min-height:140px;padding:15px}.t-ring svg{width:56px;height:56px}}
+.dash{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:18px;align-items:start}
+.dash .col{display:flex;flex-direction:column;gap:18px;min-width:0}
+@media (max-width:1180px){.dash{grid-template-columns:minmax(0,1fr)}}
+.lineup{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;padding:6px 20px 20px}
+.lu{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px 14px 12px 18px;position:relative;text-align:left;display:flex;flex-direction:column;gap:7px;min-width:0}
+.lu:hover{box-shadow:var(--shadow-s);border-color:transparent}
+.lu::before{content:"";position:absolute;left:-1px;top:14px;bottom:14px;width:4px;border-radius:0 4px 4px 0;background:var(--s)}
+.lu-k{font-size:11px;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.06em}
+.lu b{font-size:14.5px;line-height:1.25}
+.lu small{color:var(--ink-2);font-size:12px}
+.lu .bar{height:6px}
+.lu-f{display:flex;align-items:center;gap:8px;margin-top:2px}
+.lu-f .mono{margin-right:auto;font-size:11px}
+.lu.add{border:2px dashed #D9D9E3;align-items:center;justify-content:center;color:var(--ink-2);min-height:150px;background:transparent}
+.lu.add::before{display:none}
+.lu.add .i{width:30px;height:30px;padding:6px;border-radius:50%;background:var(--surface);box-shadow:var(--shadow-s);color:var(--accent);box-sizing:content-box}
+.tasks{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.task{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:18px;background:var(--surface-2);border:0;text-align:left;width:100%;min-width:0}
+.task:hover{background:var(--accent-soft)}
+.task .main{flex:1;min-width:0}
+.task b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.task small{display:block;font-size:12px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rs{position:relative;width:44px;height:44px;flex:none;display:grid;place-items:center;background:#fff;border-radius:50%}
+.rs svg{position:absolute;inset:0}
+.rs em{font-style:normal;font-size:10.5px;font-weight:800}
+.howto{background:linear-gradient(155deg,#6C3BFF 0%,#9B3CF6 60%,#E2489F 120%);color:#fff;border-radius:24px;padding:18px;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden}
+.howto::after{content:"";position:absolute;right:-50px;bottom:-60px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.1)}
+.howto-h{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:800;margin-bottom:4px}
+.howto .t-ic{background:rgba(255,255,255,.2);color:#fff}
+.howto button{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.12);border:0;border-radius:16px;padding:10px 12px;color:#fff;text-align:left;position:relative;z-index:1}
+.howto button:hover{background:rgba(255,255,255,.22)}
+.howto button>span:nth-child(2){flex:1;min-width:0}
+.howto .no{width:28px;height:28px;border-radius:9px;background:#fff;color:#6C3BFF;display:grid;place-items:center;font-weight:800;flex:none}
+.howto b{display:block;font-size:13.5px}
+.howto small{display:block;font-size:11.5px;opacity:.85}
+.pareto .pr .bar{height:10px}
+.info-g b .code{display:inline;font-size:12px}
+@media (min-width:881px){.shell{background:linear-gradient(90deg,var(--surface) 0 252px,var(--line) 252px 253px,transparent 253px)}.rail{border-right:0;background:transparent}}
+@media (max-width:880px){.shell{grid-template-columns:minmax(0,1fr)}.greet h1{font-size:27px}.greet{gap:12px}.week{width:100%;justify-content:space-between}.day{width:auto;flex:1;min-width:40px}.page-h h1{font-size:25px}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2.8h6V4M9 13l2 2 4-4.5"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></symbol>
+  <symbol id="i-ruler" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="10" rx="2"/><path d="M6 7v4M10 7v3M14 7v4M18 7v3"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.5 2.5 20h19z"/><path d="M12 10v4.5M12 17.3h.01"/></symbol>
+  <symbol id="i-flow" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="6" rx="1.5"/><rect x="13" y="15" width="8" height="6" rx="1.5"/><path d="M7 9v3.5a2 2 0 0 0 2 2h6a2 2 0 0 1 2 2V15"/></symbol>
+  <symbol id="i-award" viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="m8.6 14-1.6 7 5-2.8 5 2.8-1.6-7"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.8h-15z"/><path d="M10 21a2.2 2.2 0 0 0 4 0"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.4 3 14.6 0 18M12 3c-3 3.4-3 14.6 0 18"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-grip" viewBox="0 0 24 24"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M3.5 8h3.3l1.8-2.8h6.8L17.2 8h3.3v11.5h-17z"/><circle cx="12" cy="13.3" r="3.6"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4M9 13h6M9 17h4"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-ok" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5z"/></symbol>
+  <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4h4"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M21 3 10 14M21 3l-7 18-4-7-7-4z"/></symbol>
+  <symbol id="i-stack" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="3.6" rx="1.2" fill="currentColor" stroke="none"/><rect x="4" y="10.2" width="16" height="3.6" rx="1.2" fill="currentColor" stroke="none" opacity=".8"/><rect x="4" y="16.4" width="16" height="3.6" rx="1.2" fill="currentColor" stroke="none" opacity=".6"/></symbol>
+</svg>
+
+<header class="mtop" id="mtop"></header>
+<div class="shell">
+  <aside class="rail" id="rail"></aside>
+  <div class="content"><header class="topbar" id="topbar"></header><main class="center" id="main"></main></div>
+</div>
+<nav class="tabbar" id="tabbar"></nav>
+<div class="scrim" id="modal" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+/* ---------- Grundlagen ---------- */
+const $=s=>document.querySelector(s);
+let lang='de';
+try{const h=location.hash.replace('#','');if(h==='en'||h==='de')lang=h;else{const s=localStorage.getItem('dvx-qm-lang');if(s==='en'||s==='de')lang=s;}}catch(e){}
+const T=(de,en)=>lang==='en'?en:de;
+const tx=o=>o==null?'':(typeof o==='string'?o:(o[lang]||o.de||''));
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9);
+const DAY=864e5;
+const dISO=o=>new Date(Date.now()+o*DAY).toISOString().slice(0,10);
+const addD=(iso,n)=>new Date(new Date(iso+'T12:00:00').getTime()+n*DAY).toISOString().slice(0,10);
+const TODAY=()=>dISO(0);
+const loc=()=>lang==='en'?'en-GB':'de-DE';
+const fD=iso=>iso?new Date(iso+'T12:00:00').toLocaleDateString(loc(),{day:'2-digit',month:'2-digit',year:'numeric'}):'–';
+const dp=v=>{if(v==null)return 0;const s=String(v);const i=s.indexOf('.');return i<0?0:s.length-i-1;};
+const fN=(v,d)=>(v==null||v===''||isNaN(v))?'–':Number(v).toLocaleString(loc(),{minimumFractionDigits:d??0,maximumFractionDigits:d??3});
+const pNum=s=>{if(s==null)return null;s=String(s).trim().replace(',','.');if(s==='')return null;const n=Number(s);return isNaN(n)?null:n;};
+const inVal=v=>v==null?'':(lang==='de'?String(v).replace('.',','):String(v));
+const icon=(n,c='')=>`<svg class="i ${c}" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+const PEOPLE={ak:{n:'Anna Keller',r:{de:'Qualitätsprüferin',en:'Quality inspector'},c:0},md:{n:'Murat Demir',r:{de:'Wareneingang',en:'Goods receipt'},c:1},sw:{n:'Sophie Wagner',r:{de:'QM-Leitung',en:'Head of quality'},c:2},lb:{n:'Lukas Brandt',r:{de:'Einkauf',en:'Purchasing'},c:3},jh:{n:'Jonas Hoffmann',r:{de:'Fertigung',en:'Production'},c:4}};
+const ROLES={qs:{de:'Qualitätsprüfung',en:'Quality inspection',p:'ak'},qm:{de:'QM-Leitung',en:'Head of quality',p:'sw'},ek:{de:'Einkauf',en:'Purchasing',p:'lb'},fe:{de:'Fertigung',en:'Production',p:'jh'},we:{de:'Wareneingang',en:'Goods receipt',p:'md'}};
+const SUPPLIERS=['Rhein Präzision GmbH','Alpen Kunststoff AG','Nordstahl KG','Weber Formenbau GmbH'];
+const CUSTOMERS=['Meyer Maschinenbau AG','Lindner Automotive GmbH','Holz & Partner KG'];
+const av=(id,cls='')=>{const p=PEOPLE[id];if(!p)return'';const ini=p.n.split(' ').map(x=>x[0]).join('');return`<span class="av ${cls} c${p.c}" title="${esc(p.n)}">${ini}</span>`;};
+
+const BLK={
+  erf:{t:{de:'Erfassung & Bewertung',en:'Capture & assess'},role:'qs',sla:1},
+  team:{t:{de:'Team bilden (D1)',en:'Form team (D1)'},role:'qm',sla:1},
+  desc:{t:{de:'Problem beschreiben (D2)',en:'Describe problem (D2)'},role:'qs',sla:1},
+  sofort:{t:{de:'Sofortmaßnahme / Sperre (D3)',en:'Containment action (D3)'},role:'qs',sla:1},
+  ursache:{t:{de:'Ursachenanalyse 5-Why (D4)',en:'Root cause 5-Why (D4)'},role:'qm',sla:5},
+  korr:{t:{de:'Abstellmaßnahme festlegen (D5)',en:'Define corrective action (D5)'},role:'qm',sla:4},
+  umsetz:{t:{de:'Maßnahme umsetzen (D6)',en:'Implement action (D6)'},role:'fe',sla:10},
+  vorb:{t:{de:'Wiederholung verhindern (D7)',en:'Prevent recurrence (D7)'},role:'qm',sla:7},
+  abschl:{t:{de:'Abschluss & Würdigung (D8)',en:'Close & recognise team (D8)'},role:'qm',sla:2},
+  liefinfo:{t:{de:'Lieferant informieren',en:'Notify supplier'},role:'ek',sla:1},
+  stellung:{t:{de:'Stellungnahme Lieferant',en:'Supplier statement'},role:'ek',sla:5},
+  gutschrift:{t:{de:'Gutschrift / Ersatz anfordern',en:'Request credit / replacement'},role:'ek',sla:3},
+  kundinfo:{t:{de:'Kunde informieren',en:'Inform customer'},role:'qm',sla:1},
+  wirk:{t:{de:'Wirksamkeit prüfen',en:'Verify effectiveness'},role:'qs',sla:14},
+  frei:{t:{de:'Freigabe QM-Leitung',en:'Approval head of quality'},role:'qm',sla:2}
+};
+const RTYPE={lief:{t:{de:'Lieferant',en:'Supplier'},c:'lr',tpl:'lief'},kunde:{t:{de:'Kunde',en:'Customer'},c:'kd',tpl:'kunde'},intern:{t:{de:'Intern',en:'Internal'},c:'qm',tpl:'intern'}};
+const UD={acc:{t:{de:'Annahme',en:'Accepted'},c:'good',d:{de:'Ware freigeben',en:'Release goods'}},con:{t:{de:'Sonderfreigabe',en:'Concession'},c:'warn',d:{de:'Mit Auflagen verwenden',en:'Use with conditions'}},rej:{t:{de:'Gesperrt',en:'Rejected'},c:'crit',d:{de:'Sperren / zurückweisen',en:'Block / return'}}};
+const CERT={
+  '2.1':{t:{de:'Werksbescheinigung 2.1',en:'Declaration of compliance 2.1'},d:{de:'Bestätigung der Auftragskonformität, ohne Prüfergebnisse',en:'Confirms compliance with the order, no test results'}},
+  '2.2':{t:{de:'Werkszeugnis 2.2',en:'Test report 2.2'},d:{de:'Mit Ergebnissen nichtspezifischer Prüfung',en:'With results of non-specific inspection'}},
+  '3.1':{t:{de:'Abnahmeprüfzeugnis 3.1',en:'Inspection certificate 3.1'},d:{de:'Spezifische Prüfung der gelieferten Charge, bestätigt durch unabhängigen Abnahmebeauftragten',en:'Specific inspection of the delivered batch, confirmed by an independent inspection representative'}}
+};
+
+/* ---------- Demo-Fotos ---------- */
+function demoPhoto(shape,defect,label){
+  let body='';
+  if(shape==='box')body="<rect x='70' y='60' width='180' height='120' rx='6' fill='#B98A56'/><path d='M70 100h180M160 60v40' stroke='#8C6438' stroke-width='4'/><rect x='180' y='120' width='54' height='34' fill='#fff' opacity='.9'/>";
+  else if(shape==='label')body="<rect x='50' y='60' width='220' height='120' rx='8' fill='#9AA4B2'/><rect x='80' y='85' width='130' height='70' rx='4' fill='#fff'/><path d='M92 102h80M92 116h100M92 130h60' stroke='#333' stroke-width='5'/><rect x='170' y='122' width='30' height='24' fill='#222'/>";
+  else body="<defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#E3E8EE'/><stop offset='.5' stop-color='#AEB7C3'/><stop offset='1' stop-color='#79838F'/></linearGradient></defs><rect x='30' y='88' width='260' height='64' rx='30' fill='url(#g)'/><rect x='220' y='80' width='44' height='80' rx='10' fill='url(#g)'/><rect x='30' y='104' width='260' height='6' fill='#fff' opacity='.5'/>";
+  const d=defect?"<path d='M120 104 L150 118 L140 121 L178 134' stroke='#2E333A' stroke-width='3' fill='none'/><circle cx='150' cy='120' r='40' fill='none' stroke='#FF4D4F' stroke-width='4'/>":'';
+  const svg=`<svg xmlns='http://www.w3.org/2000/svg' width='320' height='240' viewBox='0 0 320 240'><rect width='320' height='240' fill='#2A2F37'/>${body}${d}<rect x='0' y='206' width='320' height='34' fill='#000' opacity='.35'/><text x='12' y='228' font-family='Arial,sans-serif' font-size='14' fill='#fff'>${label}</text></svg>`;
+  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+}
+const shapeOf=mid=>mid==='M10'?'box':(mid==='M08'?'label':'part');
+
+/* ---------- Seed ---------- */
+function itemFrom(m){return{uid:uid(),mid:m.id,code:m.code,name:{...m.name},type:m.type,unit:m.unit||'',soll:m.soll??null,ugw:m.ugw??null,ogw:m.ogw??null,method:m.method?{...m.method}:'',photo:!!m.photo,n:m.type==='quant'?5:1};}
+function genVals(it,bad,r){
+  const lo=it.ugw,hi=it.ogw,c=(lo+hi)/2,half=(hi-lo)/2;
+  const d=Math.min(3,Math.max(dp(lo),dp(hi),dp(it.soll))+1);
+  const out=[];for(let i=0;i<it.n;i++)out.push(+(c+(r()-.5)*half*1.15).toFixed(d));
+  if(bad){const low=it.mid==='M05';out[1]=+(low?lo-half*.35:hi+half*.45).toFixed(d);out[3]=+(low?lo-half*.2:hi+half*.25).toFixed(d);}
+  return out;
+}
+function seed(){
+  const r=mulberry(11);
+  const cat=[
+    {id:'M01',code:'DM-01',name:{de:'Außendurchmesser',en:'Outer diameter'},type:'quant',unit:'mm',soll:25.00,ugw:24.95,ogw:25.05,method:{de:'Bügelmessschraube',en:'Micrometer'}},
+    {id:'M02',code:'LG-01',name:{de:'Gesamtlänge',en:'Overall length'},type:'quant',unit:'mm',soll:120.0,ugw:119.8,ogw:120.2,method:{de:'Messschieber',en:'Caliper'}},
+    {id:'M03',code:'GW-01',name:{de:'Gewicht',en:'Weight'},type:'quant',unit:'g',soll:310,ugw:305,ogw:315,method:{de:'Waage',en:'Scale'}},
+    {id:'M04',code:'RA-01',name:{de:'Rauheit Ra',en:'Roughness Ra'},type:'quant',unit:'µm',soll:0.8,ugw:0.2,ogw:1.6,method:{de:'Tastschnittgerät',en:'Profilometer'}},
+    {id:'M05',code:'HB-01',name:{de:'Härte',en:'Hardness'},type:'quant',unit:'HRC',soll:58,ugw:56,ogw:60,method:{de:'Rockwell-Prüfung',en:'Rockwell test'}},
+    {id:'M06',code:'SP-01',name:{de:'Sichtprüfung Oberfläche',en:'Visual surface check'},type:'qual',method:{de:'Visuell, 500 lx',en:'Visual, 500 lx'},photo:true},
+    {id:'M07',code:'VK-01',name:{de:'Vollständigkeit',en:'Completeness'},type:'qual',method:{de:'Abgleich Stückliste',en:'Check against BOM'}},
+    {id:'M08',code:'KZ-01',name:{de:'Kennzeichnung / Etikett',en:'Marking / label'},type:'qual',method:{de:'Visuell',en:'Visual'},photo:true},
+    {id:'M09',code:'FT-01',name:{de:'Funktionstest Dichtheit',en:'Leak function test'},type:'qual',method:{de:'Prüfstand 250 bar',en:'Test bench 250 bar'}},
+    {id:'M10',code:'VP-01',name:{de:'Verpackung unbeschädigt',en:'Packaging undamaged'},type:'qual',method:{de:'Visuell',en:'Visual'},photo:true},
+    {id:'M11',code:'SD-01',name:{de:'Schichtdicke',en:'Coating thickness'},type:'quant',unit:'µm',soll:80,ugw:70,ogw:95,method:{de:'Wirbelstrom',en:'Eddy current'}},
+    {id:'M12',code:'DM-02',name:{de:'Bohrungsdurchmesser',en:'Bore diameter'},type:'quant',unit:'mm',soll:12.009,ugw:12.000,ogw:12.018,method:{de:'Messdorn',en:'Bore gauge'}}
+  ];
+  const by=id=>cat.find(m=>m.id===id);
+  const mk=ids=>ids.map(id=>itemFrom(by(id)));
+  const plans=[
+    {id:'PP-1001',name:{de:'Wareneingang Antriebswelle W-25',en:'Incoming inspection drive shaft W-25'},material:{de:'Antriebswelle W-25',en:'Drive shaft W-25'},origin:'we',status:'rel',ver:3,items:mk(['M10','M08','M01','M02','M05','M06'])},
+    {id:'PP-1002',name:{de:'Wareneingang Gehäuse G-40',en:'Incoming inspection housing G-40'},material:{de:'Gehäuse G-40 (PA6)',en:'Housing G-40 (PA6)'},origin:'we',status:'rel',ver:2,items:mk(['M10','M07','M03','M06','M08'])},
+    {id:'PP-1003',name:{de:'Endprüfung Hydraulikblock BG-7',en:'Final inspection hydraulic block BG-7'},material:{de:'Hydraulikblock BG-7',en:'Hydraulic block BG-7'},origin:'fe',status:'rel',ver:4,items:mk(['M07','M12','M11','M09','M08'])},
+    {id:'PP-1004',name:{de:'Erstmusterprüfung Halter H-12',en:'First article inspection bracket H-12'},material:{de:'Halter H-12',en:'Bracket H-12'},origin:'we',status:'draft',ver:1,items:mk(['M02','M04','M06'])}
+  ];
+  plans[2].items[1].n=3;plans[2].items[2].n=3;
+  const lots=[];
+  function lot(o){
+    const p=plans.find(x=>x.id===o.plan);
+    const items=JSON.parse(JSON.stringify(p.items));
+    const l={id:o.id,planId:p.id,planName:p.name,material:p.material,origin:p.origin,supplier:o.sup||'',order:o.order||'',charge:o.ch,qty:o.qty,date:dISO(o.d),status:o.st||'open',ud:o.ud||null,insp:o.insp||'ak',items,res:{},closedAt:o.st==='done'?dISO(o.d):null};
+    if(l.status==='done'){
+      items.forEach(it=>{
+        const bad=(o.nok||[]).includes(it.mid);
+        const res={vals:[],q:null,note:'',photos:[],docs:[]};
+        if(it.type==='quant')res.vals=genVals(it,bad,r);else res.q=bad?'nok':'ok';
+        if(it.photo||bad)res.photos=[demoPhoto(shapeOf(it.mid),bad,it.code+' · '+o.id)];
+        if(bad&&o.note)res.note=o.note;
+        l.res[it.uid]=res;
+      });
+      if(o.docs)l.res[items[0].uid].docs=o.docs.map(n=>({n,s:184320}));
+    }
+    lots.push(l);return l;
+  }
+  lot({id:'PR-24031',plan:'PP-1001',sup:SUPPLIERS[0],ch:'CH-8817',qty:500,d:0});
+  lot({id:'PR-24030',plan:'PP-1002',sup:SUPPLIERS[1],ch:'CH-2290',qty:1200,d:0,insp:'md'});
+  lot({id:'PR-24029',plan:'PP-1003',order:'FA-55102',ch:'FA-55102-01',qty:40,d:-1,insp:'jh'});
+  lot({id:'PR-24028',plan:'PP-1001',sup:SUPPLIERS[0],ch:'CH-8790',qty:500,d:-3,st:'done',ud:'rej',nok:['M01'],note:{de:'2 von 5 Teilen über der oberen Toleranz',en:'2 of 5 parts above upper tolerance'}});
+  lot({id:'PR-24027',plan:'PP-1002',sup:SUPPLIERS[1],ch:'CH-2255',qty:1200,d:-4,st:'done',ud:'acc',insp:'md'});
+  lot({id:'PR-24026',plan:'PP-1003',order:'FA-55088',ch:'FA-55088-01',qty:25,d:-5,st:'done',ud:'acc',insp:'jh',docs:['Messprotokoll_KMG_55088.pdf']});
+  lot({id:'PR-24025',plan:'PP-1001',sup:SUPPLIERS[2],ch:'NS-1182',qty:300,d:-7,st:'done',ud:'acc'});
+  lot({id:'PR-24024',plan:'PP-1002',sup:SUPPLIERS[1],ch:'CH-2201',qty:1000,d:-9,st:'done',ud:'con',nok:['M06'],note:{de:'Kratzer auf Sichtfläche, ca. 3 % betroffen',en:'Scratches on visible surface, approx. 3 % affected'}});
+  lot({id:'PR-24023',plan:'PP-1003',order:'FA-55061',ch:'FA-55061-01',qty:30,d:-12,st:'done',ud:'acc',insp:'jh'});
+  lot({id:'PR-24022',plan:'PP-1001',sup:SUPPLIERS[0],ch:'CH-8744',qty:500,d:-14,st:'done',ud:'acc'});
+  lot({id:'PR-24021',plan:'PP-1002',sup:SUPPLIERS[3],ch:'WF-0931',qty:800,d:-15,st:'done',ud:'acc',insp:'md'});
+  lot({id:'PR-24020',plan:'PP-1001',sup:SUPPLIERS[2],ch:'NS-1160',qty:300,d:-16,st:'done',ud:'rej',nok:['M05'],note:{de:'Härte unter Mindestwert – Wärmebehandlung prüfen',en:'Hardness below minimum – check heat treatment'}});
+  lot({id:'PR-24018',plan:'PP-1001',sup:SUPPLIERS[0],ch:'CH-8702',qty:500,d:-21,st:'done',ud:'con',nok:['M01'],note:{de:'1 Teil knapp über Max.',en:'1 part just above max.'}});
+  lot({id:'PR-24017',plan:'PP-1002',sup:SUPPLIERS[1],ch:'CH-2170',qty:1000,d:-23,st:'done',ud:'con',nok:['M06'],insp:'md',note:{de:'Schlieren an der Oberfläche',en:'Flow lines on surface'}});
+  lot({id:'PR-24016',plan:'PP-1002',sup:SUPPLIERS[3],ch:'WF-0905',qty:800,d:-25,st:'done',ud:'acc',insp:'md'});
+  lot({id:'PR-24015',plan:'PP-1003',order:'FA-55020',ch:'FA-55020-01',qty:30,d:-26,st:'done',ud:'acc',insp:'jh'});
+  lot({id:'PR-24019',plan:'PP-1002',sup:SUPPLIERS[3],ch:'WF-0920',qty:800,d:-19,st:'done',ud:'acc',insp:'md'});
+
+  const tpls=[
+    {id:'8d',name:{de:'8D-Report',en:'8D report'},steps:['team','desc','sofort','ursache','korr','umsetz','vorb','abschl']},
+    {id:'lief',name:{de:'Lieferantenreklamation',en:'Supplier complaint'},steps:['erf','sofort','liefinfo','stellung','gutschrift','wirk','frei']},
+    {id:'kunde',name:{de:'Kundenreklamation',en:'Customer complaint'},steps:['erf','kundinfo','sofort','ursache','korr','wirk','frei']},
+    {id:'intern',name:{de:'Interne Abweichung',en:'Internal deviation'},steps:['erf','sofort','ursache','umsetz','wirk']}
+  ].map(t=>({id:t.id,name:t.name,steps:t.steps.map(k=>({uid:uid(),k,role:BLK[k].role,sla:BLK[k].sla}))}));
+  const S0={catalog:cat,plans,lots,tpls,reklas:[],certs:[],seq:{lot:24032,rekla:46,plan:1005,cert:119,m:13,tpl:1}};
+  const rk=(o)=>{const x=makeRekla(S0,o);x.created=dISO(o.d);let due=x.created;x.steps.forEach((s,i)=>{due=addD(due,s.sla);s.due=due;if(i<o.done){s.done=true;s.doneAt=addD(x.created,Math.min(i+1,-o.d));}});S0.reklas.push(x);};
+  rk({id:'QM-0045',type:'kunde',partner:CUSTOMERS[1],title:{de:'Etikett fehlt auf Lieferung',en:'Label missing on delivery'},desc:{de:'Kunde meldet 2 Kartons ohne Chargenetikett (Lieferschein 80017342).',en:'Customer reports 2 boxes without batch label (delivery note 80017342).'},defect:'KZ-01',lot:'',d:-1,done:1,tpl:'kunde'});
+  rk({id:'QM-0044',type:'lief',partner:SUPPLIERS[0],title:{de:'Außendurchmesser außerhalb Toleranz',en:'Outer diameter out of tolerance'},desc:{de:'Im Wareneingang 2 von 5 Teilen über Max. 25,05 mm. Charge gesperrt.',en:'At goods receipt 2 of 5 parts above max. 25.05 mm. Batch blocked.'},defect:'DM-01',lot:'PR-24028',d:-3,done:3,tpl:'8d'});
+  rk({id:'QM-0043',type:'lief',partner:SUPPLIERS[2],title:{de:'Härte unter Mindestwert',en:'Hardness below minimum'},desc:{de:'Härte 55 HRC statt min. 56 HRC. Wärmebehandlung beim Lieferanten prüfen.',en:'Hardness 55 HRC instead of min. 56 HRC. Check supplier heat treatment.'},defect:'HB-01',lot:'PR-24020',d:-16,done:4,tpl:'lief'});
+  rk({id:'QM-0042',type:'lief',partner:SUPPLIERS[1],title:{de:'Kratzer auf Sichtfläche',en:'Scratches on visible surface'},desc:{de:'Sonderfreigabe erteilt, Lieferant hat Verpackung umgestellt.',en:'Concession granted, supplier changed packaging.'},defect:'SP-01',lot:'PR-24024',d:-9,done:7,tpl:'lief'});
+  rk({id:'QM-0041',type:'intern',partner:'',title:{de:'Schichtdicke zu gering (BG-7)',en:'Coating too thin (BG-7)'},desc:{de:'Beschichtungsanlage Linie 2: Parameter angepasst, Wirksamkeit bestätigt.',en:'Coating line 2: parameters adjusted, effectiveness confirmed.'},defect:'SD-01',lot:'',d:-24,done:5,tpl:'intern'});
+  S0.certs=[
+    {id:'Z-2026-118',lot:'PR-24026',type:'3.1',customer:CUSTOMERS[0],order:'4500-88211',date:dISO(-4),by:'sw'},
+    {id:'Z-2026-117',lot:'PR-24023',type:'2.2',customer:CUSTOMERS[1],order:'LA-77310',date:dISO(-11),by:'sw'}
+  ];
+  return S0;
+}
+function makeRekla(St,o){
+  const tp=St.tpls.find(t=>t.id===o.tpl)||St.tpls[0];
+  const created=TODAY();let due=created;
+  return{id:o.id,type:o.type,partner:o.partner||'',title:o.title,desc:o.desc||'',defect:o.defect||'',lot:o.lot||'',tpl:tp.id,tplName:tp.name,created,
+    steps:tp.steps.map(s=>{due=addD(due,Number(s.sla)||1);return{uid:uid(),k:s.k,title:BLK[s.k].t,role:s.role,sla:Number(s.sla)||1,owner:ROLES[s.role].p,due,done:false,doneAt:null,note:''};})};
+}
+
+/* ---------- Zustand ---------- */
+const LS='dvx-qm-demo-v2';
+let S;
+try{const raw=localStorage.getItem(LS);if(raw)S=JSON.parse(raw);}catch(e){}
+if(!S||!S.catalog)S=seed();
+function save(){try{localStorage.setItem(LS,JSON.stringify(S));}catch(e){}}
+const U={view:'start',id:null,plan:'PP-1001',tpl:'8d',runIdx:0,runLot:null,ud:null,lotF:'open',taskTab:'all',rF:'open',rT:'all',catQ:'',catT:'all',flash:null};
+
+const curPlan=()=>S.plans.find(p=>p.id===U.plan)||S.plans[0];
+const curTpl=()=>S.tpls.find(t=>t.id===U.tpl)||S.tpls[0];
+const lotById=id=>S.lots.find(l=>l.id===id);
+const curLot=()=>lotById(U.id);
+function evalItem(it,r){
+  if(!r)return null;
+  if(it.type==='quant'){let f=0,bad=false;(r.vals||[]).slice(0,it.n).forEach(x=>{if(x==null||isNaN(x))return;f++;if(x<it.ugw||x>it.ogw)bad=true;});if(bad)return'nok';return f>=it.n?'ok':null;}
+  return r.q||null;
+}
+function lotSum(l){let ok=0,nok=0;l.items.forEach(it=>{const e=evalItem(it,l.res[it.uid]);if(e==='ok')ok++;else if(e==='nok')nok++;});return{ok,nok,open:l.items.length-ok-nok,total:l.items.length};}
+const curStep=x=>x.steps.find(s=>!s.done);
+const isClosed=x=>!curStep(x);
+const decOf=it=>Math.max(dp(it.ugw),dp(it.ogw),dp(it.soll));
+const quantSpec=it=>`${fN(it.ugw,decOf(it))} … ${fN(it.ogw,decOf(it))} ${esc(it.unit)}`;
+const specTxt=it=>it.type==='quant'?`${T('Soll','Target')} ${fN(it.soll,decOf(it))} ${esc(it.unit)} · ${quantSpec(it)}`:T('Bewertung: i.O. / n.i.O.','Check: pass / fail');
+const tb=t=>t==='quant'?`<span class="tb q" title="${T('Messwert','Measured')}">${icon('ruler','xs')}</span>`:`<span class="tb a" title="${T('Ja/Nein','Pass/fail')}">${icon('ok','xs')}</span>`;
+function lotPill(l){if(l.status==='done'){const u=UD[l.ud]||UD.acc;return`<span class="pill ${u.c}">${tx(u.t)}</span>`;}return l.status==='prog'?`<span class="pill warn">${T('In Arbeit','In progress')}</span>`:`<span class="pill info">${T('Offen','Open')}</span>`;}
+const rPill=t=>{const x=RTYPE[t];return`<span class="pill ${x.c}">${tx(x.t)}</span>`;};
+const partnerTxt=l=>l.supplier||(l.order?T('Auftrag ','Order ')+l.order:'');
+
+/* ---------- Toast & Modal ---------- */
+let tT;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),2400);}
+function modal(html,wide){const s=$('#sheet');s.className='sheet'+(wide?' wide':'');s.innerHTML=html;$('#modal').hidden=false;const f=s.querySelector('input:not([type=hidden]):not([type=radio]):not([type=checkbox]),select');if(f&&window.matchMedia('(min-width:700px)').matches)setTimeout(()=>f.focus(),30);}
+function closeModal(){$('#modal').hidden=true;$('#sheet').innerHTML='';}
+const mHead=(t,sub)=>`<div class="card-h"><div><h2>${t}</h2>${sub?`<p>${sub}</p>`:''}</div><button class="ib" data-act="close" aria-label="${T('Schließen','Close')}">${icon('x')}</button></div>`;
+const val=id=>{const e=document.getElementById(id);return e?e.value:'';};
+
+/* ---------- Navigation ---------- */
+const NAV=[
+  {v:'start',ic:'home',t:{de:'Übersicht',en:'Overview'}},
+  {v:'lots',ic:'check',t:{de:'Prüfungen',en:'Inspections'}},
+  {v:'plans',ic:'layers',t:{de:'Prüfpläne',en:'Inspection plans'}},
+  {v:'cat',ic:'ruler',t:{de:'Prüfpunkte',en:'Checkpoints'}},
+  {v:'rekla',ic:'alert',t:{de:'Reklamationen',en:'Complaints'}},
+  {v:'wf',ic:'flow',t:{de:'Workflows',en:'Workflows'}},
+  {v:'certs',ic:'award',t:{de:'Zeugnisse',en:'Certificates'}}
+];
+const PARENT={lot:'lots',rekladetail:'rekla',cert:'certs'};
+function navCount(v){
+  if(v==='lots'){const n=S.lots.filter(l=>l.status!=='done').length;return n?`<span class="cnt">${n}</span>`:'';}
+  if(v==='rekla'){const open=S.reklas.filter(x=>!isClosed(x));const over=open.some(x=>curStep(x).due<TODAY());return open.length?`<span class="cnt ${over?'crit':''}">${open.length}</span>`:'';}
+  return'';
+}
+const brand=()=>`<div class="brand"><span class="logo">${icon('stack')}</span><div><b>devunoxAI QM</b><small>${T('Qualität für KMU · Demo','Quality for SMEs · demo')}</small></div></div>`;
+const langSw=()=>`<div class="lang" role="group" aria-label="Sprache / Language">${icon('globe','s')}<button class="${lang==='de'?'on':''}" data-act="lang" data-arg="de" aria-pressed="${lang==='de'}">DE</button><button class="${lang==='en'?'on':''}" data-act="lang" data-arg="en" aria-pressed="${lang==='en'}">EN</button></div>`;
+const CONTACT=()=>lang==='en'?'https://www.devunox.ai/en/contact':'https://www.devunox.ai/de/kontakt';
+const promo=()=>`<div class="promo"><span class="p-ic">${icon('stack')}</span><b>${T('Diese QM-Lösung für Ihr Unternehmen','This QM solution for your company')}</b><span>${T('Angepasst an Ihre Prozesse, gehostet in der EU.','Tailored to your processes, hosted in the EU.')}</span><a class="btn" href="${CONTACT()}" target="_blank" rel="noopener">${T('Projekt anfragen','Request a project')}</a></div>`;
+function renderChrome(){
+  const act=PARENT[U.view]||U.view;
+  const over=S.reklas.filter(x=>!isClosed(x)&&curStep(x).due<TODAY()).length;
+  const nb=v=>{const n=NAV.find(x=>x.v===v);return`<button class="nav-i ${act===v?'on':''}" data-act="nav" data-arg="${v}">${icon(n.ic)}<span class="lbl">${tx(n.t)}</span>${navCount(v)}</button>`;};
+  $('#rail').innerHTML=brand()+nb('start')+
+    `<div class="nav-label">${T('Prüfen','Inspect')}</div>`+nb('lots')+nb('plans')+nb('cat')+
+    `<div class="nav-label">${T('Abweichungen','Deviations')}</div>`+nb('rekla')+nb('wf')+
+    `<div class="nav-label">${T('Dokumente','Documents')}</div>`+nb('certs')+
+    `<div class="rail-foot">${promo()}<button class="btn ghost reset-l" data-act="reset">${icon('reset','s')} ${T('Demo zurücksetzen','Reset demo')}</button></div>`;
+  const title=tx((NAV.find(n=>n.v===act)||NAV[0]).t);
+  $('#topbar').innerHTML=`<div class="crumb"><span>devunoxAI QM</span>${icon('right','s')}<b>${title}</b></div><div class="tb-r">${langSw()}<button class="ib bell" data-act="nav" data-arg="rekla" title="${T('Überfällige Aufgaben','Overdue tasks')}">${icon('bell')}${over?`<span class="badge">${over}</span>`:''}</button><div class="me">${av('sw')}<div><b>Sophie Wagner</b><small>${tx(PEOPLE.sw.r)}</small></div></div><button class="btn primary" data-act="newLot">${icon('plus')} ${T('Neue Prüfung','New inspection')}</button></div>`;
+  $('#mtop').innerHTML=brand()+langSw();
+  const tabs=['start','lots','plans','rekla'];
+  $('#tabbar').innerHTML=tabs.map(v=>{const n=NAV.find(x=>x.v===v);return`<button class="tab-i ${act===v?'on':''}" data-act="nav" data-arg="${v}">${icon(n.ic)}<span>${v==='plans'?T('Pläne','Plans'):(v==='rekla'?T('Reklam.','Complaints'):tx(n.t))}</span>${navCount(v)}</button>`;}).join('')+
+    `<button class="tab-i ${['cat','wf','certs'].includes(act)?'on':''}" data-act="more">${icon('menu')}<span>${T('Mehr','More')}</span></button>`;
+  document.documentElement.lang=lang;
+}
+const VIEWS={};
+function render(keepScroll){
+  const y=window.scrollY;
+  renderChrome();
+  $('#main').innerHTML=(VIEWS[U.view]||VIEWS.start)();
+  if(keepScroll)window.scrollTo(0,y);
+  if(U.flash){const el=document.querySelector(`[data-uid="${U.flash}"]`);if(el)el.classList.add('flash');U.flash=null;}
+}
+function go(v,id){U.view=v;U.id=id||null;render();window.scrollTo(0,0);}
+
+/* ---------- Ansicht: Übersicht ---------- */
+const ring=(pct,size,sw,color)=>{const r=(size-sw)/2,c=2*Math.PI*r;return`<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" style="stroke:rgba(20,20,40,.08)" stroke-width="${sw}"/><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" style="stroke:${color}" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${c.toFixed(2)}" stroke-dashoffset="${(c*(1-pct/100)).toFixed(2)}" transform="rotate(-90 ${size/2} ${size/2})"/></svg>`;};
+VIEWS.start=function(){
+  const open=S.lots.filter(l=>l.status!=='done');
+  const done=S.lots.filter(l=>l.status==='done');
+  const acc=done.filter(l=>l.ud==='acc').length;
+  const rate=done.length?Math.round(acc/done.length*100):0;
+  const ro=S.reklas.filter(x=>!isClosed(x));
+  const overL=ro.filter(x=>curStep(x).due<TODAY());
+  const m30=S.certs.filter(c=>c.date>=dISO(-30)).length;
+  const pm={};
+  done.forEach(l=>l.items.forEach(it=>{if(evalItem(it,l.res[it.uid])==='nok'){const k=it.code;pm[k]=pm[k]||{n:0,name:it.name};pm[k].n++;}}));
+  S.reklas.forEach(x=>{if(x.defect&&!x.lot){const c=S.catalog.find(m=>m.code===x.defect);pm[x.defect]=pm[x.defect]||{n:0,name:c?c.name:x.defect};pm[x.defect].n++;}});
+  const par=Object.entries(pm).sort((a,b)=>b[1].n-a[1].n).slice(0,6);
+  const pmax=Math.max(1,...par.map(p=>p[1].n));
+  const sup={};done.forEach(l=>{if(!l.supplier)return;sup[l.supplier]=sup[l.supplier]||{n:0,a:0,r:0};sup[l.supplier].n++;if(l.ud==='acc')sup[l.supplier].a++;if(l.ud==='rej')sup[l.supplier].r++;});
+  const sups=Object.entries(sup).map(([k,v])=>({k,...v,rate:Math.round(v.a/v.n*100)})).sort((a,b)=>b.rate-a.rate);
+  const tasks=ro.map(x=>({x,s:curStep(x)})).sort((a,b)=>a.s.due.localeCompare(b.s.due));
+  const shown=U.taskTab==='over'?tasks.filter(t=>t.s.due<TODAY()):tasks;
+  const hr=new Date().getHours();
+  const greet=hr<11?T('Guten Morgen','Good morning'):(hr<18?T('Hallo','Hello'):T('Guten Abend','Good evening'));
+  const week=[-3,-2,-1,0,1,2,3].map(o=>{const iso=dISO(o);const d=new Date(iso+'T12:00:00');const n=S.lots.filter(l=>l.date===iso).length;return`<div class="day ${o===0?'today':''}" title="${n} ${T('Prüfungen','inspections')}"><span>${d.toLocaleDateString(loc(),{weekday:'short'}).replace('.','')}</span><b>${d.getDate()}</b>${n?'<i></i>':''}</div>`;}).join('');
+  const insp=[...new Set(open.map(l=>l.insp))];
+  const steps=[['plans',T('Prüfplan bauen','Build a plan'),T('Prüfpunkte per Drag & Drop','Drag & drop checkpoints')],['lots',T('Am Handy prüfen','Inspect on mobile'),T('Messwerte, Fotos, Dokumente','Values, photos, documents')],['rekla',T('Reklamation steuern','Manage complaints'),T('Workflow mit Fristen','Workflow with deadlines')],['certs',T('Zeugnis erstellen','Issue certificate'),T('2.1 · 2.2 · 3.1 nach EN 10204','2.1 · 2.2 · 3.1 to EN 10204')]];
+  return`
+  <section class="greet"><div><h1>${greet}, Sophie 👋</h1><p>${lang==='en'?`You have <b>${open.length} inspections</b> and <b>${tasks.length} open tasks</b> today.`:`Heute stehen <b>${open.length} Prüfungen</b> und <b>${tasks.length} offene Aufgaben</b> an.`}</p></div><div class="week" aria-label="${T('Woche','Week')}">${week}</div></section>
+  <div class="tiles4">
+    <button class="tile lav" data-act="nav" data-arg="lots"><div class="t-h"><span>${T('Offene Prüfungen','Open inspections')}</span><span class="t-ic">${icon('check')}</span></div><div class="big">${open.length}</div><div class="t-f"><div class="av-stack">${insp.map(i=>av(i,'xs')).join('')}</div><small>${T('heute fällig','due today')}: ${open.filter(l=>l.date<=TODAY()).length}</small></div></button>
+    <div class="tile white"><div class="t-h"><span>${T('Annahmequote','Acceptance rate')}</span><span class="t-ic">${icon('ok')}</span></div><div class="t-ring">${ring(rate,72,9,rate>=85?'#12804A':'#6C3BFF')}<div><div class="big">${rate}<span style="font-size:18px"> %</span></div><small>${done.length} ${T('abgeschlossen','completed')}</small></div></div></div>
+    <button class="tile pink" data-act="nav" data-arg="rekla"><div class="t-h"><span>${T('Offene Reklamationen','Open complaints')}</span><span class="t-ic">${icon('alert')}</span></div><div class="big">${ro.length}</div><div class="t-f">${overL.length?`<span class="pill coral">${overL.length} ${T('überfällig','overdue')}</span>`:`<small>${T('alles im Plan','all on track')}</small>`}</div></button>
+    <button class="tile mint" data-act="nav" data-arg="certs"><div class="t-h"><span>${T('Zeugnisse (30 Tage)','Certificates (30 days)')}</span><span class="t-ic">${icon('award')}</span></div><div class="big">${m30}</div><div class="t-f"><small>DIN EN 10204 · 2.1 · 2.2 · 3.1</small></div></button>
+  </div>
+  <div class="dash">
+    <div class="col">
+      <div class="card"><div class="card-h"><div><h2>${T('Zu prüfen','To inspect')} <span class="h-cnt">${open.length}</span></h2><p>${T('Prüfobjekte aus Wareneingang und Fertigung','Items from goods receipt and production')}</p></div><button class="btn" data-act="nav" data-arg="lots">${T('Alle ansehen','View all')} ${icon('right','s')}</button></div>
+        <div class="lineup">${open.map(l=>{const s=lotSum(l);return`<button class="lu" style="--s:${l.origin==='we'?'#6C3BFF':'#FF5A3C'}" data-act="go" data-arg="lot:${l.id}"><span class="lu-k">${l.origin==='we'?T('Wareneingang','Goods receipt'):T('Fertigung','Production')}</span><b>${esc(tx(l.material))}</b><small>${esc(partnerTxt(l))} · ${fN(l.qty)} ${T('Stk.','pcs')}</small><div class="bar"><i class="g" style="width:${s.ok/s.total*100}%"></i><i class="r" style="width:${s.nok/s.total*100}%"></i></div><div class="lu-f">${av(l.insp,'xs')}<span class="mono muted">${l.id}</span>${lotPill(l)}</div></button>`;}).join('')}<button class="lu add" data-act="newLot">${icon('plus')}<b>${T('Neue Prüfung','New inspection')}</b></button></div></div>
+      <div class="grid2">
+        <div class="card"><div class="card-h"><div><h2>${T('Fehler-Pareto','Defect Pareto')}</h2><p>${T('Häufigste n.i.O.-Prüfpunkte','Most frequent failed checkpoints')}</p></div></div>
+          <div class="card-b"><div class="pareto">${par.length?par.map(([k,v])=>`<div class="pr"><span><span class="code">${esc(k)}</span> ${esc(tx(v.name))}</span><div class="bar"><i class="r" style="width:${v.n/pmax*100}%"></i></div><b>${v.n}</b></div>`).join(''):`<div class="empty">${T('Keine Fehler erfasst.','No defects recorded.')}</div>`}</div></div></div>
+        <div class="card"><div class="card-h"><div><h2>${T('Lieferanten','Suppliers')}</h2><p>${T('Annahmequote im Wareneingang','Acceptance rate at goods receipt')}</p></div></div>
+          <div>${sups.map(s=>{const g=s.rate>=90?'A':(s.rate>=70?'B':'C');return`<div class="row"><span class="grade ${g}">${g}</span><div class="main"><b>${esc(s.k)}</b><small>${s.n} ${T('Prüfungen','inspections')} · ${s.r} ${T('gesperrt','rejected')}</small></div><div class="end"><b class="num" style="white-space:nowrap">${s.rate} %</b></div></div>`;}).join('')}</div></div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card"><div class="card-h"><div><h2>${T('Aufgaben','Tasks')}</h2><p>${T('Aktuelle Workflow-Schritte','Current workflow steps')}</p></div></div>
+        <div class="card-b" style="padding-top:2px"><div class="chips"><button class="chip ${U.taskTab!=='over'?'on':''}" data-act="taskTab" data-arg="all">${T('Offen','Open')}<span class="n">${tasks.length}</span></button><button class="chip ${U.taskTab==='over'?'on':''}" data-act="taskTab" data-arg="over">${T('Überfällig','Overdue')}<span class="n">${overL.length}</span></button></div>
+        <div class="tasks">${shown.length?shown.map(({x,s})=>{const d=x.steps.filter(z=>z.done).length;const pct=Math.round(d/x.steps.length*100);return`<button class="task" data-act="go" data-arg="rekladetail:${x.id}"><span class="rs">${ring(pct,44,4,'#6C3BFF')}<em>${pct}%</em></span><span class="main"><b>${esc(tx(s.title))}</b><small>${esc(tx(x.title))}</small><small class="${s.due<TODAY()?'due-over':''}">${T('Frist','Due')} ${fD(s.due)}</small></span>${av(s.owner,'xs')}</button>`;}).join(''):`<div class="empty">${T('Keine Aufgaben.','No tasks.')}</div>`}</div></div></div>
+      <div class="howto"><div class="howto-h"><span class="t-ic">${icon('flow')}</span>${T('So funktioniert’s','How it works')}</div>${steps.map((f,i)=>`<button data-act="nav" data-arg="${f[0]}"><span class="no">${i+1}</span><span><b>${f[1]}</b><small>${f[2]}</small></span>${icon('right','s')}</button>`).join('')}</div>
+    </div>
+  </div>`;
+};
+
+/* ---------- Ansicht: Prüflose ---------- */
+VIEWS.lots=function(){
+  const f=U.lotF;
+  const list=S.lots.filter(l=>f==='all'||(f==='open'?l.status!=='done':l.status==='done'));
+  const cnt=k=>S.lots.filter(l=>k==='all'||(k==='open'?l.status!=='done':l.status==='done')).length;
+  return`<div class="page-h"><div><h1>${T('Prüfungen','Inspections')}</h1><p>${T('Prüfobjekte aus Wareneingang und Fertigung. Am Handy Schritt für Schritt prüfen – mit Messwerten, Fotos und Dokumenten.','Items from goods receipt and production. Inspect step by step on your phone – with values, photos and documents.')}</p></div><button class="btn primary" data-act="newLot">${icon('plus')} ${T('Neue Prüfung','New inspection')}</button></div>
+  <div class="chips">${[['open',T('Offen','Open')],['done',T('Abgeschlossen','Completed')],['all',T('Alle','All')]].map(([k,t])=>`<button class="chip ${f===k?'on':''}" data-act="lotF" data-arg="${k}">${t}<span class="n">${cnt(k)}</span></button>`).join('')}</div>
+  <div class="card">${list.length?list.map(l=>{const s=lotSum(l);return`<button class="row click" style="--s:${l.status==='done'?({acc:'#12804A',con:'#FFCB2B',rej:'#E5383B'}[l.ud]):(l.status==='prog'?'#FFCB2B':'#6C3BFF')}" data-act="go" data-arg="lot:${l.id}"><div class="main"><b>${esc(tx(l.material))}</b><small><span class="mono">${l.id}</span> · ${esc(partnerTxt(l))} · ${T('Charge','Batch')} ${esc(l.charge)} · ${fD(l.date)}</small></div><div class="end"><div class="bar seg" title="${s.ok} ${T('i.O.','pass')} / ${s.nok} ${T('n.i.O.','fail')}"><i class="g" style="width:${s.ok/s.total*100}%"></i><i class="r" style="width:${s.nok/s.total*100}%"></i></div>${av(l.insp,'xs')}${lotPill(l)}</div></button>`;}).join(''):`<div class="empty">${T('Keine Prüfungen in dieser Ansicht.','No inspections in this view.')}</div>`}</div>`;
+};
+
+/* ---------- Ansicht: Prüflos (Durchführung / Detail) ---------- */
+VIEWS.lot=function(){
+  const l=curLot();if(!l)return VIEWS.lots();
+  if(l.status==='done')return lotDetail(l);
+  if(U.runLot!==l.id){U.runLot=l.id;U.runIdx=0;U.ud=null;}
+  const items=l.items,i=Math.min(U.runIdx,items.length),s=lotSum(l);
+  const strip=items.map((it,k)=>{const e=evalItem(it,l.res[it.uid]);return`<button class="stp ${e||''} ${k===i?'cur':''}" data-act="runGo" data-arg="${k}" title="${esc(tx(it.name))}">${k+1}</button>`;}).join('')+`<button class="stp ${i===items.length?'cur':''}" data-act="runGo" data-arg="${items.length}">${icon('ok','s')}</button>`;
+  return`<div class="run-head"><button class="ib" data-act="nav" data-arg="lots" aria-label="${T('Zurück','Back')}">${icon('left')}</button><div style="flex:1;min-width:0"><h1>${esc(tx(l.material))}</h1><div class="hint"><span class="mono">${l.id}</span> · ${esc(partnerTxt(l))} · ${T('Charge','Batch')} ${esc(l.charge)} · ${fN(l.qty)} ${T('Stk.','pcs')}</div></div>${lotPill(l)}</div>
+  <div class="card"><div class="card-b" style="gap:10px"><div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:600"><span>${esc(tx(l.planName))}</span><span id="runProg" class="num">${s.ok+s.nok} / ${s.total} ${T('erfasst','recorded')}</span></div><div class="bar" id="runBar"><i class="g" style="width:${s.ok/s.total*100}%"></i><i class="r" style="width:${s.nok/s.total*100}%"></i></div><div class="strip" id="strip">${strip}</div></div></div>
+  ${i<items.length?stepCard(l,items[i],i):summaryCard(l)}`;
+};
+function ensureRes(l,it){if(!l.res[it.uid])l.res[it.uid]={vals:[],q:null,note:'',photos:[],docs:[]};return l.res[it.uid];}
+function statePill(e){return e==='ok'?`<span class="pill good">${icon('ok','s')} ${T('i.O.','Pass')}</span>`:e==='nok'?`<span class="pill crit">${icon('x','s')} ${T('n.i.O.','Fail')}</span>`:`<span class="pill muted">${T('offen','pending')}</span>`;}
+function tolSvg(it,vals){
+  const lo=it.ugw,hi=it.ogw,span=(hi-lo)||1,a=lo-span*.45,b=hi+span*.45;
+  const X=v=>14+(Math.max(a,Math.min(b,v))-a)/(b-a)*312;const dd=decOf(it);
+  let dots='';(vals||[]).forEach(v=>{if(v==null||isNaN(v))return;const bad=v<lo||v>hi;dots+=`<circle cx="${X(v).toFixed(1)}" cy="20" r="5.5" fill="${bad?'#B42331':'#1D7445'}" stroke="#fff" stroke-width="1.5"/>`;});
+  const s=it.soll??(lo+hi)/2;
+  return`<svg viewBox="0 0 340 58" role="img" aria-label="${T('Toleranzband','Tolerance band')}"><rect x="14" y="14" width="312" height="12" rx="6" fill="#FBE3E5"/><rect x="${X(lo)}" y="14" width="${X(hi)-X(lo)}" height="12" fill="#DDF1E4"/><line x1="${X(lo)}" x2="${X(lo)}" y1="8" y2="32" stroke="#B42331" stroke-width="1.5" stroke-dasharray="3 2"/><line x1="${X(hi)}" x2="${X(hi)}" y1="8" y2="32" stroke="#B42331" stroke-width="1.5" stroke-dasharray="3 2"/><line x1="${X(s)}" x2="${X(s)}" y1="10" y2="30" stroke="#2B5BE8" stroke-width="2"/>${dots}<text x="${X(lo)}" y="48" font-size="11" text-anchor="middle" fill="#5E6372" font-family="sans-serif">${T('Min.','Min')} ${fN(lo,dd)}</text><text x="${X(s)}" y="48" font-size="11" text-anchor="middle" fill="#2B5BE8" font-family="sans-serif" font-weight="700">${fN(s,dd)}</text><text x="${X(hi)}" y="48" font-size="11" text-anchor="middle" fill="#5E6372" font-family="sans-serif">${T('Max.','Max')} ${fN(hi,dd)}</text></svg>`;
+}
+function photosBlock(l,it,r,editable){
+  const ph=r?r.photos:[];const docs=r?r.docs:[];
+  return`<div class="sec-h">${icon('camera','s')} ${T('Fotos','Photos')} ${it.photo?`<span class="pill ${ph.length?'good':'warn'}">${T('Pflicht','Required')}</span>`:''}</div>
+  ${ph.length?`<div class="thumbs">${ph.map((p,k)=>`<button data-act="photo" data-arg="${l.id}|${it.uid}|${k}"><img src="${p}" alt="${T('Foto','Photo')} ${k+1}"></button>`).join('')}</div>`:''}
+  ${editable?`<div class="up-row"><label class="btn">${icon('camera')} ${T('Foto aufnehmen','Take photo')}<input type="file" accept="image/*" capture="environment" multiple hidden data-in="photo"></label><label class="btn">${icon('file')} ${T('Dokument anhängen','Attach document')}<input type="file" multiple hidden data-in="doc"></label></div>`:''}
+  ${docs.length?`<div class="files">${docs.map((d,k)=>`<div class="file">${icon('file','s')}<span>${esc(d.n)}</span><small>${Math.max(1,Math.round(d.s/1024))} KB</small>${editable?`<button class="ib" data-act="delDoc" data-arg="${k}" aria-label="${T('Entfernen','Remove')}">${icon('x')}</button>`:''}</div>`).join('')}</div>`:''}`;
+}
+function stepCard(l,it,i){
+  const r=l.res[it.uid];const e=evalItem(it,r);
+  let body='';
+  if(it.type==='quant'){
+    const vals=r?r.vals:[];
+    body=`<div class="spec"><div><span>${T('Sollwert','Target')}</span><b>${fN(it.soll,decOf(it))} <small>${esc(it.unit)}</small></b></div><div><span>${T('Untere Grenze','Lower limit')}</span><b>${fN(it.ugw,decOf(it))}</b></div><div><span>${T('Obere Grenze','Upper limit')}</span><b>${fN(it.ogw,decOf(it))}</b></div></div>
+    <div class="tol" id="tol">${tolSvg(it,vals)}</div>
+    <div class="vins">${Array.from({length:it.n},(_,k)=>{const v=vals[k];const c=v==null?'':((v<it.ugw||v>it.ogw)?'nok':'ok');return`<div class="vin-w"><label for="v${k}">${T('Teil','Part')} ${k+1}</label><input id="v${k}" class="vin ${c}" inputmode="decimal" autocomplete="off" data-in="val" data-k="${k}" value="${inVal(v)}" placeholder="${fN(it.soll,decOf(it))}"></div>`;}).join('')}</div>`;
+  }else{
+    const q=r?r.q:null;
+    body=`<div class="qbtns"><button class="qbtn ok ${q==='ok'?'on':''}" data-act="q" data-arg="ok">${icon('ok')} ${T('i.O.','Pass')}</button><button class="qbtn nok ${q==='nok'?'on':''}" data-act="q" data-arg="nok">${icon('x')} ${T('n.i.O.','Fail')}</button></div>`;
+  }
+  return`<div class="card">
+  <div class="card-h"><div style="min-width:0"><div style="display:flex;gap:6px;align-items:center;margin-bottom:4px">${tb(it.type)}<span class="code">${esc(it.code)}</span><span class="hint">${T('Prüfpunkt','Checkpoint')} ${i+1} ${T('von','of')} ${l.items.length}</span></div><h2>${esc(tx(it.name))}</h2><p>${esc(tx(it.method))} · ${T('Stichprobe','Sample')} n = ${it.n}</p></div><span id="runState">${statePill(e)}</span></div>
+  <div class="card-b">${body}
+    ${photosBlock(l,it,r,true)}
+    <label class="sec-h" for="note">${icon('edit','s')} ${T('Bemerkung','Remark')}</label><textarea id="note" class="note" data-in="note" placeholder="${T('z. B. Auffälligkeit, Messmittel-Nr. …','e.g. observation, gauge no. …')}">${esc(tx(r?r.note:''))}</textarea>
+  </div>
+  <div class="card-f"><button class="btn" data-act="runGo" data-arg="${i-1}" ${i===0?'disabled':''}>${icon('left')} ${T('Zurück','Back')}</button><button class="btn primary" data-act="runGo" data-arg="${i+1}">${i===l.items.length-1?T('Zur Auswertung','To summary'):T('Weiter','Next')} ${icon('right')}</button></div></div>`;
+}
+function missing(l){const m=[];l.items.forEach((it,k)=>{const r=l.res[it.uid];if(!evalItem(it,r))m.push({k,t:T('Ergebnis fehlt','Result missing'),it});else if(it.photo&&!(r.photos||[]).length)m.push({k,t:T('Foto fehlt','Photo missing'),it});});return m;}
+function resRow(it,r){
+  const e=evalItem(it,r);
+  let v='';
+  if(it.type==='quant'&&!r)v='–';
+  else if(it.type==='quant')v=`<div class="vals">${(r.vals||[]).slice(0,it.n).filter(x=>x!=null).map(x=>`<span class="${(x<it.ugw||x>it.ogw)?'nok':''}">${fN(x)}</span>`).join('')}</div>`;
+  else v=`<span class="muted">${T('Ja/Nein','Pass/fail')}</span>`;
+  return`<tr><td><span class="code">${esc(it.code)}</span> ${esc(tx(it.name))}<div class="hint">${it.type==='quant'?quantSpec(it):''}</div></td><td>${v}</td><td style="text-align:right">${statePill(e)}</td></tr>`;
+}
+function summaryCard(l){
+  const s=lotSum(l),miss=missing(l),rec=s.nok?'rej':'acc';
+  const ud=U.ud;
+  return`<div class="card"><div class="card-h"><div><h2>${T('Auswertung & Prüfentscheid','Summary & final decision')}</h2><p>${s.ok} ${T('i.O.','pass')} · ${s.nok} ${T('n.i.O.','fail')} · ${s.open} ${T('offen','pending')}</p></div></div>
+  <div style="overflow-x:auto"><table class="res-t"><thead><tr><th>${T('Prüfpunkt','Checkpoint')}</th><th>${T('Werte','Values')}</th><th style="text-align:right">${T('Ergebnis','Result')}</th></tr></thead><tbody>${l.items.map(it=>resRow(it,l.res[it.uid])).join('')}</tbody></table></div>
+  <div class="card-b">
+    ${miss.length?`<div class="warnbox"><b>${T('Noch nicht vollständig:','Not complete yet:')}</b> ${miss.map(m=>`<button class="linkbtn" style="background:none;border:0;color:inherit;text-decoration:underline;padding:0;font:inherit" data-act="runGo" data-arg="${m.k}">${m.k+1}. ${esc(tx(m.it.name))} (${m.t})</button>`).join(', ')}</div>`:''}
+    ${s.nok?`<div class="critbox">${icon('alert')}<span>${s.nok} ${T('Prüfpunkt(e) n.i.O. – nach dem Abschluss können Sie direkt eine Reklamation mit Workflow anlegen.','checkpoint(s) failed – after completion you can create a complaint with workflow right away.')}</span></div>`:''}
+    <div class="sec-h">${T('Prüfentscheid','Final decision')}</div>
+    <div class="ud-opts">${['acc','con','rej'].map(k=>`<button class="ud ${k} ${ud===k?'on':''}" data-act="ud" data-arg="${k}">${rec===k?`<span class="rec">${T('EMPFEHLUNG','RECOMMENDED')}</span>`:''}<b>${tx(UD[k].t)}</b><small>${tx(UD[k].d)}</small></button>`).join('')}</div>
+  </div>
+  <div class="card-f"><button class="btn" data-act="runGo" data-arg="${l.items.length-1}">${icon('left')} ${T('Zurück','Back')}</button><button class="btn good lg" data-act="finish" ${(miss.length||!ud)?'disabled':''}>${icon('ok')} ${T('Prüfung abschließen','Complete inspection')}</button></div></div>`;
+}
+function lotDetail(l){
+  const s=lotSum(l);
+  const rks=S.reklas.filter(x=>x.lot===l.id),cs=S.certs.filter(c=>c.lot===l.id);
+  return`<div class="run-head"><button class="ib" data-act="nav" data-arg="lots" aria-label="${T('Zurück','Back')}">${icon('left')}</button><div style="flex:1;min-width:0"><h1>${esc(tx(l.material))}</h1><div class="hint"><span class="mono">${l.id}</span> · ${esc(tx(l.planName))}</div></div>${lotPill(l)}</div>
+  <div class="card"><div class="card-b"><div class="info-g">
+    <div><span>${l.supplier?T('Lieferant','Supplier'):T('Fertigungsauftrag','Production order')}</span><b>${esc(l.supplier||l.order)}</b></div>
+    <div><span>${T('Charge','Batch')}</span><b>${esc(l.charge)}</b></div>
+    <div><span>${T('Menge','Quantity')}</span><b>${fN(l.qty)} ${T('Stk.','pcs')}</b></div>
+    <div><span>${T('Geprüft von / am','Inspected by / on')}</span><b>${esc(PEOPLE[l.insp]?.n||'')} · ${fD(l.closedAt)}</b></div>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    ${s.nok?`<button class="btn danger" data-act="newRekla" data-arg="${l.id}">${icon('alert')} ${T('Reklamation anlegen','Create complaint')}</button>`:''}
+    ${l.ud!=='rej'?`<button class="btn primary" data-act="newCert" data-arg="${l.id}">${icon('award')} ${T('Zeugnis erstellen','Issue certificate')}</button>`:''}
+    ${rks.map(x=>`<button class="btn" data-act="go" data-arg="rekladetail:${x.id}">${icon('alert','s')} ${x.id}</button>`).join('')}
+    ${cs.map(c=>`<button class="btn" data-act="go" data-arg="cert:${c.id}">${icon('award','s')} ${c.id}</button>`).join('')}
+  </div></div></div>
+  <div class="card"><div class="card-h"><div><h2>${T('Ergebnisse','Results')}</h2><p>${s.ok} ${T('i.O.','pass')} · ${s.nok} ${T('n.i.O.','fail')}</p></div></div>
+  ${l.items.map(it=>{const r=l.res[it.uid];const e=evalItem(it,r);return`<div class="res-item"><div class="top">${tb(it.type)}<b><span class="code">${esc(it.code)}</span> ${esc(tx(it.name))}</b>${statePill(e)}</div>
+    <div class="hint">${specTxt(it)} · ${esc(tx(it.method))}</div>
+    ${it.type==='quant'&&r?`<div class="vals">${r.vals.map(x=>`<span class="${(x<it.ugw||x>it.ogw)?'nok':''}">${fN(x)}</span>`).join('')}</div>`:''}
+    ${r&&tx(r.note)?`<div style="font-size:13px">💬 ${esc(tx(r.note))}</div>`:''}
+    ${r&&(r.photos.length||r.docs.length)?photosBlock(l,it,r,false):''}</div>`;}).join('')}</div>`;
+}
+
+/* ---------- Ansicht: Prüfpläne (Builder) ---------- */
+VIEWS.plans=function(){
+  const p=curPlan();
+  const q=quantCount(p);
+  const pal=S.catalog.map(m=>`<div class="pal" data-drag="cat:${m.id}" data-dragcard data-act="addCat" data-arg="${m.id}" data-s="${esc((m.code+' '+tx(m.name)).toLowerCase())}" title="${T('Ziehen oder antippen','Drag or tap')}">${tb(m.type)}<span class="nm">${esc(tx(m.name))}</span><span class="pl">${icon('plus','s')}</span></div>`).join('');
+  return`<div class="page-h"><div><h1>${T('Prüfpläne','Inspection plans')}</h1><p>${T('Prüfpunkte aus dem Katalog in den Plan ziehen, Reihenfolge per Griff ändern, Stichprobe und Fotopflicht festlegen.','Drag checkpoints from the library into the plan, reorder by the handle, set sample size and photo requirement.')}</p></div><button class="btn primary" data-act="newPlan">${icon('plus')} ${T('Neuer Prüfplan','New plan')}</button></div>
+  <div class="chips scroll">${S.plans.map(x=>`<button class="chip ${x.id===p.id?'on':''}" data-act="plan" data-arg="${x.id}"><span class="dot ${x.status==='rel'?'good':'warn'}"></span>${esc(tx(x.name))}</button>`).join('')}</div>
+  <div class="builder">
+    <div class="card palette"><div class="card-h"><div><h2>${T('Prüfpunkt-Katalog','Checkpoint library')}</h2><p>${T('Ziehen oder antippen zum Hinzufügen','Drag or tap to add')}</p></div></div>
+      <div class="card-b"><label class="search">${icon('search','s')}<input data-in="palq" placeholder="${T('Suchen …','Search …')}" aria-label="${T('Prüfpunkte suchen','Search checkpoints')}"></label><div class="pal-list">${pal}</div><button class="btn" data-act="newM">${icon('plus')} ${T('Neuer Prüfpunkt','New checkpoint')}</button></div></div>
+    <div class="card"><div class="card-h" style="align-items:flex-start"><div style="flex:1;min-width:220px"><div class="plan-meta"><span class="mono muted">${p.id}</span><span class="pill ${p.status==='rel'?'good':'warn'}">${p.status==='rel'?T('Freigegeben','Released'):T('Entwurf','Draft')}</span><span class="pill muted">${T('Version','Version')} ${p.ver}</span><span class="pill ${p.origin==='we'?'lr':'qm'}">${p.origin==='we'?T('Wareneingang','Goods receipt'):T('Fertigung','Production')}</span></div>
+        <div class="plan-meta" style="margin-top:6px"><input data-in="pname" value="${esc(tx(p.name))}" aria-label="${T('Name des Prüfplans','Plan name')}"></div><p>${T('Material','Material')}: ${esc(tx(p.material))}</p></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">${p.status!=='rel'?`<button class="btn good" data-act="relPlan" ${p.items.length?'':'disabled'}>${icon('ok')} ${T('Freigeben','Release')}</button>`:''}<button class="btn primary" data-act="newLot" data-arg="${p.id}" ${p.status==='rel'&&p.items.length?'':'disabled'}>${icon('play')} ${T('Prüfung starten','Start inspection')}</button></div></div>
+      <div class="zone" data-drop="plan" data-accept="cat,item">${p.items.map((it,k)=>planItem(it,k)).join('')}${p.items.length?'':`<div class="empty-drop">${icon('layers')}<b>${T('Prüfpunkte hierher ziehen','Drag checkpoints here')}</b><span class="hint">${T('oder im Katalog antippen','or tap them in the catalogue')}</span></div>`}</div>
+      <div class="card-f"><div class="stats"><span><b>${p.items.length}</b> ${T('Prüfpunkte','checkpoints')}</span><span><b>${q}</b> ${T('Messwerte','measured')}</span><span><b>${p.items.length-q}</b> ${T('Ja/Nein','pass/fail')}</span><span><b>${p.items.filter(i=>i.photo).length}</b> ${T('mit Fotopflicht','photo required')}</span></div></div></div>
+  </div>`;
+};
+const quantCount=p=>p.items.filter(i=>i.type==='quant').length;
+function planItem(it,k){
+  return`<div class="pi" style="--s:${it.type==='quant'?'#6C3BFF':'#0D8F7E'}" data-dragcard data-uid="${it.uid}"><span class="grip" data-drag="item:${it.uid}" aria-label="${T('Ziehen zum Verschieben','Drag to move')}">${icon('grip')}</span><span class="no-b">${k+1}</span>
+  <div class="pi-main"><b>${tb(it.type)}<span class="code">${esc(it.code)}</span><span class="t">${esc(tx(it.name))}</span></b><small>${specTxt(it)} · ${esc(tx(it.method))}</small></div>
+  <div class="pi-ctl"><div class="stepper" title="${T('Stichprobenumfang','Sample size')}"><button data-act="nStep" data-arg="${it.uid}|-1" aria-label="−">−</button><span>n=${it.n}</span><button data-act="nStep" data-arg="${it.uid}|1" aria-label="+">+</button></div>
+  <button class="ib ${it.photo?'on':''}" data-act="togPhoto" data-arg="${it.uid}" title="${T('Fotopflicht','Photo required')}" aria-pressed="${it.photo}">${icon('camera')}</button>
+  <button class="ib" data-act="editItem" data-arg="${it.uid}" title="${T('Bearbeiten','Edit')}">${icon('edit')}</button>
+  <button class="ib" data-act="delItem" data-arg="${it.uid}" title="${T('Entfernen','Remove')}">${icon('trash')}</button></div></div>`;
+}
+
+/* ---------- Ansicht: Merkmalkatalog ---------- */
+VIEWS.cat=function(){
+  const q=U.catQ.toLowerCase(),t=U.catT;
+  const used=id=>S.plans.filter(p=>p.items.some(i=>i.mid===id)).length;
+  const list=S.catalog.filter(m=>(t==='all'||m.type===t)&&(!q||(m.code+' '+tx(m.name)).toLowerCase().includes(q)));
+  return`<div class="page-h"><div><h1>${T('Prüfpunkte','Checkpoints')}</h1><p>${T('Zentraler Katalog für Messwerte mit Toleranz und Ja/Nein-Prüfungen (i.O./n.i.O.) – wiederverwendbar in allen Prüfplänen.','Central library of measured checkpoints with tolerance and pass/fail checks – reusable in every plan.')}</p></div><button class="btn primary" data-act="newM">${icon('plus')} ${T('Neuer Prüfpunkt','New checkpoint')}</button></div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><label class="search" style="flex:1;min-width:220px">${icon('search','s')}<input data-in="catq" value="${esc(U.catQ)}" placeholder="${T('Code oder Name …','Code or name …')}"></label>
+  <div class="chips">${[['all',T('Alle','All')],['quant',T('Messwert','Measured')],['qual',T('Ja/Nein','Pass/fail')]].map(([k,l])=>`<button class="chip ${t===k?'on':''}" data-act="catT" data-arg="${k}">${l}</button>`).join('')}</div></div>
+  <div class="card" id="catList">${list.length?list.map(m=>`<div class="row">${tb(m.type)}<div class="main"><b><span class="code">${esc(m.code)}</span> ${esc(tx(m.name))}</b><small>${specTxt(m)} · ${esc(tx(m.method))}${m.photo?' · 📷 '+T('Fotopflicht','photo required'):''}</small></div><div class="end"><span class="pill muted">${used(m.id)} ${T('Pläne','plans')}</span><button class="ib" data-act="editM" data-arg="${m.id}" title="${T('Bearbeiten','Edit')}">${icon('edit')}</button><button class="ib" data-act="delM" data-arg="${m.id}" title="${T('Löschen','Delete')}">${icon('trash')}</button></div></div>`).join(''):`<div class="empty">${T('Keine Treffer.','No matches.')}</div>`}</div>`;
+};
+
+/* ---------- Ansicht: Reklamationen ---------- */
+VIEWS.rekla=function(){
+  const f=U.rF,t=U.rT;
+  const list=S.reklas.filter(x=>(f==='all'||(f==='open'?!isClosed(x):isClosed(x)))&&(t==='all'||x.type===t));
+  const cnt=k=>S.reklas.filter(x=>k==='all'||(k==='open'?!isClosed(x):isClosed(x))).length;
+  return`<div class="page-h"><div><h1>${T('Reklamationen','Complaints')}</h1><p>${T('Aus jeder n.i.O.-Prüfung entsteht mit einem Klick eine Reklamation. Der Workflow verteilt die Schritte automatisch mit Verantwortlichen und Fristen.','Every failed inspection becomes a complaint in one click. The workflow assigns each step with owner and deadline automatically.')}</p></div><button class="btn primary" data-act="newRekla">${icon('plus')} ${T('Neue Reklamation','New complaint')}</button></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><div class="chips">${[['open',T('Offen','Open')],['done',T('Abgeschlossen','Closed')],['all',T('Alle','All')]].map(([k,l])=>`<button class="chip ${f===k?'on':''}" data-act="rF" data-arg="${k}">${l}<span class="n">${cnt(k)}</span></button>`).join('')}</div>
+  <div class="chips">${[['all',T('Alle Arten','All types')],['lief',T('Lieferant','Supplier')],['kunde',T('Kunde','Customer')],['intern',T('Intern','Internal')]].map(([k,l])=>`<button class="chip ${t===k?'on':''}" data-act="rT" data-arg="${k}">${l}</button>`).join('')}</div></div>
+  <div class="card">${list.length?list.map(x=>{const s=curStep(x);const d=x.steps.filter(z=>z.done).length;return`<button class="row click" style="--s:var(--${RTYPE[x.type].c})" data-act="go" data-arg="rekladetail:${x.id}"><div class="main"><b>${esc(tx(x.title))}</b><small><span class="mono">${x.id}</span> · ${esc(x.partner||T('Fertigung','Production'))} · ${esc(tx(x.tplName))}</small>
+    <small style="margin-top:3px">${s?`${T('Aktuell','Now')}: <b style="display:inline;font-size:12.5px">${esc(tx(s.title))}</b> · <span class="${s.due<TODAY()?'due-over':''}">${T('fällig','due')} ${fD(s.due)}</span>`:`✓ ${T('Abgeschlossen','Closed')}`}</small></div>
+    <div class="end">${rPill(x.type)}${s?av(s.owner,'xs'):''}<div class="bar seg"><i class="${s?'a':'g'}" style="width:${d/x.steps.length*100}%"></i></div><span class="mono muted">${d}/${x.steps.length}</span></div></button>`;}).join(''):`<div class="empty">${T('Keine Reklamationen in dieser Ansicht.','No complaints in this view.')}</div>`}</div>`;
+};
+VIEWS.rekladetail=function(){
+  const x=S.reklas.find(r=>r.id===U.id);if(!x)return VIEWS.rekla();
+  const cur=curStep(x),d=x.steps.filter(z=>z.done).length;
+  const l=x.lot?lotById(x.lot):null;
+  const photos=[];if(l)l.items.forEach(it=>{const r=l.res[it.uid];if(r&&evalItem(it,r)==='nok')(r.photos||[]).forEach((p,k)=>photos.push({p,a:`${l.id}|${it.uid}|${k}`}));});
+  return`<div class="run-head"><button class="ib" data-act="nav" data-arg="rekla" aria-label="${T('Zurück','Back')}">${icon('left')}</button><div style="flex:1;min-width:0"><h1>${esc(tx(x.title))}</h1><div class="hint"><span class="mono">${x.id}</span> · ${esc(tx(x.tplName))} · ${T('erstellt','created')} ${fD(x.created)}</div></div>${rPill(x.type)}${cur?`<span class="pill info">${T('In Bearbeitung','In progress')}</span>`:`<span class="pill good">${T('Abgeschlossen','Closed')}</span>`}</div>
+  <div class="grid2" style="align-items:start">
+  <div class="card"><div class="card-h"><div><h2>${T('Workflow','Workflow')}</h2><p>${d} ${T('von','of')} ${x.steps.length} ${T('Schritten erledigt','steps completed')}</p></div><div class="bar" style="width:120px"><i class="${cur?'a':'g'}" style="width:${d/x.steps.length*100}%"></i></div></div>
+    <div class="card-b"><div class="tl">${x.steps.map((s,k)=>{const isCur=cur&&s.uid===cur.uid;return`<div class="tl-s ${s.done?'done':''} ${isCur?'cur':''}"><span class="tl-c">${s.done?icon('ok','s'):k+1}</span><div class="tl-b"><div class="t"><b>${esc(tx(s.title))}</b>${s.done?`<span class="pill good">${fD(s.doneAt)}</span>`:''}</div>
+      <div class="m">${av(s.owner,'xs')}<span>${esc(PEOPLE[s.owner].n)} · ${tx(ROLES[s.role])}</span><span class="${!s.done&&s.due<TODAY()?'due-over':''}">${T('Frist','Due')} ${fD(s.due)}</span></div>
+      ${s.note?`<div style="font-size:13px">💬 ${esc(tx(s.note))}</div>`:''}
+      ${isCur?`<div class="tl-cur"><textarea class="note" id="stepNote" placeholder="${T('Ergebnis / Notiz zu diesem Schritt …','Result / note for this step …')}"></textarea><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn good" data-act="stepDone" data-arg="${s.uid}">${icon('ok')} ${T('Schritt abschließen','Complete step')}</button>${k>0?`<button class="btn ghost" data-act="stepUndo">${T('Vorherigen wieder öffnen','Reopen previous')}</button>`:''}</div></div>`:''}
+      ${!cur&&k===x.steps.length-1?`<div><button class="btn ghost" data-act="stepUndo">${T('Wieder öffnen','Reopen')}</button></div>`:''}
+    </div></div>`;}).join('')}</div></div></div>
+  <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+    <div class="card"><div class="card-h"><h2>${T('Details','Details')}</h2></div><div class="card-b">
+      <div class="info-g" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div><span>${x.type==='kunde'?T('Kunde','Customer'):(x.type==='lief'?T('Lieferant','Supplier'):T('Bereich','Area'))}</span><b>${esc(x.partner||T('Fertigung','Production'))}</b></div><div><span>${T('Betroffener Prüfpunkt','Affected checkpoint')}</span><b>${x.defect?`<span class="code">${esc(x.defect)}</span>`:'–'}</b></div>
+      <div><span>${T('Prüfung','Inspection')}</span><b>${l?`<button class="linkbtn" style="background:none;border:0;color:var(--accent);font-weight:600;padding:0" data-act="go" data-arg="lot:${l.id}">${l.id} →</button>`:'–'}</b></div><div><span>${T('Workflow-Vorlage','Workflow template')}</span><b>${esc(tx(x.tplName))}</b></div></div>
+      ${x.desc?`<div style="font-size:13.5px">${esc(tx(x.desc))}</div>`:''}
+    </div></div>
+    ${photos.length?`<div class="card"><div class="card-h"><h2>${T('Fotos aus der Prüfung','Photos from inspection')}</h2></div><div class="card-b"><div class="thumbs">${photos.map(p=>`<button data-act="photo" data-arg="${p.a}"><img src="${p.p}" alt=""></button>`).join('')}</div></div></div>`:''}
+    <div class="card"><div class="card-b"><button class="btn" data-act="pdf">${icon('file')} ${x.tpl==='8d'?T('8D-Report als PDF','8D report as PDF'):T('Bericht als PDF','Report as PDF')}</button><span class="hint">${T('Bericht und Versand an Lieferant/Kunde sind in der Vollversion enthalten.','Report and sending to supplier/customer are included in the full version.')}</span></div></div>
+  </div></div>`;
+};
+
+/* ---------- Ansicht: Workflow-Designer ---------- */
+VIEWS.wf=function(){
+  const tp=curTpl();
+  const total=tp.steps.reduce((a,s)=>a+(Number(s.sla)||0),0);
+  const usedN=S.reklas.filter(x=>x.tpl===tp.id).length;
+  const pal=Object.entries(BLK).map(([k,b])=>`<div class="pal" data-drag="blk:${k}" data-dragcard data-act="addBlk" data-arg="${k}" data-s="${esc(tx(b.t).toLowerCase())}"><span class="tb s">${icon('flow','s')}</span><span class="nm">${esc(tx(b.t))}</span><span class="pl">${icon('plus','s')}</span></div>`).join('');
+  return`<div class="page-h"><div><h1>${T('Workflows','Workflows')}</h1><p>${T('Reklamationsabläufe selbst gestalten: Schritte hineinziehen, sortieren, Rolle und Frist festlegen. Neue Reklamationen folgen automatisch der Vorlage.','Design complaint processes yourself: drag in steps, reorder, set role and deadline. New complaints follow the template automatically.')}</p></div><button class="btn primary" data-act="newTpl">${icon('plus')} ${T('Neue Vorlage','New template')}</button></div>
+  <div class="chips scroll">${S.tpls.map(x=>`<button class="chip ${x.id===tp.id?'on':''}" data-act="tpl" data-arg="${x.id}">${icon('flow','s')} ${esc(tx(x.name))}<span class="n">${x.steps.length}</span></button>`).join('')}</div>
+  <div class="builder">
+    <div class="card palette"><div class="card-h"><div><h2>${T('Bausteine','Building blocks')}</h2><p>${T('Ziehen oder antippen','Drag or tap')}</p></div></div><div class="card-b"><div class="pal-list">${pal}</div></div></div>
+    <div class="card"><div class="card-h"><div><h2>${esc(tx(tp.name))}</h2><p>${T('Soll-Durchlaufzeit','Target lead time')}: <b>${total} ${T('Tage','days')}</b> · ${T('verwendet in','used in')} ${usedN} ${T('Reklamationen','complaints')}</p></div></div>
+      <div class="zone" data-drop="wf" data-accept="blk,step">${tp.steps.map((s,k)=>`<div class="pi" style="--s:#FF5A3C" data-dragcard data-uid="${s.uid}"><span class="grip" data-drag="step:${s.uid}" aria-label="${T('Ziehen zum Verschieben','Drag to move')}">${icon('grip')}</span><span class="no-b">${k+1}</span>
+        <div class="pi-main"><b><span class="t">${esc(tx(BLK[s.k].t))}</span></b><small>${av(ROLES[s.role].p,'xs')} ${esc(PEOPLE[ROLES[s.role].p].n)}</small></div>
+        <div class="pi-ctl"><select data-in="srole" data-uid="${s.uid}" aria-label="${T('Rolle','Role')}">${Object.entries(ROLES).map(([rk,r])=>`<option value="${rk}" ${rk===s.role?'selected':''}>${tx(r)}</option>`).join('')}</select><input type="number" min="1" max="60" value="${s.sla}" data-in="ssla" data-uid="${s.uid}" aria-label="${T('Frist in Tagen','Deadline in days')}"><span class="hint">${T('Tg.','d')}</span><button class="ib" data-act="delStep" data-arg="${s.uid}" title="${T('Entfernen','Remove')}">${icon('trash')}</button></div></div>`).join('')}
+        ${tp.steps.length?'':`<div class="empty-drop">${icon('flow')}<b>${T('Schritte hierher ziehen','Drag steps here')}</b></div>`}</div></div>
+  </div>`;
+};
+
+/* ---------- Ansicht: Zeugnisse ---------- */
+VIEWS.certs=function(){
+  return`<div class="page-h"><div><h1>${T('Zeugnisse','Certificates')}</h1><p>${T('Prüfbescheinigungen nach DIN EN 10204 direkt aus den Prüfergebnissen – ohne Abtippen.','Inspection documents according to EN 10204 generated straight from inspection results – no retyping.')}</p></div><button class="btn primary" data-act="newCert">${icon('plus')} ${T('Neues Zeugnis','New certificate')}</button></div>
+  <div class="card">${S.certs.length?S.certs.map(c=>{const l=lotById(c.lot);return`<button class="row click" data-act="go" data-arg="cert:${c.id}"><span class="grade A" style="width:44px">${c.type}</span><div class="main"><b>${tx(CERT[c.type].t)} · ${esc(c.customer)}</b><small><span class="mono">${c.id}</span> · ${l?esc(tx(l.material))+' · '+T('Charge','Batch')+' '+esc(l.charge):''} · ${fD(c.date)}</small></div><div class="end">${icon('right','s')}</div></button>`;}).join(''):`<div class="empty">${T('Noch keine Zeugnisse.','No certificates yet.')}</div>`}</div>`;
+};
+VIEWS.cert=function(){
+  const c=S.certs.find(x=>x.id===U.id);if(!c)return VIEWS.certs();
+  const l=lotById(c.lot);const ct=CERT[c.type];
+  const rows=l.items.map(it=>{const r=l.res[it.uid];const e=evalItem(it,r);let mn='–',mx='–',av_='–',n=it.n;
+    if(it.type==='quant'&&r){const v=r.vals.filter(x=>x!=null);if(v.length){mn=fN(Math.min(...v));mx=fN(Math.max(...v));av_=fN(v.reduce((a,b)=>a+b,0)/v.length,Math.min(3,dp(it.ogw)+1));}}
+    return`<tr><td>${esc(it.code)} ${esc(tx(it.name))}</td><td>${it.type==='quant'?`${fN(it.soll,decOf(it))} (${fN(it.ugw,decOf(it))} … ${fN(it.ogw,decOf(it))}) ${esc(it.unit)}`:T('i.O.','pass')}</td><td>${n}</td><td>${mn}</td><td>${mx}</td><td>${av_}</td><td><b>${e==='ok'?T('i.O.','pass'):T('n.i.O.','fail')}</b></td></tr>`;}).join('');
+  const by=PEOPLE[c.by];
+  return`<div class="run-head"><button class="ib" data-act="nav" data-arg="certs" aria-label="${T('Zurück','Back')}">${icon('left')}</button><div style="flex:1;min-width:0"><h1>${c.id}</h1><div class="hint">${tx(ct.t)} · ${esc(c.customer)}</div></div><div class="acts"><button class="btn" data-act="pdf">${icon('file')} PDF</button><button class="btn primary" data-act="pdf">${icon('send')} ${T('An Kunden senden','Send to customer')}</button></div></div>
+  <div class="doc">
+    <div class="doc-h"><div class="doc-co"><span class="lg">MP</span><div><b>Muster Präzisionstechnik GmbH</b><small>Industriestraße 12 · 60311 Frankfurt am Main · ${T('Beispielfirma','Sample company')}</small></div></div><div class="doc-no"><div>${T('Zeugnis-Nr.','Certificate no.')} <b>${c.id}</b></div><div>${T('Datum','Date')}: ${fD(c.date)}</div><div>${T('Seite','Page')} 1/1</div></div></div>
+    <h2 class="doc-t">${tx(ct.t)}</h2><div class="doc-st">${T('nach DIN EN 10204:2005','according to EN 10204:2005')} · ${tx(ct.d)}</div>
+    <div class="doc-g">
+      <div><span>${T('Kunde','Customer')}</span><b>${esc(c.customer)}</b></div><div><span>${T('Bestell-Nr.','Order no.')}</span><b>${esc(c.order)}</b></div>
+      <div><span>${T('Erzeugnis','Product')}</span><b>${esc(tx(l.material))}</b></div><div><span>${T('Charge','Batch')}</span><b>${esc(l.charge)}</b></div>
+      <div><span>${T('Liefermenge','Quantity')}</span><b>${fN(l.qty)} ${T('Stk.','pcs')}</b></div><div><span>${T('Prüfung','Inspection')}</span><b>${l.id}</b></div>
+      <div><span>${T('Prüfplan','Inspection plan')}</span><b>${l.planId}</b></div><div><span>${T('Prüfdatum','Inspection date')}</span><b>${fD(l.closedAt)}</b></div>
+    </div>
+    ${c.type==='2.1'?`<p>${T('Wir bestätigen, dass die gelieferten Erzeugnisse den Vereinbarungen der Bestellung entsprechen. Prüfergebnisse werden mit dieser Werksbescheinigung nicht angegeben.','We confirm that the products supplied comply with the requirements of the order. Test results are not included in this declaration of compliance.')}</p>`:
+    `<div class="scroll"><table><thead><tr><th>${T('Prüfpunkt','Checkpoint')}</th><th>${T('Soll (Toleranz)','Target (tolerance)')}</th><th>n</th><th>Min</th><th>Max</th><th>${T('Mittel','Mean')}</th><th>${T('Ergebnis','Result')}</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p>${c.type==='3.1'?T('Die Prüfungen wurden spezifisch an der gelieferten Charge durchgeführt. Die Erzeugnisse entsprechen den Anforderungen der Bestellung.','The tests were carried out specifically on the batch supplied. The products comply with the requirements of the order.'):T('Die angegebenen Ergebnisse stammen aus nichtspezifischen Prüfungen an Erzeugnissen derselben Fertigung. Die Erzeugnisse entsprechen den Anforderungen der Bestellung.','The results stated are based on non-specific inspection of products from the same production. The products comply with the requirements of the order.')}</p>`}
+    <div class="doc-sig"><div class="sig"><i>${esc(by.n)}</i><b>${esc(by.n)}</b><br>${c.type==='3.1'?T('Abnahmebeauftragte (von der Fertigung unabhängig)','Inspection representative (independent of production)'):tx(by.r)}<br><small>${T('Digital signiert am','Digitally signed on')} ${fD(c.date)}</small></div><div class="stamp">${T('GEPRÜFT','INSPECTED')}<br>QS<br>${fD(c.date)}</div></div>
+    <div class="doc-f"><span>${T('Erstellt mit devunoxAI QM','Created with devunoxAI QM')}</span><span>${T('Demo – Beispieldaten','Demo – sample data')}</span></div>
+  </div>`;
+};
+
+/* ---------- Modale ---------- */
+function newLotModal(planId){
+  const rel=S.plans.filter(p=>p.status==='rel'&&p.items.length);
+  const sel=planId||rel[0]?.id;
+  modal(mHead(T('Neue Prüfung','New inspection'),T('Aus einem freigegebenen Prüfplan','From a released inspection plan'))+`<div class="card-b f">
+    <label>${T('Prüfplan','Inspection plan')}<select id="nlPlan">${rel.map(p=>`<option value="${p.id}" ${p.id===sel?'selected':''}>${p.id} · ${esc(tx(p.name))}</option>`).join('')}</select></label>
+    <label>${T('Lieferant / Herkunft','Supplier / origin')}<select id="nlSup">${SUPPLIERS.map(s=>`<option>${esc(s)}</option>`).join('')}<option value="">${T('Eigene Fertigung','Own production')}</option></select></label>
+    <div class="two"><label>${T('Charge','Batch')}<input id="nlCh" value="CH-${8800+Math.floor(Math.random()*190)}"></label><label>${T('Menge (Stk.)','Quantity (pcs)')}<input id="nlQty" inputmode="numeric" value="250"></label></div>
+    <label>${T('Prüfer','Inspector')}<select id="nlIn">${Object.entries(PEOPLE).map(([k,p])=>`<option value="${k}">${esc(p.n)} · ${tx(p.r)}</option>`).join('')}</select></label>
+  </div><div class="card-f"><button class="btn" data-act="close">${T('Abbrechen','Cancel')}</button><button class="btn primary" data-act="newLotSave">${icon('play')} ${T('Anlegen & prüfen','Create & inspect')}</button></div>`);
+}
+function itemModal(uid){
+  const it=curPlan().items.find(i=>i.uid===uid);if(!it)return;
+  modal(mHead(T('Prüfpunkt im Plan bearbeiten','Edit checkpoint in plan'),`${esc(it.code)} · ${T('gilt nur für diesen Prüfplan','applies to this plan only')}`)+`<div class="card-b f">
+    <label>${T('Bezeichnung','Name')}<input id="eiName" value="${esc(tx(it.name))}"></label>
+    ${it.type==='quant'?`<div class="three"><label>${T('Soll','Target')}<input id="eiSoll" inputmode="decimal" value="${inVal(it.soll)}"></label><label>${T('Min.','Min')}<input id="eiU" inputmode="decimal" value="${inVal(it.ugw)}"></label><label>${T('Max.','Max')}<input id="eiO" inputmode="decimal" value="${inVal(it.ogw)}"></label></div><label>${T('Einheit','Unit')}<input id="eiUnit" value="${esc(it.unit)}"></label>`:''}
+    <div class="two"><label>${T('Stichprobe n','Sample size n')}<input id="eiN" inputmode="numeric" value="${it.n}"></label><label>${T('Prüfmethode','Method')}<input id="eiMeth" value="${esc(tx(it.method))}"></label></div>
+    <label class="chk"><input type="checkbox" id="eiPh" ${it.photo?'checked':''}> ${T('Foto ist Pflicht','Photo required')}</label><div class="err" id="eiErr"></div>
+  </div><div class="card-f"><button class="btn" data-act="close">${T('Abbrechen','Cancel')}</button><button class="btn primary" data-act="editItemSave" data-arg="${uid}">${T('Speichern','Save')}</button></div>`);
+}
+function mModal(id){
+  const m=id?S.catalog.find(x=>x.id===id):null;
+  const q=!m||m.type==='quant';
+  modal(mHead(m?T('Prüfpunkt bearbeiten','Edit checkpoint'):T('Neuer Prüfpunkt','New checkpoint'),T('Wird im Katalog gespeichert und kann in jeden Prüfplan gezogen werden.','Saved to the catalogue and usable in every plan.'))+`<div class="card-b f">
+    <div class="two"><label>${T('Code','Code')}<input id="mCode" value="${esc(m?m.code:'NM-'+String(S.seq.m).padStart(2,'0'))}"></label><label>${T('Art','Type')}<select id="mType" data-in="mtype"><option value="quant" ${q?'selected':''}>${T('Messwert (mit Toleranz)','Measured value (with tolerance)')}</option><option value="qual" ${!q?'selected':''}>${T('Ja/Nein (i.O./n.i.O.)','Pass/fail')}</option></select></label></div>
+    <label>${T('Bezeichnung','Name')}<input id="mName" value="${esc(m?tx(m.name):'')}" placeholder="${T('z. B. Wandstärke','e.g. Wall thickness')}"></label>
+    <div id="mQ" ${q?'':'hidden'} class="f"><div class="three"><label>${T('Soll','Target')}<input id="mSoll" inputmode="decimal" value="${m?inVal(m.soll):''}"></label><label>${T('Min.','Min')}<input id="mU" inputmode="decimal" value="${m?inVal(m.ugw):''}"></label><label>${T('Max.','Max')}<input id="mO" inputmode="decimal" value="${m?inVal(m.ogw):''}"></label></div><label>${T('Einheit','Unit')}<input id="mUnit" value="${esc(m?m.unit||'':'mm')}"></label></div>
+    <label>${T('Prüfmethode / Prüfmittel','Method / gauge')}<input id="mMeth" value="${esc(m?tx(m.method):'')}"></label>
+    <label class="chk"><input type="checkbox" id="mPh" ${m&&m.photo?'checked':''}> ${T('Foto ist Pflicht','Photo required')}</label><div class="err" id="mErr"></div>
+  </div><div class="card-f"><button class="btn" data-act="close">${T('Abbrechen','Cancel')}</button><button class="btn primary" data-act="saveM" data-arg="${id||''}">${T('Speichern','Save')}</button></div>`);
+}
+function reklaModal(lotId){
+  const l=lotId?lotById(lotId):null;
+  let title='',desc='',defect='',type='lief',partner='';
+  if(l){const nok=l.items.filter(it=>evalItem(it,l.res[it.uid])==='nok');if(nok.length){title=nok.map(it=>tx(it.name)).join(', ')+' '+T('n.i.O.','failed');defect=nok[0].code;desc=nok.map(it=>tx(l.res[it.uid].note)).filter(Boolean).join(' · ');}
+    type=l.supplier?'lief':'intern';partner=l.supplier||'';}
+  const lots=S.lots.filter(x=>x.status==='done');
+  modal(mHead(T('Neue Reklamation','New complaint'),l?`${T('aus Prüfung','from inspection')} ${l.id}`:T('Workflow wird automatisch angelegt','Workflow is created automatically'))+`<div class="card-b f">
+    <div class="opt-g" style="grid-template-columns:repeat(3,minmax(0,1fr))">${Object.entries(RTYPE).map(([k,r])=>`<label class="opt"><input type="radio" name="rType" value="${k}" ${k===type?'checked':''} data-in="rtype"><span><b>${tx(r.t)}</b></span></label>`).join('')}</div>
+    <label>${T('Titel','Title')}<input id="rTitle" value="${esc(title)}" placeholder="${T('Was ist das Problem?','What is the problem?')}"></label>
+    <div class="two"><label>${T('Partner','Partner')}<select id="rPartner"><optgroup label="${T('Lieferanten','Suppliers')}">${SUPPLIERS.map(s=>`<option ${s===partner?'selected':''}>${esc(s)}</option>`).join('')}</optgroup><optgroup label="${T('Kunden','Customers')}">${CUSTOMERS.map(s=>`<option>${esc(s)}</option>`).join('')}</optgroup><option value="" ${type==='intern'?'selected':''}>${T('Intern / Fertigung','Internal / production')}</option></select></label>
+    <label>${T('Workflow-Vorlage','Workflow template')}<select id="rTpl">${S.tpls.map(t=>`<option value="${t.id}" ${t.id===RTYPE[type].tpl?'selected':''}>${esc(tx(t.name))} (${t.steps.length})</option>`).join('')}</select></label></div>
+    <div class="two"><label>${T('Prüfung (optional)','Inspection (optional)')}<select id="rLot"><option value="">–</option>${lots.map(x=>`<option value="${x.id}" ${l&&x.id===l.id?'selected':''}>${x.id} · ${esc(tx(x.material))}</option>`).join('')}</select></label>
+    <label>${T('Betroffener Prüfpunkt','Affected checkpoint')}<select id="rDef"><option value="">–</option>${S.catalog.map(m=>`<option value="${esc(m.code)}" ${m.code===defect?'selected':''}>${esc(m.code)} · ${esc(tx(m.name))}</option>`).join('')}</select></label></div>
+    <label>${T('Beschreibung','Description')}<textarea id="rDesc">${esc(desc)}</textarea></label><div class="err" id="rErr"></div>
+  </div><div class="card-f"><button class="btn" data-act="close">${T('Abbrechen','Cancel')}</button><button class="btn primary" data-act="newReklaSave">${icon('flow')} ${T('Anlegen & Workflow starten','Create & start workflow')}</button></div>`);
+}
+function certModal(lotId){
+  const lots=S.lots.filter(x=>x.status==='done'&&x.ud!=='rej');
+  modal(mHead(T('Neues Zeugnis','New certificate'),T('Daten werden aus der Prüfung übernommen','Data is taken from the inspection'))+`<div class="card-b f">
+    <label>${T('Prüfung','Inspection')}<select id="cLot">${lots.map(x=>`<option value="${x.id}" ${x.id===lotId?'selected':''}>${x.id} · ${esc(tx(x.material))} · ${esc(x.charge)}</option>`).join('')}</select></label>
+    <div class="opt-g">${Object.entries(CERT).map(([k,c])=>`<label class="opt"><input type="radio" name="cType" value="${k}" ${k==='3.1'?'checked':''}><span><b>${tx(c.t)}</b><small>${tx(c.d)}</small></span></label>`).join('')}</div>
+    <div class="two"><label>${T('Kunde','Customer')}<select id="cCust">${CUSTOMERS.map(s=>`<option>${esc(s)}</option>`).join('')}</select></label><label>${T('Bestell-Nr. Kunde','Customer order no.')}<input id="cOrd" value="4500-${88000+Math.floor(Math.random()*999)}"></label></div>
+  </div><div class="card-f"><button class="btn" data-act="close">${T('Abbrechen','Cancel')}</button><button class="btn primary" data-act="newCertSave" ${lots.length?'':'disabled'}>${icon('award')} ${T('Zeugnis erstellen','Create certificate')}</button></div>`);
+}
+
+/* ---------- Aktionen ---------- */
+const ACT={
+  close:closeModal,
+  nav:v=>{closeModal();go(v);},
+  go:a=>{const [v,id]=a.split(':');closeModal();go(v,id);},
+  lang:l=>{lang=l;try{localStorage.setItem('dvx-qm-lang',l);history.replaceState(null,'','#'+l);}catch(e){}closeModal();render(true);},
+  more:()=>modal(mHead(T('Mehr','More'))+`<div class="card-b more-list">${NAV.filter(n=>['cat','wf','certs'].includes(n.v)).map(n=>`<button class="nav-i" data-act="nav" data-arg="${n.v}">${icon(n.ic)}<span class="lbl">${tx(n.t)}</span>${icon('right','s')}</button>`).join('')}
+    <div class="demo-box" style="margin-top:6px"><b>${T('Live-Demo','Live demo')}</b>${T('Alle Daten sind Beispiele und bleiben in Ihrem Browser.','All data is sample data and stays in your browser.')}<a href="${CONTACT()}" target="_blank" rel="noopener">${T('Für Ihr Unternehmen anpassen →','Tailor it to your company →')}</a></div>
+    ${langSw()}<button class="btn" data-act="reset">${icon('reset')} ${T('Demo zurücksetzen','Reset demo')}</button></div>`),
+  reset:()=>modal(mHead(T('Demo zurücksetzen?','Reset demo?'))+`<div class="card-b">${T('Alle Ihre Änderungen werden verworfen und die Beispieldaten neu geladen.','All your changes will be discarded and the sample data reloaded.')}</div><div class="card-f"><button class="btn" data-act="close">${T('Abbrechen','Cancel')}</button><button class="btn danger" data-act="resetYes">${T('Zurücksetzen','Reset')}</button></div>`),
+  resetYes:()=>{S=seed();save();closeModal();U.plan='PP-1001';U.tpl='8d';U.runLot=null;go('start');toast(T('Demo zurückgesetzt','Demo reset'));},
+  // Prüflose
+  lotF:v=>{U.lotF=v;render(true);},
+  taskTab:v=>{U.taskTab=v;render(true);},
+  newLot:a=>newLotModal(a),
+  newLotSave:()=>{
+    const p=S.plans.find(x=>x.id===val('nlPlan'));if(!p)return;
+    const sup=val('nlSup');const id='PR-'+(S.seq.lot++);
+    const l={id,planId:p.id,planName:JSON.parse(JSON.stringify(p.name)),material:JSON.parse(JSON.stringify(p.material)),origin:p.origin,supplier:sup,order:sup?'':'FA-'+(55100+Math.floor(Math.random()*99)),charge:val('nlCh')||'–',qty:pNum(val('nlQty'))||1,date:TODAY(),status:'open',ud:null,insp:val('nlIn')||'ak',items:JSON.parse(JSON.stringify(p.items)),res:{},closedAt:null};
+    S.lots.unshift(l);save();closeModal();go('lot',id);toast(T('Prüfung angelegt','Inspection created'));
+  },
+  runGo:k=>{const l=curLot();U.runIdx=Math.max(0,Math.min(Number(k),l.items.length));render();const top=document.getElementById('strip');if(top)top.closest('.card').scrollIntoView({block:'start',behavior:'smooth'});},
+  q:v=>{const l=curLot(),it=l.items[U.runIdx];const r=ensureRes(l,it);r.q=r.q===v?null:v;if(l.status==='open')l.status='prog';save();render(true);},
+  ud:v=>{U.ud=v;render(true);},
+  finish:()=>{
+    const l=curLot();if(missing(l).length||!U.ud)return;
+    l.status='done';l.ud=U.ud;l.closedAt=TODAY();save();const s=lotSum(l);U.runLot=null;go('lot',l.id);
+    if(s.nok)modal(mHead(T('Prüfung abgeschlossen','Inspection completed'))+`<div class="card-b"><div class="critbox">${icon('alert')}<span>${s.nok} ${T('Prüfpunkt(e) n.i.O. Soll direkt eine Reklamation mit Workflow angelegt werden?','checkpoint(s) failed. Create a complaint with workflow right away?')}</span></div></div><div class="card-f"><button class="btn" data-act="close">${T('Später','Later')}</button><button class="btn danger" data-act="newRekla" data-arg="${l.id}">${icon('alert')} ${T('Reklamation anlegen','Create complaint')}</button></div>`);
+    else modal(mHead(T('Prüfung abgeschlossen','Inspection completed'))+`<div class="card-b"><div style="display:flex;gap:10px;align-items:center"><span class="pill good" style="font-size:14px;padding:6px 12px">${icon('ok','s')} ${T('Alle Prüfpunkte i.O.','All checkpoints passed')}</span></div><p class="hint" style="margin:0">${T('Erstellen Sie jetzt ein Zeugnis nach EN 10204 – die Messwerte werden automatisch übernommen.','Create an EN 10204 certificate now – the measured values are carried over automatically.')}</p></div><div class="card-f"><button class="btn" data-act="close">${T('Fertig','Done')}</button><button class="btn primary" data-act="newCert" data-arg="${l.id}">${icon('award')} ${T('Zeugnis erstellen','Issue certificate')}</button></div>`);
+  },
+  photo:a=>{const [lid,u,k]=a.split('|');const l=lotById(lid);const r=l&&l.res[u];if(!r)return;const it=l.items.find(i=>i.uid===u);
+    modal(mHead(esc(tx(it.name)),`${l.id} · ${T('Foto','Photo')} ${Number(k)+1}/${r.photos.length}`)+`<div class="card-b"><img class="photo-big" src="${r.photos[k]}" alt=""></div>${l.status!=='done'?`<div class="card-f"><span></span><button class="btn danger" data-act="delPhoto" data-arg="${a}">${icon('trash')} ${T('Foto löschen','Delete photo')}</button></div>`:''}`,true);},
+  delPhoto:a=>{const [lid,u,k]=a.split('|');const l=lotById(lid);l.res[u].photos.splice(Number(k),1);save();closeModal();render(true);},
+  delDoc:k=>{const l=curLot(),it=l.items[U.runIdx];ensureRes(l,it).docs.splice(Number(k),1);save();render(true);},
+  // Prüfpläne
+  plan:id=>{U.plan=id;render(true);},
+  newPlan:()=>modal(mHead(T('Neuer Prüfplan','New inspection plan'))+`<div class="card-b f"><label>${T('Bezeichnung','Name')}<input id="npName" placeholder="${T('z. B. Wareneingang Flansch F-80','e.g. Incoming inspection flange F-80')}"></label><label>${T('Material','Material')}<input id="npMat" placeholder="${T('z. B. Flansch F-80','e.g. Flange F-80')}"></label><label>${T('Prüfart','Inspection type')}<select id="npOr"><option value="we">${T('Wareneingang','Goods receipt')}</option><option value="fe">${T('Fertigung / Endprüfung','Production / final inspection')}</option></select></label><div class="err" id="npErr"></div></div><div class="card-f"><button class="btn" data-act="close">${T('Abbrechen','Cancel')}</button><button class="btn primary" data-act="newPlanSave">${T('Anlegen','Create')}</button></div>`),
+  newPlanSave:()=>{const n=val('npName').trim();if(!n){$('#npErr').textContent=T('Bitte eine Bezeichnung eingeben.','Please enter a name.');return;}
+    const id='PP-'+(S.seq.plan++);const m=val('npMat').trim()||n;S.plans.push({id,name:{de:n,en:n},material:{de:m,en:m},origin:val('npOr'),status:'draft',ver:1,items:[]});U.plan=id;save();closeModal();go('plans');toast(T('Prüfplan angelegt – jetzt Prüfpunkte hineinziehen','Plan created – now drag in checkpoints'));},
+  addCat:id=>{const p=curPlan(),m=S.catalog.find(x=>x.id===id);const it=itemFrom(m);p.items.push(it);U.flash=it.uid;save();render(true);toast(`${tx(m.name)} ${T('hinzugefügt','added')}`);const el=document.querySelector(`[data-uid="${it.uid}"]`);if(el&&window.matchMedia('(max-width:980px)').matches)el.scrollIntoView({block:'center',behavior:'smooth'});},
+  nStep:a=>{const [u,d]=a.split('|');const it=curPlan().items.find(i=>i.uid===u);it.n=Math.max(1,Math.min(50,it.n+Number(d)));save();render(true);},
+  togPhoto:u=>{const it=curPlan().items.find(i=>i.uid===u);it.photo=!it.photo;save();render(true);},
+  editItem:u=>itemModal(u),
+  editItemSave:u=>{const it=curPlan().items.find(i=>i.uid===u);
+    if(it.type==='quant'){const s=pNum(val('eiSoll')),lo=pNum(val('eiU')),hi=pNum(val('eiO'));if(lo==null||hi==null||s==null||lo>s||s>hi){$('#eiErr').textContent=T('Bitte beachten: Min. ≤ Soll ≤ Max.','Please ensure min ≤ target ≤ max.');return;}it.soll=s;it.ugw=lo;it.ogw=hi;it.unit=val('eiUnit');}
+    it.name={...it.name,[lang]:val('eiName')||tx(it.name)};it.method={...(typeof it.method==='object'?it.method:{de:it.method,en:it.method}),[lang]:val('eiMeth')};it.n=Math.max(1,Math.min(50,parseInt(val('eiN'))||1));it.photo=$('#eiPh').checked;save();closeModal();U.flash=u;render(true);},
+  delItem:u=>{const p=curPlan();p.items=p.items.filter(i=>i.uid!==u);save();render(true);},
+  relPlan:()=>{const p=curPlan();p.status='rel';save();render(true);toast(T('Prüfplan freigegeben','Plan released'));},
+  // Merkmale
+  catT:v=>{U.catT=v;render(true);},
+  newM:()=>mModal(),
+  editM:id=>mModal(id),
+  saveM:id=>{
+    const type=val('mType'),name=val('mName').trim();if(!name){$('#mErr').textContent=T('Bitte eine Bezeichnung eingeben.','Please enter a name.');return;}
+    const o={code:val('mCode').trim()||'NM',name:{de:name,en:name},type,method:{de:val('mMeth'),en:val('mMeth')},photo:$('#mPh').checked};
+    if(type==='quant'){const s=pNum(val('mSoll')),lo=pNum(val('mU')),hi=pNum(val('mO'));if(lo==null||hi==null||s==null||lo>s||s>hi){$('#mErr').textContent=T('Bitte Soll, Min. und Max. angeben (Min. ≤ Soll ≤ Max.).','Please enter target, min and max (min ≤ target ≤ max).');return;}Object.assign(o,{soll:s,ugw:lo,ogw:hi,unit:val('mUnit')});}
+    if(id){const m=S.catalog.find(x=>x.id===id);const keep={...m.name};Object.assign(m,o);m.name={...keep,[lang]:name};}
+    else{S.catalog.push({id:'M'+(S.seq.m++),...o});}
+    save();closeModal();render(true);toast(T('Prüfpunkt gespeichert','Checkpoint saved'));
+  },
+  delM:id=>{if(S.plans.some(p=>p.items.some(i=>i.mid===id))){toast(T('Wird in Prüfplänen verwendet – erst dort entfernen','Used in plans – remove it there first'));return;}S.catalog=S.catalog.filter(m=>m.id!==id);save();render(true);},
+  // Reklamationen
+  rF:v=>{U.rF=v;render(true);},
+  rT:v=>{U.rT=v;render(true);},
+  newRekla:a=>reklaModal(a),
+  newReklaSave:()=>{
+    const title=val('rTitle').trim();if(!title){$('#rErr').textContent=T('Bitte einen Titel eingeben.','Please enter a title.');return;}
+    const type=(document.querySelector('input[name=rType]:checked')||{}).value||'lief';
+    const id='QM-'+String(S.seq.rekla++).padStart(4,'0');
+    const x=makeRekla(S,{id,type,partner:val('rPartner'),title,desc:val('rDesc'),defect:val('rDef'),lot:val('rLot'),tpl:val('rTpl')});
+    S.reklas.unshift(x);save();closeModal();U.rF='open';go('rekladetail',id);toast(T('Reklamation angelegt – Workflow gestartet','Complaint created – workflow started'));
+  },
+  stepDone:u=>{const x=S.reklas.find(r=>r.id===U.id);const s=x.steps.find(z=>z.uid===u);s.done=true;s.doneAt=TODAY();s.note=val('stepNote').trim();save();render(true);toast(isClosed(x)?T('Reklamation abgeschlossen 🎉','Complaint closed 🎉'):T('Schritt erledigt – nächster Verantwortlicher informiert','Step done – next owner notified'));},
+  stepUndo:()=>{const x=S.reklas.find(r=>r.id===U.id);const done=x.steps.filter(z=>z.done);const last=done[done.length-1];if(last){last.done=false;last.doneAt=null;}save();render(true);},
+  // Workflows
+  tpl:id=>{U.tpl=id;render(true);},
+  newTpl:()=>modal(mHead(T('Neue Workflow-Vorlage','New workflow template'))+`<div class="card-b f"><label>${T('Bezeichnung','Name')}<input id="ntName" placeholder="${T('z. B. Reklamation Verpackung','e.g. Packaging complaint')}"></label><div class="err" id="ntErr"></div></div><div class="card-f"><button class="btn" data-act="close">${T('Abbrechen','Cancel')}</button><button class="btn primary" data-act="newTplSave">${T('Anlegen','Create')}</button></div>`),
+  newTplSave:()=>{const n=val('ntName').trim();if(!n){$('#ntErr').textContent=T('Bitte eine Bezeichnung eingeben.','Please enter a name.');return;}const id='t'+(S.seq.tpl++);S.tpls.push({id,name:{de:n,en:n},steps:[{uid:uid(),k:'erf',role:'qs',sla:1}]});U.tpl=id;save();closeModal();render(true);toast(T('Vorlage angelegt – Bausteine hineinziehen','Template created – drag in building blocks'));},
+  addBlk:k=>{const tp=curTpl();const s={uid:uid(),k,role:BLK[k].role,sla:BLK[k].sla};tp.steps.push(s);U.flash=s.uid;save();render(true);toast(`${tx(BLK[k].t)} ${T('hinzugefügt','added')}`);const el=document.querySelector(`[data-uid="${s.uid}"]`);if(el&&window.matchMedia('(max-width:980px)').matches)el.scrollIntoView({block:'center',behavior:'smooth'});},
+  delStep:u=>{const tp=curTpl();tp.steps=tp.steps.filter(s=>s.uid!==u);save();render(true);},
+  // Zeugnisse
+  newCert:a=>certModal(a),
+  newCertSave:()=>{const lid=val('cLot');if(!lid)return;const type=(document.querySelector('input[name=cType]:checked')||{}).value||'3.1';const id='Z-2026-'+(S.seq.cert++);
+    S.certs.unshift({id,lot:lid,type,customer:val('cCust'),order:val('cOrd'),date:TODAY(),by:'sw'});save();closeModal();go('cert',id);toast(T('Zeugnis erstellt','Certificate created'));},
+  pdf:()=>toast(T('PDF-Export und Versand per E-Mail sind in der Vollversion enthalten.','PDF export and email sending are included in the full version.'))
+};
+
+/* ---------- Eingaben ---------- */
+const IN={
+  val:el=>{const l=curLot(),it=l.items[U.runIdx];const r=ensureRes(l,it);const k=Number(el.dataset.k);const v=pNum(el.value);r.vals[k]=v;
+    el.classList.toggle('ok',v!=null&&v>=it.ugw&&v<=it.ogw);el.classList.toggle('nok',v!=null&&(v<it.ugw||v>it.ogw));
+    if(l.status==='open')l.status='prog';save();live(l,it);},
+  note:el=>{const l=curLot(),it=l.items[U.runIdx];ensureRes(l,it).note=el.value;save();},
+  photo:async el=>{const l=curLot(),it=l.items[U.runIdx];const r=ensureRes(l,it);const files=[...el.files];if(!files.length)return;
+    for(const f of files){const d=await readImg(f);if(d)r.photos.push(d);}if(l.status==='open')l.status='prog';save();render(true);toast(T('Foto gespeichert','Photo saved'));},
+  doc:el=>{const l=curLot(),it=l.items[U.runIdx];const r=ensureRes(l,it);[...el.files].forEach(f=>r.docs.push({n:f.name,s:f.size}));save();render(true);toast(T('Dokument angehängt','Document attached'));},
+  palq:el=>{const v=el.value.toLowerCase().trim();el.closest('.card').querySelectorAll('.pal').forEach(p=>p.hidden=!!v&&!p.dataset.s.includes(v));},
+  catq:el=>{U.catQ=el.value;const pos=el.selectionStart;render(true);const n=document.querySelector('[data-in="catq"]');if(n){n.focus();try{n.setSelectionRange(pos,pos);}catch(e){}}},
+  pname:el=>{const p=curPlan();p.name={...p.name,[lang]:el.value};save();},
+  mtype:el=>{$('#mQ').hidden=el.value!=='quant';},
+  rtype:el=>{const s=$('#rTpl');if(s)s.value=RTYPE[el.value].tpl;const p=$('#rPartner');if(p&&el.value==='intern')p.value='';if(p&&el.value==='kunde')p.value=CUSTOMERS[0];if(p&&el.value==='lief'&&!SUPPLIERS.includes(p.value))p.value=SUPPLIERS[0];},
+  srole:el=>{const s=curTpl().steps.find(x=>x.uid===el.dataset.uid);s.role=el.value;save();render(true);},
+  ssla:el=>{const s=curTpl().steps.find(x=>x.uid===el.dataset.uid);s.sla=Math.max(1,Math.min(60,parseInt(el.value)||1));save();const h=document.querySelector('.builder .card-h p b');if(h)h.textContent=curTpl().steps.reduce((a,x)=>a+x.sla,0)+' '+T('Tage','days');}
+};
+function live(l,it){
+  const r=l.res[it.uid];const e=evalItem(it,r);
+  const st=$('#runState');if(st)st.innerHTML=statePill(e);
+  const tol=$('#tol');if(tol)tol.innerHTML=tolSvg(it,r.vals);
+  const b=document.querySelector(`.stp[data-arg="${U.runIdx}"]`);if(b){b.classList.remove('ok','nok');if(e)b.classList.add(e);}
+  const s=lotSum(l);const pr=$('#runProg');if(pr)pr.textContent=`${s.ok+s.nok} / ${s.total} ${T('erfasst','recorded')}`;
+  const bar=$('#runBar');if(bar)bar.innerHTML=`<i class="g" style="width:${s.ok/s.total*100}%"></i><i class="r" style="width:${s.nok/s.total*100}%"></i>`;
+}
+function readImg(file){return new Promise(res=>{const fr=new FileReader();fr.onload=()=>{const img=new Image();img.onload=()=>{const m=1000,sc=Math.min(1,m/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);c.getContext('2d').drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.8));};img.onerror=()=>res(null);img.src=fr.result;};fr.onerror=()=>res(null);fr.readAsDataURL(file);});}
+
+/* ---------- Drag & Drop (Maus + Touch über Pointer Events) ---------- */
+const DnD={st:null,just:false,
+  down(e){
+    const src=e.target.closest('[data-drag]');if(!src||(e.button&&e.button!==0))return;
+    if(e.target.closest('input,select,textarea'))return;
+    this.st={src,payload:src.dataset.drag,x:e.clientX,y:e.clientY,id:e.pointerId,active:false};
+  },
+  move(e){
+    const s=this.st;if(!s||e.pointerId!==s.id)return;
+    if(!s.active){if(Math.hypot(e.clientX-s.x,e.clientY-s.y)<6)return;this.start(e);}
+    e.preventDefault();s.lx=e.clientX;s.ly=e.clientY;this.track();
+  },
+  start(e){
+    const s=this.st;s.active=true;
+    const card=s.src.closest('[data-dragcard]')||s.src;const r=card.getBoundingClientRect();
+    const g=card.cloneNode(true);g.classList.add('dnd-ghost');g.classList.remove('flash');g.style.width=r.width+'px';g.style.left=r.left+'px';g.style.top=r.top+'px';
+    s.dx=e.clientX-r.left;s.dy=e.clientY-r.top;document.body.appendChild(g);s.ghost=g;s.card=card;
+    s.ph=document.createElement('div');s.ph.className='ph';s.ph.style.height=Math.min(r.height,74)+'px';
+    if(/^(item|step):/.test(s.payload))card.classList.add('dragging');
+    document.body.classList.add('is-dragging');
+    s.timer=setInterval(()=>{if(s.ly==null)return;const m=80;if(s.ly<m)window.scrollBy(0,-14);else if(s.ly>innerHeight-m)window.scrollBy(0,14);else return;this.track();},16);
+  },
+  track(){
+    const s=this.st;if(!s)return;
+    s.ghost.style.left=(s.lx-s.dx)+'px';s.ghost.style.top=(s.ly-s.dy)+'px';
+    const el=document.elementFromPoint(s.lx,s.ly);
+    const zone=el&&el.closest('[data-drop]');
+    const kind=s.payload.split(':')[0];
+    document.querySelectorAll('[data-drop].over').forEach(z=>{if(z!==zone)z.classList.remove('over');});
+    if(zone&&zone.dataset.accept.split(',').includes(kind)){
+      const kids=[...zone.children].filter(k=>k.hasAttribute('data-dragcard')&&k!==s.card);
+      let idx=kids.length;
+      for(let i=0;i<kids.length;i++){const r=kids[i].getBoundingClientRect();if(s.ly<r.top+r.height/2){idx=i;break;}}
+      s.zone=zone;s.idx=idx;zone.classList.add('over');
+      if(idx<kids.length){if(s.ph.nextElementSibling!==kids[idx])zone.insertBefore(s.ph,kids[idx]);}
+      else{const lastKid=kids[kids.length-1];if(lastKid){if(lastKid.nextElementSibling!==s.ph)lastKid.after(s.ph);}else if(zone.firstElementChild!==s.ph)zone.prepend(s.ph);}
+    }else{s.zone=null;s.ph.remove();}
+  },
+  up(e){
+    const s=this.st;if(!s)return;this.st=null;if(!s.active)return;
+    const zone=s.zone,idx=s.idx;this.clean(s);this.just=true;setTimeout(()=>this.just=false,60);
+    if(zone)onDrop(zone.dataset.drop,s.payload,idx);
+  },
+  cancel(){const s=this.st;this.st=null;if(s&&s.active)this.clean(s);},
+  clean(s){clearInterval(s.timer);s.ghost&&s.ghost.remove();s.ph&&s.ph.remove();s.card&&s.card.classList.remove('dragging');document.body.classList.remove('is-dragging');document.querySelectorAll('[data-drop].over').forEach(z=>z.classList.remove('over'));}
+};
+function onDrop(zone,payload,idx){
+  const [kind,id]=payload.split(':');
+  if(zone==='plan'){const p=curPlan();
+    if(kind==='cat'){const m=S.catalog.find(x=>x.id===id);const it=itemFrom(m);p.items.splice(idx,0,it);U.flash=it.uid;toast(`${tx(m.name)} ${T('hinzugefügt','added')}`);}
+    else if(kind==='item'){const from=p.items.findIndex(x=>x.uid===id);if(from<0)return;const [it]=p.items.splice(from,1);p.items.splice(idx,0,it);U.flash=it.uid;}
+  }
+  if(zone==='wf'){const tp=curTpl();
+    if(kind==='blk'){const s={uid:uid(),k:id,role:BLK[id].role,sla:BLK[id].sla};tp.steps.splice(idx,0,s);U.flash=s.uid;toast(`${tx(BLK[id].t)} ${T('hinzugefügt','added')}`);}
+    else if(kind==='step'){const from=tp.steps.findIndex(x=>x.uid===id);if(from<0)return;const [s]=tp.steps.splice(from,1);tp.steps.splice(idx,0,s);U.flash=s.uid;}
+  }
+  save();render(true);
+}
+document.addEventListener('pointerdown',e=>DnD.down(e));
+document.addEventListener('pointermove',e=>DnD.move(e),{passive:false});
+document.addEventListener('pointerup',e=>DnD.up(e));
+document.addEventListener('pointercancel',()=>DnD.cancel());
+document.addEventListener('touchmove',e=>{if(DnD.st&&DnD.st.active)e.preventDefault();},{passive:false});
+document.addEventListener('dragstart',e=>{if(e.target.closest&&e.target.closest('[data-drag]'))e.preventDefault();});
+
+/* ---------- Ereignisse ---------- */
+document.addEventListener('click',e=>{
+  if(DnD.just){e.preventDefault();return;}
+  if(e.target.id==='modal'){closeModal();return;}
+  const a=e.target.closest('[data-act]');if(!a||a.disabled)return;
+  const f=ACT[a.dataset.act];if(f){e.preventDefault();f(a.dataset.arg,a,e);}
+});
+document.addEventListener('input',e=>{const el=e.target;if(!el.dataset||!el.dataset.in)return;if(el.type==='file'||el.tagName==='SELECT'||el.type==='radio'||el.type==='checkbox')return;IN[el.dataset.in]&&IN[el.dataset.in](el);});
+document.addEventListener('change',e=>{const el=e.target;if(!el.dataset||!el.dataset.in)return;if(el.type==='file'||el.tagName==='SELECT'||el.type==='radio'||el.type==='checkbox'||el.type==='number'){IN[el.dataset.in]&&IN[el.dataset.in](el);if(el.type==='file')el.value='';}});
+window.addEventListener('hashchange',()=>{const h=location.hash.replace('#','');if((h==='en'||h==='de')&&h!==lang){lang=h;render(true);}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#modal').hidden)closeModal();});
+
+render();
+})();
+</script>
+</body>
+</html>

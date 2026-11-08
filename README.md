@@ -28,6 +28,7 @@ Hauptadresse ist https://www.devunox.ai (alle Canonicals zeigen dorthin). devuno
 | Geschäftsführungs-Cockpit | `site/demos/cockpit.html` | `management-cockpit` |
 | QM-App: Qualitätsmanagement für KMU (DE/EN, `#de`/`#en`) | `site/demos/qm.html` | – (Quelle: Claude-Artifact „QM Modul – devunoxAI Demo“) |
 | Website für eine Spedition | `site/demos/spedition.html` | – |
+| Makler-Suite mit KI: KI-Posteingang, CRM, Workflows, DMS (DE/EN) | `site/demos/makler.html` | – (Quelle: Claude-Artifact „Makler-Suite – Muster Immobilien“) |
 
 Weitere App-Demos: `pod.html` (Proof of Delivery), `anlagencheck.html` (Prüfungen per QR-Code), `wissen.html` (Wissensdatenbank), `cockpit-produktion.html` (Produktions-Cockpit).
 

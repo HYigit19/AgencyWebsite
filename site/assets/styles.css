@@ -641,3 +641,24 @@ mark.ph { background: var(--o-soft); color: var(--fg); border-radius: 4px; paddi
 .price-note { display: flex; align-items: center; gap: 14px; margin: 0; background: var(--o-soft); color: var(--fg); border-radius: 20px; padding: 16px 22px; font-size: 1rem; }
 .price-note .fit-ic { flex: none; background: var(--card); }
 .price-note strong { font-weight: 650; }
+
+/* Preise: Hover – die Karte unter der Maus wird orange, die KI-Karte tritt dann zurück */
+.price-card, .price-card .tile-icon, .price-card > p, .price-card .price small, .price-card .price-unit, .price-card .price, .price-card .try svg, .price-card .price-more, .plan, .price-extra { transition: background-color .2s, color .2s, border-color .2s, transform .25s, box-shadow .25s; }
+@media (hover: hover) {
+  .price-grid:hover .price-card.hl:not(:hover) { background: var(--card); color: var(--fg); }
+  .price-grid:hover .price-card.hl:not(:hover) .tile-icon { background: var(--soft); color: var(--fg); }
+  .price-grid:hover .price-card.hl:not(:hover) > p, .price-grid:hover .price-card.hl:not(:hover) .price small, .price-grid:hover .price-card.hl:not(:hover) .price-unit { color: var(--muted); }
+  .price-grid:hover .price-card.hl:not(:hover) .price { border-top-color: var(--line); }
+  .price-grid:hover .price-card.hl:not(:hover) .try svg { background: var(--ok-soft); color: var(--ok); }
+  .price-grid:hover .price-card.hl:not(:hover) .price-more { color: var(--o-text); }
+  .price-card:hover { background: var(--o); color: var(--ink); transform: translateY(-4px); box-shadow: var(--shadow); }
+  .price-card:hover .tile-icon { background: var(--ink); color: var(--o); }
+  .price-card:hover > p, .price-card:hover .price small, .price-card:hover .price-unit { color: rgba(20, 20, 23, .78); }
+  .price-card:hover .price { border-top-color: rgba(20, 20, 23, .25); }
+  .price-card:hover .try svg { background: var(--ink); color: var(--o); }
+  .price-card:hover .price-more { color: var(--ink); }
+  .plan:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: var(--o); }
+  .plan.dark:hover { border-color: var(--o); }
+  .price-extra:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+}
+@media (prefers-reduced-motion: reduce) { .price-card:hover, .plan:hover, .price-extra:hover { transform: none; } }

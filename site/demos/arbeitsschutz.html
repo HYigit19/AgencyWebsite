@@ -6,9 +6,10 @@
 <meta name="description" content="Arbeitsschutz-Demo: Unterweisungen, Audits, Maßnahmen und Behördenmappe.">
 <style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Arbeitsschutz</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='3' width='26' height='26' rx='7' fill='%236E4AF2'/%3E%3Cpath d='M16 8l7 2.6v5.2c0 4.4-3 7-7 8-4-1-7-3.6-7-8v-5.2z' fill='%23fff'/%3E%3C/svg%3E">
-<meta name="theme-color" content="#F3F4FA" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0F1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='3' width='26' height='26' rx='7' fill='%230E9F88'/%3E%3Cpath d='M16 8l7 2.6v5.2c0 4.4-3 7-7 8-4-1-7-3.6-7-8v-5.2z' fill='%23fff'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#F2F7F6">
+<link rel="stylesheet" href="shared-files/demo-kit.css">
+<script src="shared-files/demo-kit.js"></script>
 <style>
 @font-face { font-family: "Figtree"; font-style: normal; font-weight: 300 900; font-display: swap; src: url(shared-files/figtree-latin-wght-normal.woff2) format("woff2-variations"); }
 @font-face { font-family: "Geist"; font-style: normal; font-weight: 100 900; font-display: swap; src: url(shared-files/geist-latin-wght-normal.woff2) format("woff2-variations"); }
@@ -153,14 +154,6 @@ p { margin: 0; }
 .tab-i { border: 0; background: none; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 11px; font-weight: 600; color: var(--ink-2); padding: 4px 6px; border-radius: 10px; flex: 1; position: relative; min-width: 0; }
 .tab-i.on { color: var(--accent); }
 .tab-i .cnt { position: absolute; top: -2px; right: calc(50% - 22px); min-width: 17px; height: 17px; font-size: 10.5px; }
-@media (max-width: 1180px) {
-  .shell { grid-template-columns: 68px minmax(0, 1fr); }
-  .rail .lbl, .rail .brand > div, .rail .cnt, .me-card > div, .rail-foot .linkbtn { display: none; }
-  .rail .nav-i { justify-content: center; padding: 10px; }
-  .rail .brand { justify-content: center; padding: 4px 0 14px; }
-  .me-card { justify-content: center; padding: 6px; }
-  .rail .badge { left: auto; right: 6px; }
-}
 @media (max-width: 760px) {
   .shell { grid-template-columns: minmax(0, 1fr); }
   .rail { display: none; }
@@ -426,7 +419,6 @@ button.bcard:hover { box-shadow: 0 0 0 2px var(--accent-soft), var(--card-shadow
 .more-list .nav-i { border: 1px solid var(--line); }
 .bell-panel { position: fixed; z-index: 45; top: calc(env(safe-area-inset-top, 0px) + 60px); right: max(16px, env(safe-area-inset-right, 0px)); width: min(400px, calc(100vw - 32px)); background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; }
 @media (min-width: 761px) { .bell-panel { top: auto; bottom: 90px; left: max(16px, calc(50% - 620px + 250px)); right: auto; } }
-@media (min-width: 761px) and (max-width: 1180px) { .bell-panel { left: 96px; } }
 .bell-h { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--line); font-weight: 700; }
 .notes { list-style: none; margin: 0; padding: 0; max-height: min(60vh, 420px); overflow: auto; }
 .note { display: flex; gap: 10px; padding: 11px 14px; border-bottom: 1px solid var(--line); }
@@ -475,13 +467,376 @@ a.linkbtn { display: inline-flex; align-items: center; gap: 4px; align-self: fle
 .discard { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--line); background: var(--warn-soft); color: var(--warn); font-weight: 700; border-radius: 0 0 18px 18px; }
 .discard span { flex: 1 1 200px; }
 </style>
+<style id="dvx-skin">
+/* ================= devunoxAI Redesign: heller SaaS-Look, Teal-Sidebar ================= */
+:root[data-skin="dvx"] {
+  --bg: #F2F7F6; --surface: #FFFFFF; --surface-2: #F4F7F9; --line: #E7ECF1; --ink: #151A2D; --ink-2: #646B82;
+  --accent: #0E9F88; --accent-2: #2DD4BF; --accent-deep: #0B7F6D; --accent-ink: #FFFFFF; --accent-soft: #DDF5F0;
+  --good: #16A34A; --good-soft: #DCFCE7; --warn: #B45309; --warn-soft: #FEF3C7; --crit: #E11D48; --crit-soft: #FFE4E6;
+  --info: #0284C7; --info-soft: #E0F2FE; --lila: #7C3AED; --lila-soft: #EDE9FE; --peach: #EA580C; --peach-soft: #FFEDD5;
+  --muted-soft: #EEF2F6; --bar: #CBD5E1;
+  --col-over: #F43F5E; --col-over-ink: #fff; --col-today: #F59E0B; --col-today-ink: #fff; --col-week: #0EA5E9; --col-week-ink: #fff;
+  --col-good: #10B981; --col-good-ink: #fff; --col-info: #0EA5E9; --col-info-ink: #fff; --col-warn: #F59E0B; --col-warn-ink: #fff;
+  --wf: #7C3AED; --kr: #0E9F88; --lr: #EA580C; --n-theme: #DB2777; --n-aufg: #0284C7; --n-md: #64748B;
+  --a0: #0E9F88; --a1: #7C3AED; --a2: #EA580C; --a3: #DB2777; --a4: #0284C7; --a5: #E11D48; --a6: #65A30D; --a7: #64748B;
+  --card-border: 0; --card-shadow: var(--dvx-shadow); --radius: 20px; --head-w: 800;
+  --shadow: 0 24px 60px -16px rgba(16, 24, 40, .28);
+  --font-d: var(--dvx-font); --font-b: var(--dvx-font);
+  --ease: cubic-bezier(.2, .8, .2, 1);
+}
+body { background: var(--bg); font-family: var(--dvx-font); color: var(--ink); }
+body::before { background: var(--bg); }
+h1, h2, h3 { letter-spacing: -.02em; }
+
+/* ---------- Rahmen ---------- */
+.shell { grid-template-columns: 252px minmax(0, 1fr); gap: 28px; max-width: 1500px; margin: 0 auto; justify-content: stretch; padding-left: max(14px, env(safe-area-inset-left, 0px)); padding-right: max(28px, env(safe-area-inset-right, 0px)); }
+.mainc { min-width: 0; display: flex; flex-direction: column; }
+.center { padding-block: 6px 64px; gap: 20px; }
+.topbar { display: flex; align-items: center; gap: 12px; padding: 18px 0 12px; min-height: 70px; }
+.tb-l { flex: 1; min-width: 0; color: var(--ink-2); font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.tb-l .crumb { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px; border-radius: 999px; background: #fff; box-shadow: 0 1px 2px rgba(16,24,40,.05); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.tb-date { white-space: nowrap; }
+.tb-l .crumb i { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); flex: none; }
+.tb-r { display: flex; align-items: center; gap: 10px; flex: none; }
+.tools-host { display: inline-flex; align-items: center; gap: 10px; }
+.tools-host .dvx-lang { background: #fff; box-shadow: 0 1px 2px rgba(16,24,40,.06), inset 0 0 0 1px var(--line); }
+.tools-host .dvx-lang button[aria-pressed="true"] { background: var(--accent); color: #fff; box-shadow: none; }
+.tb-btns { display: inline-flex; gap: 8px; }
+.icon-btn { width: 42px; height: 42px; border-radius: 14px; border: 0; background: #fff; box-shadow: 0 1px 2px rgba(16,24,40,.06), inset 0 0 0 1px var(--line); color: var(--ink); transition: transform .15s var(--ease), box-shadow .15s; }
+.icon-btn:hover { background: #fff; transform: translateY(-1px); box-shadow: 0 6px 16px -6px rgba(16,24,40,.2), inset 0 0 0 1px var(--line); }
+.icon-btn .badge { top: -4px; right: -4px; left: auto; background: var(--crit); box-shadow: 0 0 0 2px #fff; }
+
+/* Sidebar: schwebendes Panel mit Akzent-Verlauf */
+.rail { top: 14px; height: calc(100vh - 28px); margin-block: 14px; padding: 18px 12px 14px; gap: 2px; border-radius: 24px; color: #fff;
+  background: radial-gradient(130% 55% at 100% 0%, rgba(45, 212, 191, .55), transparent 62%), radial-gradient(90% 40% at 0% 100%, rgba(45, 212, 191, .35), transparent 70%), linear-gradient(165deg, #0E9F88 0%, #0B8A76 55%, #08705F 100%);
+  box-shadow: 0 20px 44px -18px rgba(8, 112, 95, .55); scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.3) transparent; }
+.rail .brand { padding: 2px 8px 18px; }
+.rail .logo { background: #fff; color: var(--accent); box-shadow: 0 6px 14px -6px rgba(0,0,0,.35); border-radius: 12px; }
+.rail .brand-name { color: #fff; font-size: 17px; letter-spacing: -.01em; }
+.rail .brand-sub { color: rgba(255,255,255,.78); font-weight: 600; }
+.rail .nav-i { color: rgba(255,255,255,.92); padding: 8px 10px; border-radius: 14px; font-size: 14px; transition: background .18s, color .18s, transform .18s var(--ease); }
+.rail .nav-i .ni { background: rgba(255,255,255,.14); color: #fff; width: 32px; height: 32px; border-radius: 10px; transition: background .18s, color .18s; }
+.rail .nav-i:hover { background: rgba(255,255,255,.12); }
+.rail .nav-i.on { background: #fff; color: var(--accent-deep); box-shadow: 0 8px 20px -10px rgba(0,0,0,.35); }
+.rail .nav-i.on .ni { background: var(--accent-soft); color: var(--accent-deep); }
+.rail .cnt { background: rgba(255,255,255,.22); color: #fff; }
+.rail .cnt.crit { background: rgba(255,255,255,.95); color: #E11D48; }
+.rail .nav-i.on .cnt { background: var(--accent-soft); color: var(--accent-deep); }
+.rail .nav-i.on .cnt.crit { background: #FFE4E6; color: #E11D48; }
+.rail .nav-sep { background: rgba(255,255,255,.18); margin: 10px 10px; }
+.rail .nav-cap { font-size: 10.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.62); padding: 6px 12px 4px; }
+.rail-foot { gap: 10px; }
+.rail .me-card { background: rgba(255,255,255,.14); border: 0; border-radius: 16px; color: #fff; padding: 10px; cursor: pointer; transition: background .18s; }
+.rail .me-card:hover { background: rgba(255,255,255,.2); }
+.rail .me-card select { color: #fff; background: transparent; font-weight: 800; cursor: pointer; appearance: none; -webkit-appearance: none; text-overflow: ellipsis; }
+.rail .me-card select option, .rail .me-card select optgroup { color: var(--ink); background: #fff; }
+.rail .me-card small { color: rgba(255,255,255,.78); }
+.rail .me-card .chev { width: 16px; height: 16px; opacity: .8; flex: none; }
+.rail .me-card .av { box-shadow: 0 0 0 2px rgba(255,255,255,.7); }
+.rail-foot .linkbtn { color: rgba(255,255,255,.85); padding: 2px 12px; font-size: 12.5px; }
+.rail-foot .linkbtn:hover { color: #fff; }
+.rail .me-card:focus-within { outline: 2px solid #fff; outline-offset: 2px; }
+.rail :focus-visible { outline-color: #fff; }
+
+/* ---------- Bausteine ---------- */
+.card { border-radius: var(--radius); box-shadow: var(--card-shadow); border: 0; transition: box-shadow .2s, transform .2s var(--ease); }
+.card-h { border-bottom: 1px solid var(--line); padding: 16px 20px; }
+.card-h h2 { font-size: 16.5px; font-weight: 800; }
+.card-b { padding: 16px 20px; }
+.page-h h1 { font-size: 30px; font-weight: 800; letter-spacing: -.03em; }
+.page-h p { font-size: 14px; }
+.btn { border-radius: 12px; padding: 9px 16px; border: 0; background: #fff; box-shadow: inset 0 0 0 1px var(--line), 0 1px 2px rgba(16,24,40,.05); font-weight: 700; transition: transform .15s var(--ease), box-shadow .15s, background .15s; min-height: 40px; }
+.btn:hover { background: #fff; transform: translateY(-1px); box-shadow: inset 0 0 0 1px #D5DCE5, 0 6px 14px -6px rgba(16,24,40,.18); }
+.btn.primary { background: linear-gradient(135deg, var(--accent), #14B8A6); color: #fff; box-shadow: 0 8px 18px -8px rgba(14,159,136,.7); }
+.btn.primary:hover { filter: none; box-shadow: 0 12px 24px -10px rgba(14,159,136,.75); }
+.btn.danger { color: var(--crit); box-shadow: inset 0 0 0 1px #FECDD3; }
+.btn.danger:hover { background: var(--crit-soft); }
+.btn[disabled], .btn[disabled]:hover { opacity: .45; transform: none; box-shadow: inset 0 0 0 1px var(--line); }
+.btn.primary[disabled] { box-shadow: none; }
+.mini { border: 0; box-shadow: inset 0 0 0 1px var(--line); border-radius: 10px; padding: 6px 11px; font-weight: 700; transition: background .15s; }
+.mini.acc { color: var(--accent-deep); background: var(--accent-soft); box-shadow: none; }
+.mini.acc:hover { background: #C8EFE7; }
+.pill { font-weight: 700; padding: 3px 10px; }
+.pill.accent { background: var(--accent-soft); color: var(--accent-deep); }
+.chip { border: 0; box-shadow: inset 0 0 0 1px var(--line); padding: 8px 14px; min-height: 38px; }
+.chip.on { background: var(--accent); color: #fff; box-shadow: none; }
+.chip.on:hover { color: #fff; }
+.sel, .search { border: 0; box-shadow: inset 0 0 0 1px var(--line), 0 1px 2px rgba(16,24,40,.04); background: #fff; min-height: 40px; padding-inline: 14px; }
+.search:focus-within { box-shadow: inset 0 0 0 2px var(--accent); }
+.tag { border-radius: 8px; background: var(--muted-soft); color: #475069; font-weight: 700; }
+.linkbtn { color: var(--accent-deep); font-weight: 700; }
+.empty { padding: 34px 16px; }
+.col-empty { border: 0; background: rgba(255,255,255,.6); border-radius: 16px; box-shadow: inset 0 0 0 1.5px var(--line); padding: 22px 12px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.col-empty svg { width: 22px; height: 22px; color: var(--good); }
+th { color: #8A91A6; font-weight: 700; font-size: 10.5px; letter-spacing: .08em; border-bottom: 1px solid var(--line); padding: 12px 10px; }
+td { border-bottom: 1px solid #F0F3F6; padding: 11px 10px; }
+th:first-child, td:first-child { padding-left: 20px; }
+th:last-child, td:last-child { padding-right: 20px; }
+tbody tr:last-child td { border-bottom: 0; }
+tr.click td { transition: background .15s; }
+tr.click:hover td { background: #F6FAF9; }
+.field label, .field .lbl { font-weight: 700; color: #4B5368; }
+.field input, .field select, .field textarea { border: 0; box-shadow: inset 0 0 0 1px #DDE3EA; border-radius: 12px; padding: 10px 12px; background: #fff; transition: box-shadow .15s; }
+.field input:focus, .field select:focus, .field textarea:focus { outline: none; box-shadow: inset 0 0 0 2px var(--accent); }
+.field input[type=checkbox], .field input[type=radio] { width: auto; padding: 0; box-shadow: none; border-radius: 4px; min-height: 0; accent-color: var(--accent); }
+.rail .nav-i .lbl { white-space: normal; line-height: 1.2; overflow: visible; }
+.field input[disabled], .field select[disabled], .field textarea[disabled] { background: var(--surface-2); color: var(--ink-2); }
+.checks label { border: 0; box-shadow: inset 0 0 0 1px #DDE3EA; padding: 7px 12px; min-height: 38px; transition: background .15s, box-shadow .15s; }
+.checks label:has(input:checked) { background: var(--accent-soft); color: var(--accent-deep); box-shadow: inset 0 0 0 1.5px var(--accent); }
+.av { box-shadow: 0 0 0 2px #fff; }
+.av-stack .av { border: 0; margin-left: -6px; }
+.dpill { font-weight: 700; }
+.dpill.week { background: var(--info-soft); color: var(--info); }
+.dpill.acc { background: var(--lila-soft); color: var(--lila); }
+.apill { border-radius: 8px; font-weight: 800; padding: 3px 9px; color: var(--qc); background: color-mix(in srgb, var(--qc) 13%, #fff); }
+.apill.t1 { --qc: #7C3AED; } .apill.t2 { --qc: #0E9F88; } .apill.t3 { --qc: #EA580C; } .apill.t4 { --qc: #DB2777; } .apill.t5 { --qc: #0284C7; }
+.risk { border-radius: 8px; padding: 2px 8px; }
+.risk.hoch { background: var(--crit-soft); color: var(--crit); } .risk.mittel { background: var(--warn-soft); color: var(--warn); } .risk.gering { background: var(--info-soft); color: var(--info); }
+.bcard { border: 0; border-radius: 18px; box-shadow: var(--card-shadow); padding: 14px 16px; transition: transform .18s var(--ease), box-shadow .18s; }
+button.bcard:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(16,24,40,.05), 0 18px 36px -12px rgba(16,24,40,.2); }
+.bc-t { font-weight: 800; font-size: 14.5px; }
+.kpi, .kpi2 { border: 0; }
+.dot.ok { background: var(--col-good); } .dot.soon { background: var(--col-today); } .dot.over { background: var(--col-over); } .dot.nie { border: 2px dashed #94A3B8; }
+
+/* Spaltenköpfe: Pastell statt Vollfarbe */
+.col-h { border-radius: 14px; padding: 10px 14px; font-size: 14px; font-weight: 800; }
+.col-h > span:last-child { min-width: 26px; height: 22px; padding: 0 8px; border-radius: 999px; background: rgba(255,255,255,.75); display: inline-grid; place-items: center; font-size: 12px; }
+.col-h.over, .board .col-h.over { background: #FFE4E6; color: #BE123C; }
+.col-h.today, .board .col-h.warn { background: #FEF3C7; color: #B45309; }
+.col-h.week, .board .col-h.info { background: #E0F2FE; color: #0369A1; }
+.col-h.good, .board .col-h.good { background: #DCFCE7; color: #15803D; }
+.board .col-h.accent { background: #EDE9FE; color: #6D28D9; }
+.col-more { border: 0; background: none; color: var(--accent-deep); font-weight: 700; font-size: 13px; padding: 8px; border-radius: 12px; }
+.col-more:hover { background: rgba(14,159,136,.08); }
+
+/* ---------- Start-Dashboard ---------- */
+.hello { align-items: flex-end; }
+.hello h1 { font-size: 30px; font-weight: 800; letter-spacing: -.03em; }
+.hello p { font-weight: 600; }
+.hello .wave { display: inline-block; }
+.quick { gap: 8px; }
+.qbtn { border-radius: 14px; padding: 10px 15px; min-height: 42px; color: var(--qc); background: #fff; box-shadow: inset 0 0 0 1px var(--line), 0 1px 2px rgba(16,24,40,.05); transition: transform .15s var(--ease), box-shadow .15s; }
+.qbtn .qi { width: 24px; height: 24px; border-radius: 8px; display: grid; place-items: center; background: color-mix(in srgb, var(--qc) 14%, #fff); }
+.qbtn span.qt { color: var(--ink); }
+.qbtn:hover { filter: none; transform: translateY(-1px); box-shadow: inset 0 0 0 1px #D5DCE5, 0 8px 18px -8px rgba(16,24,40,.22); }
+.qbtn.q0 { --qc: #fff; background: linear-gradient(135deg, var(--accent), #14B8A6); box-shadow: 0 8px 18px -8px rgba(14,159,136,.7); }
+.qbtn.q0 span.qt { color: #fff; } .qbtn.q0 .qi { background: rgba(255,255,255,.2); }
+.qbtn.q1 { --qc: #0284C7; } .qbtn.q2 { --qc: #0E9F88; } .qbtn.q3 { --qc: #EA580C; } .qbtn.q4 { --qc: #7C3AED; }
+.dash-a { display: grid; grid-template-columns: minmax(270px, 1fr) minmax(0, 2fr); gap: 20px; align-items: stretch; }
+.dash-c { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr); gap: 20px; align-items: stretch; }
+.gauge-card { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 6px; }
+.ch-h { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.ch-h h2 { font-size: 16px; font-weight: 800; }
+.ch-h p { font-size: 12.5px; color: var(--ink-2); margin-top: 2px; }
+.g-wrap { display: grid; place-items: center; margin-top: 4px; position: relative; }
+.g-wrap svg { width: min(250px, 100%); height: auto; }
+.g-val { text-align: center; font-size: 34px; font-weight: 800; letter-spacing: -.03em; line-height: 1; margin-top: -4px; font-variant-numeric: tabular-nums; }
+.g-sub { text-align: center; color: var(--ink-2); font-size: 12.5px; font-weight: 600; }
+.g-split { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.g-split > div { background: var(--surface-2); border-radius: 14px; padding: 9px 12px; }
+.g-split b { display: block; font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.g-split small { color: var(--ink-2); font-weight: 600; font-size: 11.5px; }
+.g-split i { display: block; height: 5px; border-radius: 9px; background: #E3E8EE; margin-top: 6px; overflow: hidden; }
+.g-split i > u { display: block; height: 100%; border-radius: inherit; background: var(--accent); }
+.kpi-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.kpi2 { background: #fff; border-radius: 20px; box-shadow: var(--card-shadow); padding: 16px 18px; text-align: left; color: var(--ink); width: 100%; display: flex; flex-direction: column; gap: 4px; justify-content: space-between; transition: transform .18s var(--ease), box-shadow .18s; min-width: 0; }
+.kpi2:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(16,24,40,.05), 0 18px 36px -12px rgba(16,24,40,.2); }
+.k-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+.k-ic { width: 40px; height: 40px; border-radius: 13px; display: grid; place-items: center; background: var(--kc-s); color: var(--kc); flex: none; }
+.k-ic .i { width: 20px; height: 20px; }
+.kc-rose { --kc: #E11D48; --kc-s: #FFE4E6; } .kc-peach { --kc: #EA580C; --kc-s: #FFEDD5; } .kc-amber { --kc: #D97706; --kc-s: #FEF3C7; } .kc-lila { --kc: #7C3AED; --kc-s: #EDE9FE; } .kc-sky { --kc: #0284C7; --kc-s: #E0F2FE; } .kc-mint { --kc: #16A34A; --kc-s: #DCFCE7; }
+.trend { font-size: 11.5px; font-weight: 800; padding: 3px 8px; border-radius: 999px; white-space: nowrap; }
+.trend.up { background: #DCFCE7; color: #15803D; } .trend.down { background: #FFE4E6; color: #BE123C; } .trend.flat { background: var(--muted-soft); color: var(--ink-2); }
+.k-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+.k-v { font-size: 34px; font-weight: 800; letter-spacing: -.03em; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.k-l { font-size: 13px; font-weight: 700; color: #3B4256; }
+.k-s { font-size: 12px; color: var(--ink-2); }
+.mbars { display: flex; align-items: flex-end; gap: 4px; height: 46px; flex: none; }
+.mbars i { width: 8px; border-radius: 3px; background: var(--kc-s); }
+.mbars i:last-child { background: var(--kc); }
+.focus { background: radial-gradient(120% 140% at 100% 0%, rgba(45,212,191,.55), transparent 55%), linear-gradient(120deg, #0B8A76, #0E9F88 60%, #14B8A6); color: #fff; border-radius: 22px; padding: 18px 22px; box-shadow: 0 18px 36px -18px rgba(8,112,95,.6); }
+.focus-n { background: rgba(255,255,255,.18); color: #fff; box-shadow: inset 0 0 0 2px rgba(255,255,255,.35); font-size: 26px; }
+.focus-t b { font-size: 20px; font-weight: 800; letter-spacing: -.02em; }
+.focus-t span { opacity: .9; }
+.focus .btn { background: #fff; color: var(--accent-deep); box-shadow: 0 8px 18px -8px rgba(0,0,0,.35); padding: 11px 20px; font-weight: 800; }
+.focus .btn:hover { background: #fff; box-shadow: 0 12px 24px -10px rgba(0,0,0,.4); }
+.focus.calm { background: linear-gradient(120deg, #DCFCE7, #ECFDF5); color: #15803D; box-shadow: var(--card-shadow); }
+.focus.calm .focus-n { background: #16A34A; color: #fff; box-shadow: none; }
+.focus.calm .btn { color: #15803D; }
+.chart-card { padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.chart-card .dvx-bars { width: 100%; height: auto; display: block; }
+.chart-card .dvx-axis { font-family: var(--dvx-font); }
+.lgd { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12.5px; color: var(--ink-2); font-weight: 600; }
+.lgd span { display: inline-flex; align-items: center; gap: 6px; }
+.lgd i { width: 10px; height: 10px; border-radius: 4px; display: inline-block; }
+.donut-wrap { display: flex; align-items: center; gap: 16px; flex-wrap: nowrap; justify-content: center; flex: 1; }
+.donut-wrap .dvx-donut { flex: none; }
+.dl2 { display: flex; flex-direction: column; gap: 8px; flex: 1 1 140px; min-width: 0; max-width: 380px; }
+.dl2 button { display: flex; align-items: center; gap: 8px; border: 0; background: var(--surface-2); border-radius: 12px; padding: 8px 10px; font-weight: 700; font-size: 12.5px; line-height: 1.2; color: var(--ink); text-align: left; transition: background .15s; min-height: 40px; }
+.dl2 button:hover { background: #EAF0F4; }
+.dl2 i { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.dl2 b { margin-left: auto; font-variant-numeric: tabular-nums; }
+.rings { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+@media (min-width: 1381px) { .rings { grid-template-columns: repeat(10, minmax(0, 1fr)); } }
+.ring-i { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 8px 10px; border: 0; background: var(--surface-2); border-radius: 16px; text-align: center; color: var(--ink); transition: transform .18s var(--ease), background .18s, box-shadow .18s; min-width: 0; }
+.ring-i:hover { transform: translateY(-2px); background: #fff; box-shadow: 0 12px 26px -12px rgba(16,24,40,.25); }
+.ring-i b { font-size: 12.5px; font-weight: 800; line-height: 1.25; overflow-wrap: anywhere; }
+.ring-i small { font-size: 11.5px; color: var(--ink-2); font-weight: 600; }
+.ring-i .dvx-ring-v { font-family: var(--dvx-font); font-weight: 800; fill: var(--ink); }
+.cols3 { gap: 20px; }
+
+/* Matrix */
+.mx thead th { background: #fff; }
+.mx tbody th { background: #fff; border-right: 1px solid var(--line); }
+.mx tbody tr:hover th, .mx tbody tr:hover td { background: #F6FAF9; }
+.mx .th-r { color: #3B4256; font-weight: 800; max-height: 152px; }
+.mx thead th { height: 160px; }
+.cell { width: 36px; height: 30px; border-radius: 9px; font-size: 13px; transition: transform .12s var(--ease), box-shadow .12s; }
+.cell.ok { background: #DCFCE7; color: #16A34A; }
+.cell.soon { background: #FEF3C7; color: #D97706; }
+.cell.over { background: #FFE4E6; color: #E11D48; }
+.cell.nie { background: #fff; box-shadow: inset 0 0 0 1.5px #CBD5E1; color: #94A3B8; background-image: repeating-linear-gradient(135deg, transparent 0 4px, #F1F5F9 4px 7px); }
+.cell:hover { transform: scale(1.08); }
+.cell.ok:hover, .cell.soon:hover, .cell.over:hover { box-shadow: 0 0 0 2px currentColor; }
+.cell.nie:hover { box-shadow: inset 0 0 0 1.5px #94A3B8, 0 0 0 2px #94A3B8; }
+.legend { background: #fff; border-radius: 999px; padding: 8px 16px; box-shadow: 0 1px 2px rgba(16,24,40,.05); align-self: flex-start; font-weight: 600; }
+.legend .cell { width: 18px; height: 16px; border-radius: 5px; font-size: 9px; pointer-events: none; }
+
+/* Online-Unterweisung: wie am Handy */
+.lern { max-width: 560px; }
+.lcard { border-radius: 24px; padding: 28px 26px; }
+.lcard .k { color: var(--accent-deep); }
+.prog { height: 10px; border-radius: 99px; background: #E3EAEF; }
+.prog i { background: linear-gradient(90deg, var(--accent), var(--accent-2)); border-radius: 99px; }
+.q-opt { border: 0; box-shadow: inset 0 0 0 1.5px #DDE3EA; border-radius: 14px; padding: 14px 16px; transition: box-shadow .15s, background .15s; }
+.q-opt:hover { box-shadow: inset 0 0 0 2px var(--accent); }
+.q-opt.sel { box-shadow: inset 0 0 0 2px var(--accent); background: var(--accent-soft); }
+.q-opt.right { box-shadow: inset 0 0 0 2px var(--good); background: var(--good-soft); }
+.q-opt.wrong { box-shadow: inset 0 0 0 2px var(--crit); background: var(--crit-soft); }
+.sig { border-radius: 16px; border-color: #CBD5E1; }
+.sig.signed { border-color: var(--accent); }
+.done-ic { background: linear-gradient(135deg, var(--accent), var(--accent-2)); box-shadow: 0 14px 30px -12px rgba(14,159,136,.7); }
+
+/* Audits, Board, Mappe */
+.a-grid { gap: 18px; }
+.score { font-weight: 800; letter-spacing: -.02em; }
+.bar { height: 8px; border-radius: 99px; background: #E9EEF2; }
+.seg3 { border: 0; border-radius: 12px; box-shadow: inset 0 0 0 1px #DDE3EA; background: #fff; padding: 3px; gap: 3px; }
+.seg3 button { border-radius: 9px; min-height: 38px; background: transparent; }
+.seg3 button + button { border-left: 0; }
+.seg3 button.on.io { background: #10B981; } .seg3 button.on.nio { background: #F43F5E; } .seg3 button.on.na { background: #E2E8F0; }
+.nio-box { border-left: 0; border-radius: 16px; background: #FFF1F2; box-shadow: inset 3px 0 0 #F43F5E; }
+.pp-i { padding: 14px 20px; border-bottom: 1px solid #F0F3F6; }
+.board { gap: 18px; }
+.ck li { padding: 13px 20px; border-bottom: 1px solid #F0F3F6; }
+.ck .st { width: 30px; height: 30px; }
+.ck .st.ok { background: #DCFCE7; color: #16A34A; } .ck .st.warn { background: #FEF3C7; color: #D97706; } .ck .st.bad { background: #FFE4E6; color: #E11D48; }
+.toc li::before { background: var(--accent-soft); color: var(--accent-deep); border-radius: 8px; }
+.mappe-ring .dvx-ring-v { font-family: var(--dvx-font); font-weight: 800; fill: var(--ink); }
+.mappe-hero { display: flex; align-items: center; gap: 18px; padding: 18px 20px; }
+.mappe-hero .dvx-ring { flex: none; }
+.mappe-hero .dvx-ring-v { font-family: var(--dvx-font); font-weight: 800; fill: var(--ink); }
+
+/* Dialoge, Toast, Benachrichtigungen */
+.overlay { background: rgba(15, 23, 42, .42); backdrop-filter: blur(3px); }
+.sheet { border-radius: 24px; box-shadow: var(--shadow); }
+.sheet-h { padding: 18px 22px; border-bottom: 1px solid var(--line); }
+.sheet-h h2 { font-size: 19px; font-weight: 800; }
+.sheet-b { padding: 18px 22px; gap: 14px; }
+.sheet-f { padding: 14px 22px; border-top: 1px solid var(--line); background: #FAFBFC; border-radius: 0 0 24px 24px; }
+.close { border-radius: 12px; width: 40px; height: 40px; }
+.bell-panel { border: 0; border-radius: 20px; top: calc(env(safe-area-inset-top, 0px) + 70px); }
+@media (min-width: 761px) { .bell-panel { top: 74px; bottom: auto; left: auto; right: max(28px, calc((100vw - 1500px) / 2 + 28px)); } }
+.bell-h { padding: 14px 16px; }
+.note.unread { background: #EFFBF8; }
+.note-b { align-items: flex-start; }
+.note-b .i { color: var(--accent); margin-top: 2px; }
+.toast { background: #151A2D; border-radius: 14px; padding: 12px 18px; box-shadow: 0 18px 40px -12px rgba(15,23,42,.5); }
+.toast::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent-2); box-shadow: 0 0 0 4px rgba(45,212,191,.25); flex: none; }
+.dl dt { color: #8A91A6; }
+.discard { border-radius: 0 0 24px 24px; }
+
+.center h1[tabindex="-1"]:focus { outline: none; }
+/* ---------- Breiten ---------- */
+@media (max-width: 1180px) {
+  .shell { grid-template-columns: 214px minmax(0, 1fr); gap: 20px; padding-right: max(18px, env(safe-area-inset-right, 0px)); padding-left: max(12px, env(safe-area-inset-left, 0px)); }
+  .rail { padding: 16px 10px 12px; }
+  .rail .nav-i { gap: 10px; font-size: 13.5px; padding: 7px 8px; }
+  .rail .nav-i .ni { width: 30px; height: 30px; }
+  .dash-a { grid-template-columns: minmax(0, 1fr); }
+  .gauge-card { display: grid; grid-template-columns: minmax(200px, 250px) minmax(0, 1fr); column-gap: 20px; align-items: center; }
+  .gauge-card .ch-h { grid-column: 1 / -1; }
+  .gauge-card .g-col { display: flex; flex-direction: column; gap: 6px; }
+  .kpi-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .kpi-grid .mbars { display: none; }
+  .tb-l .crumb { display: none; }
+  .board { grid-template-columns: repeat(2, minmax(0, 1fr)); overflow-x: visible; }
+}
+@media (max-width: 1080px) {
+  .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .kpi-grid .mbars { display: flex; }
+  .dash-c { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 760px) {
+  .mtop { display: flex; background: rgba(242,247,246,.9); backdrop-filter: blur(12px); border-bottom: 0; padding-block: 10px; box-shadow: 0 1px 0 rgba(21,26,45,.06); }
+  .mtop .brand-sub { display: none; }
+  .mtop .brand-name { font-size: 15px; }
+  .mtop .logo { width: 34px; height: 34px; border-radius: 11px; background: linear-gradient(135deg, var(--accent), #14B8A6); color: #fff; }
+  .mtop .tools-host { gap: 6px; }
+  .mtop .dvx-tourbtn-t { display: none; }
+  .mtop .dvx-tourbtn { padding: 9px; width: 40px; height: 40px; justify-content: center; }
+  .mtop .dvx-tourbtn-i { background: transparent; }
+  .mtop .dvx-lang button { padding: 0 8px; min-width: 38px; min-height: 40px; }
+  .mtop-btns { display: inline-flex; gap: 6px; }
+  .topbar { display: none; }
+  .rail { display: none; }
+  .shell { grid-template-columns: minmax(0, 1fr); padding-left: max(14px, env(safe-area-inset-left, 0px)); padding-right: max(14px, env(safe-area-inset-right, 0px)); }
+  .center { padding-top: 14px; gap: 16px; }
+  .tabbar { background: rgba(255,255,255,.96); backdrop-filter: blur(12px); border-top: 0; box-shadow: 0 -10px 30px -12px rgba(16,24,40,.18); border-radius: 22px 22px 0 0; padding-top: 8px; }
+  .tab-i { min-height: 52px; justify-content: center; gap: 3px; font-size: 11px; font-weight: 700; color: #6B7389; }
+  .tab-i > svg { width: 40px; height: 28px; padding: 4px 10px; border-radius: 999px; transition: background .18s; }
+  .tab-i.on { color: var(--accent-deep); }
+  .tab-i.on > svg { background: var(--accent-soft); }
+  .tab-i .cnt { top: 0; right: calc(50% - 26px); background: var(--crit); color: #fff; }
+  .tab-i .cnt:not(.crit) { background: #94A3B8; }
+  .hello h1, .page-h h1 { font-size: 25px; }
+  .quick { width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
+  .qbtn { justify-content: flex-start; padding: 10px 12px; font-size: 13px; }
+  .gauge-card { display: flex; }
+  .g-wrap svg { width: 210px; }
+  .rings { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .board { grid-template-columns: minmax(0, 1fr); }
+  .ring-i { padding: 10px 4px 8px; }
+  .ring-i b { font-size: 11.5px; }
+  .kpi-grid { gap: 12px; }
+  .donut-wrap { flex-wrap: wrap; }
+  .kpi2 { padding: 14px; border-radius: 18px; }
+  .k-v { font-size: 28px; }
+  .k-ic { width: 36px; height: 36px; border-radius: 12px; }
+  .kpi-grid .mbars { display: none; }
+  .focus { padding: 16px; gap: 14px; }
+  .focus .btn { width: 100%; }
+  .sheet { border-radius: 22px; }
+  .card-h, .card-b { padding-inline: 16px; }
+  th:first-child, td:first-child { padding-left: 14px; }
+  .pp-i { padding: 14px 16px; }
+  .mini { min-height: 38px; }
+  .legend { border-radius: 16px; }
+  .bell-panel { right: 12px; width: calc(100vw - 24px); }
+  html.dvx-tour-on .overlay { padding-bottom: 56vh; }
+  .toast { bottom: calc(92px + env(safe-area-inset-bottom, 0px)); }
+}
+</style>
 </head>
 <body>
 <a class="skip" href="#center">Zum Inhalt springen</a>
-<header class="mtop" id="mtop"></header>
+<header class="mtop" id="mtop"><div class="brand"><span class="logo" aria-hidden="true">M</span><div><div class="brand-name">Muster GmbH</div><div class="brand-sub">Arbeitsschutz</div></div></div><span class="tools-host" id="mTools"></span><span class="mtop-btns" id="mtopBtns"></span></header>
 <div class="shell" id="shell">
   <aside class="rail" id="rail" aria-label="Navigation"></aside>
-  <main class="center" id="center" tabindex="-1"></main>
+  <div class="mainc">
+    <div class="topbar" id="topbar"><div class="tb-l" id="tbL"></div><div class="tb-r"><span class="tools-host" id="topTools"></span><span class="tb-btns" id="topBtns"></span></div></div>
+    <main class="center" id="center" tabindex="-1"></main>
+  </div>
 </div>
 <nav class="tabbar" id="tabbar" aria-label="Navigation"></nav>
 <div class="bell-panel" id="bellPanel" role="region" aria-label="Benachrichtigungen" hidden></div>
@@ -490,9 +845,12 @@ a.linkbtn { display: inline-flex; align-items: center; gap: 4px; align-self: fle
 <script src="shared-files/xlsx.full.min.js"></script>
 <script>
 /* Arbeitsschutz: Unterweisungen, Audits und Nachweise. Demo mit Beispieldaten, gespeichert nur im Browser. */
-document.documentElement.lang = 'de';
-document.documentElement.dataset.skin = 'bunt';
-document.documentElement.dataset.mode = 'auto';
+document.documentElement.lang = DemoKit.isEN ? 'en' : 'de';
+document.documentElement.dataset.skin = 'dvx';
+document.documentElement.dataset.mode = 'light';
+const EN = DemoKit.isEN;
+const L2 = (de, en) => EN ? en : de;   /* Text direkt in beiden Sprachen */
+const T = s => DemoKit.t(s);          /* Übersetzung über das Wörterbuch (für Exporte, Canvas, Dateinamen) */
 const KEY = 'arbeitsschutz-demo-v2';
 const VER = 2;
 const ORG = 'Muster GmbH';
@@ -520,7 +878,12 @@ const ICONS = {
   more: '<circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/>',
   file: '<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/>',
   sheet: '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16M4 15h16M10 4v16"/>',
-  send: '<path d="M4 12l16-8-6 16-3-7z"/>'
+  send: '<path d="M4 12l16-8-6 16-3-7z"/>',
+  chev: '<path d="M8 10l4 4 4-4"/>',
+  chart: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  trend: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+  target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',
+  phone: '<rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M11 18.5h2"/>'
 };
 const ic = (n, cls) => `<svg class="i${cls ? ' ' + cls : ''}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]}</svg>`;
 const $ = id => document.getElementById(id);
@@ -541,7 +904,7 @@ const fmt = s => s ? DF.format(toD(s)) : '–';
 const fmtS = s => s ? DFS.format(toD(s)) : '–';
 const pctF = v => PF.format(v / 100);
 const stamp = () => { const d = new Date(); return `${iso(d)} ${pad(d.getHours())}:${pad(d.getMinutes())}`; };
-const tage = n => `${n} ${n === 1 ? 'Tag' : 'Tagen'}`;
+const tage = n => EN ? `${n} ${n === 1 ? 'day' : 'days'}` : `${n} ${n === 1 ? 'Tag' : 'Tagen'}`;
 const fmtD = s => `${DFW.format(toD(s)).replace('.', '')}, ${fmtS(s)}`;
 let seq = 0;
 const uid = p => (p || 'x') + Date.now().toString(36).slice(-4) + (++seq).toString(36) + Math.random().toString(36).slice(2, 5);
@@ -767,7 +1130,7 @@ function remindPerson(p) {
   notify(p.name, `Erinnerung: ${o.length === 1 ? o[0].t.name + ' ist fällig' : o.length + ' Unterweisungen sind fällig'}`, on ? { p: 'lern', id: on.t.id } : { p: 'start' });
   return 1;
 }
-const statusTxt = st => st.s === 'ok' ? (st.until ? `gültig bis ${fmt(st.until)}` : 'erledigt') : st.s === 'soon' ? `fällig am ${fmt(st.until)}` : st.s === 'over' ? `seit ${fmt(st.until)} überfällig` : st.s === 'nie' ? (st.due > TODAY ? `fällig ab ${fmt(st.due)}` : 'noch nie unterwiesen') : 'nicht erforderlich';
+const statusTxt = st => EN ? (st.s === 'ok' ? (st.until ? `valid until ${fmt(st.until)}` : 'completed') : st.s === 'soon' ? `due on ${fmt(st.until)}` : st.s === 'over' ? `overdue since ${fmt(st.until)}` : st.s === 'nie' ? (st.due > TODAY ? `due from ${fmt(st.due)}` : 'never trained') : 'not required') : st.s === 'ok' ? (st.until ? `gültig bis ${fmt(st.until)}` : 'erledigt') : st.s === 'soon' ? `fällig am ${fmt(st.until)}` : st.s === 'over' ? `seit ${fmt(st.until)} überfällig` : st.s === 'nie' ? (st.due > TODAY ? `fällig ab ${fmt(st.due)}` : 'noch nie unterwiesen') : 'nicht erforderlich';
 const STL = { ok: 'Gültig', soon: 'Bald fällig', over: 'Überfällig', nie: 'Nie unterwiesen', na: 'Nicht erforderlich' };
 const STP = { ok: 'good', soon: 'warn', over: 'crit', nie: 'muted', na: 'muted' };
 const auditScore = a => { const io = a.punkte.filter(x => x.r === 'io').length, nio = a.punkte.filter(x => x.r === 'nio').length; return io + nio ? pct(io, io + nio) : null; };
@@ -805,26 +1168,29 @@ function navCount(k) {
   return { n: 0 };
 }
 const brandMark = () => `<span class="logo" aria-hidden="true">M</span>`;
+const PAGE_L = { start: 'Übersicht', matrix: 'Unterweisungsmatrix', lern: 'Online-Unterweisung', termine: 'Präsenz-Termine', termin: 'Präsenz-Termine', audits: 'Audits & Begehungen', audit: 'Audits & Begehungen', massn: 'Maßnahmen', mappe: 'Behördenmappe', themen: 'Themen', leute: 'Mitarbeitende', person: 'Mitarbeitende' };
+const DFL = new Intl.DateTimeFormat('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+const rolleL = r => EN ? ({ Mitarbeitende: 'Employee', Abteilungsleitung: 'Head of department', Sicherheitsfachkraft: 'Safety officer' }[r] || r) : r;
 function renderFrame() {
   const r = S.route.p, unread = S.notes.filter(n => n.to === me().name && !n.read).length;
   const badge = unread ? `<span class="badge" aria-hidden="true">${unread}</span>` : '';
   const bellLbl = `Benachrichtigungen${unread ? `, ${unread} neu` : ''}`, bellOpen = !$('bellPanel').hidden;
   const navOn = k => k === r || (k === 'audits' && r === 'audit') || (k === 'termine' && r === 'termin') || (k === 'leute' && r === 'person') || (k === 'start' && r === 'lern');
   $('rail').innerHTML = `
-    <div class="brand">${brandMark()}<div><div class="brand-name" translate="no">${ORG}</div><div class="brand-sub">Arbeitsschutz</div></div></div>
-    ${navFor().map(([k, l, i, c]) => {
-      if (k === 'sep') return '<div class="nav-sep"></div>';
+    <div class="brand">${brandMark()}<div><div class="brand-name">${ORG}</div><div class="brand-sub">Arbeitsschutz</div></div></div>
+    ${navFor().map(([k, l, i]) => {
+      if (k === 'sep') return '<div class="nav-sep"></div><div class="nav-cap">Stammdaten</div>';
       const n = navCount(k);
-      return `<a class="nav-i${navOn(k) ? ' on' : ''}" href="#${k}" data-action="go" data-p="${k}" title="${l}" aria-label="${l}${n.n ? `, ${n.n} offen` : ''}"${navOn(k) ? ' aria-current="page"' : ''}><span class="ni" style="--ni:${c}">${ic(i)}</span><span class="lbl">${l}</span>${n.n ? `<span class="cnt${n.crit ? ' crit' : ''}" aria-hidden="true">${n.n}</span>` : ''}</a>`;
+      return `<a class="nav-i${navOn(k) ? ' on' : ''}" href="#${k}" data-action="go" data-p="${k}" data-nav="${k}" aria-label="${l}${n.n ? `, ${n.n} offen` : ''}"${navOn(k) ? ' aria-current="page"' : ''}><span class="ni">${ic(i)}</span><span class="lbl">${l}</span>${n.n ? `<span class="cnt${n.crit ? ' crit' : ''}" aria-hidden="true">${n.n}</span>` : ''}</a>`;
     }).join('')}
     <div class="rail-foot">
-      <button class="nav-i" data-action="bell" aria-label="${bellLbl}" aria-controls="bellPanel" aria-expanded="${bellOpen}" title="Benachrichtigungen" style="position:relative"><span class="ni" style="--ni:var(--n-md)">${ic('bell')}</span><span class="lbl">Benachrichtigungen</span>${badge}</button>
-      <label class="me-card">${av(me().name, 's')}<div><span class="sr">Angemeldet als</span><select id="userSel" data-role="user">${userOpts()}</select><small>${esc(me().rolle)} · ${esc(me().abt)}</small></div></label>
+      <label class="me-card" id="meCard">${av(me().name, 's')}<div><span class="sr">Angemeldet als</span><select id="userSel" data-role="user" aria-label="Person wechseln">${userOpts()}</select><small>${esc(rolleL(me().rolle))} · ${esc(me().abt)}</small></div>${ic('chev', 'chev')}</label>
       <button class="linkbtn" data-action="reset">Demo zurücksetzen…</button>
     </div>`;
-  $('mtop').innerHTML = `<div class="brand">${brandMark()}<div><div class="brand-name" translate="no">${ORG}</div></div></div>
-    <button class="icon-btn" data-action="bell" aria-label="${bellLbl}" aria-controls="bellPanel" aria-expanded="${bellOpen}">${ic('bell')}${badge}</button>
-    <button class="icon-btn" data-action="more" aria-label="Menü und Person" aria-haspopup="dialog" style="border-radius:50%;border:0">${av(me().name, 's')}</button>`;
+  const bellBtn = `<button class="icon-btn" data-action="bell" aria-label="${bellLbl}" title="Benachrichtigungen" aria-controls="bellPanel" aria-expanded="${bellOpen}">${ic('bell')}${badge}</button>`;
+  $('topBtns').innerHTML = bellBtn;
+  $('tbL').innerHTML = `<span class="crumb"><i></i><span translate="no">${ORG}</span>&nbsp;·&nbsp;<span>${PAGE_L[r] || ''}</span></span><span class="tb-date">${esc(DFL.format(toD(TODAY)))}</span>`;
+  $('mtopBtns').innerHTML = `${bellBtn}<button class="icon-btn" data-action="more" id="mMore" aria-label="Menü und Person" aria-haspopup="dialog" style="border-radius:50%;box-shadow:none;background:none">${av(me().name, 's')}</button>`;
   const tabs = canManage() ? [['start', 'Start', 'home'], ['matrix', 'Matrix', 'grid'], ['audits', 'Audits', 'clip'], ['massn', 'Maßnahmen', 'kanban'], ['more', 'Mehr', 'more']] : [['start', 'Meine', 'home'], ['massn', 'Maßnahmen', 'kanban'], ['more', 'Mehr', 'more']];
   $('tabbar').innerHTML = tabs.map(([k, l, i]) => {
     const on = k === 'more' ? ['termine', 'termin', 'mappe', 'themen', 'leute', 'person'].includes(r) : navOn(k);
@@ -832,8 +1198,8 @@ function renderFrame() {
     const cnt = n.n ? `<span class="cnt${n.crit ? ' crit' : ''}" aria-hidden="true">${n.n}</span>` : '';
     const lbl = `${l}${n.n ? `, ${n.n} offen` : ''}`;
     return k === 'more'
-      ? `<button class="tab-i${on ? ' on' : ''}" data-action="more" aria-haspopup="dialog" aria-label="${lbl}">${ic(i)}<span>${l}</span></button>`
-      : `<a class="tab-i${on ? ' on' : ''}" href="#${k}" data-action="go" data-p="${k}" aria-label="${lbl}"${on ? ' aria-current="page"' : ''}>${ic(i)}<span>${l}</span>${cnt}</a>`;
+      ? `<button class="tab-i${on ? ' on' : ''}" data-action="more" data-tab="more" aria-haspopup="dialog" aria-label="${lbl}">${ic(i)}<span>${l}</span></button>`
+      : `<a class="tab-i${on ? ' on' : ''}" href="#${k}" data-action="go" data-p="${k}" data-tab="${k}" aria-label="${lbl}"${on ? ' aria-current="page"' : ''}>${ic(i)}<span>${l}</span>${cnt}</a>`;
   }).join('');
   if (!$('bellPanel').hidden) renderBell();
 }
@@ -863,14 +1229,30 @@ function ringSvg(v, size) {
   return `<svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="${r}" fill="none" stroke="var(--muted-soft)" stroke-width="14"/><circle cx="60" cy="60" r="${r}" fill="none" stroke="${col}" stroke-width="14" stroke-linecap="round" stroke-dasharray="${(c * v / 100).toFixed(1)} ${c.toFixed(1)}"/></svg>`;
 }
 function hello() {
-  const h = new Date().getHours(), g = h < 11 ? 'Guten Morgen' : h < 18 ? 'Hallo' : 'Guten Abend';
-  return `${g} ${esc(me().name.split(' ')[0])}`;
+  const h = new Date().getHours(), g = h < 11 ? L2('Guten Morgen', 'Good morning') : h < 18 ? L2('Hallo', 'Hello') : L2('Guten Abend', 'Good evening');
+  return `${g}, ${esc(me().name.split(' ')[0])}`;
 }
+/* Diagramm-Helfer fürs Dashboard */
+const MONF = new Intl.DateTimeFormat('de-DE', { month: 'short' });
+const monthAt = off => { const d = toD(TODAY); d.setDate(1); d.setMonth(d.getMonth() + off); return d; };
+const monthKey = off => iso(monthAt(off)).slice(0, 7);
+const monthLabel = off => MONF.format(monthAt(off)).replace('.', '');
+/* Demo-Verlauf (keine echte Historie vorhanden): feste Abweichungen, endet immer mit dem aktuellen Wert */
+const demoHist = (cur, offs) => offs.map((o, i) => i === offs.length - 1 ? cur : Math.max(0, cur + o));
+function trendChip(h, goodDown) {
+  const d = h[h.length - 1] - h[h.length - 2];
+  if (!d) return `<span class="trend flat" title="ggü. Vormonat">± 0</span>`;
+  const good = goodDown ? d < 0 : d > 0;
+  return `<span class="trend ${good ? 'up' : 'down'}" title="ggü. Vormonat">${d < 0 ? '▼' : '▲'} ${Math.abs(d)}</span>`;
+}
+const miniBars = vals => { const mx = Math.max(1, ...vals); return `<span class="mbars" aria-hidden="true">${vals.map(v => `<i style="height:${Math.max(14, Math.round(v / mx * 100))}%"></i>`).join('')}</span>`; };
+const quoteCol = v => v >= 90 ? '#10B981' : v >= 75 ? '#F59E0B' : '#F43F5E';
 function pageStart() {
   if (!canManage()) return pageMine();
   const pp = scopePeople(), st = stats(pp), rd = readiness();
   const val = isLead() ? st.quote : rd.val;
-  const myM = isLead() ? openM().filter(m => pp.some(p => p.name === m.owner)) : openM();
+  const inScope = m => !isLead() || pp.some(p => p.name === m.owner);
+  const allM = S.massn.filter(inScope), myM = openM().filter(inScope);
   const overMs = myM.filter(m => m.due < TODAY);
   const byT = k => S.themen.map(t => ({ t, l: st.c.filter(x => x.t === t && (k === 'gap' ? isGap(x.st.s) : x.st.s === 'soon')) })).filter(x => x.l.length).sort((a, b) => b.l.length - a.l.length);
   const gaps = byT('gap'), soon = byT('soon');
@@ -880,31 +1262,54 @@ function pageStart() {
   const pcard = p => p.k === 't'
     ? `<button class="bcard" data-action="termin" data-id="${p.x.id}"><div class="bc-top"><span class="apill ${thema(p.x.tid).color}">Termin</span><span class="av-stack">${p.x.teil.slice(0, 4).map(id => av(person(id).name, 'xs')).join('')}</span></div><div class="bc-t">${esc(thema(p.x.tid).name)}</div><div class="bc-b"><span class="bc-s">${esc(p.x.ort)} · ${p.x.teil.length} Teilnehmende</span><span class="dpill week">${fmtD(p.x.datum)} ${esc(p.x.zeit)}</span></div></button>`
     : `<button class="bcard" data-action="audit" data-id="${p.x.id}"><div class="bc-top"><span class="apill t3">${p.x.status === 'laufend' ? 'Läuft' : 'Audit'}</span>${av(p.x.auditor, 'xs')}</div><div class="bc-t">${esc(p.x.titel)}</div><div class="bc-b"><span class="bc-s">${esc(p.x.bereich)}</span><span class="dpill ${p.x.status === 'laufend' ? 'acc' : 'week'}">${p.x.status === 'laufend' ? `${auditDone(p.x)}/${p.x.punkte.length} geprüft` : fmtD(p.x.datum)}</span></div></button>`;
-  const col = (cls, title, items, empty) => `<div class="col"><h2 class="col-h ${cls}"><span>${title}</span><span>${items.length}</span></h2>${items.length ? items.join('') : `<div class="col-empty">${empty}</div>`}</div>`;
+  const col = (cls, title, items, empty, moreAct) => `<div class="col"><h2 class="col-h ${cls}"><span>${title}</span><span>${items.length}</span></h2>${items.length ? items.slice(0, 4).join('') + (items.length > 4 ? `<button class="col-more" ${moreAct}>+ ${items.length - 4} weitere anzeigen</button>` : '') : `<div class="col-empty">${ic('check')}<span>${empty}</span></div>`}</div>`;
+  /* Kennzahlen mit Verlauf */
+  const neuN = pp.filter(p => daysBetween(p.eintritt, TODAY) < 30).length;
+  const kpis = [
+    { at: 'data-action="mx-gaps"', c: 'kc-rose', i: 'alert', v: st.over, l: 'Überfällig', s: 'Unterweisungen', h: demoHist(st.over, [7, 6, 8, 5, 3, 0]) },
+    { at: 'data-action="mx-gaps"', c: 'kc-peach', i: 'users', v: st.nie, l: 'Nie unterwiesen', s: `davon ${neuN} neu im Betrieb`, h: demoHist(st.nie, [3, 4, 2, 4, 1, 0]) },
+    { at: 'data-action="go" data-p="matrix"', c: 'kc-amber', i: 'cal', v: st.soon, l: 'In 30 Tagen fällig', s: 'rechtzeitig planen', h: demoHist(st.soon, [2, -1, 3, 1, 2, 0]) },
+    { at: 'data-action="go" data-p="massn"', c: 'kc-lila', i: 'kanban', v: myM.length, l: 'Maßnahmen offen', s: `${overMs.length} überfällig`, h: demoHist(myM.length, [3, 5, 2, 4, 1, 0]) }
+  ];
+  /* Balken: Unterweisungen pro Monat, erledigt vs. fällig (Vormonate als Demo-Verlauf, aktueller Monat echt gezählt) */
+  const k = Math.max(.5, pp.length / 12), pids = new Set(pp.map(p => p.id));
+  const doneCur = S.nachweise.filter(n => pids.has(n.pid) && n.datum.slice(0, 7) === monthKey(0)).length;
+  const dueCur = st.c.filter(x => isGap(x.st.s) || (x.st.s === 'soon' && x.st.until && x.st.until.slice(0, 7) === monthKey(0))).length;
+  const barDone = [17, 21, 14, 24, 19].map(v => Math.round(v * k)).concat(doneCur), barDue = [15, 18, 17, 20, 16].map(v => Math.round(v * k)).concat(dueCur);
+  const bars = DemoKit.charts.bars({ labels: [-5, -4, -3, -2, -1, 0].map(monthLabel), series: [{ name: L2('Erledigt', 'Completed'), values: barDone, color: '#0E9F88' }, { name: L2('Fällig', 'Due'), values: barDue, color: '#F9A8D4' }], height: 210, max: Math.max(20, Math.ceil(Math.max(...barDone, ...barDue) / 20) * 20) });
+  /* Donut: Maßnahmen nach Status */
+  const MCOL = { offen: '#0EA5E9', arbeit: '#F59E0B', erledigt: '#22C55E', wirksam: '#7C3AED' };
+  const mSeg = MSTAT.map(([key, l]) => ({ key, l, value: allM.filter(m => m.status === key).length, color: MCOL[key] }));
+  const donut = DemoKit.charts.donut(mSeg.map(x => ({ value: x.value, color: x.color, label: T(x.l) })), { size: 132, stroke: 18, center: String(myM.length), sub: L2('offen', 'open') });
+  /* Ringe: Unterweisungsquote pro Thema */
+  const rings = S.themen.map(t => { const c = st.c.filter(x => x.t === t); if (!c.length) return ''; const ok = c.filter(x => ['ok', 'soon'].includes(x.st.s)).length, q = pct(ok, c.length); return `<button class="ring-i" data-action="mx-topic" data-tid="${t.id}" data-gaps="${q < 100 ? 1 : 0}" aria-label="${esc(t.name)}: ${q} %">${DemoKit.charts.ring(q, { size: 74, stroke: 8, color: quoteCol(q), label: q + '%' })}<b>${esc(t.short)}</b><small>${ok}/${c.length} gültig</small></button>`; }).join('');
+  const nextA = plan.find(x => x.k === 'a' && x.x.status === 'geplant');
   return `
-  <div class="hello"><div><h1>${hello()}</h1><p>${isLead() ? 'Abteilung ' + esc(me().abt) : fmtD(TODAY).replace(',', ', den')}</p></div>
-    <div class="quick">
-      <button class="qbtn q1" data-action="t-new">${ic('cal', 's')} Termin planen</button>
-      <button class="qbtn q2" data-action="z-new">${ic('send', 's')} Online zuweisen</button>
-      ${isSifa() ? `<button class="qbtn q3" data-action="a-new">${ic('clip', 's')} Begehung starten</button><a class="qbtn q4" href="#mappe" data-action="go" data-p="mappe" style="text-decoration:none">${ic('shield', 's')} Behördenmappe</a>` : ''}
+  <div class="hello"><div><h1>${hello()} <span class="wave" aria-hidden="true">👋</span></h1><p class="muted">${isLead() ? 'Abteilung ' + esc(me().abt) + ' · ' : ''}${nextA ? `Nächstes Audit: ${esc(nextA.x.titel)}, ${fmtD(nextA.d)}` : 'Arbeitsschutz auf einen Blick'}</p></div>
+    <div class="quick" id="quick">
+      <button class="qbtn q0" data-action="t-new" id="qTermin"><span class="qi">${ic('cal', 's')}</span><span class="qt">Termin planen</span></button>
+      <button class="qbtn q2" data-action="z-new"><span class="qi">${ic('send', 's')}</span><span class="qt">Online zuweisen</span></button>
+      ${isSifa() ? `<button class="qbtn q3" data-action="a-new"><span class="qi">${ic('clip', 's')}</span><span class="qt">Begehung starten</span></button><a class="qbtn q4" href="#mappe" data-action="go" data-p="mappe" style="text-decoration:none"><span class="qi">${ic('shield', 's')}</span><span class="qt">Behördenmappe</span></a>` : ''}
     </div></div>
-  <div class="hero">
-    <section class="card ring-card"><div class="ring" role="img" aria-label="${isLead() ? 'Unterweisungsquote' : 'Audit-Bereitschaft'} ${val} Prozent">${ringSvg(val)}<div class="rv"><b>${pctF(val)}</b><small>${isLead() ? 'unterwiesen' : 'bereit'}</small></div></div>
-      <div class="ring-l">${isLead() ? 'Unterweisungsquote' : 'Audit-Bereitschaft'}</div><div class="ring-s">${isLead() ? `${pp.length} Personen in ${esc(me().abt)}` : `Unterweisungen ${pctF(rd.quote)} · Maßnahmen ${pctF(rd.mq)}`}</div></section>
-    <div class="hero-r">
-      <div class="kpi-row">
-        <button class="kpi" data-action="mx-gaps"><div class="kpi-l">Überfällig</div><div class="kpi-v${st.over ? ' crit' : ''}">${st.over}</div><div class="kpi-s">Unterweisungen</div></button>
-        <button class="kpi" data-action="mx-gaps"><div class="kpi-l">Nie unterwiesen</div><div class="kpi-v${st.nie ? ' crit' : ''}">${st.nie}</div><div class="kpi-s">davon ${pp.filter(p => daysBetween(p.eintritt, TODAY) < 30).length} neu im Betrieb</div></button>
-        <button class="kpi" data-action="go" data-p="matrix"><div class="kpi-l">In 30 Tagen fällig</div><div class="kpi-v${st.soon ? ' warn' : ''}">${st.soon}</div><div class="kpi-s">rechtzeitig planen</div></button>
-        <button class="kpi" data-action="go" data-p="massn"><div class="kpi-l">Maßnahmen offen</div><div class="kpi-v${overMs.length ? ' crit' : ''}">${myM.length}</div><div class="kpi-s">${overMs.length} überfällig</div></button>
-      </div>
-      ${gaps.length ? `<div class="focus"><div class="focus-n">${st.over + st.nie}</div><div class="focus-t"><b>Lücken schließen</b><span>${gaps.slice(0, 3).map(g => esc(g.t.short)).join(' · ')}</span></div><button class="btn" data-action="mx-gaps">Matrix öffnen</button></div>` : `<div class="focus calm"><div class="focus-n">${ic('check')}</div><div class="focus-t"><b>Alles unterwiesen</b><span>Keine Lücken in ${isLead() ? 'Ihrer Abteilung' : 'der Matrix'}</span></div></div>`}
-    </div>
+  <div class="dash-a">
+    <section class="card gauge-card" id="gaugeCard"><div class="ch-h"><div><h2>${isLead() ? 'Unterweisungsquote' : 'Audit-Bereitschaft'}</h2><p>${isLead() ? `${pp.length} Personen in ${esc(me().abt)}` : 'Wie gut sind Sie heute auf eine Prüfung vorbereitet?'}</p></div><span class="pill ${val >= 90 ? 'good' : val >= 75 ? 'warn' : 'crit'}">${val >= 90 ? 'Gut' : val >= 75 ? 'Fast' : 'Handeln'}</span></div>
+      <div class="g-wrap" role="img" aria-label="${isLead() ? 'Unterweisungsquote' : 'Audit-Bereitschaft'} ${val} %">${DemoKit.charts.gauge(val, { size: 250, colors: ['#F43F5E', '#F43F5E', '#FB7185', '#F59E0B', '#FBBF24', '#A3E635', '#22C55E', '#10B981'] })}</div>
+      <div class="g-col"><div class="g-val">${pctF(val)}</div><div class="g-sub">${isLead() ? 'gültig unterwiesen' : 'Ziel: 90 % vor dem nächsten Audit'}</div>
+      ${isLead() ? '' : `<div class="g-split"><div><b>${pctF(rd.quote)}</b><small>Unterweisungen</small><i><u style="width:${rd.quote}%"></u></i></div><div><b>${pctF(rd.mq)}</b><small>Maßnahmen erledigt</small><i><u style="width:${rd.mq}%;background:#7C3AED"></u></i></div></div>`}</div></section>
+    <div class="kpi-grid" id="kpiGrid">${kpis.map(x => `<button class="kpi2 ${x.c}" ${x.at}><div class="k-top"><span class="k-ic">${ic(x.i)}</span>${trendChip(x.h, true)}</div><div class="k-row"><div><div class="k-v">${x.v}</div><div class="k-l">${x.l}</div></div>${miniBars(x.h)}</div><div class="k-s">${x.s}</div></button>`).join('')}</div>
   </div>
+  ${gaps.length ? `<div class="focus" id="focusCard"><div class="focus-n">${st.over + st.nie}</div><div class="focus-t"><b>Lücken schließen</b><span>${gaps.slice(0, 3).map(g => esc(g.t.short)).join(' · ')}${gaps.length > 3 ? ` · +${gaps.length - 3}` : ''}</span></div><button class="btn" data-action="mx-gaps" id="focusGo">${ic('grid', 's')} Matrix öffnen</button></div>`
+    : `<div class="focus calm" id="focusCard"><div class="focus-n">${ic('check')}</div><div class="focus-t"><b>Alles unterwiesen</b><span>Keine Lücken in ${isLead() ? 'Ihrer Abteilung' : 'der Matrix'}</span></div><button class="btn" data-action="go" data-p="matrix" id="focusGo">${ic('grid', 's')} Matrix öffnen</button></div>`}
+  <div class="dash-c">
+    <section class="card chart-card" id="barCard"><div class="ch-h"><div><h2>Unterweisungen pro Monat</h2><p>Erledigt im Vergleich zu fällig, letzte 6 Monate</p></div><div class="lgd"><span><i style="background:#0E9F88"></i>Erledigt</span><span><i style="background:#F9A8D4"></i>Fällig</span></div></div>${bars}</section>
+    <section class="card chart-card" id="donutCard"><div class="ch-h"><div><h2>Maßnahmen nach Status</h2><p>${allM.length} aus Audits und Begehungen</p></div></div>
+      <div class="donut-wrap">${donut}<div class="dl2">${mSeg.map(x => `<button data-action="go" data-p="massn"><i style="background:${x.color}"></i>${esc(x.l)}<b>${x.value}</b></button>`).join('')}</div></div></section>
+  </div>
+  <section class="card chart-card" id="ringCard"><div class="ch-h"><div><h2>Unterweisungsquote pro Thema</h2><p>Antippen öffnet die Matrix für das Thema</p></div><div class="lgd"><span><i style="background:#10B981"></i>ab 90 %</span><span><i style="background:#F59E0B"></i>ab 75 %</span><span><i style="background:#F43F5E"></i>darunter</span></div></div><div class="rings">${rings}</div></section>
   <div class="cols3">
-    ${col('over', 'Überfällig', gaps.map(x => tcard(x, 'over')).concat(overMs.map(mcard)), 'Nichts überfällig')}
-    ${col('today', 'Bald fällig', soon.map(x => tcard(x, 'soon')), 'Nichts in den nächsten 30 Tagen')}
-    ${col('week', 'Geplant', plan.map(pcard), 'Nichts geplant')}
+    ${col('over', 'Überfällig', gaps.map(x => tcard(x, 'over')).concat(overMs.map(mcard)), 'Nichts überfällig', 'data-action="mx-gaps"')}
+    ${col('today', 'Bald fällig', soon.map(x => tcard(x, 'soon')), 'Nichts in den nächsten 30 Tagen', 'data-action="go" data-p="matrix"')}
+    ${col('week', 'Geplant', plan.map(pcard), 'Nichts geplant', 'data-action="go" data-p="termine"')}
   </div>`;
 }
 function pageMine() {
@@ -915,7 +1320,7 @@ function pageMine() {
   const urgent = online.filter(x => isGap(x.st.s) || x.z);
   return `
   <div class="hello"><div><h1>${hello()}</h1><p>${esc(p.abt)}${p.merk.length ? ' · ' + p.merk.map(esc).join(', ') : ''}</p></div></div>
-  ${online.length ? `<div class="focus"><div class="focus-n">${online.length}</div><div class="focus-t"><b>${online.length === 1 ? 'Unterweisung wartet' : 'Unterweisungen warten'}</b><span>${esc(online[0].t.name)}${online.length > 1 ? ` und ${online.length - 1} weitere` : ''} · ca. 5 Minuten</span></div><button class="btn" data-action="lern" data-tid="${online[0].t.id}">${ic('play', 's')} Jetzt starten</button></div>`
+  ${online.length ? `<div class="focus"><div class="focus-n">${online.length}</div><div class="focus-t"><b>${online.length === 1 ? 'Unterweisung wartet' : 'Unterweisungen warten'}</b><span>${esc(online[0].t.name)}${online.length > 1 ? ` und ${online.length - 1} weitere` : ''} · ca. 5 Minuten</span></div><button class="btn" data-action="lern" data-tid="${online[0].t.id}" id="mineGo">${ic('play', 's')} Jetzt starten</button></div>`
     : `<div class="focus calm"><div class="focus-n">${ic('check')}</div><div class="focus-t"><b>Alles erledigt</b><span>Sie sind für alle Themen unterwiesen.</span></div></div>`}
   ${online.length > 1 || praes.length ? `<section class="card"><div class="card-h"><div><h2>Offen</h2><p>${urgent.length ? 'Bitte zuerst die roten erledigen.' : 'Rechtzeitig vor Ablauf erledigen.'}</p></div></div><div class="my-list">
     ${online.map(x => `<div class="my-i"><span class="dot ${x.st.s}"></span><div class="t"><b>${esc(x.t.name)}</b><small>Online · ${esc(statusTxt(x.st))}${x.z ? ' · zugewiesen bis ' + fmt(x.z.due) : ''}</small></div><button class="btn primary" data-action="lern" data-tid="${x.t.id}">${ic('play', 's')} Starten</button></div>`).join('')}
@@ -936,10 +1341,10 @@ function pageMatrix() {
   if (f.tid) { tt = tt.filter(t => t.id === f.tid); pp = pp.filter(p => tt.some(t => reqP(p, t))); }
   if (f.gaps) pp = pp.filter(p => tt.some(t => isGap(statusOf(p, t).s)));
   const st = stats(pp, tt);
-  const short = { ok: '', soon: '', over: '!', nie: '–' };
+  const short = { ok: '✓', soon: '•', over: '!', nie: '–' };
   return `
   <div class="page-h"><div><h1>Unterweisungsmatrix</h1><p>Wer braucht was, und wer ist gültig unterwiesen. Zelle antippen für Details.</p></div>
-    <div class="row-acts"><button class="btn" data-action="xl-matrix">${ic('download', 's')} Excel</button><button class="btn primary" data-action="z-new">${ic('send', 's')} Online zuweisen</button></div></div>
+    <div class="row-acts"><button class="btn" data-action="xl-matrix">${ic('download', 's')} Excel</button><button class="btn primary" data-action="z-new" id="mxAssign">${ic('send', 's')} Online zuweisen</button></div></div>
   <div class="tools">
     <label class="search">${ic('users', 's')}<span class="sr">Person suchen</span><input id="mxq" name="mxq" type="search" placeholder="z. B. Ahmet Yilmaz…" value="${esc(f.q)}" autocomplete="off" spellcheck="false"></label>
     ${isLead() ? '' : `<select class="sel" id="mxAbt" aria-label="Abteilung"><option value="">Alle Abteilungen</option>${opts(ABT, f.abt)}</select>`}
@@ -1027,7 +1432,7 @@ function pageTermine() {
   const row = x => { const t = thema(x.tid); return `<tr class="click" data-action="termin" data-id="${x.id}"><td><button class="rowbtn" data-action="termin" data-id="${x.id}">${fmt(x.datum)}</button> <span class="muted">${esc(x.zeit)}</span></td><td><span class="apill ${t.color}">${esc(t.short)}</span></td><td>${esc(x.ort)}</td><td><span class="who">${av(x.leiter, 'xs')}<b>${esc(x.leiter)}</b></span></td><td class="num">${x.status === 'geplant' ? x.teil.length : Object.keys(x.anw).length}</td></tr>`; };
   return `
   <div class="page-h"><div><h1>Präsenz-Termine</h1><p>Planen, Anwesenheit mit Unterschrift erfassen, abschließen. Die Nachweise entstehen automatisch.</p></div>
-    <button class="btn primary" data-action="t-new">${ic('plus', 's')} Termin planen</button></div>
+    <button class="btn primary" data-action="t-new" id="tNewBtn">${ic('plus', 's')} Termin planen</button></div>
   <div class="cols3" style="grid-template-columns:minmax(0,1fr)">
   ${up.length ? `<div class="a-grid">${up.map(x => { const t = thema(x.tid); return `<button class="bcard" data-action="termin" data-id="${x.id}"><div class="bc-top"><span class="apill ${t.color}">${esc(t.short)}</span><span class="dpill week">${fmtD(x.datum)} ${esc(x.zeit)}</span></div><div class="bc-t">${esc(t.name)}</div><div class="bc-b"><span class="bc-s">${esc(x.ort)} · ${esc(x.leiter)}</span><span class="av-stack">${x.teil.slice(0, 5).map(id => av(person(id).name, 'xs')).join('')}${x.teil.length > 5 ? `<span class="av xs c7">+${x.teil.length - 5}</span>` : ''}</span></div></button>`; }).join('')}</div>` : '<div class="col-empty">Keine geplanten Termine.</div>'}
   </div>
@@ -1053,14 +1458,14 @@ function pageAudits() {
   const list = S.audits.slice().sort((a, b) => (a.status === 'abgeschlossen') - (b.status === 'abgeschlossen') || b.datum.localeCompare(a.datum));
   return `
   <div class="page-h"><div><h1>Audits & Begehungen</h1><p>Checkliste am Handy durchgehen, Mängel mit Foto festhalten, Maßnahmen entstehen automatisch.</p></div>
-    <button class="btn primary" data-action="a-new">${ic('plus', 's')} Begehung starten</button></div>
+    <button class="btn primary" data-action="a-new" id="aNewBtn">${ic('plus', 's')} Begehung starten</button></div>
   <div class="a-grid">${list.map(a => {
     const sc = auditScore(a), done = auditDone(a), nio = a.punkte.filter(x => x.r === 'nio').length, io = a.punkte.filter(x => x.r === 'io').length;
     const stp = a.status === 'abgeschlossen' ? ['good', 'Abgeschlossen'] : a.status === 'laufend' ? ['accent', 'Läuft'] : ['info', 'Geplant'];
     return `<button class="bcard" data-action="audit" data-id="${a.id}"><div class="bc-top"><span class="pill ${stp[0]}">${stp[1]}</span><span class="bc-s">${fmt(a.datum)}</span></div>
       <div class="bc-t">${esc(a.titel)}</div><div class="bc-s">${esc(a.bereich)} · ${esc(a.auditor)}</div>
       <div class="bar" aria-hidden="true"><i class="g" style="width:${io / a.punkte.length * 100}%"></i><i class="r" style="width:${nio / a.punkte.length * 100}%"></i><i class="n" style="width:${(done - io - nio) / a.punkte.length * 100}%"></i></div>
-      <div class="bc-b"><span class="bc-s">${done}/${a.punkte.length} geprüft · ${nio} Mängel</span>${sc !== null ? `<span class="score" style="color:${sc >= 90 ? 'var(--good)' : sc >= 75 ? 'var(--warn)' : 'var(--crit)'}">${pctF(sc)}</span>` : ''}</div></button>`;
+      <div class="bc-b"><span class="bc-s">${done}/${a.punkte.length} geprüft · ${nio} ${nio === 1 ? 'Mangel' : 'Mängel'}</span>${sc !== null ? `<span class="score" style="color:${sc >= 90 ? 'var(--good)' : sc >= 75 ? 'var(--warn)' : 'var(--crit)'}">${pctF(sc)}</span>` : ''}</div></button>`;
   }).join('')}</div>`;
 }
 function pageAudit() {
@@ -1076,11 +1481,11 @@ function pageAudit() {
     <div class="pp-h"><div class="t">${i + 1}. ${esc(x.t)}${x.r === 'nio' && !ed && x.note ? `<small>${esc(x.note)}</small>` : ''}</div>
       ${ed && a.status === 'laufend' ? `<div class="seg3" role="group" aria-label="Bewertung">${[['io', 'i.O.'], ['nio', 'n.i.O.'], ['na', 'n.a.']].map(([k, l]) => `<button class="${k}${x.r === k ? ' on' : ''}" data-action="pp-set" data-i="${i}" data-r="${k}" aria-pressed="${x.r === k}">${l}</button>`).join('')}</div>` : `<span class="pill ${x.r === 'io' ? 'good' : x.r === 'nio' ? 'crit' : 'muted'}">${x.r === 'io' ? 'i.O.' : x.r === 'nio' ? 'n.i.O.' : x.r === 'na' ? 'n.a.' : 'offen'}</span>`}</div>
     ${x.r === 'nio' ? (ed && a.status === 'laufend' ? `<div class="nio-box">
-      <div class="field"><label for="pn${i}">Feststellung</label><textarea id="pn${i}" data-pp="note" data-i="${i}" rows="2" placeholder="z. B. Schutzhaube gerissen, Späne treten aus…">${esc(x.note)}</textarea></div>
+      <div class="field"><label for="pn${i}">Feststellung</label><textarea id="pn${i}" data-pp="note" data-i="${i}" rows="2" placeholder="${L2('z. B. Schutzhaube gerissen, Späne treten aus…', 'e.g. guard cracked, chips escaping…')}">${esc(T(x.note))}</textarea></div>
       <div class="row-acts">${x.foto ? `<img class="foto" width="120" height="90" loading="lazy" decoding="async" src="${x.foto}" alt="Foto zu Prüfpunkt ${i + 1}"><button class="mini" data-action="pp-foto-del" data-i="${i}">Foto entfernen</button>` : ''}<label class="btn" for="pf${i}">${ic('camera', 's')} ${x.foto ? 'Anderes Foto' : 'Foto'}</label><input id="pf${i}" class="sr" type="file" accept="image/*" capture="environment" data-pp="foto" data-i="${i}"></div>
       <div class="grid2"><div class="field"><label for="pr${i}">Risiko</label><select id="pr${i}" data-pp="risiko" data-i="${i}">${opts(['gering', 'mittel', 'hoch'], x.risiko)}</select></div>
         <div class="field"><label for="po${i}">Verantwortlich</label><select id="po${i}" data-pp="owner" data-i="${i}"><option value="">Bitte wählen</option>${opts(ppl, x.owner)}</select></div>
-        <div class="field"><label for="pd${i}">Termin</label><input id="pd${i}" type="date" data-pp="due" data-i="${i}" value="${esc(x.due || rel(x.risiko === 'hoch' ? 7 : 21))}"></div></div>
+        <div class="field"><label for="pd${i}">${L2('Termin', 'Due date')}</label><input id="pd${i}" type="date" data-pp="due" data-i="${i}" value="${esc(x.due || rel(x.risiko === 'hoch' ? 7 : 21))}"></div></div>
       <div class="field"><label for="pm${i}">Maßnahme</label><input id="pm${i}" data-pp="mtext" data-i="${i}" value="${esc(x.mtext)}" placeholder="z. B. Schutzhaube ersetzen…"></div></div>` : x.foto ? `<img class="foto" width="120" height="90" loading="lazy" decoding="async" src="${x.foto}" alt="Foto zu Prüfpunkt ${i + 1}">` : '') : ''}
   </div>`).join('')}</div></section>
   ${a.status === 'abgeschlossen' ? `<section class="card"><div class="card-h"><div><h2>Maßnahmen aus diesem Audit</h2></div></div><div class="my-list">${S.massn.filter(m => m.aid === a.id).map(m => `<div class="my-i"><span class="risk ${m.risiko}">${esc(m.risiko)}</span><div class="t"><b>${esc(m.titel)}</b><small>${esc(m.owner)} · bis ${fmt(m.due)}</small></div><button class="dpill ${['erledigt', 'wirksam'].includes(m.status) ? 'ok' : m.due < TODAY ? 'over' : 'week'}" style="border:0" data-action="m-open" data-id="${m.id}">${esc(mLabel(m.status))}</button></div>`).join('') || '<p class="empty">Keine Mängel.</p>'}</div></section>` : ''}`;
@@ -1132,10 +1537,10 @@ function pageMappe() {
   const ck = checklist(), pr = period(), okN = ck.filter(c => c.k === 'ok').length;
   return `
   <div class="page-h"><div><h1>Behördenmappe</h1><p>Ein PDF mit allem, was BG, Amt oder Auditor sehen wollen. Daten kommen direkt aus Matrix, Terminen und Audits.</p></div>
-    <div class="row-acts"><button class="btn primary big" data-action="pdf-mappe">${ic('download', 's')} PDF erstellen</button></div></div>
+    <div class="row-acts"><button class="btn primary big" data-action="pdf-mappe" id="pdfMappe">${ic('download', 's')} PDF erstellen</button></div></div>
   <div class="tools"><select class="sel" id="mzSel" aria-label="Für">${opts(Object.entries(MZ), S.mz)}</select><select class="sel" id="mpSel" aria-label="Zeitraum">${opts([['jahr', 'Letzte 12 Monate'], ['kj', 'Kalenderjahr ' + new Date().getFullYear()], ['vj', 'Vorjahr ' + (new Date().getFullYear() - 1)]], S.mp)}</select></div>
   <div class="two">
-    <section class="card"><div class="card-h"><div><h2>Was geprüft wird</h2><p>${okN} von ${ck.length} Punkten erfüllt</p></div></div>
+    <section class="card"><div class="card-h"><div><h2>Was geprüft wird</h2><p>${okN} von ${ck.length} Punkten erfüllt</p></div><span class="mappe-ring">${DemoKit.charts.ring(pct(okN, ck.length), { size: 58, stroke: 7, color: quoteCol(pct(okN, ck.length)), label: pct(okN, ck.length) + '%' })}</span></div>
       <ul class="ck">${ck.map(c => `<li><span class="st ${c.k}">${ic(c.k === 'ok' ? 'check' : c.k === 'warn' ? 'alert' : 'x')}</span><div class="t"><b>${esc(c.t)}</b><small>${esc(c.d)}</small></div></li>`).join('')}</ul></section>
     <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
       <section class="card"><div class="card-h"><div><h2>Inhalt der Mappe</h2><p>${esc(MZ[S.mz])} · ${esc(pr.l)}</p></div></div><div class="card-b"><ol class="toc">
@@ -1170,7 +1575,7 @@ function pagePerson() {
   const all = S.themen.map(t => ({ t, st: statusOf(p, t) })).filter(x => x.st.s !== 'na'), st = stats([p]);
   return `
   <a class="linkbtn" href="#leute" data-action="go" data-p="leute">${ic('back', 's')} Alle Mitarbeitenden</a>
-  <div class="page-h"><div class="who">${av(p.name)}<div><h1>${esc(p.name)}</h1><p>${esc(p.abt)} · ${esc(p.rolle)} · seit ${fmt(p.eintritt)}</p></div></div>
+  <div class="page-h"><div class="who">${av(p.name)}<div><h1>${esc(p.name)}</h1><p>${esc(p.abt)} · ${esc(rolleL(p.rolle))} · seit ${fmt(p.eintritt)}</p></div></div>
     <div class="row-acts"><button class="btn" data-action="remind" data-id="${p.id}">${ic('bell', 's')} Erinnern</button><button class="btn" data-action="mail-person" data-id="${p.id}">${ic('mail', 's')} E-Mail</button><button class="btn" data-action="pdf-person" data-id="${p.id}">${ic('download', 's')} Nachweis-PDF</button>${isSifa() ? `<button class="btn" data-action="p-edit" data-id="${p.id}">${ic('pen', 's')} Bearbeiten</button>` : ''}</div></div>
   <div class="tools">${p.merk.map(m => `<span class="tag">${esc(m)}</span>`).join('')}<span class="pill ${st.quote >= 95 ? 'good' : st.quote >= 80 ? 'warn' : 'crit'}">${pctF(st.quote)} gültig</span></div>
   <section class="card"><div class="my-list">${all.map(x => `<div class="my-i"><span class="dot ${x.st.s}"></span><div class="t"><b>${esc(x.t.name)}</b><small>${x.st.n ? `zuletzt ${fmt(x.st.n.datum)}, ${x.st.n.form === 'online' ? 'online' : 'Präsenz'} · ` : ''}${esc(statusTxt(x.st))}</small></div><button class="mini" data-action="cell" data-p="${p.id}" data-t="${x.t.id}">Details</button></div>`).join('')}</div></section>`;
@@ -1251,7 +1656,7 @@ function tNewSheet(id) {
     <div class="grid2"><div class="field"><label for="tf-t">Thema</label><select id="tf-t"${x ? ' disabled' : ''}>${opts(S.themen.map(t => [t.id, t.name + (t.form === 'online' ? ' (online)' : '')]), tid)}</select></div>
       <div class="field"><label for="tf-d">Datum</label><input id="tf-d" type="date" value="${x ? x.datum : rel(7)}" min="${TODAY}"></div>
       <div class="field"><label for="tf-z">Uhrzeit</label><input id="tf-z" type="time" value="${x ? x.zeit : '08:00'}"></div></div>
-    <div class="grid2"><div class="field"><label for="tf-o">Ort</label><input id="tf-o" value="${esc(x ? x.ort : 'Schulungsraum 1')}"></div><div class="field"><label for="tf-l">Unterweisende Person</label><select id="tf-l">${opts(S.people.map(p => p.name), x ? x.leiter : me().name)}</select></div></div>
+    <div class="grid2"><div class="field"><label for="tf-o">Ort</label><input id="tf-o" value="${esc(T(x ? x.ort : 'Schulungsraum 1'))}"></div><div class="field"><label for="tf-l">Unterweisende Person</label><select id="tf-l">${opts(S.people.map(p => p.name), x ? x.leiter : me().name)}</select></div></div>
     <div class="field"><span class="lbl">Teilnehmende <span id="tf-n"></span></span><div id="tf-p"></div><span class="help">Vorgeschlagen: wer das Thema braucht und fällig oder überfällig ist.</span></div>
   </div>${foot(x ? 'Teilnehmende speichern' : 'Termin planen')}</form>`, true);
   renderTeil(tid, x ? x.teil : null);
@@ -1264,7 +1669,8 @@ function renderTeil(tid, sel) {
   $('tf-n').textContent = `(${chosen.length} von ${need.length})`;
 }
 function zNewSheet(pid, tid) {
-  const online = S.themen.filter(t => t.form === 'online'), t0 = tid ? thema(tid) : online.find(t => S.people.some(p => isGap(statusOf(p, t).s))) || online[0];
+  const online = S.themen.filter(t => t.form === 'online'), gapN = t => scopePeople().filter(p => isGap(statusOf(p, t).s)).length;
+  const t0 = tid ? thema(tid) : online.slice().sort((a, b) => gapN(b) - gapN(a))[0];
   openSheet(`${sheetH('Online-Unterweisung zuweisen')}<form id="zForm" novalidate><div class="sheet-b">
     <div class="grid2"><div class="field"><label for="zf-t">Thema</label><select id="zf-t">${opts(online.map(t => [t.id, t.name]), t0.id)}</select></div><div class="field"><label for="zf-d">Erledigen bis</label><input id="zf-d" type="date" value="${rel(14)}" min="${TODAY}"></div></div>
     <div class="field"><span class="lbl">An</span><div id="zf-p"></div><span class="help">Die Personen sehen es sofort auf ihrer Startseite und bekommen eine Benachrichtigung.</span></div>
@@ -1288,7 +1694,7 @@ function signSheet(tid, pid) {
 function aNewSheet() {
   openSheet(`${sheetH('Begehung starten')}<form id="aForm" novalidate><div class="sheet-b">
     <div class="field"><label for="af-v">Checkliste</label><select id="af-v">${opts(S.vorlagen.map(v => [v.id, `${v.name} (${v.punkte.length} Punkte)`]), S.vorlagen[0].id)}</select></div>
-    <div class="grid2"><div class="field"><label for="af-b">Bereich</label><input id="af-b" placeholder="z. B. Halle 3, Montage…" value="Halle 1, Montage"></div><div class="field"><label for="af-d">Datum</label><input id="af-d" type="date" value="${TODAY}"></div></div>
+    <div class="grid2"><div class="field"><label for="af-b">Bereich</label><input id="af-b" placeholder="z. B. Halle 3, Montage…" value="${esc(T('Halle 1, Montage'))}"></div><div class="field"><label for="af-d">Datum</label><input id="af-d" type="date" value="${TODAY}"></div></div>
     <div class="field"><label for="af-a">Durchgeführt von</label><select id="af-a">${opts(S.people.filter(p => p.rolle !== 'Mitarbeitende').map(p => p.name), me().name)}</select></div>
   </div>${foot('Begehung starten')}</form>`);
 }
@@ -1300,21 +1706,25 @@ function mSheet(id) {
   if (m && m.owner && !owners.includes(m.owner)) owners.push(m.owner);
   openSheet(`${sheetH(m ? 'Maßnahme' : 'Neue Maßnahme')}<form id="mForm" data-id="${m ? m.id : ''}" novalidate><div class="sheet-b">
     ${a ? `<p class="hint">Aus: ${esc(a.titel)}, ${esc(a.bereich)}, ${fmt(a.datum)}${p && p.note ? ` · „${esc(p.note)}“` : ''}</p>${p && p.foto ? `<img class="foto" width="120" height="90" loading="lazy" decoding="async" src="${p.foto}" alt="Foto zur Feststellung">` : ''}` : ''}
-    <div class="field"><label for="mf-t">Maßnahme</label><input id="mf-t" value="${esc(m ? m.titel : '')}"${canManage() ? '' : ' disabled'}></div>
+    <div class="field"><label for="mf-t">Maßnahme</label><input id="mf-t" value="${esc(m ? T(m.titel) : '')}"${canManage() ? '' : ' disabled'}></div>
     <div class="grid2"><div class="field"><label for="mf-r">Risiko</label><select id="mf-r"${canManage() ? '' : ' disabled'}>${opts(['gering', 'mittel', 'hoch'], m ? m.risiko : 'mittel')}</select></div>
       <div class="field"><label for="mf-o">Verantwortlich</label><select id="mf-o"${canManage() ? '' : ' disabled'}>${opts(owners, m ? m.owner : me().name)}</select></div>
-      <div class="field"><label for="mf-d">Termin</label><input id="mf-d" type="date" value="${m ? m.due : rel(14)}"${canManage() ? '' : ' disabled'}></div></div>
+      <div class="field"><label for="mf-d">${L2('Termin', 'Due date')}</label><input id="mf-d" type="date" value="${m ? m.due : rel(14)}"${canManage() ? '' : ' disabled'}></div></div>
     <div class="field"><span class="lbl">Status</span><div class="checks">${MSTAT.filter(s => s[0] !== 'wirksam' || isSifa() || (m && m.status === 'wirksam')).map(([k, l]) => `<label><input type="radio" name="mst" value="${k}"${(m ? m.status : 'offen') === k ? ' checked' : ''}${ed && (k !== 'wirksam' || isSifa()) ? '' : ' disabled'}> ${l}</label>`).join('')}</div>
       <span class="help">„Wirksam geprüft“ setzt die Sicherheitsfachkraft nach einer Kontrolle vor Ort.</span></div>
   </div>${ed ? foot('Maßnahme speichern') : '<div class="sheet-f"><button type="button" class="btn primary" data-action="close">Schließen</button></div>'}</form>`);
 }
+/* Im Englischen werden Beispieldaten übersetzt angezeigt; unverändert gespeichert bleibt das Original erhalten */
+const keepT = (val, orig) => (orig && val === T(orig)) ? orig : val;
+const cardsText = t => t.cards.map(c => `${T(c.t)}\n${T(c.x)}`).join('\n\n');
+const quizText = t => t.quiz.map(q => [T(q.q)].concat(q.a.map((a, i) => (i === q.r ? '* ' : '- ') + T(a))).join('\n')).join('\n\n');
 function thSheet(id) {
   const t = id ? thema(id) : { id: '', name: '', short: '', turnus: 12, alle: false, abt: [], merk: [], form: 'online', cards: [], quiz: [], color: 't1' };
-  const cardsTxt = t.cards.map(c => `${c.t}\n${c.x}`).join('\n\n');
-  const quizTxt = t.quiz.map(q => [q.q].concat(q.a.map((a, i) => (i === q.r ? '* ' : '- ') + a)).join('\n')).join('\n\n');
+  const cardsTxt = cardsText(t);
+  const quizTxt = quizText(t);
   const ro = !isSifa();
   openSheet(`${sheetH(id ? esc(t.name) : 'Neues Thema')}<form id="thForm" data-id="${t.id}" novalidate><div class="sheet-b">
-    <div class="grid2"><div class="field"><label for="th-n">Name</label><input id="th-n" value="${esc(t.name)}"${ro ? ' disabled' : ''}></div><div class="field"><label for="th-s">Kurzname</label><input id="th-s" value="${esc(t.short)}" maxlength="16"${ro ? ' disabled' : ''}></div></div>
+    <div class="grid2"><div class="field"><label for="th-n">Name</label><input id="th-n" value="${esc(T(t.name))}"${ro ? ' disabled' : ''}></div><div class="field"><label for="th-s">Kurzname</label><input id="th-s" value="${esc(T(t.short))}" maxlength="16"${ro ? ' disabled' : ''}></div></div>
     <div class="grid2"><div class="field"><label for="th-t">Turnus</label><select id="th-t"${ro ? ' disabled' : ''}>${opts([[0, 'einmalig'], [6, 'alle 6 Monate'], [12, 'alle 12 Monate'], [24, 'alle 24 Monate'], [36, 'alle 36 Monate']], t.turnus)}</select></div><div class="field"><label for="th-f">Form</label><select id="th-f"${ro ? ' disabled' : ''}>${opts([['online', 'Online am Handy'], ['praesenz', 'Präsenz']], t.form)}</select></div></div>
     <div class="field"><span class="lbl">Zielgruppe</span><div class="checks"><label><input type="checkbox" id="th-all"${t.alle ? ' checked' : ''}${ro ? ' disabled' : ''}> Alle</label></div>${checks('th-abt', ABT, t.abt, ro)}${checks('th-merk', MERK, t.merk, ro)}</div>
     <div class="field"><label for="th-c">Inhalte</label><textarea id="th-c" rows="7"${ro ? ' disabled' : ''}>${esc(cardsTxt)}</textarea><span class="help">Je Karte: erste Zeile Titel, darunter Text. Karten mit Leerzeile trennen.</span></div>
@@ -1342,29 +1752,31 @@ function impSheet() {
 }
 function impTemplate() {
   if (noXL()) return;
-  saveFile('Vorlage_Mitarbeitende.xlsx', xlsxBlob('Mitarbeitende', [IMP_COLS, ['Max Muster', 'Fertigung', 'Maschinen, Ersthelfer', fmt(TODAY), 'max.muster@muster.example'], ['Erika Beispiel', 'Verwaltung', 'Bildschirmarbeit', fmt(rel(7)), '']]));
+  saveFile(`${EN ? 'Template_employees' : 'Vorlage_Mitarbeitende'}.xlsx`, xlsxBlob('Mitarbeitende', [IMP_COLS, ['Max Muster', 'Fertigung', 'Maschinen, Ersthelfer', fmt(TODAY), 'max.muster@muster.example'], ['Erika Beispiel', 'Verwaltung', 'Bildschirmarbeit', fmt(rel(7)), '']]));
 }
 function impDate(v) {
   if (v === '' || v == null) return { d: '' };
   if (v instanceof Date && !isNaN(v)) return { d: iso(new Date(v.getTime() + 12 * 36e5)) };
   if (typeof v === 'number') { const d = new Date(Math.round((v - 25569) * 864e5) + 12 * 36e5); return isNaN(d) ? { e: 'Eintritt unlesbar' } : { d: iso(d) }; }
   const s = String(v).trim(); let m;
-  if ((m = s.match(/^(\d{1,2})\.(\d{1,2})\.(\d{2,4})$/))) { const y = m[3].length === 2 ? 2000 + +m[3] : +m[3]; return { d: `${y}-${pad(m[2])}-${pad(m[1])}` }; }
+  if ((m = s.match(/^(\d{1,2})[./](\d{1,2})[./](\d{2,4})$/))) { const y = m[3].length === 2 ? 2000 + +m[3] : +m[3]; return { d: `${y}-${pad(m[2])}-${pad(m[1])}` }; }
   if ((m = s.match(/^(\d{4})-(\d{2})-(\d{2})/))) return { d: `${m[1]}-${m[2]}-${m[3]}` };
   return { e: `Eintritt „${s}“ unlesbar (TT.MM.JJJJ)` };
 }
+/* englische Spaltennamen der Vorlage zurück auf die deutschen Schlüssel */
+const DE_OF = { 'Department': 'Abteilung', 'Attributes': 'Merkmale', 'Start date': 'Eintritt', 'Email': 'E-Mail' };
 function impParse(buf) {
   const wb = XLSX.read(buf, { type: 'array', cellDates: true });
   const ws = wb.Sheets[wb.SheetNames[0]]; if (!ws) return [];
   const rows = XLSX.utils.sheet_to_json(ws, { defval: '', raw: true });
-  const key = (r, ...names) => { const k = Object.keys(r).find(k => names.includes(k.trim().toLowerCase().replace(/[^a-zäöü]/g, ''))); return k === undefined ? '' : r[k]; };
+  const key = (r, ...names) => { const k = Object.keys(r).find(k => names.includes(k.trim().toLowerCase().replace(/[^a-zäöü]/g, '')) || names.includes(String(DE_OF[k.trim()] || '').toLowerCase().replace(/[^a-zäöü]/g, ''))); return k === undefined ? '' : r[k]; };
   const seen = new Set();
   return rows.map(r => {
     const name = String(key(r, 'name')).trim().replace(/\s+/g, ' ');
     if (!name) return null;
-    const abtIn = String(key(r, 'abteilung')).trim(), abt = ABT.find(a => a.toLowerCase() === abtIn.toLowerCase());
+    const abtIn = String(key(r, 'abteilung')).trim(), abt = ABT.find(a => a.toLowerCase() === abtIn.toLowerCase() || T(a).toLowerCase() === abtIn.toLowerCase());
     const mIn = String(key(r, 'merkmale', 'merkmal')).split(/[,;]/).map(x => x.trim()).filter(Boolean);
-    const merk = mIn.map(x => MERK.find(m => m.toLowerCase() === x.toLowerCase())), bad = mIn.filter((x, i) => !merk[i]);
+    const merk = mIn.map(x => MERK.find(m => m.toLowerCase() === x.toLowerCase() || T(m).toLowerCase() === x.toLowerCase())), bad = mIn.filter((x, i) => !merk[i]);
     const dt = impDate(key(r, 'eintritt')), email = String(key(r, 'email')).trim();
     const errs = [];
     if (!abt) errs.push(abtIn ? `Abteilung „${abtIn}“ unbekannt` : 'Abteilung fehlt');
@@ -1403,8 +1815,8 @@ function moreSheet() {
 }
 function mailPerson(p) {
   const o = myOpen(p);
-  const body = `Hallo ${p.name.split(' ')[0]},\n\nbitte denke an folgende Unterweisungen:\n${o.map(x => `- ${x.t.name}: ${statusTxt(x.st)}${x.t.form === 'online' ? ' (online am Handy, ca. 5 Minuten)' : ''}`).join('\n') || '- aktuell nichts offen'}\n\nDanke und viele Grüße\n${me().name}`;
-  const a = document.createElement('a'); a.href = `mailto:${p.email}?subject=${encodeURIComponent('Unterweisungen fällig')}&body=${encodeURIComponent(body)}`; a.target = '_blank'; a.rel = 'noopener'; document.body.appendChild(a); a.click(); a.remove();
+  const body = EN ? `Hello ${p.name.split(' ')[0]},\n\nplease remember the following training:\n${o.map(x => `- ${T(x.t.name)}: ${statusTxt(x.st)}${x.t.form === 'online' ? ' (online on your phone, about 5 minutes)' : ''}`).join('\n') || '- nothing open at the moment'}\n\nThank you and best regards\n${me().name}` : `Hallo ${p.name.split(' ')[0]},\n\nbitte denke an folgende Unterweisungen:\n${o.map(x => `- ${x.t.name}: ${statusTxt(x.st)}${x.t.form === 'online' ? ' (online am Handy, ca. 5 Minuten)' : ''}`).join('\n') || '- aktuell nichts offen'}\n\nDanke und viele Grüße\n${me().name}`;
+  const a = document.createElement('a'); a.href = `mailto:${p.email}?subject=${encodeURIComponent(L2('Unterweisungen fällig', 'Training due'))}&body=${encodeURIComponent(body)}`; a.target = '_blank'; a.rel = 'noopener'; document.body.appendChild(a); a.click(); a.remove();
 }
 
 /* ---------- Export: Excel und PDF ---------- */
@@ -1422,6 +1834,7 @@ async function saveFile(filename, data) {
   } catch (e) { toast('Download nicht möglich. Bitte Downloads im Browser erlauben und erneut versuchen.'); }
 }
 function xlsxBlob(sheetName, aoa) {
+  if (EN) { aoa = aoa.map(r => r.map(c => typeof c === 'string' ? T(c) : c)); sheetName = T(sheetName); }
   const ws = XLSX.utils.aoa_to_sheet(aoa);
   ws['!cols'] = aoa[0].map((h, i) => ({ wch: Math.min(42, Math.max(10, ...aoa.map(r => String(r[i] ?? '').length + 2))) }));
   const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, sheetName.slice(0, 31));
@@ -1432,24 +1845,25 @@ function xlMatrix() {
   if (noXL()) return;
   const pp = scopePeople();
   const aoa = [['Name', 'Abteilung', 'Merkmale'].concat(S.themen.map(t => t.name))].concat(pp.map(p => [p.name, p.abt, p.merk.join(', ')].concat(S.themen.map(t => { const st = statusOf(p, t); return st.s === 'na' ? '' : st.s === 'nie' ? 'nie' : `${STL[st.s]} (${fmt(st.n.datum)})`; }))));
-  saveFile(`Unterweisungsmatrix_${TODAY}.xlsx`, xlsxBlob('Matrix', aoa));
+  saveFile(`${fname('Unterweisungsmatrix')}_${TODAY}.xlsx`, xlsxBlob('Matrix', aoa));
 }
 function xlNachweise() {
   if (noXL()) return;
   const rows = S.nachweise.slice().sort((a, b) => b.datum.localeCompare(a.datum)).map(n => { const p = person(n.pid), t = thema(n.tid); return [fmt(n.datum), t ? t.name : n.tid, p ? p.name : n.pid, p ? p.abt : '', n.form === 'online' ? 'Online mit Quiz' : 'Präsenz', n.by, n.sig ? 'ja' : 'nein', t && t.turnus ? fmt(addMonths(n.datum, t.turnus)) : 'unbegrenzt']; });
-  saveFile(`Nachweise_${TODAY}.xlsx`, xlsxBlob('Nachweise', [['Datum', 'Thema', 'Person', 'Abteilung', 'Form', 'Unterwiesen durch', 'Unterschrift', 'Gültig bis']].concat(rows)));
+  saveFile(`${fname('Nachweise')}_${TODAY}.xlsx`, xlsxBlob('Nachweise', [['Datum', 'Thema', 'Person', 'Abteilung', 'Form', 'Unterwiesen durch', 'Unterschrift', 'Gültig bis']].concat(rows)));
 }
 function xlMassn() {
   if (noXL()) return;
   const rows = S.massn.map(m => { const a = S.audits.find(x => x.id === m.aid); return [m.titel, m.risiko, m.owner, fmt(m.due), mLabel(m.status), m.doneAt ? fmt(m.doneAt) : '', a ? `${a.titel}, ${a.bereich}` : '', a ? fmt(a.datum) : '']; });
-  saveFile(`Massnahmen_${TODAY}.xlsx`, xlsxBlob('Maßnahmen', [['Maßnahme', 'Risiko', 'Verantwortlich', 'Termin', 'Status', 'Erledigt am', 'Audit', 'Audit-Datum']].concat(rows)));
+  saveFile(`${fname('Maßnahmen')}_${TODAY}.xlsx`, xlsxBlob('Maßnahmen', [['Maßnahme', 'Risiko', 'Verantwortlich', L2('Termin', 'Due date'), 'Status', 'Erledigt am', 'Audit', 'Audit-Datum']].concat(rows)));
 }
+const fname = de => T(de).replace(/ß/g, 'ss').replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/Ä/g, 'Ae').replace(/Ö/g, 'Oe').replace(/Ü/g, 'Ue').replace(/[^A-Za-z0-9ÄÖÜäöüß]+/g, '_').replace(/_+$/, '');
 function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
 async function needPdf() {
   if (!(window.jspdf && window.jspdf.jsPDF)) await loadScript('shared-files/jspdf.umd.min.js');
   return window.jspdf.jsPDF;
 }
-const pdfTxt = s => String(s ?? '').replace(/[–—]/g, '-').replace(/[„“”]/g, '"').replace(/[‚‘’]/g, "'").replace(/…/g, '...').replace(/[→]/g, '->').replace(/[•✕]/g, '-').replace(/ /g, ' ').replace(/[^\x09\x0A\x0D\x20-\x7E\xA0-\xFF€]/g, '');
+const pdfTxt = s => String(T(String(s ?? ''))).replace(/[–—]/g, '-').replace(/[„“”]/g, '"').replace(/[‚‘’]/g, "'").replace(/…/g, '...').replace(/[→]/g, '->').replace(/[•✕]/g, '-').replace(/ /g, ' ').replace(/[^\x09\x0A\x0D\x20-\x7E\xA0-\xFF€]/g, '');
 const RGB = { ink: [23, 24, 28], gray: [95, 97, 107], line: [222, 225, 232], acc: [110, 74, 242], ok: [31, 138, 85], soon: [244, 178, 63], over: [217, 54, 68], nie: [150, 153, 165], soft: [244, 245, 248] };
 function pdfKit(doc) {
   const K = { y: 16, M: 16 };
@@ -1479,19 +1893,19 @@ function pdfKit(doc) {
 }
 function footers(doc, left) {
   const n = doc.getNumberOfPages();
-  for (let i = 1; i <= n; i++) { doc.setPage(i); const W = doc.internal.pageSize.getWidth(), H = doc.internal.pageSize.getHeight(); doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(...RGB.gray); doc.text(pdfTxt(left), 16, H - 8); doc.text(`Seite ${i} von ${n}`, W - 16, H - 8, { align: 'right' }); }
+  for (let i = 1; i <= n; i++) { doc.setPage(i); const W = doc.internal.pageSize.getWidth(), H = doc.internal.pageSize.getHeight(); doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(...RGB.gray); doc.text(pdfTxt(left), 16, H - 8); doc.text(EN ? `Page ${i} of ${n}` : `Seite ${i} von ${n}`, W - 16, H - 8, { align: 'right' }); }
 }
 async function pdfMappe() {
   const J = await needPdf(), doc = new J({ unit: 'mm', format: 'a4' }), K = pdfKit(doc), pr = period(), st = stats(), rd = readiness(), ck = checklist();
   const sifa = S.people.find(p => p.rolle === 'Sicherheitsfachkraft');
   // Deckblatt
   doc.setFillColor(...RGB.acc); doc.rect(0, 0, K.W(), 70, 'F');
-  K.font(11, 'bold', [255, 255, 255]); doc.text(ORG, K.M, 22);
-  K.font(26, 'bold', [255, 255, 255]); doc.text('Nachweis Arbeitsschutz', K.M, 44);
-  K.font(12, 'normal', [255, 255, 255]); doc.text(pdfTxt(`Unterlagen für: ${MZ[S.mz]}`), K.M, 56);
+  K.font(11, 'bold', [255, 255, 255]); doc.text(pdfTxt(ORG), K.M, 22);
+  K.font(26, 'bold', [255, 255, 255]); doc.text(pdfTxt('Nachweis Arbeitsschutz'), K.M, 44);
+  K.font(12, 'normal', [255, 255, 255]); doc.text(pdfTxt(EN ? `Documents for: ${T(MZ[S.mz])}` : `Unterlagen für: ${MZ[S.mz]}`), K.M, 56);
   K.y = 88;
-  const meta = [['Zeitraum', `${pr.l} (${fmt(pr.von)} bis ${fmt(pr.bis)})`], ['Stand', fmt(TODAY)], ['Verantwortlich', sifa ? `${sifa.name}, Sicherheitsfachkraft` : '-'], ['Beschäftigte', String(S.people.length)]];
-  meta.forEach(([k, v]) => { K.font(8, 'bold', RGB.gray); doc.text(k.toUpperCase(), K.M, K.y); K.font(11, 'normal'); doc.text(pdfTxt(v), K.M + 42, K.y); K.y += 8; });
+  const meta = [['Zeitraum', `${T(pr.l)} (${fmt(pr.von)} ${L2('bis', 'to')} ${fmt(pr.bis)})`], ['Stand', fmt(TODAY)], ['Verantwortlich', sifa ? `${sifa.name}, Sicherheitsfachkraft` : '-'], ['Beschäftigte', String(S.people.length)]];
+  meta.forEach(([k, v]) => { K.font(8, 'bold', RGB.gray); doc.text(pdfTxt(k).toUpperCase(), K.M, K.y); K.font(11, 'normal'); doc.text(pdfTxt(v), K.M + 42, K.y); K.y += 8; });
   K.y += 6;
   const tiles = [['Audit-Bereitschaft', `${rd.val} %`], ['Unterweisungen gültig', `${st.quote} %`], ['Lücken', String(st.over + st.nie)], ['Maßnahmen offen', String(openM().length)]];
   const tw = (K.CW() - 9) / 4;
@@ -1517,14 +1931,14 @@ async function pdfMappe() {
   // 3 Nachweise
   K.page(); K.h1('3. Nachweise im Zeitraum');
   const ns = S.nachweise.filter(n => n.datum >= pr.von && n.datum <= pr.bis).sort((a, b) => b.datum.localeCompare(a.datum));
-  K.p(`${ns.length} Nachweise, davon ${ns.filter(n => n.form === 'online').length} online mit Verständnistest.`, 9, RGB.gray);
+  K.p(EN ? `${ns.length} records, ${ns.filter(n => n.form === 'online').length} of them online with comprehension test.` : `${ns.length} Nachweise, davon ${ns.filter(n => n.form === 'online').length} online mit Verständnistest.`, 9, RGB.gray);
   K.table([[22, 'Datum'], [58, 'Thema'], [44, 'Person'], [30, 'Form'], [24, 'Unterschrift']], ns.map(n => { const p = person(n.pid), t = thema(n.tid); return [fmt(n.datum), t ? t.name : '', p ? p.name : '', n.form === 'online' ? 'Online + Quiz' : 'Präsenz', n.sig ? 'ja' : 'nein']; }));
   // 4 Teilnehmerlisten
   K.page(); K.h1('4. Teilnehmerlisten');
   const ts = S.termine.filter(x => x.status === 'abgeschlossen' && x.datum >= pr.von && x.datum <= pr.bis).sort((a, b) => b.datum.localeCompare(a.datum));
   ts.forEach(x => {
     const t = thema(x.tid); K.need(30);
-    K.h2(`${t.name} · ${fmt(x.datum)} ${x.zeit}`); K.p(`Ort: ${x.ort} · Unterwiesen durch: ${x.leiter} · Inhalt: ${t.cards.map(c => c.t).join(', ')}`, 8.5, RGB.gray);
+    K.h2(`${t.name} · ${fmt(x.datum)} ${x.zeit}`); K.p(EN ? `Location: ${T(x.ort)} · Trained by: ${x.leiter} · Content: ${t.cards.map(c => T(c.t)).join(', ')}` : `Ort: ${x.ort} · Unterwiesen durch: ${x.leiter} · Inhalt: ${t.cards.map(c => c.t).join(', ')}`, 8.5, RGB.gray);
     K.table([[60, 'Name'], [44, 'Abteilung'], [74, 'Unterschrift']], Object.keys(x.anw).map(id => { const p = person(id); const img = p ? sigData(x.anw[id], p.name) : null; return [p ? p.name : id, p ? p.abt : '', img ? { img } : (x.anw[id] === true ? 'anwesend, ohne Unterschrift' : '')]; }), { rh: 10 });
   });
   if (!ts.length) K.p('Keine Präsenz-Termine im Zeitraum.');
@@ -1533,7 +1947,7 @@ async function pdfMappe() {
   const as = S.audits.filter(a => a.status !== 'geplant' && a.datum >= pr.von && a.datum <= pr.bis).sort((a, b) => b.datum.localeCompare(a.datum));
   for (const a of as) {
     K.need(26); K.h2(`${a.titel}, ${a.bereich}`);
-    const sc = auditScore(a); K.p(`${fmt(a.datum)} · ${a.auditor} · ${a.status === 'abgeschlossen' ? 'abgeschlossen' : 'läuft'} · ${auditDone(a)}/${a.punkte.length} Punkte geprüft${sc !== null ? ` · Ergebnis ${sc} %` : ''}`, 8.5, RGB.gray);
+    const sc = auditScore(a); K.p(EN ? `${fmt(a.datum)} · ${a.auditor} · ${a.status === 'abgeschlossen' ? 'completed' : 'in progress'} · ${auditDone(a)}/${a.punkte.length} items checked${sc !== null ? ` · result ${sc}%` : ''}` : `${fmt(a.datum)} · ${a.auditor} · ${a.status === 'abgeschlossen' ? 'abgeschlossen' : 'läuft'} · ${auditDone(a)}/${a.punkte.length} Punkte geprüft${sc !== null ? ` · Ergebnis ${sc} %` : ''}`, 8.5, RGB.gray);
     const nio = a.punkte.map((x, i) => ({ x, i })).filter(o => o.x.r === 'nio');
     if (!nio.length) K.p('Keine Mängel festgestellt.');
     for (const o of nio) {
@@ -1542,7 +1956,7 @@ async function pdfMappe() {
       const y0 = K.y; K.font(9.5, 'bold'); doc.text(pdfTxt(`${o.i + 1}. ${o.x.t}`), K.M, K.y); K.y += 4.4;
       const tx = hasImg ? K.CW() - 48 : K.CW();
       K.font(8.5, 'normal'); doc.splitTextToSize(pdfTxt(o.x.note || 'ohne Beschreibung'), tx).forEach(l => { doc.text(l, K.M, K.y); K.y += 3.8; });
-      if (m) { K.font(8.5, 'normal', RGB.gray); doc.splitTextToSize(pdfTxt(`Maßnahme: ${m.titel} · ${m.owner} · bis ${fmt(m.due)} · ${mLabel(m.status)} · Risiko ${m.risiko}`), tx).forEach(l => { doc.text(l, K.M, K.y); K.y += 3.8; }); }
+      if (m) { K.font(8.5, 'normal', RGB.gray); doc.splitTextToSize(pdfTxt(EN ? `Action: ${T(m.titel)} · ${m.owner} · due ${fmt(m.due)} · ${T(mLabel(m.status))} · risk ${T(m.risiko)}` : `Maßnahme: ${m.titel} · ${m.owner} · bis ${fmt(m.due)} · ${mLabel(m.status)} · Risiko ${m.risiko}`), tx).forEach(l => { doc.text(l, K.M, K.y); K.y += 3.8; }); }
       if (hasImg) { try { doc.addImage(o.x.foto, 'JPEG', K.M + K.CW() - 44, y0 - 3, 44, 33); } catch (e) {} K.y = Math.max(K.y, y0 + 32); }
       K.y += 3;
     }
@@ -1551,28 +1965,28 @@ async function pdfMappe() {
   if (!as.length) K.p('Keine Audits im Zeitraum.');
   // 6 Maßnahmen
   K.page(); K.h1('6. Maßnahmenliste');
-  K.table([[62, 'Maßnahme'], [16, 'Risiko'], [36, 'Verantwortlich'], [22, 'Termin'], [42, 'Status']], S.massn.slice().sort((a, b) => a.due.localeCompare(b.due)).map(m => [m.titel, m.risiko, m.owner, fmt(m.due), mLabel(m.status) + (!['erledigt', 'wirksam'].includes(m.status) && m.due < TODAY ? ' (überfällig)' : '')]));
-  footers(doc, `${ORG} · Nachweis Arbeitsschutz · ${pr.l} · Stand ${fmt(TODAY)}`);
+  K.table([[62, 'Maßnahme'], [16, 'Risiko'], [36, 'Verantwortlich'], [22, L2('Termin', 'Due date')], [42, 'Status']], S.massn.slice().sort((a, b) => a.due.localeCompare(b.due)).map(m => [m.titel, m.risiko, m.owner, fmt(m.due), T(mLabel(m.status)) + (!['erledigt', 'wirksam'].includes(m.status) && m.due < TODAY ? L2(' (überfällig)', ' (overdue)') : '')]));
+  footers(doc, `${T(ORG)} · ${T('Nachweis Arbeitsschutz')} · ${T(pr.l)} · ${L2('Stand', 'As of')} ${fmt(TODAY)}`);
   return doc.output('blob');
 }
 async function pdfTermin(x) {
   const J = await needPdf(), doc = new J({ unit: 'mm', format: 'a4' }), K = pdfKit(doc), t = thema(x.tid);
-  K.font(10, 'bold', RGB.gray); doc.text(ORG, K.M, K.y); K.y += 9; K.h1('Teilnehmerliste Unterweisung');
-  [['Thema', t.name], ['Datum', `${fmt(x.datum)}, ${x.zeit} Uhr`], ['Ort', x.ort], ['Unterwiesen durch', x.leiter], ['Status', x.status === 'abgeschlossen' ? 'durchgeführt' : 'geplant']].forEach(([k, v]) => { K.font(8, 'bold', RGB.gray); doc.text(k.toUpperCase(), K.M, K.y); K.font(10, 'normal'); doc.text(pdfTxt(v), K.M + 40, K.y); K.y += 6.5; });
-  K.y += 2; K.h2('Inhalte'); t.cards.forEach(c => K.p(`${c.t}: ${c.x}`, 9));
+  K.font(10, 'bold', RGB.gray); doc.text(pdfTxt(ORG), K.M, K.y); K.y += 9; K.h1('Teilnehmerliste Unterweisung');
+  [['Thema', t.name], ['Datum', `${fmt(x.datum)}, ${x.zeit} Uhr`], ['Ort', x.ort], ['Unterwiesen durch', x.leiter], ['Status', x.status === 'abgeschlossen' ? 'durchgeführt' : 'geplant']].forEach(([k, v]) => { K.font(8, 'bold', RGB.gray); doc.text(pdfTxt(k).toUpperCase(), K.M, K.y); K.font(10, 'normal'); doc.text(pdfTxt(v), K.M + 40, K.y); K.y += 6.5; });
+  K.y += 2; K.h2('Inhalte'); t.cards.forEach(c => K.p(`${T(c.t)}: ${T(c.x)}`, 9));
   K.y += 2; K.h2('Teilnehmende');
   K.table([[60, 'Name'], [44, 'Abteilung'], [74, 'Unterschrift']], x.teil.map(id => { const p = person(id), a = x.anw[id]; const img = a && a !== true ? sigData(a, p.name) : null; return [p.name, p.abt, img ? { img } : a === true ? 'anwesend' : '']; }), { rh: 12 });
-  footers(doc, `${ORG} · Teilnehmerliste ${t.short} ${fmt(x.datum)}`);
+  footers(doc, `${T(ORG)} · ${T('Teilnehmerliste')} ${T(t.short)} ${fmt(x.datum)}`);
   return doc.output('blob');
 }
 async function pdfPerson(p) {
   const J = await needPdf(), doc = new J({ unit: 'mm', format: 'a4' }), K = pdfKit(doc);
-  K.font(10, 'bold', RGB.gray); doc.text(ORG, K.M, K.y); K.y += 9; K.h1('Unterweisungsnachweis');
-  [['Name', p.name], ['Abteilung', p.abt], ['Merkmale', p.merk.join(', ') || '-'], ['Eintritt', fmt(p.eintritt)], ['Stand', fmt(TODAY)]].forEach(([k, v]) => { K.font(8, 'bold', RGB.gray); doc.text(k.toUpperCase(), K.M, K.y); K.font(10, 'normal'); doc.text(pdfTxt(v), K.M + 40, K.y); K.y += 6.5; });
+  K.font(10, 'bold', RGB.gray); doc.text(pdfTxt(ORG), K.M, K.y); K.y += 9; K.h1('Unterweisungsnachweis');
+  [['Name', p.name], ['Abteilung', p.abt], ['Merkmale', p.merk.join(', ') || '-'], ['Eintritt', fmt(p.eintritt)], ['Stand', fmt(TODAY)]].forEach(([k, v]) => { K.font(8, 'bold', RGB.gray); doc.text(pdfTxt(k).toUpperCase(), K.M, K.y); K.font(10, 'normal'); doc.text(pdfTxt(v), K.M + 40, K.y); K.y += 6.5; });
   K.y += 3;
   const rows = S.themen.map(t => ({ t, st: statusOf(p, t) })).filter(x => x.st.s !== 'na');
   K.table([[52, 'Thema'], [22, 'Zuletzt'], [26, 'Form'], [24, 'Gültig bis'], [22, 'Status'], [32, 'Unterschrift']], rows.map(x => { const img = x.st.n ? sigData(x.st.n.sig, p.name) : null; return [x.t.name, x.st.n ? fmt(x.st.n.datum) : '-', x.st.n ? (x.st.n.form === 'online' ? 'Online + Quiz' : 'Präsenz') : '-', x.st.until ? fmt(x.st.until) : x.st.n ? 'unbegrenzt' : '-', STL[x.st.s], img ? { img } : '']; }), { rh: 10 });
-  footers(doc, `${ORG} · Unterweisungsnachweis ${p.name}`);
+  footers(doc, `${T(ORG)} · ${T('Unterweisungsnachweis')} ${p.name}`);
   return doc.output('blob');
 }
 async function runPdf(fn, name) { toast('PDF wird erstellt…'); try { const b = await fn(); await saveFile(name, b); return b; } catch (e) { console.warn(e); toast('PDF konnte nicht erstellt werden. Bitte Internetverbindung prüfen und erneut versuchen.'); return null; } }
@@ -1713,16 +2127,16 @@ document.addEventListener('click', e => {
     case 'xl-matrix': xlMatrix(); break;
     case 'xl-nachweise': xlNachweise(); break;
     case 'xl-massn': xlMassn(); break;
-    case 'pdf-mappe': runPdf(pdfMappe, `Behoerdenmappe_Arbeitsschutz_${TODAY}.pdf`); break;
-    case 'pdf-termin': { const x = S.termine.find(y => y.id === d.id); runPdf(() => pdfTermin(x), `Teilnehmerliste_${thema(x.tid).short}_${x.datum}.pdf`); break; }
-    case 'pdf-person': { const p = person(d.id); runPdf(() => pdfPerson(p), `Unterweisungsnachweis_${p.name.replace(/\s+/g, '_')}.pdf`); break; }
+    case 'pdf-mappe': runPdf(pdfMappe, `${EN ? 'Authority_file_HSE' : 'Behoerdenmappe_Arbeitsschutz'}_${TODAY}.pdf`); break;
+    case 'pdf-termin': { const x = S.termine.find(y => y.id === d.id); runPdf(() => pdfTermin(x), `${fname('Teilnehmerliste')}_${fname(thema(x.tid).short)}_${x.datum}.pdf`); break; }
+    case 'pdf-person': { const p = person(d.id); runPdf(() => pdfPerson(p), `${fname('Unterweisungsnachweis')}_${p.name.replace(/\s+/g, '_')}.pdf`); break; }
   }
 });
 document.addEventListener('change', e => {
   const t = e.target, d = t.dataset;
   clearErr(t);
   if (t.closest && t.closest('#sheet form')) SDIRTY = true;
-  if (d.role === 'user') { S.user = t.value; L = null; S.route = { p: 'start', id: null }; S.mf = { abt: '', tid: '', gaps: false, q: '' }; closeSheet(); $('bellPanel').hidden = true; commit(`Ansicht: ${me().name}, ${me().rolle}`); return; }
+  if (d.role === 'user') { S.user = t.value; L = null; S.route = { p: 'start', id: null }; S.mf = { abt: '', tid: '', gaps: false, q: '' }; closeSheet(); $('bellPanel').hidden = true; commit(`Ansicht: ${me().name}, ${rolleL(me().rolle)}`); return; }
   if (t.id === 'mxAbt') { S.mf.abt = t.value; commit(); return; }
   if (t.id === 'mxT') { S.mf.tid = t.value; commit(); return; }
   if (t.id === 'mzSel') { S.mz = t.value; commit(); return; }
@@ -1778,12 +2192,12 @@ document.addEventListener('submit', e => {
     const teil = checked('teil'); if (!teil.length) { fieldErr('tf-p', 'Bitte mindestens eine Person auswählen. Vorgeschlagen sind alle, die fällig sind.'); return; }
     if (f.dataset.id) {
       const x = S.termine.find(y => y.id === f.dataset.id), added = teil.filter(pid => !x.teil.includes(pid));
-      Object.assign(x, { datum: v('tf-d') || x.datum, zeit: v('tf-z') || x.zeit, ort: v('tf-o') || x.ort, leiter: v('tf-l'), teil });
+      Object.assign(x, { datum: v('tf-d') || x.datum, zeit: v('tf-z') || x.zeit, ort: keepT(v('tf-o'), x.ort) || x.ort, leiter: v('tf-l'), teil });
       Object.keys(x.anw).forEach(pid => { if (!teil.includes(pid)) delete x.anw[pid]; });
       added.forEach(pid => notify(person(pid).name, `Termin: ${thema(x.tid).name} am ${fmtD(x.datum)} um ${x.zeit}, ${x.ort}`, { p: 'termin', id: x.id }));
       closeSheet(); commit(added.length ? `Gespeichert, ${added.length} ${added.length === 1 ? 'Person' : 'Personen'} eingeladen` : 'Gespeichert'); return;
     }
-    const x = { id: uid('t'), tid: v('tf-t'), datum: v('tf-d') || rel(7), zeit: v('tf-z') || '08:00', ort: v('tf-o') || 'Schulungsraum 1', leiter: v('tf-l'), teil, anw: {}, status: 'geplant' };
+    const x = { id: uid('t'), tid: v('tf-t'), datum: v('tf-d') || rel(7), zeit: v('tf-z') || '08:00', ort: keepT(v('tf-o'), 'Schulungsraum 1') || 'Schulungsraum 1', leiter: v('tf-l'), teil, anw: {}, status: 'geplant' };
     S.termine.push(x); teil.forEach(pid => notify(person(pid).name, `Termin: ${thema(x.tid).name} am ${fmtD(x.datum)} um ${x.zeit}, ${x.ort}`, { p: 'termin', id: x.id }));
     S.route = { p: 'termin', id: x.id }; closeSheet(); commit(`Geplant, ${teil.length} Personen eingeladen`);
   }
@@ -1794,7 +2208,7 @@ document.addEventListener('submit', e => {
   }
   else if (id === 'aForm') {
     const vo = S.vorlagen.find(x => x.id === v('af-v'));
-    const x = { id: uid('a'), vorlage: vo.id, titel: vo.name, bereich: v('af-b') || 'Ohne Bereich', datum: v('af-d') || TODAY, auditor: v('af-a'), status: (v('af-d') || TODAY) > TODAY ? 'geplant' : 'laufend', punkte: vo.punkte.map(t => ({ t, r: '', note: '', foto: '', risiko: 'mittel', mtext: '', owner: '', due: '' })) };
+    const x = { id: uid('a'), vorlage: vo.id, titel: vo.name, bereich: keepT(v('af-b'), 'Halle 1, Montage') || 'Ohne Bereich', datum: v('af-d') || TODAY, auditor: v('af-a'), status: (v('af-d') || TODAY) > TODAY ? 'geplant' : 'laufend', punkte: vo.punkte.map(t => ({ t, r: '', note: '', foto: '', risiko: 'mittel', mtext: '', owner: '', due: '' })) };
     S.audits.push(x); S.route = { p: 'audit', id: x.id }; closeSheet(); commit(x.status === 'laufend' ? 'Los geht’s: Punkt für Punkt bewerten' : 'Audit geplant');
   }
   else if (id === 'mForm') {
@@ -1803,7 +2217,7 @@ document.addEventListener('submit', e => {
     const neu = !m;
     if (!m) { if (!v('mf-t')) { fieldErr('mf-t', 'Bitte beschreiben, was getan wird, z. B. „Schutzhaube ersetzen“.'); return; } m = { id: uid('m'), aid: '', titel: '', created: TODAY, doneAt: null }; S.massn.push(m); }
     const oldOwner = m.owner;
-    if (canManage()) Object.assign(m, { titel: v('mf-t') || m.titel, risiko: v('mf-r'), owner: v('mf-o'), due: v('mf-d') || m.due || rel(14) });
+    if (canManage()) Object.assign(m, { titel: keepT(v('mf-t'), m.titel) || m.titel, risiko: v('mf-r'), owner: v('mf-o'), due: v('mf-d') || m.due || rel(14) });
     const was = m.status; m.status = st; if (['erledigt', 'wirksam'].includes(st) && !m.doneAt) m.doneAt = TODAY; if (!['erledigt', 'wirksam'].includes(st)) m.doneAt = null;
     if (m.owner && m.owner !== oldOwner && m.owner !== me().name) notify(m.owner, `${neu ? 'Neue Maßnahme für Sie' : 'Maßnahme an Sie übertragen'}: ${m.titel}, bis ${fmt(m.due)}`, { m: m.id });
     if (was !== st && st === 'erledigt') { const sf = S.people.find(p => p.rolle === 'Sicherheitsfachkraft'); if (sf && sf.name !== me().name) notify(sf.name, `${me().name} hat eine Maßnahme erledigt, bitte Wirksamkeit prüfen: ${m.titel}`, { m: m.id }); }
@@ -1814,7 +2228,10 @@ document.addEventListener('submit', e => {
     const cards = v('th-c').split(/\n\s*\n/).map(b => b.trim().split('\n')).filter(l => l[0]).map(l => ({ t: l[0].trim(), x: l.slice(1).join(' ').trim() }));
     const quiz = v('th-q').split(/\n\s*\n/).map(b => b.trim().split('\n').map(s => s.trim()).filter(Boolean)).filter(l => l.length >= 3).map(l => { const ans = l.slice(1); return { q: l[0], a: ans.map(a => a.replace(/^[*-]\s*/, '')), r: Math.max(0, ans.findIndex(a => a.startsWith('*'))) }; });
     if (!v('th-n')) { fieldErr('th-n', 'Bitte einen Namen für das Thema eingeben.'); return; }
-    Object.assign(t, { name: v('th-n'), short: v('th-s') || v('th-n').slice(0, 14), turnus: +v('th-t'), form: v('th-f'), alle: $('th-all').checked, abt: checked('th-abt'), merk: checked('th-merk'), cards: cards.length ? cards : [C(v('th-n'), 'Inhalt folgt.')], quiz });
+    const sameC = f.dataset.id && v('th-c') === cardsText(t).trim(), sameQ = f.dataset.id && v('th-q') === quizText(t).trim();
+    if (sameC) cards.splice(0, cards.length, ...t.cards);
+    if (sameQ) quiz.splice(0, quiz.length, ...t.quiz);
+    Object.assign(t, { name: keepT(v('th-n'), t.name), short: keepT(v('th-s'), t.short) || v('th-n').slice(0, 14), turnus: +v('th-t'), form: v('th-f'), alle: $('th-all').checked, abt: checked('th-abt'), merk: checked('th-merk'), cards: cards.length ? cards : [C(v('th-n'), 'Inhalt folgt.')], quiz });
     if (!f.dataset.id) S.themen.push(t);
     closeSheet(); commit('Thema gespeichert');
   }
@@ -1838,7 +2255,7 @@ document.addEventListener('mousedown', e => { if (e.target && e.target.id === 'o
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     if (!$('overlay').hidden) dismissSheet();
-    else if (!$('bellPanel').hidden) { $('bellPanel').hidden = true; document.querySelectorAll('[data-action=bell][aria-controls]').forEach(x => x.setAttribute('aria-expanded', 'false')); const b = document.querySelector('[data-action=bell]:not([hidden])'); if (b) { try { b.focus(); } catch (er) {} } }
+    else if (!$('bellPanel').hidden) { $('bellPanel').hidden = true; document.querySelectorAll('[data-action=bell][aria-controls]').forEach(x => x.setAttribute('aria-expanded', 'false')); const b = [...document.querySelectorAll('[data-action=bell][aria-controls]')].find(x => x.offsetParent); if (b) { try { b.focus(); } catch (er) {} } }
     return;
   }
   if (e.key !== 'Tab' || $('overlay').hidden) return;
@@ -1856,6 +2273,424 @@ S = load();
 { const r0 = routeFromHash(); if (r0) S.route = r0; }
 renderAll();
 (async () => { try { DL = window.claude && window.claude.use ? await window.claude.use('downloads') : null; } catch (e) { DL = null; } })();
+
+/* ---------- Englisch (DemoKit-Übersetzer: Wörterbuch → Regeln → Einzelwörter) ---------- */
+const TT = s => DemoKit.t(s);
+const I18N_DICT = {
+  'Zum Inhalt springen': 'Skip to content', 'Muster GmbH': 'Sample GmbH', 'Arbeitsschutz': 'Health & Safety', 'Navigation': 'Navigation',
+  'Benachrichtigungen': 'Notifications', 'Menü und Person': 'Menu and person', 'Start': 'Home', 'Matrix': 'Matrix', 'Termine': 'Sessions', 'Audits': 'Audits',
+  'Maßnahmen': 'Actions', 'Behördenmappe': 'Authority file', 'Stammdaten': 'Master data', 'Themen': 'Topics', 'Mitarbeitende': 'Employees',
+  'Angemeldet als': 'Signed in as', 'Person wechseln': 'Switch person', 'Sicherheitsfachkraft': 'Safety officer', 'Abteilungsleitung': 'Head of department',
+  'Demo zurücksetzen…': 'Reset demo…', 'Übersicht': 'Overview', 'Unterweisungsmatrix': 'Training matrix', 'Online-Unterweisung': 'Online training',
+  'Präsenz-Termine': 'In-person sessions', 'Audits & Begehungen': 'Audits & inspections', 'Mehr': 'More', 'Meine': 'Mine',
+  'Meine Unterweisungen': 'My training', 'Meine Maßnahmen': 'My actions',
+  /* Start */
+  'Termin planen': 'Schedule session', 'Online zuweisen': 'Assign online', 'Begehung starten': 'Start inspection',
+  'Audit-Bereitschaft': 'Audit readiness', 'Wie gut sind Sie heute auf eine Prüfung vorbereitet?': 'How well prepared are you for an inspection today?',
+  'Handeln': 'Act now', 'Fast': 'Almost', 'Gut': 'Good', 'Ziel: 90 % vor dem nächsten Audit': 'Target: 90% before the next audit', 'Unterweisungen': 'Training',
+  'Maßnahmen erledigt': 'Actions completed', 'ggü. Vormonat': 'vs. previous month', 'Überfällig': 'Overdue', 'Nie unterwiesen': 'Never trained',
+  'In 30 Tagen fällig': 'Due in 30 days', 'rechtzeitig planen': 'plan ahead', 'Maßnahmen offen': 'Open actions', 'Lücken schließen': 'Close the gaps',
+  'Matrix öffnen': 'Open matrix', 'Alles unterwiesen': 'Everyone trained', 'Unterweisungen pro Monat': 'Training per month',
+  'Erledigt im Vergleich zu fällig, letzte 6 Monate': 'Completed vs. due, last 6 months', 'Erledigt': 'Completed', 'Fällig': 'Due',
+  'Maßnahmen nach Status': 'Actions by status', 'offen': 'open', 'Offen': 'Open', 'In Arbeit': 'In progress', 'Wirksam geprüft': 'Effectiveness verified',
+  'Unterweisungsquote pro Thema': 'Training rate by topic', 'Antippen öffnet die Matrix für das Thema': 'Tap to open the matrix for that topic',
+  'ab 90 %': '90% and above', 'ab 75 %': '75% and above', 'darunter': 'below', 'Präsenz': 'In person', 'überfällig': 'overdue', 'in 30 Tagen': 'in 30 days',
+  'Online, am Handy': 'Online, on the phone', 'Bald fällig': 'Due soon', 'Geplant': 'Planned', 'Läuft': 'In progress', 'Termin': 'Session', 'Audit': 'Audit',
+  'Maßnahme': 'Action', 'Nichts überfällig': 'Nothing overdue', 'Nichts in den nächsten 30 Tagen': 'Nothing in the next 30 days', 'Nichts geplant': 'Nothing planned',
+  'Unterweisungsquote': 'Training rate', 'gültig unterwiesen': 'validly trained', 'Arbeitsschutz auf einen Blick': 'Health & safety at a glance',
+  /* Matrix */
+  'Wer braucht was, und wer ist gültig unterwiesen. Zelle antippen für Details.': 'Who needs what, and who is validly trained. Tap a cell for details.',
+  'Excel': 'Excel', 'Person suchen': 'Search person', 'z. B. Ahmet Yilmaz…': 'e.g. Ahmet Yilmaz…', 'Abteilung': 'Department', 'Alle Abteilungen': 'All departments',
+  'Thema': 'Topic', 'Alle Themen': 'All topics', 'Nur Lücken': 'Gaps only', 'Filter zurücksetzen': 'Reset filters', 'unterwiesen': 'trained', 'Person': 'Person',
+  'Keine Personen für diesen Filter.': 'No people match this filter.', 'Gültig': 'Valid', 'Nicht erforderlich': 'Not required', 'nie': 'never',
+  /* Themen */
+  'Erstunterweisung für Neue': 'Induction for new starters', 'Allgemeine Arbeitsschutzunterweisung': 'General health & safety briefing',
+  'Brandschutz und Evakuierung': 'Fire safety and evacuation', 'Flurförderzeuge (Gabelstapler)': 'Industrial trucks (forklifts)', 'Gefahrstoffe': 'Hazardous substances',
+  'Bildschirmarbeit': 'Screen work', 'Erste Hilfe (Ersthelfer)': 'First aid (first aiders)', 'Maschinensicherheit': 'Machine safety',
+  'Persönliche Schutzausrüstung': 'Personal protective equipment', 'Datenschutz': 'Data protection',
+  'Erstunterweisung': 'Induction', 'Allgemein': 'General', 'Brandschutz': 'Fire safety', 'Gabelstapler': 'Forklifts', 'Bildschirm': 'Screen work',
+  'Erste Hilfe': 'First aid', 'Maschinen': 'Machinery', 'PSA': 'PPE',
+  'Fertigung': 'Production', 'Lager/Logistik': 'Warehouse/Logistics', 'Instandhaltung': 'Maintenance', 'Verwaltung': 'Administration', 'Vertrieb': 'Sales',
+  'Staplerfahrer': 'Forklift driver', 'Ersthelfer': 'First aider',
+  /* Termine */
+  'Planen, Anwesenheit mit Unterschrift erfassen, abschließen. Die Nachweise entstehen automatisch.': 'Plan, record attendance with signatures, close. Records are created automatically.',
+  'Durchgeführt': 'Completed', 'Datum': 'Date', 'Ort': 'Location', 'Unterwiesen durch': 'Trained by', 'Teilnehmende': 'Participants', 'Keine geplanten Termine.': 'No sessions planned.',
+  'Kantine': 'Canteen', 'Schulungsraum 1': 'Training room 1', 'Lager, Rampe 2': 'Warehouse, ramp 2', 'Halle 1, Meisterbüro': 'Hall 1, supervisor’s office',
+  'Alle Termine': 'All sessions', 'Abschließen': 'Close', 'Teilnehmerliste': 'Attendance list', 'Status': 'Status', 'Unterschrift': 'Signature',
+  'Unterschreiben': 'Sign', 'Anwesend': 'Present', 'anwesend': 'present', 'Inhalte': 'Content', 'Zurücksetzen': 'Reset', 'ohne Unterschrift': 'without signature',
+  'Beispielinhalt, wird im Nachweis mit ausgegeben': 'Sample content, included in the record', 'Abgeschlossen': 'Completed',
+  /* Audits */
+  'Checkliste am Handy durchgehen, Mängel mit Foto festhalten, Maßnahmen entstehen automatisch.': 'Work through the checklist on your phone, capture defects with a photo – actions are created automatically.',
+  'Brandschutzbegehung': 'Fire safety inspection', 'Arbeitsplatzbegehung': 'Workplace inspection', 'Gefahrstofflager': 'Hazardous substances store',
+  'Internes Audit ISO 45001': 'Internal audit ISO 45001', 'Arbeitsplatzbegehung Halle': 'Workplace inspection hall', 'Alle Audits': 'All audits',
+  'Außenlager Nord': 'Outdoor store North', 'Gesamtes Werk': 'Entire plant', 'Halle 1': 'Hall 1', 'Halle 2, Zerspanung': 'Hall 2, machining', 'Halle 1, Montage': 'Hall 1, assembly',
+  'Ohne Bereich': 'No area', 'Jetzt starten': 'Start now', 'Fortschritt': 'Progress', 'Bewertung': 'Rating', 'i.O.': 'OK', 'n.i.O.': 'Not OK', 'n.a.': 'N/A',
+  'Feststellung': 'Finding', 'z. B. Schutzhaube gerissen, Späne treten aus…': 'e.g. guard cracked, chips escaping…', 'Foto': 'Photo', 'Anderes Foto': 'Other photo',
+  'Foto entfernen': 'Remove photo', 'Risiko': 'Risk', 'Verantwortlich': 'Responsible', 'Bitte wählen': 'Please select', 'z. B. Schutzhaube ersetzen…': 'e.g. replace guard…',
+  'Maßnahmen aus diesem Audit': 'Actions from this audit', 'Keine Mängel.': 'No defects.', 'hoch': 'high', 'mittel': 'medium', 'gering': 'low',
+  'Feuerlöscher F-12 an Säule C4: Prüfplakette seit 2 Monaten abgelaufen.': 'Fire extinguisher F-12 at column C4: inspection label expired 2 months ago.',
+  'Fluchtweg vor Tor 3 mit Gitterboxen zugestellt.': 'Escape route in front of gate 3 blocked by mesh boxes.',
+  'Drehmaschine D4: Schutzhaube gerissen, Späne treten aus.': 'Lathe D4: guard cracked, chips escaping.',
+  'Kabelkanal am Platz 7 hochstehend, Stolperstelle.': 'Cable duct at workstation 7 sticking up, trip hazard.',
+  'Augendusche ohne aktuellen Prüfnachweis.': 'Eye wash station without current inspection record.',
+  'Betriebsanweisung Kühlschmierstoff ist von 2019.': 'Operating instructions for coolant date from 2019.',
+  'Auffangwanne unter IBC 3 zu klein.': 'Drip tray under IBC 3 too small.',
+  'Feuerlöscher F-12 prüfen lassen': 'Have fire extinguisher F-12 inspected', 'Fluchtweg Tor 3 räumen, Bodenmarkierung erneuern': 'Clear escape route at gate 3, renew floor marking',
+  'Schutzhaube Drehmaschine D4 ersetzen': 'Replace guard on lathe D4', 'Kabelkanal Platz 7 neu befestigen': 'Re-secure cable duct at workstation 7',
+  'Augendusche prüfen und Prüfnachweis anbringen': 'Inspect eye wash station and attach inspection record',
+  'Betriebsanweisung Kühlschmierstoff aktualisieren': 'Update operating instructions for coolant', 'Größere Auffangwanne für IBC 3 bestellen': 'Order a larger drip tray for IBC 3',
+  /* Maßnahmen */
+  'Aus Audits und Begehungen. Karte antippen, um den Status zu ändern.': 'From audits and inspections. Tap a card to change the status.', 'Aus Audits und Begehungen.': 'From audits and inspections.',
+  'Aus Begehungen und Audits': 'From inspections and audits', 'Ohne Audit': 'No audit', 'Leer': 'Empty', 'Keine Maßnahmen': 'No actions',
+  'Ihnen ist derzeit keine Maßnahme zugewiesen.': 'No action is currently assigned to you.',
+  /* Mappe */
+  'Ein PDF mit allem, was BG, Amt oder Auditor sehen wollen. Daten kommen direkt aus Matrix, Terminen und Audits.': 'One PDF with everything the insurer, authority or auditor wants to see. Data comes straight from the matrix, sessions and audits.',
+  'PDF erstellen': 'Create PDF', 'Für': 'For', 'Zeitraum': 'Period', 'Berufsgenossenschaft': 'Employers’ liability insurer', 'Amt für Arbeitsschutz': 'Health & safety authority',
+  'Zertifizierungsaudit ISO 45001': 'Certification audit ISO 45001', 'Letzte 12 Monate': 'Last 12 months', 'Was geprüft wird': 'What gets checked',
+  'Alle Beschäftigten unterwiesen': 'All employees trained', 'Erstunterweisung vor Arbeitsbeginn': 'Induction before starting work', 'Teilnehmerlisten mit Unterschrift': 'Signed attendance lists',
+  'Inhalte der Unterweisungen dokumentiert': 'Training content documented', 'Begehungen und Audits durchgeführt': 'Inspections and audits carried out',
+  'Mängel mit Maßnahme, Verantwortlichem und Termin': 'Defects with action, owner and deadline', 'Maßnahmen fristgerecht umgesetzt': 'Actions completed on time',
+  'Wirksamkeit geprüft': 'Effectiveness verified', 'Keine überfälligen Maßnahmen': 'No overdue actions', 'Inhalt der Mappe': 'Contents of the file',
+  'Deckblatt und Kennzahlen': 'Cover page and key figures', 'Prüfliste wie links': 'Checklist as shown on the left', 'Nachweise im Zeitraum': 'Records in the period',
+  'Audit- und Begehungsberichte mit Fotos': 'Audit and inspection reports with photos', 'Maßnahmenliste': 'List of actions', 'Einzeln exportieren': 'Export individually',
+  'Nachweise': 'Records', 'Excel für eigene Auswertungen. Für Behörden besser das PDF, es enthält die Unterschriften.': 'Excel for your own analysis. For authorities, the PDF is better – it contains the signatures.',
+  'Audit-Bereitschaft der Mappe': 'File readiness',
+  /* Themen-Seite */
+  'Turnus, Zielgruppe und Inhalte. Wer betroffen ist, ergibt sich aus Abteilung und Merkmalen.': 'Interval, target group and content. Who is affected follows from department and attributes.',
+  'Form': 'Format', 'Turnus': 'Interval', 'Zielgruppe': 'Target group', 'Betroffen': 'Affected', 'Online': 'Online', 'einmalig': 'once', 'Alle': 'All',
+  'alle 6 Monate': 'every 6 months', 'alle 12 Monate': 'every 12 months', 'alle 24 Monate': 'every 24 months', 'alle 36 Monate': 'every 36 months',
+  /* Leute */
+  'Alle mit Lücken erinnern': 'Remind everyone with gaps', 'Excel-Import': 'Excel import', 'Name': 'Name', 'Merkmale': 'Attributes', 'Quote': 'Rate', 'Lücken': 'Gaps',
+  'neu': 'new', 'Alle Mitarbeitenden': 'All employees', 'Erinnern': 'Remind', 'E-Mail': 'Email', 'Nachweis-PDF': 'Record PDF', 'Bearbeiten': 'Edit', 'Details': 'Details',
+  /* Dialoge */
+  'Schließen': 'Close', 'Letzte Unterweisung': 'Last training', 'Gültig bis': 'Valid until', 'unbegrenzt': 'unlimited', 'Online mit Quiz': 'Online with quiz',
+  'Nachweis nachtragen': 'Add record', 'Abbrechen': 'Cancel', 'Nachweis speichern': 'Save record', 'Uhrzeit': 'Time', 'Unterweisende Person': 'Trainer',
+  'Vorgeschlagen: wer das Thema braucht und fällig oder überfällig ist.': 'Suggested: everyone who needs the topic and is due or overdue.',
+  'Teilnehmende speichern': 'Save participants', 'Online-Unterweisung zuweisen': 'Assign online training', 'Erledigen bis': 'Complete by', 'An': 'To',
+  'Die Personen sehen es sofort auf ihrer Startseite und bekommen eine Benachrichtigung.': 'They see it on their home screen right away and get a notification.',
+  'Zuweisen': 'Assign', 'Niemand braucht dieses Thema.': 'Nobody needs this topic.',
+  'Unterschriftenfeld. Mit Finger oder Maus unterschreiben, oder darunter „Mit Namen unterschreiben“ wählen.': 'Signature field. Sign with finger or mouse, or choose “Sign with name” below.',
+  'Mit Namen unterschreiben': 'Sign with name', 'Neu unterschreiben': 'Sign again', 'Bestätigen': 'Confirm', 'Checkliste': 'Checklist', 'Bereich': 'Area',
+  'z. B. Halle 3, Montage…': 'e.g. Hall 3, assembly…', 'Durchgeführt von': 'Carried out by', 'Maßnahme speichern': 'Save action', 'Neue Maßnahme': 'New action',
+  '„Wirksam geprüft“ setzt die Sicherheitsfachkraft nach einer Kontrolle vor Ort.': 'The safety officer sets “Effectiveness verified” after an on-site check.',
+  'Kurzname': 'Short name', 'Online am Handy': 'Online on the phone', 'Je Karte: erste Zeile Titel, darunter Text. Karten mit Leerzeile trennen.': 'Per card: first line title, text below. Separate cards with a blank line.',
+  'Quizfragen': 'Quiz questions', 'Frage, dann Antworten. Richtige Antwort mit *, falsche mit -. Fragen mit Leerzeile trennen.': 'Question, then answers. Mark the correct answer with *, wrong ones with -. Separate questions with a blank line.',
+  'Vorschau': 'Preview', 'Thema speichern': 'Save topic', 'Neues Thema': 'New topic', 'Rolle': 'Role', 'Eintritt': 'Start date',
+  'Merkmale steuern, welche Unterweisungen nötig sind.': 'Attributes determine which training is required.', 'Person speichern': 'Save person', 'Neue Person': 'New person', 'Person anlegen': 'Add person',
+  'Mitarbeitende aus Excel': 'Employees from Excel', 'Vorlage herunterladen': 'Download template', 'Excel-Datei wählen': 'Choose Excel file', 'Übernehmen': 'Import',
+  'Ansicht als (Demo)': 'View as (demo)', 'Sicherheitsfachkraft, Abteilungsleitung oder Mitarbeitende ausprobieren.': 'Try the safety officer, head of department or employee view.',
+  'Demo zurücksetzen?': 'Reset demo?', 'Alle Beispieldaten werden neu geladen. Ihre Änderungen in dieser Demo gehen dabei verloren.': 'All sample data will be reloaded. Your changes in this demo will be lost.',
+  'Demo zurücksetzen': 'Reset demo', 'Ungespeicherte Änderungen verwerfen?': 'Discard unsaved changes?', 'Weiter bearbeiten': 'Keep editing', 'Verwerfen': 'Discard',
+  'Gespeichert': 'Saved', 'Alle gelesen': 'Mark all read', 'Keine Benachrichtigungen.': 'No notifications.', ', neu': ', new', 'Rückgängig': 'Undo',
+  'Ergebnis': 'Result', 'Fehler': 'Error', 'aktualisieren': 'update', 'unverändert': 'unchanged', 'Abteilung fehlt': 'Department missing', 'doppelt in der Datei': 'duplicate in the file',
+  'Eintritt unlesbar': 'Start date unreadable', 'In der Datei wurden keine Zeilen mit Namen gefunden. Bitte die Vorlage verwenden.': 'No rows with names were found in the file. Please use the template.',
+  'Die Datei konnte nicht gelesen werden. Bitte eine Excel-Datei (.xlsx) wählen.': 'The file could not be read. Please choose an Excel file (.xlsx).', 'Die Datei konnte nicht gelesen werden.': 'The file could not be read.',
+  /* Lernen */
+  'Zurück': 'Back', 'Weiter': 'Next', 'Prüfen': 'Check', 'Antworten': 'Answers', 'Bestätigung': 'Confirmation', 'Fertig': 'Done', 'Vorschau beendet': 'Preview finished',
+  'Es wurde kein Nachweis gespeichert.': 'No record was saved.', 'Nicht ganz. Lesen Sie die Frage noch einmal und wählen Sie erneut.': 'Not quite. Read the question again and choose once more.',
+  'Richtig.': 'Correct.', 'Erledigt, danke!': 'Done, thank you!', 'Beispielinhalt': 'Sample content', 'Beispielinhalt · Vorschau, es wird kein Nachweis gespeichert': 'Sample content · Preview, no record is saved',
+  'Thema nicht gefunden.': 'Topic not found.', 'Termin nicht gefunden.': 'Session not found.', 'Audit nicht gefunden.': 'Audit not found.', 'Person nicht gefunden.': 'Person not found.',
+  'Unterweisung wartet': 'Training waiting', 'Unterweisungen warten': 'Training waiting', 'Alles erledigt': 'All done', 'Sie sind für alle Themen unterwiesen.': 'You are trained for all topics.',
+  'Bitte zuerst die roten erledigen.': 'Please do the red ones first.', 'Rechtzeitig vor Ablauf erledigen.': 'Complete in good time before expiry.', 'Starten': 'Start',
+  'Meine Nachweise': 'My records', 'PDF': 'PDF', 'Termin wird geplant': 'Session being scheduled', 'noch nie unterwiesen': 'never trained',
+  /* Seed-Inhalte: Unterweisungen */
+  'Willkommen bei der Muster GmbH': 'Welcome to Sample GmbH', 'Bevor Sie loslegen: In 5 Minuten erfahren Sie, wie Sie sicher arbeiten und wen Sie bei Fragen ansprechen.': 'Before you start: in 5 minutes you will learn how to work safely and whom to ask if you have questions.',
+  'Ansprechpartner': 'Contacts', 'Sicherheitsfachkraft: Katrin Schäfer. Ersthelfer erkennen Sie am grünen Aufkleber am Spind. Notruf intern: 112 über jedes Telefon.': 'Safety officer: Katrin Schäfer. First aiders have a green sticker on their locker. Internal emergency number: 112 from any phone.',
+  'Wege und Ausgänge': 'Routes and exits', 'Grüne Schilder zeigen Fluchtwege. Sammelplatz ist der Parkplatz vor Tor 1. Gekennzeichnete Fahrwege sind für Stapler, nicht für Fußgänger.': 'Green signs show escape routes. The assembly point is the car park in front of gate 1. Marked driveways are for forklifts, not pedestrians.',
+  'Melden statt hoffen': 'Report, don’t hope', 'Beinaheunfälle, Mängel und Verletzungen melden Sie sofort der Führungskraft, auch Kleinigkeiten.': 'Report near misses, defects and injuries to your manager immediately – even minor ones.',
+  'Wo ist der Sammelplatz?': 'Where is the assembly point?', 'Vor Tor 1 auf dem Parkplatz': 'In the car park in front of gate 1', 'In der Kantine': 'In the canteen', 'In der eigenen Abteilung': 'In your own department',
+  'Was tun Sie bei einem Beinaheunfall?': 'What do you do after a near miss?', 'Nichts, es ist ja nichts passiert': 'Nothing, nothing happened', 'Sofort der Führungskraft melden': 'Report it to your manager immediately', 'Erst am Monatsende erwähnen': 'Mention it at the end of the month',
+  'Wem gehören die gekennzeichneten Fahrwege?': 'Who are the marked driveways for?', 'Fußgängern': 'Pedestrians', 'Fahrrädern': 'Bicycles', 'Staplern': 'Forklifts',
+  'Warum wir das jährlich machen': 'Why we do this every year', 'Arbeitsschutz lebt von Wiederholung. Einmal im Jahr gehen wir die wichtigsten Regeln gemeinsam durch.': 'Health and safety relies on repetition. Once a year we go through the most important rules together.',
+  'Ordnung am Arbeitsplatz': 'A tidy workplace', 'Verkehrswege frei halten, Kabel nicht quer über den Gang, verschüttete Flüssigkeiten sofort aufnehmen.': 'Keep walkways clear, no cables across aisles, wipe up spilled liquids immediately.',
+  'Unfall, was nun?': 'Accident – what now?', 'Erste Hilfe leisten, Notruf absetzen, Führungskraft informieren. Jeder Unfall kommt ins Verbandbuch.': 'Give first aid, call emergency services, inform your manager. Every accident goes into the first aid log.',
+  'Was gehört ins Verbandbuch?': 'What goes into the first aid log?', 'Nur schwere Unfälle': 'Only serious accidents', 'Jeder Unfall, auch kleine Verletzungen': 'Every accident, including minor injuries', 'Nur Unfälle mit Ausfallzeit': 'Only accidents with lost time',
+  'Was ist mit Verkehrswegen?': 'What about walkways?', 'Freihalten': 'Keep them clear', 'Als Lagerfläche nutzen': 'Use them for storage', 'Nach Schichtende räumen': 'Clear them after the shift',
+  'Wer wird nach einem Unfall informiert?': 'Who is informed after an accident?', 'Niemand': 'Nobody', 'Nur die Kollegen': 'Only colleagues', 'Die Führungskraft': 'Your manager',
+  'Brände verhüten': 'Preventing fires', 'Keine offenen Flammen außerhalb freigegebener Bereiche. Ölige Lappen in die roten Metallbehälter.': 'No open flames outside approved areas. Oily rags go into the red metal bins.',
+  'Im Brandfall': 'In case of fire', 'Alarm auslösen, Feuerwehr 112, Personen warnen. Nur löschen, wenn es ohne Eigengefährdung geht.': 'Raise the alarm, call the fire brigade on 112, warn people. Only fight the fire if you can do so without danger to yourself.',
+  'Evakuierung': 'Evacuation', 'Aufzüge nicht benutzen. Zum Sammelplatz gehen und dort bleiben, bis die Vollzähligkeit geprüft ist.': 'Do not use lifts. Go to the assembly point and stay there until everyone is accounted for.',
+  'Darf man im Brandfall den Aufzug nutzen?': 'May you use the lift in a fire?', 'Ja, wenn es schnell geht': 'Yes, if it’s quick', 'Nein': 'No', 'Nur mit Begleitung': 'Only accompanied',
+  'Wohin mit öligen Lappen?': 'Where do oily rags go?', 'In den Restmüll': 'In general waste', 'In die roten Metallbehälter': 'In the red metal bins', 'Auf die Werkbank': 'On the workbench',
+  'Was zuerst?': 'What first?', 'Alarm auslösen und warnen': 'Raise the alarm and warn others', 'Persönliche Sachen holen': 'Fetch personal belongings', 'Fenster öffnen': 'Open the windows',
+  'Vor jeder Schicht': 'Before every shift', 'Sichtprüfung: Reifen, Gabeln, Hydraulik, Bremsen, Hupe, Licht. Mängel melden, Stapler nicht benutzen.': 'Visual check: tyres, forks, hydraulics, brakes, horn, lights. Report defects and do not use the forklift.',
+  'Fahren': 'Driving', 'Gurt anlegen, Last bergseitig, Schrittgeschwindigkeit in Hallen. Niemand fährt mit.': 'Wear the seat belt, load facing uphill, walking pace in halls. No passengers.',
+  'Abstellen': 'Parking', 'Gabeln ganz absenken, Feststellbremse, Schlüssel abziehen. Nie vor Notausgängen abstellen.': 'Lower the forks fully, apply the parking brake, remove the key. Never park in front of emergency exits.',
+  'Darf eine zweite Person mitfahren?': 'May a second person ride along?', 'Ja, auf der Gabel': 'Yes, on the forks', 'Nur kurz': 'Only briefly',
+  'Was gehört zur Prüfung vor der Schicht?': 'What is part of the pre-shift check?', 'Bremsen, Hupe, Hydraulik': 'Brakes, horn, hydraulics', 'Nur der Tankstand': 'Only the fuel level', 'Nichts, das macht die Werkstatt': 'Nothing, the workshop does that',
+  'Wie stellen Sie den Stapler ab?': 'How do you park the forklift?', 'Gabeln oben lassen': 'Leave the forks raised', 'Gabeln ganz absenken, Schlüssel abziehen': 'Lower the forks fully, remove the key', 'Motor laufen lassen': 'Leave the engine running',
+  'Erkennen': 'Recognise', 'Gefahrstoffe tragen rote Raute-Piktogramme. Das Sicherheitsdatenblatt und die Betriebsanweisung hängen am Arbeitsplatz aus.': 'Hazardous substances carry red diamond pictograms. The safety data sheet and operating instructions are posted at the workplace.',
+  'Schützen': 'Protect', 'Vorgeschriebene Handschuhe und Schutzbrille tragen. Nicht essen oder trinken, wo mit Gefahrstoffen gearbeitet wird.': 'Wear the prescribed gloves and safety goggles. Do not eat or drink where hazardous substances are handled.',
+  'Lagern': 'Store', 'Nur in Originalgebinden oder gekennzeichneten Behältern. Niemals in Getränkeflaschen umfüllen.': 'Only in original or labelled containers. Never decant into drinks bottles.',
+  'Wo finden Sie Hinweise zum sicheren Umgang?': 'Where do you find guidance on safe handling?', 'In der Betriebsanweisung am Arbeitsplatz': 'In the operating instructions at the workplace', 'Im Internet': 'On the internet', 'Nirgends': 'Nowhere',
+  'Darf man Reste in eine Getränkeflasche füllen?': 'May you pour leftovers into a drinks bottle?', 'Ja, wenn beschriftet': 'Yes, if labelled', 'Nein, niemals': 'No, never', 'Nur über Nacht': 'Only overnight',
+  'Woran erkennen Sie Gefahrstoffe?': 'How do you recognise hazardous substances?', 'Am Preis': 'By the price', 'An roten Raute-Piktogrammen': 'By red diamond pictograms', 'An der Farbe des Deckels': 'By the colour of the lid',
+  'Einstellen': 'Set up', 'Oberkante Bildschirm auf Augenhöhe oder etwas darunter, Abstand etwa eine Armlänge, Bildschirm seitlich zum Fenster.': 'Top of the screen at eye level or slightly below, about an arm’s length away, screen side-on to the window.',
+  'Sitzen': 'Sitting', 'Füße flach auf dem Boden, Ober- und Unterarm etwa im rechten Winkel. Rückenlehne nutzen.': 'Feet flat on the floor, upper and lower arm at roughly a right angle. Use the backrest.',
+  'Pausen': 'Breaks', 'Kurze Pausen und Haltungswechsel helfen mehr als eine lange Pause. Augenuntersuchung ist ein Angebot für Sie.': 'Short breaks and changes of posture help more than one long break. An eye test is offered to you.',
+  'Wie hoch steht der Bildschirm?': 'How high should the screen be?', 'Oberkante auf Augenhöhe oder darunter': 'Top edge at eye level or below', 'Deutlich über Augenhöhe': 'Well above eye level', 'Egal': 'It doesn’t matter',
+  'Wie steht der Bildschirm zum Fenster?': 'How should the screen face the window?', 'Mit dem Rücken zum Fenster': 'With its back to the window', 'Seitlich zum Fenster': 'Side-on to the window', 'Direkt vor dem Fenster': 'Directly in front of the window',
+  'Was hilft gegen Verspannungen?': 'What helps against tension?', 'Häufige kurze Pausen': 'Frequent short breaks', 'Durcharbeiten': 'Working straight through', 'Höherer Stuhl': 'A higher chair',
+  'Ihre Rolle': 'Your role', 'Als Ersthelfer sind Sie bis zum Eintreffen des Rettungsdienstes die wichtigste Person.': 'As a first aider you are the most important person until the ambulance arrives.',
+  'Material': 'Supplies', 'Verbandkästen monatlich prüfen, verbrauchtes Material melden. Standorte sind im Hallenplan markiert.': 'Check first aid kits monthly and report used supplies. Locations are marked on the hall plan.',
+  'Dokumentation': 'Documentation', 'Jede Hilfeleistung im Verbandbuch eintragen, auch das Pflaster.': 'Record every treatment in the first aid log, even a plaster.',
+  'Wie oft prüfen Sie die Verbandkästen?': 'How often do you check the first aid kits?', 'Monatlich': 'Monthly', 'Jährlich': 'Yearly', 'Nie': 'Never',
+  'Was kommt ins Verbandbuch?': 'What goes into the first aid log?', 'Jede Hilfeleistung': 'Every treatment', 'Nur Krankenhausfälle': 'Only hospital cases', 'Nichts': 'Nothing',
+  'Bis wann sind Sie zuständig?': 'Until when are you responsible?', 'Bis der Rettungsdienst übernimmt': 'Until the ambulance crew takes over', '5 Minuten': '5 minutes', 'Bis Schichtende': 'Until the end of the shift',
+  'Schutzeinrichtungen': 'Safety devices', 'Schutzhauben, Lichtschranken und Türschalter nie überbrücken oder entfernen.': 'Never bypass or remove guards, light curtains or door switches.',
+  'Rüsten und Störungen': 'Set-up and faults', 'Vor Eingriffen Maschine stillsetzen und gegen Wiedereinschalten sichern, eigenes Schloss am Hauptschalter.': 'Before intervening, stop the machine and lock it out against restarting – your own padlock on the main switch.',
+  'Kleidung': 'Clothing', 'Keine weiten Ärmel, keine Ringe, lange Haare zusammenbinden. Handschuhe nicht an drehenden Teilen.': 'No loose sleeves, no rings, tie back long hair. No gloves near rotating parts.',
+  'Darf eine Schutzhaube zum Rüsten entfernt bleiben, wenn es schneller geht?': 'May a guard stay removed during set-up if it is quicker?', 'Ja': 'Yes', 'Nur nachts': 'Only at night',
+  'Was vor Eingriffen?': 'What before intervening?', 'Stillsetzen und gegen Wiedereinschalten sichern': 'Stop and lock out against restarting', 'Langsamer laufen lassen': 'Let it run slower', 'Kollegen Bescheid geben reicht': 'Telling a colleague is enough',
+  'Handschuhe an drehenden Teilen?': 'Gloves near rotating parts?', 'Immer': 'Always', 'Nur dünne': 'Only thin ones',
+  'Pflicht in den Hallen': 'Mandatory in the halls', 'Sicherheitsschuhe immer. Gehörschutz, Brille und Handschuhe je nach Arbeitsplatz, siehe Aushang.': 'Safety shoes at all times. Hearing protection, goggles and gloves depending on the workplace – see the notice.',
+  'Pflegen und tauschen': 'Care and replacement', 'Beschädigte PSA sofort tauschen. Ausgabe über das Lager, kostenlos.': 'Replace damaged PPE immediately. Issued free of charge by the warehouse.',
+  'Wer zahlt die PSA?': 'Who pays for PPE?', 'Der Betrieb': 'The company', 'Sie selbst': 'You', 'Halbe-halbe': 'Fifty-fifty',
+  'Was tun mit beschädigter PSA?': 'What do you do with damaged PPE?', 'Weiter tragen': 'Keep wearing it', 'Sofort tauschen': 'Replace it immediately', 'Kleben': 'Tape it up',
+  'Sicherheitsschuhe in der Halle?': 'Safety shoes in the hall?', 'Nur bei schweren Teilen': 'Only for heavy parts', 'Freiwillig': 'Optional',
+  'Was sind personenbezogene Daten?': 'What is personal data?', 'Alles, was sich einer Person zuordnen lässt: Namen, E-Mail, Fotos, Personalnummern.': 'Anything that can be linked to a person: names, email, photos, staff numbers.',
+  'Im Alltag': 'Day to day', 'Bildschirm sperren, wenn Sie gehen. Keine Kundendaten in private Messenger. Ausdrucke nicht liegen lassen.': 'Lock your screen when you leave. No customer data in private messengers. Don’t leave printouts lying around.',
+  'Panne?': 'Data breach?', 'Falsch verschickte E-Mail oder verlorener Laptop: sofort melden, es gibt Fristen.': 'Email sent to the wrong person or laptop lost: report it immediately – there are deadlines.',
+  'Was tun Sie beim Verlassen des Platzes?': 'What do you do when leaving your desk?', 'Bildschirm sperren': 'Lock the screen', 'Monitor ausschalten reicht': 'Switching off the monitor is enough',
+  'Kundendaten per privatem Messenger?': 'Customer data via a private messenger?', 'Ja, ist schneller': 'Yes, it’s faster', 'Nur Fotos': 'Only photos',
+  'Laptop verloren, wann melden?': 'Laptop lost – when do you report it?', 'Sofort': 'Immediately', 'In einer Woche': 'Within a week', 'Gar nicht': 'Not at all', 'Inhalt folgt.': 'Content to follow.',
+  /* Seed: Checklisten */
+  'Verkehrs- und Fluchtwege frei': 'Walkways and escape routes clear', 'Fluchtwegkennzeichnung und Notbeleuchtung': 'Escape route signs and emergency lighting', 'Feuerlöscher zugänglich und geprüft': 'Fire extinguishers accessible and inspected',
+  'Schutzeinrichtungen an Maschinen vollständig': 'Machine guards complete', 'Not-Halt erreichbar und gekennzeichnet': 'Emergency stop reachable and marked', 'Ordnung und Sauberkeit, keine Stolperstellen': 'Tidy and clean, no trip hazards',
+  'Elektrische Geräte und Kabel unbeschädigt': 'Electrical equipment and cables undamaged', 'PSA wird getragen': 'PPE is worn', 'Betriebsanweisungen ausgehängt': 'Operating instructions posted',
+  'Erste-Hilfe-Material vollständig': 'First aid supplies complete', 'Augendusche funktionsfähig und geprüft': 'Eye wash station working and inspected', 'Beleuchtung ausreichend': 'Lighting sufficient',
+  'Feuerlöscher: Prüfplakette gültig': 'Fire extinguishers: inspection label valid', 'Feuerlöscher frei zugänglich': 'Fire extinguishers freely accessible', 'Brandschutztüren schließen selbsttätig': 'Fire doors close automatically',
+  'Brandschutztüren nicht verkeilt': 'Fire doors not wedged open', 'Fluchtwege frei': 'Escape routes clear', 'Flucht- und Rettungspläne aktuell': 'Evacuation plans up to date', 'Sammelplatz gekennzeichnet': 'Assembly point marked',
+  'Brandlasten in Hallen begrenzt': 'Fire loads in halls limited', 'Rauchmelder und Alarm geprüft': 'Smoke detectors and alarm tested', 'Ölige Abfälle in Metallbehältern': 'Oily waste in metal bins',
+  'Arbeitsschutzpolitik bekannt gemacht': 'H&S policy communicated', 'Gefährdungsbeurteilungen aktuell': 'Risk assessments up to date', 'Rechtskataster gepflegt': 'Legal register maintained',
+  'Ziele und Kennzahlen festgelegt': 'Objectives and KPIs defined', 'Unterweisungen nachgewiesen': 'Training documented', 'Beteiligung der Beschäftigten': 'Employee participation',
+  'Unfälle und Beinaheunfälle ausgewertet': 'Accidents and near misses analysed', 'Korrekturmaßnahmen wirksam': 'Corrective actions effective', 'Notfallplanung geübt': 'Emergency plan rehearsed',
+  'Fremdfirmen eingewiesen': 'Contractors briefed', 'Prüffristen Arbeitsmittel eingehalten': 'Equipment inspection intervals met', 'Managementbewertung durchgeführt': 'Management review carried out',
+  'Gefahrstoffverzeichnis aktuell': 'Hazardous substances register up to date', 'Sicherheitsdatenblätter verfügbar': 'Safety data sheets available', 'Zusammenlagerung zulässig': 'Mixed storage permitted',
+  'Auffangwannen ausreichend': 'Drip trays sufficient', 'Behälter gekennzeichnet': 'Containers labelled', 'Lüftung funktionsfähig': 'Ventilation working', 'Bindemittel vorhanden': 'Absorbent available', 'Zugang nur für Befugte': 'Access for authorised persons only',
+  /* Benachrichtigungen, Toasts */
+  'Willkommen! Bitte die Erstunterweisung am Handy machen, dauert 5 Minuten.': 'Welcome! Please complete the induction on your phone – it takes 5 minutes.',
+  'Demo zurückgesetzt': 'Demo reset', 'Begehung gestartet': 'Inspection started', 'Unterschrieben': 'Signed', 'Nachweis gespeichert': 'Record saved', 'Thema gespeichert': 'Topic saved',
+  'Maßnahme angelegt': 'Action created', 'Audit geplant': 'Audit planned', 'Los geht’s: Punkt für Punkt bewerten': 'Let’s go: rate item by item', 'Foto entfernt': 'Photo removed',
+  'Niemand hat etwas offen': 'Nobody has anything open', 'Diese Maßnahme gibt es nicht mehr.': 'This action no longer exists.', 'PDF wird erstellt…': 'Creating PDF…',
+  'Bitte kurz warten und erneut versuchen.': 'Please wait a moment and try again.', 'Download nicht möglich. Bitte Downloads im Browser erlauben und erneut versuchen.': 'Download not possible. Please allow downloads in your browser and try again.',
+  'Excel-Export ist gerade nicht verfügbar. Bitte Seite neu laden und erneut versuchen.': 'Excel export is not available right now. Please reload the page and try again.',
+  'PDF konnte nicht erstellt werden. Bitte Internetverbindung prüfen und erneut versuchen.': 'The PDF could not be created. Please check your connection and try again.',
+  'Der Speicher im Browser ist voll. Bitte Fotos entfernen oder die Demo zurücksetzen.': 'Browser storage is full. Please remove photos or reset the demo.',
+  'Foto konnte nicht gelesen werden. Bitte ein JPG- oder PNG-Bild wählen.': 'The photo could not be read. Please choose a JPG or PNG image.',
+  'Bitte mindestens eine Person auswählen. Vorgeschlagen sind alle, die fällig sind.': 'Please select at least one person. Everyone who is due is suggested.',
+  'Bitte mindestens eine Person auswählen, die das Thema bekommen soll.': 'Please select at least one person to receive the topic.',
+  'Bitte beschreiben, was getan wird, z. B. „Schutzhaube ersetzen“.': 'Please describe what will be done, e.g. “replace guard”.', 'Bitte einen Namen für das Thema eingeben.': 'Please enter a name for the topic.',
+  'Bitte Vor- und Nachnamen eingeben.': 'Please enter first and last name.', 'Diesen Namen gibt es schon. Bitte zur Unterscheidung z. B. einen zweiten Vornamen ergänzen.': 'This name already exists. Please add e.g. a middle name to tell them apart.',
+  /* Excel/PDF */
+  'Nachweis Arbeitsschutz': 'Health & safety records', 'Stand': 'As of', 'Beschäftigte': 'Employees', 'Unterweisungen gültig': 'Training valid', 'Inhalt': 'Contents',
+  'Prüfliste': 'Checklist', 'Audit- und Begehungsberichte': 'Audit and inspection reports',
+  'Teilnehmerlisten': 'Attendance lists', 'Teilnehmerliste Unterweisung': 'Training attendance list', 'Unterweisungsnachweis': 'Training record', 'Zuletzt': 'Last',
+  'Online + Quiz': 'Online + quiz', 'ja': 'yes', 'nein': 'no', 'durchgeführt': 'carried out', 'geplant': 'planned', 'abgeschlossen': 'completed', 'läuft': 'in progress', 'Keine Mängel festgestellt.': 'No defects found.',
+  'ohne Beschreibung': 'no description', 'Keine Präsenz-Termine im Zeitraum.': 'No in-person sessions in the period.', 'Keine Audits im Zeitraum.': 'No audits in the period.',
+  'anwesend, ohne Unterschrift': 'present, without signature', 'Erledigt am': 'Completed on', 'Audit-Datum': 'Audit date',
+  'gültig': 'valid', 'in 30 Tagen fällig': 'due in 30 days', 'nie unterwiesen': 'never trained', 'Vorlage_Mitarbeitende': 'Template_employees',
+  'Diese Unterlage wurde aus den gepflegten Daten erzeugt. Unterschriften der Online-Unterweisungen wurden am Gerät der jeweiligen Person geleistet, nach bestandenem Verständnistest.': 'This document was generated from the maintained data. Signatures for online training were given on each person’s own device after passing the comprehension test.',
+  'Max Muster': 'Max Muster', 'Erika Beispiel': 'Erika Beispiel'
+};
+const I18N_RULES = [
+  [/^Guten Morgen (.+)$/, 'Good morning $1'],
+  [/^Nächstes Audit: (.+), (\S+, \S+)$/, (m, a, d) => `Next audit: ${TT(a)}, ${d}`],
+  [/^Abteilung (.+?) · (.+)$/, (m, a, b) => `Department ${TT(a)} · ${TT(b)}`],
+  [/^Abteilung ([^„]+)$/, (m, a) => `Department ${TT(a)}`],
+  [/^davon (\d+) neu im Betrieb$/, '$1 of them new starters'],
+  [/^(\d+) überfällig$/, '$1 overdue'],
+  [/^(\d+) überfällig, davon (\d+) mit hohem Risiko$/, '$1 overdue, $2 of them high risk'],
+  [/^(Erledigt|Fällig): (\d+)$/, (m, a, n) => `${TT(a)}: ${n}`],
+  [/^(\d+) aus Audits und Begehungen$/, '$1 from audits and inspections'],
+  [/^(Offen|In Arbeit|Erledigt|Wirksam geprüft) (\d+)$/, (m, a, n) => `${TT(a)} ${n}`],
+  [/^(.+): (\d+) %$/, (m, a, n) => `${TT(a)}: ${n}%`],
+  [/^(.+) (\d+) %$/, (m, a, n) => `${TT(a)} ${n}%`],
+  [/^(\d+)\/(\d+) gültig$/, '$1/$2 valid'],
+  [/^(\d+)\/(\d+) geprüft$/, '$1/$2 checked'],
+  [/^(\d+)\/(\d+) geprüft · (\d+) (Mangel|Mängel)$/, (m, a, b, n) => `${a}/${b} checked · ${n} ${n === '1' ? 'defect' : 'defects'}`],
+  [/^(\d+) Person(?:en)? ohne gültige Unterweisung$/, (m, n) => `${n} ${n === '1' ? 'person' : 'people'} without valid training`],
+  [/^(\d+) Person(?:en)? bald fällig$/, (m, n) => `${n} ${n === '1' ? 'person' : 'people'} due soon`],
+  [/^\+ (\d+) weitere anzeigen$/, 'Show $1 more'],
+  [/^(.+) · (\d+) Teilnehmende$/, (m, a, n) => `${TT(a)} · ${n} participants`],
+  [/^seit (\d+ days?)$/, '$1 overdue'],
+  [/^bis (\d\d\/\d\d(?:\/\d{4})?)$/, 'by $1'],
+  [/^(.+) · bis (.+)$/, (m, a, d) => `${TT(a)} · by ${d}`],
+  [/^(.+), (\d+) offen$/, (m, a, n) => `${TT(a)}, ${n} open`],
+  [/^Benachrichtigungen, (\d+) neu$/, 'Notifications, $1 new'],
+  /* Status-Tooltips der Matrix */
+  [/^([^,:]+), (.+): (Gültig|Bald fällig|Überfällig|Nie unterwiesen|Nicht erforderlich)$/, (m, p, t, s) => `${p}, ${TT(t)}: ${TT(s)}`],
+  [/^(.+): (valid until .+|due on .+|overdue since .+|never trained|completed|due from .+|not required)$/, (m, t, s) => `${TT(t)}: ${s}`],
+  [/^(gültig|bald fällig|überfällig|nie) (\d+)$/, (m, a, n) => `${({ 'gültig': 'valid', 'bald fällig': 'due soon', 'überfällig': 'overdue', 'nie': 'never' })[a]} ${n}`],
+  [/^(Gültig|Bald fällig|Überfällig) \((.+)\)$/, (m, a, d) => `${TT(a)} (${d})`],
+  [/^(.+) · neu$/, (m, a) => `${TT(a)} · new`],
+  [/^(\d+) Termine mit Teilnehmerliste$/, '$1 sessions with attendance list'],
+  [/^(.+), (\d\d:\d\d) Uhr$/, '$1, $2'],
+  [/^(\d+) von (\d+) bestätigt\. Am Tablet herumgeben: jede Person tippt „Unterschreiben“\.$/, '$1 of $2 confirmed. Pass the tablet around: each person taps “Sign”.'],
+  [/^Unterschrift (.+)$/, 'Signature $1'],
+  [/^(\d+)\. (.+)$/, (m, n, a) => `${n}. ${TT(a)}`],
+  [/^(\d+) von (\d+) Prüfpunkten bewertet\. Bei n\.i\.O\. Foto und Maßnahme ergänzen\.$/, '$1 of $2 checkpoints rated. For “Not OK”, add a photo and an action.'],
+  [/^Foto zu Prüfpunkt (\d+)$/, 'Photo for checkpoint $1'],
+  [/^Mangel beheben: (.+)$/, (m, a) => `Fix defect: ${TT(a)}`],
+  [/^seit (.+)$/, 'since $1'],
+  [/^(\d+) von (\d+) Punkten erfüllt$/, '$1 of $2 items met'],
+  [/^(\d+)% der erforderlichen Unterweisungen gültig, (\d+) Lücken$/, '$1% of required training valid, $2 gaps'],
+  [/^(\d+) von (\d+) neuen Beschäftigten der letzten 12 Monate am ersten Tag unterwiesen$/, '$1 of $2 new employees in the last 12 months trained on day one'],
+  [/^(\d+) von (\d+) Präsenz-Terminen vollständig unterschrieben$/, '$1 of $2 in-person sessions fully signed'],
+  [/^(\d+) Themen mit Inhalt und Turnus$/, '$1 topics with content and interval'],
+  [/^(\d+) abgeschlossen im Zeitraum$/, '$1 completed in the period'],
+  [/^(\d+) von (\d+) Maßnahmen vollständig$/, '$1 of $2 actions complete'],
+  [/^(\d+) von (\d+) erledigten Maßnahmen auf Wirksamkeit geprüft$/, '$1 of $2 completed actions verified for effectiveness'],
+  [/^Kalenderjahr (\d+)$/, 'Calendar year $1'], [/^Vorjahr (\d+)$/, 'Previous year $1'],
+  [/^(.+) · (Letzte 12 Monate|Kalenderjahr \d+|Vorjahr \d+)$/, (m, a, b) => `${TT(a)} · ${TT(b)}`],
+  [/^(\d+) Personen\. Neue bekommen die Erstunterweisung sofort zugewiesen\.$/, '$1 people. New starters are assigned the induction straight away.'],
+  [/^(.+) gültig$/, (m, a) => `${a} valid`],
+  [/^zuletzt (.+?), (online|Präsenz) · (.+)$/, (m, d, f, s) => `last ${d}, ${f === 'online' ? 'online' : 'in person'} · ${s}`],
+  [/^zuletzt (.+?) · (.+)$/, 'last $1 · $2'],
+  [/^Eingeplant: (.+)$/, 'Scheduled: $1'],
+  [/^Online zugewiesen am (.+), bis (.+)$/, 'Assigned online on $1, due $2'],
+  [/^(.+) · (.+)\. Zum Beispiel aus einer Papierliste\.$/, (m, p, t) => `${p} · ${TT(t)}. For example from a paper list.`],
+  [/^(.+) \(online\)$/, (m, a) => `${TT(a)} (online)`],
+  [/^\((\d+) von (\d+)\)$/, '($1 of $2)'],
+  [/^bestätigt die Teilnahme an „(.+)“\.$/, (m, a) => `confirms attendance at “${TT(a)}”.`],
+  [/^(.+) \((\d+) Punkte\)$/, (m, a, n) => `${TT(a)} (${n} items)`],
+  [/^Aus: (.+?), (.+?), (\S+)( · „(.+)“)?$/, (m, a, b, d, x, q) => `From: ${TT(a)}, ${TT(b)}, ${d}${q ? ` · “${TT(q)}”` : ''}`],
+  [/^Eine Zeile pro Person mit den Spalten .+$/, 'One row per person with the columns “Name”, “Department”, “Attributes”, “Start date”, “Email”. Separate attributes with commas (Forklift driver, Hazardous substances, Screen work, First aider, Machinery). New people are assigned the induction; existing names are updated.'],
+  [/^(\d+) (Zeile|Zeilen) gelesen:$/, (m, n) => `${n} ${n === '1' ? 'row' : 'rows'} read:`],
+  [/^(\d+) neu, (\d+) aktualisieren,?$/, '$1 new, $2 to update'],
+  [/^(\d+) mit Fehler \(werden übersprungen\)$/, '$1 with errors (will be skipped)'],
+  [/^(\d+) übernehmen$/, 'Import $1'],
+  [/^Abteilung „(.+)“ unbekannt$/, 'Department “$1” unknown'], [/^Merkmal unbekannt: (.+)$/, 'Unknown attribute: $1'], [/^Eintritt „(.+)“ unlesbar \(TT\.MM\.JJJJ\)$/, 'Start date “$1” unreadable (DD/MM/YYYY)'],
+  [/^Ansicht: (.+), (.+)$/, 'View: $1, $2'],
+  [/^(.+) und (\d+) weitere · ca\. 5 Minuten$/, (m, a, n) => `${TT(a)} and ${n} more · approx. 5 minutes`],
+  [/^(.+) · ca\. 5 Minuten$/, (m, a) => `${TT(a)} · approx. 5 minutes`],
+  [/^Online · (.+?)( · zugewiesen bis (.+))?$/, (m, s, x, d) => `Online · ${s}${d ? ` · assigned, due ${d}` : ''}`],
+  [/^Präsenz · Termin wird geplant$/, 'In person · session being scheduled'],
+  [/^Präsenz · Termin (.+)$/, (m, a) => `In person · session ${TT(a)}`],
+  [/^(\d+) von (\d+) gültig$/, '$1 of $2 valid'],
+  [/^(.+) · (\d+) von (\d+)$/, (m, a, i, n) => `${TT(a)} · ${i} of ${n}`],
+  [/^Kurzer Check · Frage (\d+) von (\d+)$/, 'Quick check · Question $1 of $2'],
+  [/^Ich wurde zum Thema „(.+)“ unterwiesen und habe die Inhalte verstanden\.$/, (m, a) => `I have been trained on “${TT(a)}” and have understood the content.`],
+  [/^(\d+) Antwort(?:en)? im zweiten Anlauf richtig\.$/, (m, n) => `${n} ${n === '1' ? 'answer' : 'answers'} correct on the second attempt.`],
+  [/^(.+) ist nachgewiesen(, gültig bis (.+))?\.$/, (m, a, x, d) => `${TT(a)} is recorded${d ? `, valid until ${d}` : ''}.`],
+  [/^(.+), (\d+) offen$/, '$1, $2 open'],
+  [/^Keine Lücken in (der Matrix|Ihrer Abteilung)$/, (m, a) => `No gaps in ${a === 'der Matrix' ? 'the matrix' : 'your department'}`],
+  [/^(\d+) Personen in (.+)$/, (m, n, a) => `${n} people in ${TT(a)}`],
+  /* Benachrichtigungen (gespeicherte Texte) */
+  [/^Neue Unterweisung am Handy: (.+), bis (.+)$/, (m, a, d) => `New training on your phone: ${TT(a)}, due ${d}`],
+  [/^Staplerunterweisung am (.+) um (.+), (.+)$/, (m, d, t, o) => `Forklift training on ${d} at ${t}, ${TT(o)}`],
+  [/^Maßnahme überfällig: (.+)$/, (m, a) => `Action overdue: ${TT(a)}`],
+  [/^(.+) hat eine Maßnahme erledigt, bitte Wirksamkeit prüfen: (.+)$/, (m, p, a) => `${p} has completed an action, please verify effectiveness: ${TT(a)}`],
+  [/^Termin: (.+) am (.+) um (.+), (.+)$/, (m, a, d, t, o) => `Session: ${TT(a)} on ${d} at ${t}, ${TT(o)}`],
+  [/^Erinnerung: (\d+) Unterweisungen sind fällig$/, 'Reminder: $1 trainings are due'],
+  [/^Erinnerung: (.+) ist fällig$/, (m, a) => `Reminder: ${TT(a)} is due`],
+  [/^Sie haben „(.+)“ verpasst\. Ein Ersatztermin folgt\.$/, (m, a) => `You missed “${TT(a)}”. A replacement session will follow.`],
+  [/^Neue Maßnahme aus (.+?): (.+)$/, (m, a, b) => `New action from ${TT(a)}: ${TT(b)}`],
+  [/^(Neue Maßnahme für Sie|Maßnahme an Sie übertragen): (.+), bis (.+)$/, (m, k, a, d) => `${k === 'Neue Maßnahme für Sie' ? 'New action for you' : 'Action assigned to you'}: ${TT(a)}, due ${d}`],
+  [/^(.+) hat „(.+)“ online abgeschlossen$/, (m, p, a) => `${p} completed “${TT(a)}” online`],
+  /* Toasts */
+  [/^(\d+) Personen erinnert$/, '$1 people reminded'], [/^(.+) erinnert$/, '$1 reminded'], [/^(.+) hat nichts offen$/, '$1 has nothing open'],
+  [/^(.+): Anwesenheit zurückgesetzt$/, '$1: attendance reset'],
+  [/^(\d+) Nachweise erstellt(, (\d+) gefehlt)?$/, (m, n, x, f) => `${n} records created${f ? `, ${f} absent` : ''}`],
+  [/^Abgeschlossen, (\d+) (Maßnahme|Maßnahmen) angelegt$/, (m, n) => `Completed, ${n} ${n === '1' ? 'action' : 'actions'} created`],
+  [/^Gespeichert, (\d+) (Person|Personen) eingeladen$/, (m, n) => `Saved, ${n} ${n === '1' ? 'person' : 'people'} invited`],
+  [/^Geplant, (\d+) Personen eingeladen$/, '$1 people invited, session planned'],
+  [/^(\d+) (Person|Personen) zugewiesen$/, (m, n) => `${n} ${n === '1' ? 'person' : 'people'} assigned`],
+  [/^Status: (.+)$/, (m, a) => `Status: ${TT(a)}`],
+  [/^Maßnahme angelegt, (.+) benachrichtigt$/, 'Action created, $1 notified'],
+  [/^(.+) angelegt, Erstunterweisung zugewiesen$/, '$1 added, induction assigned'],
+  [/^Import: (\d+) neu, (\d+) aktualisiert(, Erstunterweisung zugewiesen)?$/, (m, a, b, x) => `Import: ${a} new, ${b} updated${x ? ', induction assigned' : ''}`],
+  /* Excel */
+  [/^(.+) \((\d\d\/\d\d\/\d{4})\)$/, (m, a, d) => `${TT(a)} (${d})`],
+  [/^(.+) · (.+) · (.+)$/, (m, a, b, c) => `${TT(a)} · ${TT(b)} · ${TT(c)}`],
+  [/^([^·]+) · ([^·]+)$/, (m, a, b) => { const x = TT(a), y = TT(b); return (x !== a || y !== b) ? `${x} · ${y}` : m; }],
+  [/^(.+), (.+)$/, (m, a, b) => { const x = TT(a), y = TT(b); return (x !== a || y !== b) ? `${x}, ${y}` : m; }]
+];
+const I18N_WORDS = {
+  'Fertigung': 'Production', 'Lager/Logistik': 'Warehouse/Logistics', 'Instandhaltung': 'Maintenance', 'Verwaltung': 'Administration', 'Vertrieb': 'Sales',
+  'Staplerfahrer': 'Forklift driver', 'Gefahrstoffe': 'Hazardous substances', 'Bildschirmarbeit': 'Screen work', 'Ersthelfer': 'First aider', 'Maschinen': 'Machinery',
+  'Sicherheitsfachkraft': 'Safety officer', 'Abteilungsleitung': 'Head of department', 'Mitarbeitende': 'Employee',
+  'Kantine': 'Canteen', 'Schulungsraum': 'Training room', 'Meisterbüro': 'supervisor’s office', 'Lager': 'Warehouse', 'Rampe': 'ramp', 'Halle': 'Hall', 'Zerspanung': 'machining', 'Montage': 'assembly',
+  'Erstunterweisung': 'Induction', 'Allgemein': 'General', 'Brandschutz': 'Fire safety', 'Gabelstapler': 'Forklifts', 'Bildschirm': 'Screen work', 'Datenschutz': 'Data protection', 'PSA': 'PPE',
+  'hoch': 'high', 'mittel': 'medium', 'gering': 'low', 'Präsenz': 'In person', 'überfällig': 'overdue', 'zuletzt': 'last', 'neu': 'new', 'Uhr': '', 'von': 'of', 'bis': 'by'
+};
+const TOUR = {
+  welcome: {
+    title: { de: 'Arbeitsschutz-App der Muster GmbH', en: 'Health & safety app of Sample GmbH' },
+    text: {
+      de: '<p>Sie sind Katrin Schäfer, Sicherheitsfachkraft. In zwei Minuten sehen Sie, wie die App Ihnen Arbeit abnimmt:</p><ul><li>Audit-Bereitschaft und Lücken auf einen Blick</li><li>Unterweisungen online zuweisen, Mitarbeitende erledigen sie am Handy</li><li>Begehung am Handy, Maßnahmen und Behördenmappe entstehen automatisch</li></ul>',
+      en: '<p>You are Katrin Schäfer, safety officer. In two minutes you will see how the app takes work off your plate:</p><ul><li>Audit readiness and gaps at a glance</li><li>Assign training online – employees complete it on their phone</li><li>Inspections on the phone – actions and the authority file are created automatically</li></ul>'
+    }
+  },
+  steps: []
+};
+/* ---------- Geführte Tour ---------- */
+const sifaName = () => (S.people.find(p => p.rolle === 'Sicherheitsfachkraft') || S.people[0]).name;
+function tourAs(name, route, id) {
+  closeSheet(); $('bellPanel').hidden = true;
+  if (S.user !== name) { S.user = name; S.mf = { abt: '', tid: '', gaps: false, q: '' }; }
+  if (S.route.p !== route || (id && S.route.id !== id)) go(route, id); else { save(); renderAll(); }
+}
+const tx = (de, en) => ({ de, en });
+TOUR.steps = [
+  { el: '#gaugeCard', before: () => tourAs(sifaName(), 'start'), placement: 'right',
+    title: tx('Audit-Bereitschaft auf einen Blick', 'Audit readiness at a glance'),
+    text: tx('Der Tacho zeigt, wie gut Sie heute auf BG, Amt oder ISO-Audit vorbereitet sind. Er rechnet aus gültigen Unterweisungen und erledigten Maßnahmen, ganz ohne Excel-Pflege.', 'The gauge shows how well prepared you are today for the insurer, authority or ISO audit. It is calculated from valid training and completed actions – no spreadsheet upkeep required.') },
+  { el: '#kpiGrid', before: () => tourAs(sifaName(), 'start'), placement: 'bottom',
+    title: tx('Kennzahlen mit Trend', 'Key figures with trend'),
+    text: tx('Überfällig, nie unterwiesen, bald fällig, offene Maßnahmen: mit Verlauf zum Vormonat. Jede Kachel ist anklickbar und führt direkt zur passenden Liste.', 'Overdue, never trained, due soon, open actions – with the trend versus last month. Every tile is clickable and takes you straight to the matching list.') },
+  { el: '#focusGo', click: true, before: () => tourAs(sifaName(), 'start'), placement: 'left',
+    title: tx('Lücken schließen', 'Close the gaps'),
+    text: tx('Die App sagt Ihnen, wo es brennt. Öffnen Sie die Matrix: Sie ist gleich auf die Personen mit Lücken gefiltert.', 'The app tells you where action is needed. Open the matrix – it is already filtered to the people with gaps.'),
+    hint: tx('Klicken Sie auf „Matrix öffnen“.', 'Click “Open matrix”.') },
+  { el: '#mxAssign', click: true, delay: 500, placement: 'bottom',
+    before: () => { if (S.route.p !== 'matrix' || S.user !== sifaName()) { S.user = sifaName(); S.mf = { abt: '', tid: '', gaps: true, q: '' }; closeSheet(); go('matrix'); } },
+    title: tx('Unterweisungsmatrix', 'Training matrix'),
+    text: tx('Wer braucht was, wer ist gültig unterwiesen: grün gültig, gelb bald fällig, rot überfällig, gestrichelt noch nie. Weisen Sie die fehlenden Themen jetzt mit einem Klick online zu.', 'Who needs what, who is validly trained: green valid, amber due soon, red overdue, hatched never. Now assign the missing topics online with one click.'),
+    hint: tx('Klicken Sie auf „Online zuweisen“.', 'Click “Assign online”.') },
+  { el: '#zForm button[type=submit]', click: true, delay: 500, placement: 'top',
+    before: () => { if (!$('zForm')) { if (S.route.p !== 'matrix') go('matrix'); zNewSheet(); } },
+    title: tx('Unterweisung am Handy zuweisen', 'Assign training to phones'),
+    text: tx('Alle, die das Thema brauchen und fällig sind, sind schon ausgewählt. Die Mitarbeitenden bekommen eine Benachrichtigung und erledigen die Unterweisung in fünf Minuten am Handy, mit Quiz und Unterschrift.', 'Everyone who needs the topic and is due is already selected. Employees get a notification and complete the training in five minutes on their phone – with a quiz and signature.'),
+    hint: tx('Klicken Sie auf „Zuweisen“.', 'Click “Assign”.') },
+  { el: '#tNewBtn', before: () => tourAs(sifaName(), 'termine'), placement: 'left',
+    title: tx('Präsenz-Termine planen', 'Schedule in-person sessions'),
+    text: tx('Für Präsenz-Themen wie Brandschutz schlägt die App die fälligen Personen vor. Am Termin unterschreibt jede Person am Tablet, die Nachweise entstehen beim Abschließen automatisch.', 'For in-person topics such as fire safety, the app suggests the people who are due. At the session everyone signs on the tablet, and the records are created automatically when you close it.') },
+  { el: '#aNewBtn', click: true, delay: 500, before: () => tourAs(sifaName(), 'audits'), placement: 'left',
+    title: tx('Begehung starten', 'Start an inspection'),
+    text: tx('Begehungen und Audits laufen mit fertigen Checklisten: Halle, Brandschutz, Gefahrstofflager oder ISO 45001.', 'Inspections and audits run on ready-made checklists: hall, fire safety, hazardous substances store or ISO 45001.'),
+    hint: tx('Klicken Sie auf „Begehung starten“.', 'Click “Start inspection”.') },
+  { el: '#pp0', mobileEl: '#pp0 .seg3', placement: 'bottom',
+    before: () => { const f = $('aForm'); if (f) { f.requestSubmit(); return; } if (S.route.p !== 'audit') { const a = S.audits.slice().reverse().find(x => x.status === 'laufend') || S.audits[0]; S.user = sifaName(); go('audit', a.id); } },
+    title: tx('Checkliste am Handy', 'Checklist on your phone'),
+    text: tx('Punkt für Punkt mit dem Daumen bewerten: i.O., n.i.O. oder n.a. Bei einem Mangel Foto, Risiko und Verantwortlichen erfassen. Beim Abschließen werden daraus automatisch Maßnahmen.', 'Rate item by item with your thumb: OK, Not OK or N/A. For a defect, capture a photo, risk and owner. When you close the inspection, actions are created automatically.') },
+  { el: '.board', mobileEl: '.board .col', before: () => tourAs(sifaName(), 'massn'), placement: 'top',
+    title: tx('Maßnahmen bis zur Wirksamkeit', 'Actions through to effectiveness'),
+    text: tx('Offen, in Arbeit, erledigt, wirksam geprüft: jede Maßnahme hat Verantwortliche und Termin. Verantwortliche werden benachrichtigt, Überfälliges ist rot markiert.', 'Open, in progress, completed, effectiveness verified: every action has an owner and a deadline. Owners are notified, and anything overdue is flagged red.') },
+  { el: '#pdfMappe', before: () => tourAs(sifaName(), 'mappe'), placement: 'left',
+    title: tx('Behördenmappe per Knopfdruck', 'Authority file at the push of a button'),
+    text: tx('Ein PDF mit Prüfliste, Matrix, Nachweisen, unterschriebenen Teilnehmerlisten, Auditberichten mit Fotos und Maßnahmen. Wenn die BG kommt, ist alles in Sekunden fertig.', 'One PDF with checklist, matrix, records, signed attendance lists, audit reports with photos and actions. When the inspector calls, everything is ready in seconds.') },
+  { el: '.lern', placement: 'right',
+    before: () => { closeSheet(); S.user = 'Ahmet Yilmaz'; S.mf = { abt: '', tid: '', gaps: false, q: '' }; const o = myOpen().find(x => x.t.form === 'online'); lernStart(o ? o.t.id : 'masch', !o); },
+    title: tx('Die Sicht der Mitarbeitenden', 'The employee view'),
+    text: tx('Wir haben die Person gewechselt: Ahmet Yilmaz aus der Fertigung. Er sieht nur seine Unterweisungen und macht sie am Handy: kurze Karten, Quiz, Unterschrift mit dem Finger. Der Nachweis landet sofort in Ihrer Matrix.', 'We have switched person: Ahmet Yilmaz from production. He only sees his own training and completes it on his phone: short cards, a quiz and a finger signature. The record lands in your matrix immediately.') }
+];
+TOUR.endTitle = tx('Geschafft!', 'All set!');
+TOUR.endText = tx('Sie kennen jetzt die wichtigsten Funktionen. Probieren Sie in Ruhe weiter: über den Personenwechsel unten in der Navigation sehen Sie die Abteilungsleitung oder Mitarbeitende, oben rechts schalten Sie die Sprache um. Alle Daten sind Beispieldaten und bleiben in Ihrem Browser.', 'You now know the key features. Keep exploring: use the person switcher at the bottom of the navigation to see the head of department or employee view, and switch the language at the top right. All data is sample data and stays in your browser.');
+const END_M = tx('Sie kennen jetzt die wichtigsten Funktionen. Probieren Sie in Ruhe weiter: über Ihr Profilbild oben rechts wechseln Sie zur Abteilungsleitung oder zu Mitarbeitenden, daneben schalten Sie die Sprache um. Alle Daten sind Beispieldaten und bleiben in Ihrem Browser.', 'You now know the key features. Keep exploring: tap your profile picture at the top right to switch to the head of department or employee view; the language switch is right next to it. All data is sample data and stays in your browser.');
+{ const END_D = TOUR.endText; Object.defineProperty(TOUR, 'endText', { get: () => window.innerWidth <= 760 ? END_M : END_D }); }
+TOUR.onEnd = () => { if (S.user !== sifaName() || S.route.p === 'lern') tourAs(sifaName(), 'start'); };
+
+/* Sprachumschalter und Tour-Knopf: oben rechts (Desktop) bzw. in der Kopfzeile (Handy) */
+const toolsHost = () => $(window.innerWidth <= 760 ? 'mTools' : 'topTools');
+let lastNarrow = window.innerWidth <= 760;
+window.addEventListener('resize', () => { const n = window.innerWidth <= 760; if (n !== lastNarrow) { lastNarrow = n; renderFrame(); } });
+DemoKit.init({
+  app: 'arbeitsschutz', accent: '#0E9F88', accent2: '#2DD4BF',
+  langMount: toolsHost, tourMount: toolsHost,
+  i18n: { dict: I18N_DICT, rules: I18N_RULES, words: I18N_WORDS, attrs: ['label'] },
+  tour: TOUR
+});
 
 </script>
 </body>

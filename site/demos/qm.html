@@ -5,6 +5,20 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>QM Modul – devunoxAI Demo</title>
 <meta name="robots" content="noindex">
+<script>
+/* Sprach-Vereinheitlichung: alte Links qm.html#de / #en und alte Einstellung 'dvx-qm-lang' an das Demo-Kit (?lang= / dvx-lang) übergeben */
+(function(){try{
+  var h=location.hash.replace('#',''),q=new URLSearchParams(location.search),ql=q.get('lang');
+  if(h==='en'||h==='de'){
+    if(ql!=='en'&&ql!=='de'){localStorage.setItem('dvx-lang',h);q.set('lang',h);}
+    try{history.replaceState(null,'',location.pathname+'?'+q.toString());}catch(e){}
+  }else if(ql!=='en'&&ql!=='de'&&!localStorage.getItem('dvx-lang')){
+    var s=localStorage.getItem('dvx-qm-lang');if(s==='en'||s==='de')localStorage.setItem('dvx-lang',s);
+  }
+}catch(e){}})();
+</script>
+<link rel="stylesheet" href="shared-files/demo-kit.css">
+<script src="shared-files/demo-kit.js"></script>
 <style>
 @font-face { font-family: "Plus Jakarta Sans"; font-style: normal; font-weight: 200 800; font-display: swap; src: url(shared-files/plus-jakarta-sans-latin-wght-normal.woff2) format("woff2-variations"); }
 @font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight: 100 800; font-display: swap; src: url(shared-files/jetbrains-mono-latin-wght-normal.woff2) format("woff2-variations"); }
@@ -67,7 +81,7 @@ a{color:var(--accent)}
 .tab-i{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10.5px;font-weight:600;color:var(--ink-2);padding:4px 2px;border-radius:10px;flex:1;position:relative;min-width:0}
 .tab-i.on{color:var(--accent)}
 .tab-i .cnt{position:absolute;top:-3px;right:calc(50% - 22px);min-width:17px;height:17px;font-size:10px}
-@media (max-width:880px){
+@media (max-width:760px){
   .shell{grid-template-columns:minmax(0,1fr)}
   .rail{display:none}
   .mtop{display:flex}
@@ -325,7 +339,7 @@ textarea.note,.f textarea{width:100%;border:1px solid var(--line);border-radius:
 /* Modal, Toast */
 .scrim{position:fixed;inset:0;background:rgba(13,18,28,.45);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
 .sheet{background:var(--surface);border-radius:18px;width:100%;max-width:560px;max-height:calc(100vh - 32px);overflow:auto;box-shadow:var(--shadow)}
-.sheet.wide{max-width:880px}
+.sheet.wide{max-width:760px}
 .sheet .card-h{position:sticky;top:0;background:var(--surface);z-index:1}
 @media (max-width:620px){.scrim{align-items:flex-end;padding:0}.sheet{border-radius:18px 18px 0 0;max-height:92vh;padding-bottom:env(safe-area-inset-bottom,0px)}}
 .f{display:flex;flex-direction:column;gap:12px}
@@ -346,7 +360,7 @@ textarea.note,.f textarea{width:100%;border:1px solid var(--line);border-radius:
 .photo-big{width:100%;display:block;border-radius:12px;background:#111}
 #toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-weight:600;font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;z-index:300;max-width:calc(100vw - 32px);text-align:center}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-@media (max-width:880px){#toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))}}
+@media (max-width:760px){#toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))}}
 .more-list{display:flex;flex-direction:column;gap:6px}
 .more-list .nav-i{border:1px solid var(--line);background:var(--surface)}
 
@@ -395,13 +409,13 @@ body{letter-spacing:-.003em}
 .me b{display:block;font-size:13px;line-height:1.1}
 .me small{font-size:11.5px;color:var(--ink-2)}
 @media (max-width:1100px){.me div{display:none}.me{padding:5px}}
-@media (max-width:880px){.content{padding:0 14px}.topbar{display:none}}
+@media (max-width:760px){.content{padding:0 14px}.topbar{display:none}}
 .mtop{background:rgba(242,243,247,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:0}
 .tabbar{left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));border-radius:24px;border:0;box-shadow:0 10px 30px rgba(20,20,45,.16);padding:6px}
 .tab-i{border-radius:16px;padding:7px 2px 6px}
 .tab-i.on{background:#14141C;color:#fff}
 .tab-i .cnt{right:calc(50% - 24px)}
-@media (max-width:880px){.center{padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))}#toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}}
+@media (max-width:760px){.center{padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))}#toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}}
 
 .card{border:0;border-radius:24px;box-shadow:var(--shadow-s)}
 .card-h{border-bottom:0;padding:18px 20px 10px}
@@ -523,8 +537,199 @@ button.tile:hover{transform:translateY(-2px);transition:transform .15s}
 .howto small{display:block;font-size:11.5px;opacity:.85}
 .pareto .pr .bar{height:10px}
 .info-g b .code{display:inline;font-size:12px}
-@media (min-width:881px){.shell{background:linear-gradient(90deg,var(--surface) 0 252px,var(--line) 252px 253px,transparent 253px)}.rail{border-right:0;background:transparent}}
-@media (max-width:880px){.shell{grid-template-columns:minmax(0,1fr)}.greet h1{font-size:27px}.greet{gap:12px}.week{width:100%;justify-content:space-between}.day{width:auto;flex:1;min-width:40px}.page-h h1{font-size:25px}}
+@media (min-width:761px){.shell{background:linear-gradient(90deg,var(--surface) 0 252px,var(--line) 252px 253px,transparent 253px)}.rail{border-right:0;background:transparent}}
+@media (max-width:760px){.shell{grid-template-columns:minmax(0,1fr)}.greet h1{font-size:27px}.greet{gap:12px}.week{width:100%;justify-content:space-between}.day{width:auto;flex:1;min-width:40px}.page-h h1{font-size:25px}}
+
+/* ===== Theme v3: devunoxAI Teal (Demo-Kit) ===== */
+:root{--bg:#F2F6F7;--surface:#fff;--surface-2:#F3F6F8;--line:#E6ECEF;--ink:#132028;--ink-2:#5F6B76;
+  --accent:#0E7C74;--accent-2:#14B8A6;--accent-soft:#DDF3F0;--blue:#2B5BE8;--blue-soft:#E6EDFD;
+  --info:#0E7C74;--info-soft:#DDF3F0;--coral:#E11D48;--coral-soft:#FFE4E6;--yellow:#FBBF24;
+  --good:#15803D;--good-soft:#DCFCE7;--warn:#B45309;--warn-soft:#FEF3C7;--crit:#E11D48;--crit-soft:#FFE4E6;
+  --qm:#0E7C74;--qm-soft:#DDF3F0;--lr:#EA580C;--lr-soft:#FFEDD5;--kd:#7C3AED;--kd-soft:#EDE9FE;
+  --font:var(--dvx-font);--shadow-s:var(--dvx-shadow);--shadow:0 30px 70px -20px rgba(16,32,40,.35);--r:20px;
+  --dvx-accent:#0E7C74;--dvx-accent-2:#14B8A6;}
+body{background:var(--bg);font-family:var(--dvx-font)}
+:focus-visible{outline:2.5px solid var(--accent-2);outline-offset:2px}
+/* Rahmen: schwebende Sidebar */
+@media (min-width:761px){.shell{grid-template-columns:262px minmax(0,1fr);background:none!important}}
+.rail{position:sticky;top:14px;margin:14px 0 14px 14px;height:calc(100vh - 28px);border-radius:24px;padding:20px 12px 14px;color:#fff;
+  background:radial-gradient(120% 60% at 100% 0%,rgba(255,255,255,.14),transparent 60%),linear-gradient(160deg,#0B6E67 0%,#0E7C74 35%,#14B8A6 100%)!important;
+  box-shadow:0 24px 48px -22px rgba(14,124,116,.65);scrollbar-width:none;border:0!important}
+.rail::-webkit-scrollbar{display:none}
+.rail .brand{padding:0 8px 16px}
+.rail .logo{background:#fff;color:var(--accent);box-shadow:0 8px 18px -8px rgba(0,0,0,.35)}
+.rail .brand small{color:rgba(255,255,255,.75);white-space:nowrap;display:block;overflow:hidden;text-overflow:ellipsis}
+.rail .brand>div{min-width:0}
+.rail .nav-label{color:rgba(255,255,255,.62);padding:14px 14px 5px}
+.rail .nav-i{color:rgba(255,255,255,.9);padding:10px 12px;border-radius:14px;transition:background .18s,color .18s,transform .18s}
+.rail .nav-i .i{color:#fff;opacity:.95}
+.rail .nav-i:hover{background:rgba(255,255,255,.13);color:#fff}
+.rail .nav-i.on{background:#fff;color:var(--accent);box-shadow:0 10px 22px -10px rgba(0,0,0,.35)}
+.rail .nav-i.on .i{color:var(--accent);opacity:1}
+.rail .cnt{background:rgba(255,255,255,.22);color:#fff}
+.rail .nav-i.on .cnt{background:var(--accent-soft);color:var(--accent)}
+.rail .cnt.crit,.rail .nav-i.on .cnt.crit{background:#FB7185;color:#fff}
+.rail-foot{gap:8px;padding-top:14px}
+.ucard{display:flex;align-items:center;gap:10px;padding:10px;border-radius:18px;background:rgba(255,255,255,.14);color:#fff;min-width:0}
+.ucard .av{width:36px;height:36px;box-shadow:0 0 0 2px rgba(255,255,255,.6)}
+.ucard b{display:block;font-size:13.5px;line-height:1.15}
+.ucard small{display:block;font-size:11.5px;color:rgba(255,255,255,.75)}
+.ucard>div{min-width:0}
+.promo{background:rgba(255,255,255,.12);border-radius:18px;padding:12px 12px;gap:6px}
+.promo::after{display:none}
+.promo b{font-size:13px}
+.promo span{font-size:11.5px}
+.promo .p-ic{display:none}
+.promo .btn{padding:8px 12px;font-size:12.5px;color:var(--accent);box-shadow:none}
+.reset-l{color:rgba(255,255,255,.85)!important;padding:8px 10px!important;border-radius:12px!important;min-height:38px}
+.reset-l:hover{background:rgba(255,255,255,.13)!important;color:#fff!important}
+@media (max-height:820px){.promo span{display:none}}
+@media (max-height:740px){.promo{display:none}}
+@media (min-width:761px) and (max-width:1180px){
+  .shell{grid-template-columns:224px minmax(0,1fr)}
+  .rail{padding:18px 10px 12px}
+  .rail .nav-i{font-size:13.5px;gap:10px;padding:10px 10px}
+  .rail .brand b{font-size:15.5px}
+  .content{padding:0 20px}
+}
+/* Kopfzeile */
+.topbar{padding:20px 0 12px;gap:10px}
+.crumb{font-size:13px}
+.crumb b{font-weight:800}
+.tb-r{flex-wrap:wrap;justify-content:flex-end}
+.lang{box-shadow:var(--shadow-s);padding:4px}
+.lang>.i{display:none}
+.lang button{min-width:40px;min-height:32px;transition:background .15s,color .15s}
+.lang button.on{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff}
+.bell{background:var(--surface);border:0!important}
+.bell .badge{background:#E11D48}
+.dvx-tourbtn.qm-tour{min-height:40px;padding:9px 15px 9px 9px}
+.mtop .dvx-tourbtn.qm-tour{width:40px;height:40px;padding:0;justify-content:center}
+.mtop .dvx-tourbtn.qm-tour .dvx-tourbtn-t{display:none}
+.mtop .lang button{min-width:40px;min-height:34px}
+.mtop .brand small{display:none}
+.mtop .logo{background:linear-gradient(150deg,#0E7C74,#14B8A6)}
+.tabbar .tab-i{min-height:52px;justify-content:center;font-weight:700}
+.tabbar .tab-i.on{background:linear-gradient(150deg,#0E7C74,#14B8A6);color:#fff}
+.tab-i .cnt.crit{background:#E11D48}
+@media (min-width:1181px){.topbar .dvx-tourbtn-t{display:inline}}
+@media (max-width:1000px) and (min-width:761px){.topbar .newlot-t{display:none}.topbar .btn.primary{padding:9px 12px}}
+/* Bausteine */
+.card{border-radius:var(--r);box-shadow:var(--shadow-s);border:0}
+.card-h h2{font-size:16.5px}
+.btn{transition:transform .15s,box-shadow .15s,background .15s,filter .15s;min-height:40px}
+.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));border:0;color:#fff;box-shadow:0 10px 20px -10px rgba(14,124,116,.7)}
+.btn.primary:hover{transform:translateY(-1px);filter:brightness(1.05)}
+.btn.good{background:var(--good);border-color:var(--good)}
+.btn.danger{background:var(--surface)}
+.btn[disabled]:hover{transform:none}
+.ib{border-radius:12px;transition:background .15s,color .15s}
+.chip.on{border-color:var(--accent);color:var(--accent)}
+.chip.on .n{background:var(--accent)}
+.pill.info{background:var(--blue-soft);color:var(--blue)}
+.pill.accent{background:var(--accent-soft);color:var(--accent)}
+.pill.coral{background:#E11D48}
+.bar i.a{background:linear-gradient(90deg,#0E7C74,#14B8A6)}
+.bar i.g{background:#14B8A6}
+.bar i.r{background:linear-gradient(90deg,#FDA4AF,#E11D48)}
+.code{background:var(--surface-2)}
+.row.click{transition:background .15s}
+.row.click:hover{background:#F6FAFA}
+.grade.A{background:var(--good-soft);color:var(--good)}.grade.B{background:var(--warn-soft);color:var(--warn)}.grade.C{background:var(--crit-soft);color:var(--crit)}
+.zone.over{background:var(--accent-soft)}
+.ph{border-color:var(--accent);background:rgba(14,124,116,.07)}
+.pal:hover{background:var(--accent-soft)}
+.tb.q{background:var(--blue-soft);color:var(--blue)}
+.stp.cur{outline-color:var(--accent)}
+.tl-s.cur .tl-c{border-color:var(--accent);color:var(--accent)}
+.tl-cur{border-color:rgba(14,124,116,.35);background:#F1FAF9}
+.ud .rec{color:var(--accent)}
+.doc-co .lg{background:var(--accent)}
+.stamp{border-color:var(--accent);color:var(--accent)}
+.doc-sig .sig i{color:var(--accent)}
+.empty{display:flex;flex-direction:column;align-items:center;gap:8px;padding:34px 16px}
+.empty::before{content:"";width:46px;height:46px;border-radius:16px;background:var(--accent-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230E7C74' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center/22px no-repeat}
+#toast{background:#132028;border-radius:14px;padding:12px 18px;box-shadow:0 18px 40px -14px rgba(0,0,0,.45)}
+.sheet{border-radius:24px}
+.f input:focus,.f select:focus,.f textarea:focus,.vin:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.opt:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.search:focus-within{box-shadow:0 0 0 3px var(--accent-soft)}
+/* Start: Begrüßung, Kacheln, Diagramme */
+.greet h1{font-size:32px}
+.greet .date{font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin:0 0 4px}
+.day.today{background:linear-gradient(150deg,#0E7C74,#14B8A6);color:rgba(255,255,255,.85)}
+.day.today b{color:#fff}
+.day.today i{background:#fff}
+.day i{background:var(--accent)}
+.kt-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+@media (max-width:1100px){.kt-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kt{background:var(--surface);border:0;border-radius:var(--r);box-shadow:var(--shadow-s);padding:16px 16px 14px;display:flex;flex-direction:column;gap:10px;text-align:left;min-width:0;color:var(--ink);transition:transform .2s,box-shadow .2s}
+button.kt:hover{transform:translateY(-3px);box-shadow:0 2px 4px rgba(16,24,40,.05),0 20px 40px -12px rgba(16,24,40,.18)}
+.kt-top{display:flex;align-items:center;gap:10px;min-width:0}
+.kt-ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;flex:none}
+.kt-ic .i{width:19px;height:19px}
+.kt-l{font-size:13px;font-weight:700;color:var(--ink-2);line-height:1.25;min-width:0}
+.kt-mid{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;min-width:0}
+.kt-v{font-size:32px;font-weight:800;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.kt-v small{font-size:17px;font-weight:800;color:var(--ink-2);margin-left:2px}
+.kt-mid .dvx-spark,.kt-mid .dvx-ring{flex:none}
+.kt-f{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-height:24px}
+.kt-f small{font-size:12px;color:var(--ink-2);font-weight:600}
+.trend{display:inline-flex;align-items:center;gap:3px;font-size:11.5px;font-weight:800;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.trend.good{background:#DCFCE7;color:#15803D}.trend.bad{background:#FFE4E6;color:#E11D48}.trend.flat{background:var(--surface-2);color:var(--ink-2)}
+.charts{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:stretch}
+@media (max-width:1279px){.charts{grid-template-columns:repeat(2,minmax(0,1fr))}.charts .ch-bars{grid-column:1/-1}}
+@media (max-width:560px){.charts{grid-template-columns:minmax(0,1fr)}}
+.ch-card{display:flex;flex-direction:column}
+.ch-card .card-b{flex:1;justify-content:center}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;font-weight:700;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:4px;display:inline-block}
+.ch-bars .dvx-bars{margin-top:4px}
+@media (max-width:560px){.ch-bars .dvx-axis{font-size:21px}}
+.gauge-w{display:flex;flex-direction:column;align-items:center;gap:6px}
+.gauge-w .dvx-gauge{max-width:100%;height:auto}
+.g-val{font-size:30px;font-weight:800;letter-spacing:-.03em;line-height:1;margin-top:-4px}.g-val small{font-size:16px;color:var(--ink-2)}
+.gstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;width:100%}
+.gstats div{background:var(--surface-2);border-radius:14px;padding:8px 6px;text-align:center;min-width:0}
+.gstats b{display:block;font-size:17px;font-weight:800}
+.gstats span{display:block;font-size:11px;font-weight:700;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.donut-w{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center}
+.dl{display:flex;flex-direction:column;gap:7px;flex:1;min-width:150px}
+.dl div{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--ink)}
+.dl div.zero{color:#A3ACB5}
+.dl i{width:10px;height:10px;border-radius:50%;flex:none}
+.dl b{margin-left:auto;font-variant-numeric:tabular-nums}
+.lineup{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+.lu{border:0;background:var(--surface-2);transition:transform .2s,box-shadow .2s,background .2s}
+.lu:hover{transform:translateY(-2px);background:#fff;box-shadow:var(--shadow-s)}
+.lu.add{background:transparent;border:2px dashed #CBD8DC}
+.lu.add .i{color:var(--accent)}
+.task{transition:background .15s,transform .15s}
+.task:hover{background:var(--accent-soft)}
+.howto{background:radial-gradient(90% 70% at 100% 0%,rgba(255,255,255,.16),transparent 60%),linear-gradient(150deg,#1E4FD6 0%,#2B5BE8 45%,#14B8A6 130%)}
+.howto .no{color:var(--blue)}
+.strip{padding:5px}
+@media (max-width:560px){.row.click{flex-wrap:wrap;row-gap:8px}.row.click .main{flex:1 1 100%}.row.click .main b{white-space:normal}.row.click .end{width:100%;justify-content:flex-start}.row.click .end .bar.seg{flex:1;width:auto}.row.click.cert-r{flex-wrap:nowrap}.row.click.cert-r .main{flex:1 1 auto}.row.click.cert-r .end{width:auto}}
+@media (max-width:760px){html{scroll-padding-top:72px}html.dvx-tour-on .center{padding-bottom:62vh}}
+@media (max-width:760px){.up-row{display:grid;grid-template-columns:1fr 1fr}.up-row .btn{padding:9px 10px;font-size:13px}.up-row .btn.ghost{grid-column:1/-1;justify-content:center;background:var(--surface-2)}}
+@media (max-width:760px){
+  .content{padding:0 14px}
+  .greet h1{font-size:26px}
+  .kt{padding:14px 13px 12px;gap:8px}
+  .kt-v{font-size:28px}
+  .kt-mid .dvx-spark{width:64px}
+  .kt-l{font-size:12px}
+  .ib{width:40px;height:40px}
+  .chip{min-height:40px}
+  .stepper{height:40px}
+  .stepper button{width:36px}
+  .pi-ctl select,.pi-ctl input{height:40px}
+  .row{padding:13px 16px}
+  .card-h{padding:16px 16px 8px}
+  .card-b{padding:8px 16px 16px}
+  .tab-i span{font-size:10.5px}
+}
 </style>
 </head>
 <body>
@@ -571,8 +776,11 @@ button.tile:hover{transform:translateY(-2px);transition:transform .15s}
 'use strict';
 /* ---------- Grundlagen ---------- */
 const $=s=>document.querySelector(s);
-let lang='de';
-try{const h=location.hash.replace('#','');if(h==='en'||h==='de')lang=h;else{const s=localStorage.getItem('dvx-qm-lang');if(s==='en'||s==='de')lang=s;}}catch(e){}
+/* Sprache kommt immer vom Demo-Kit (?lang= > dvx-lang); #de/#en werden im <head> übergeben */
+const KIT=window.DemoKit||null;
+let lang=KIT?KIT.lang:'de';
+try{localStorage.setItem('dvx-qm-lang',lang);}catch(e){}
+document.title=lang==='en'?'QM app – devunoxAI demo':'QM-App – devunoxAI Demo';
 const T=(de,en)=>lang==='en'?en:de;
 const tx=o=>o==null?'':(typeof o==='string'?o:(o[lang]||o.de||''));
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -594,6 +802,9 @@ const PEOPLE={ak:{n:'Anna Keller',r:{de:'Qualitätsprüferin',en:'Quality inspec
 const ROLES={qs:{de:'Qualitätsprüfung',en:'Quality inspection',p:'ak'},qm:{de:'QM-Leitung',en:'Head of quality',p:'sw'},ek:{de:'Einkauf',en:'Purchasing',p:'lb'},fe:{de:'Fertigung',en:'Production',p:'jh'},we:{de:'Wareneingang',en:'Goods receipt',p:'md'}};
 const SUPPLIERS=['Rhein Präzision GmbH','Alpen Kunststoff AG','Nordstahl KG','Weber Formenbau GmbH'];
 const CUSTOMERS=['Meyer Maschinenbau AG','Lindner Automotive GmbH','Holz & Partner KG'];
+/* Firmennamen (Beispieldaten) in EN einheitlich übersetzt; gespeichert wird immer der deutsche Wert */
+const CO_EN={'Rhein Präzision GmbH':'Rhine Precision GmbH','Alpen Kunststoff AG':'Alpine Plastics AG','Weber Formenbau GmbH':'Weber Moulds GmbH','Meyer Maschinenbau AG':'Meyer Machinery AG','Muster Präzisionstechnik GmbH':'Sample Precision Engineering GmbH'};
+const co=s=>lang==='en'&&s&&CO_EN[s]?CO_EN[s]:(s||'');
 const av=(id,cls='')=>{const p=PEOPLE[id];if(!p)return'';const ini=p.n.split(' ').map(x=>x[0]).join('');return`<span class="av ${cls} c${p.c}" title="${esc(p.n)}">${ini}</span>`;};
 
 const BLK={
@@ -681,7 +892,7 @@ function seed(){
         if(bad&&o.note)res.note=o.note;
         l.res[it.uid]=res;
       });
-      if(o.docs)l.res[items[0].uid].docs=o.docs.map(n=>({n,s:184320}));
+      if(o.docs)l.res[items[0].uid].docs=o.docs.map(n=>({n:n.de||n,en:n.en,s:184320}));
     }
     lots.push(l);return l;
   }
@@ -690,7 +901,7 @@ function seed(){
   lot({id:'PR-24029',plan:'PP-1003',order:'FA-55102',ch:'FA-55102-01',qty:40,d:-1,insp:'jh'});
   lot({id:'PR-24028',plan:'PP-1001',sup:SUPPLIERS[0],ch:'CH-8790',qty:500,d:-3,st:'done',ud:'rej',nok:['M01'],note:{de:'2 von 5 Teilen über der oberen Toleranz',en:'2 of 5 parts above upper tolerance'}});
   lot({id:'PR-24027',plan:'PP-1002',sup:SUPPLIERS[1],ch:'CH-2255',qty:1200,d:-4,st:'done',ud:'acc',insp:'md'});
-  lot({id:'PR-24026',plan:'PP-1003',order:'FA-55088',ch:'FA-55088-01',qty:25,d:-5,st:'done',ud:'acc',insp:'jh',docs:['Messprotokoll_KMG_55088.pdf']});
+  lot({id:'PR-24026',plan:'PP-1003',order:'FA-55088',ch:'FA-55088-01',qty:25,d:-5,st:'done',ud:'acc',insp:'jh',docs:[{de:'Messprotokoll_KMG_55088.pdf',en:'CMM_measurement_report_55088.pdf'}]});
   lot({id:'PR-24025',plan:'PP-1001',sup:SUPPLIERS[2],ch:'NS-1182',qty:300,d:-7,st:'done',ud:'acc'});
   lot({id:'PR-24024',plan:'PP-1002',sup:SUPPLIERS[1],ch:'CH-2201',qty:1000,d:-9,st:'done',ud:'con',nok:['M06'],note:{de:'Kratzer auf Sichtfläche, ca. 3 % betroffen',en:'Scratches on visible surface, approx. 3 % affected'}});
   lot({id:'PR-24023',plan:'PP-1003',order:'FA-55061',ch:'FA-55061-01',qty:30,d:-12,st:'done',ud:'acc',insp:'jh'});
@@ -755,7 +966,7 @@ const specTxt=it=>it.type==='quant'?`${T('Soll','Target')} ${fN(it.soll,decOf(it
 const tb=t=>t==='quant'?`<span class="tb q" title="${T('Messwert','Measured')}">${icon('ruler','xs')}</span>`:`<span class="tb a" title="${T('Ja/Nein','Pass/fail')}">${icon('ok','xs')}</span>`;
 function lotPill(l){if(l.status==='done'){const u=UD[l.ud]||UD.acc;return`<span class="pill ${u.c}">${tx(u.t)}</span>`;}return l.status==='prog'?`<span class="pill warn">${T('In Arbeit','In progress')}</span>`:`<span class="pill info">${T('Offen','Open')}</span>`;}
 const rPill=t=>{const x=RTYPE[t];return`<span class="pill ${x.c}">${tx(x.t)}</span>`;};
-const partnerTxt=l=>l.supplier||(l.order?T('Auftrag ','Order ')+l.order:'');
+const partnerTxt=l=>co(l.supplier)||(l.order?T('Auftrag ','Order ')+l.order:'');
 
 /* ---------- Toast & Modal ---------- */
 let tT;
@@ -781,8 +992,9 @@ function navCount(v){
   if(v==='rekla'){const open=S.reklas.filter(x=>!isClosed(x));const over=open.some(x=>curStep(x).due<TODAY());return open.length?`<span class="cnt ${over?'crit':''}">${open.length}</span>`:'';}
   return'';
 }
-const brand=()=>`<div class="brand"><span class="logo">${icon('stack')}</span><div><b>devunoxAI QM</b><small>${T('Qualität für KMU · Demo','Quality for SMEs · demo')}</small></div></div>`;
-const langSw=()=>`<div class="lang" role="group" aria-label="Sprache / Language">${icon('globe','s')}<button class="${lang==='de'?'on':''}" data-act="lang" data-arg="de" aria-pressed="${lang==='de'}">DE</button><button class="${lang==='en'?'on':''}" data-act="lang" data-arg="en" aria-pressed="${lang==='en'}">EN</button></div>`;
+const brand=()=>`<div class="brand"><span class="logo">${icon('stack')}</span><div><b>devunoxAI QM</b><small>${T('QM für KMU · Demo','QM for SMEs · demo')}</small></div></div>`;
+const langSw=()=>`<div class="lang" role="group" aria-label="${T('Sprache','Language')}">${icon('globe','s')}<button class="${lang==='de'?'on':''}" data-act="lang" data-arg="de" aria-pressed="${lang==='de'}">DE</button><button class="${lang==='en'?'on':''}" data-act="lang" data-arg="en" aria-pressed="${lang==='en'}">EN</button></div>`;
+const tourBtn=()=>KIT?`<button type="button" class="dvx-tourbtn qm-tour" data-act="tour" aria-label="${T('Geführte Tour','Guided tour')}"><span class="dvx-tourbtn-i"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg></span><span class="dvx-tourbtn-t">${T('Geführte Tour','Guided tour')}</span></button>`:'';
 const CONTACT=()=>lang==='en'?'https://www.devunox.ai/en/contact':'https://www.devunox.ai/de/kontakt';
 const promo=()=>`<div class="promo"><span class="p-ic">${icon('stack')}</span><b>${T('Diese QM-Lösung für Ihr Unternehmen','This QM solution for your company')}</b><span>${T('Angepasst an Ihre Prozesse, gehostet in der EU.','Tailored to your processes, hosted in the EU.')}</span><a class="btn" href="${CONTACT()}" target="_blank" rel="noopener">${T('Projekt anfragen','Request a project')}</a></div>`;
 function renderChrome(){
@@ -793,10 +1005,10 @@ function renderChrome(){
     `<div class="nav-label">${T('Prüfen','Inspect')}</div>`+nb('lots')+nb('plans')+nb('cat')+
     `<div class="nav-label">${T('Abweichungen','Deviations')}</div>`+nb('rekla')+nb('wf')+
     `<div class="nav-label">${T('Dokumente','Documents')}</div>`+nb('certs')+
-    `<div class="rail-foot">${promo()}<button class="btn ghost reset-l" data-act="reset">${icon('reset','s')} ${T('Demo zurücksetzen','Reset demo')}</button></div>`;
+    `<div class="rail-foot">${promo()}<div class="ucard">${av('sw')}<div><b>Sophie Wagner</b><small>${tx(PEOPLE.sw.r)}</small></div></div><button class="btn ghost reset-l" data-act="reset">${icon('reset','s')} ${T('Demo zurücksetzen','Reset demo')}</button></div>`;
   const title=tx((NAV.find(n=>n.v===act)||NAV[0]).t);
-  $('#topbar').innerHTML=`<div class="crumb"><span>devunoxAI QM</span>${icon('right','s')}<b>${title}</b></div><div class="tb-r">${langSw()}<button class="ib bell" data-act="nav" data-arg="rekla" title="${T('Überfällige Aufgaben','Overdue tasks')}">${icon('bell')}${over?`<span class="badge">${over}</span>`:''}</button><div class="me">${av('sw')}<div><b>Sophie Wagner</b><small>${tx(PEOPLE.sw.r)}</small></div></div><button class="btn primary" data-act="newLot">${icon('plus')} ${T('Neue Prüfung','New inspection')}</button></div>`;
-  $('#mtop').innerHTML=brand()+langSw();
+  $('#topbar').innerHTML=`<div class="crumb"><span>devunoxAI QM</span>${icon('right','s')}<b>${title}</b></div><div class="tb-r">${langSw()}${tourBtn()}<button class="ib bell" data-act="nav" data-arg="rekla" title="${T('Überfällige Aufgaben','Overdue tasks')}" aria-label="${T('Überfällige Aufgaben','Overdue tasks')}">${icon('bell')}${over?`<span class="badge">${over}</span>`:''}</button><button class="btn primary" data-act="newLot" aria-label="${T('Neue Prüfung','New inspection')}">${icon('plus')} <span class="newlot-t">${T('Neue Prüfung','New inspection')}</span></button></div>`;
+  $('#mtop').innerHTML=brand()+langSw()+tourBtn();
   const tabs=['start','lots','plans','rekla'];
   $('#tabbar').innerHTML=tabs.map(v=>{const n=NAV.find(x=>x.v===v);return`<button class="tab-i ${act===v?'on':''}" data-act="nav" data-arg="${v}">${icon(n.ic)}<span>${v==='plans'?T('Pläne','Plans'):(v==='rekla'?T('Reklam.','Complaints'):tx(n.t))}</span>${navCount(v)}</button>`;}).join('')+
     `<button class="tab-i ${['cat','wf','certs'].includes(act)?'on':''}" data-act="more">${icon('menu')}<span>${T('Mehr','More')}</span></button>`;
@@ -814,14 +1026,45 @@ function go(v,id){U.view=v;U.id=id||null;render();window.scrollTo(0,0);}
 
 /* ---------- Ansicht: Übersicht ---------- */
 const ring=(pct,size,sw,color)=>{const r=(size-sw)/2,c=2*Math.PI*r;return`<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" style="stroke:rgba(20,20,40,.08)" stroke-width="${sw}"/><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" style="stroke:${color}" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${c.toFixed(2)}" stroke-dashoffset="${(c*(1-pct/100)).toFixed(2)}" transform="rotate(-90 ${size/2} ${size/2})"/></svg>`;};
+const C_OK='#14B8A6',C_NOK='#FB7185';
+const PAL={lav:['#EDE9FE','#7C3AED'],mint:['#DCFCE7','#16A34A'],peach:['#FFEDD5','#EA580C'],sky:['#E0F2FE','#0284C7'],rose:['#FFE4E6','#E11D48'],amber:['#FEF3C7','#D97706'],teal:['#DDF3F0','#0E7C74']};
+const weekStart=iso=>{const d=new Date(iso+'T12:00:00');return addD(iso,-((d.getDay()+6)%7));};
+function isoWeek(iso){const d=new Date(iso+'T12:00:00');d.setDate(d.getDate()+3-(d.getDay()+6)%7);const w1=new Date(d.getFullYear(),0,4,12);return 1+Math.round(((d-w1)/DAY-3+(w1.getDay()+6)%7)/7);}
+/* ältere Wochen ohne Einzeldaten: plausibler Demo-Verlauf (i.O., n.i.O.) */
+const DEMO_WEEKS=[[4,3],[4,3],[5,3],[5,4]];
+function weekly(){
+  const ws0=weekStart(TODAY()),out=[];
+  for(let i=7;i>=0;i--){const ws=addD(ws0,-7*i),we=addD(ws,6),k=7-i;let ok=0,nok=0;
+    S.lots.forEach(l=>{if(l.status!=='done')return;const d=l.closedAt||l.date;if(d<ws||d>we)return;if(l.ud==='acc')ok++;else nok++;});
+    if(k<4){ok+=DEMO_WEEKS[k][0];nok+=DEMO_WEEKS[k][1];}
+    out.push({ws,ok,nok,label:(lang==='en'?'W':'KW ')+isoWeek(ws)});}
+  return out;
+}
+/* Status offener Reklamationen = Phase des aktuellen Workflow-Schritts */
+const PHASES=[
+  {k:'new',t:{de:'Erfassung',en:'Logged'},c:'#0284C7',s:['erf','team','desc','kundinfo','liefinfo']},
+  {k:'cont',t:{de:'Sofortmaßnahme',en:'Containment'},c:'#EA580C',s:['sofort']},
+  {k:'ana',t:{de:'Ursachenanalyse',en:'Root cause analysis'},c:'#7C3AED',s:['ursache','stellung']},
+  {k:'act',t:{de:'Maßnahme',en:'Corrective action'},c:'#D97706',s:['korr','umsetz','vorb','gutschrift']},
+  {k:'ver',t:{de:'Wirksamkeit & Freigabe',en:'Verification & approval'},c:'#16A34A',s:['wirk','frei','abschl']}
+];
+const phaseOf=x=>{const s=curStep(x);return PHASES.find(p=>p.s.includes(s.k))||PHASES[0];};
+function trendChip(d,goodUp,unit){
+  if(!d)return`<span class="trend flat">± 0${unit||''}</span>`;
+  const up=d>0,good=up===goodUp;
+  return`<span class="trend ${good?'good':'bad'}">${up?'▲':'▼'} ${Math.abs(d)}${unit||''}</span>`;
+}
 VIEWS.start=function(){
   const open=S.lots.filter(l=>l.status!=='done');
   const done=S.lots.filter(l=>l.status==='done');
-  const acc=done.filter(l=>l.ud==='acc').length;
+  const acc=done.filter(l=>l.ud==='acc').length,con=done.filter(l=>l.ud==='con').length,rej=done.filter(l=>l.ud==='rej').length;
   const rate=done.length?Math.round(acc/done.length*100):0;
   const ro=S.reklas.filter(x=>!isClosed(x));
   const overL=ro.filter(x=>curStep(x).due<TODAY());
   const m30=S.certs.filter(c=>c.date>=dISO(-30)).length;
+  const wk=weekly();
+  const prevOk=DEMO_WEEKS.reduce((a,w)=>a+w[0],0),prevAll=DEMO_WEEKS.reduce((a,w)=>a+w[0]+w[1],0);
+  const ratePrev=Math.round(prevOk/prevAll*100);
   const pm={};
   done.forEach(l=>l.items.forEach(it=>{if(evalItem(it,l.res[it.uid])==='nok'){const k=it.code;pm[k]=pm[k]||{n:0,name:it.name};pm[k].n++;}}));
   S.reklas.forEach(x=>{if(x.defect&&!x.lot){const c=S.catalog.find(m=>m.code===x.defect);pm[x.defect]=pm[x.defect]||{n:0,name:c?c.name:x.defect};pm[x.defect].n++;}});
@@ -833,32 +1076,50 @@ VIEWS.start=function(){
   const shown=U.taskTab==='over'?tasks.filter(t=>t.s.due<TODAY()):tasks;
   const hr=new Date().getHours();
   const greet=hr<11?T('Guten Morgen','Good morning'):(hr<18?T('Hallo','Hello'):T('Guten Abend','Good evening'));
+  const today=new Date().toLocaleDateString(loc(),{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   const week=[-3,-2,-1,0,1,2,3].map(o=>{const iso=dISO(o);const d=new Date(iso+'T12:00:00');const n=S.lots.filter(l=>l.date===iso).length;return`<div class="day ${o===0?'today':''}" title="${n} ${T('Prüfungen','inspections')}"><span>${d.toLocaleDateString(loc(),{weekday:'short'}).replace('.','')}</span><b>${d.getDate()}</b>${n?'<i></i>':''}</div>`;}).join('');
   const insp=[...new Set(open.map(l=>l.insp))];
   const steps=[['plans',T('Prüfplan bauen','Build a plan'),T('Prüfpunkte per Drag & Drop','Drag & drop checkpoints')],['lots',T('Am Handy prüfen','Inspect on mobile'),T('Messwerte, Fotos, Dokumente','Values, photos, documents')],['rekla',T('Reklamation steuern','Manage complaints'),T('Workflow mit Fristen','Workflow with deadlines')],['certs',T('Zeugnis erstellen','Issue certificate'),T('2.1 · 2.2 · 3.1 nach EN 10204','2.1 · 2.2 · 3.1 to EN 10204')]];
+  const CH=KIT&&KIT.charts;
+  const spark=(v,c)=>CH?CH.spark(v,{color:c,w:92,h:38}):'';
+  const ktile=o=>`<${o.act?'button':'div'} class="kt" ${o.act?`data-act="nav" data-arg="${o.act}"`:''} data-kt="${o.id}"><div class="kt-top"><span class="kt-ic" style="background:${o.p[0]};color:${o.p[1]}">${icon(o.ic)}</span><span class="kt-l">${o.l}</span></div><div class="kt-mid"><div class="kt-v">${o.v}</div>${o.viz}</div><div class="kt-f">${o.tr}${o.sub}</div></${o.act?'button':'div'}>`;
+  const ho=[4,6,5,7,4,5,open.length+1,open.length],hr2=[6,5,6,5,4,5,ro.length+1,ro.length],hc=[1,3,2,2,4,3,Math.max(0,m30-1),m30];
+  const tiles=[
+    ktile({id:'open',act:'lots',ic:'check',p:PAL.sky,l:T('Offene Prüfungen','Open inspections'),v:open.length,viz:spark(ho,PAL.sky[1]),tr:trendChip(open.length-ho[6],false),sub:`<small>${T('heute fällig','due today')}: ${open.filter(l=>l.date<=TODAY()).length}</small>`}),
+    ktile({id:'rate',act:'lots',ic:'ok',p:PAL.mint,l:T('Annahmequote','Acceptance rate'),v:`${rate}<small>%</small>`,viz:CH?CH.ring(rate,{size:58,stroke:7,color:'#14B8A6',label:''}):'',tr:trendChip(rate-ratePrev,true,' '+T('Pkt.','pts')),sub:`<small>${T('ggü. Vormonat','vs. last month')}</small>`}),
+    ktile({id:'rekla',act:'rekla',ic:'alert',p:PAL.rose,l:T('Offene Reklamationen','Open complaints'),v:ro.length,viz:spark(hr2,PAL.rose[1]),tr:trendChip(ro.length-hr2[6],false),sub:overL.length?`<span class="pill crit">${overL.length} ${T('überfällig','overdue')}</span>`:`<small>${T('alles im Plan','all on track')}</small>`}),
+    ktile({id:'certs',act:'certs',ic:'award',p:PAL.lav,l:T('Zeugnisse (30 Tage)','Certificates (30 days)'),v:m30,viz:spark(hc,PAL.lav[1]),tr:trendChip(m30-hc[6],true),sub:`<small>EN 10204</small>`})
+  ].join('');
+  const mob=window.innerWidth<560;
+  const bmax=Math.max(1,...wk.map(w=>Math.max(w.ok,w.nok)));const bstep=Math.max(1,Math.ceil(bmax/4));
+  const bars=CH?CH.bars({max:bstep*4,grid:4,labels:wk.map(w=>w.label),series:[{name:T('i.O.','Pass'),values:wk.map(w=>w.ok),color:C_OK},{name:T('n.i.O.','Fail'),values:wk.map(w=>w.nok),color:C_NOK}],height:mob?300:(window.innerWidth<1280?190:285),label:T('Prüfungen pro Woche','Inspections per week')}):'';
+  const gauge=CH?CH.gauge(rate,{size:210,colors:['#FB7185','#FBBF24','#14B8A6']})+`<div class="g-val">${rate}<small> %</small></div>`:'';
+  const ph=PHASES.map(p=>({p,n:ro.filter(x=>phaseOf(x)===p).length}));
+  const donut=CH?CH.donut(ph.filter(z=>z.n).map(z=>({value:z.n,color:z.p.c,label:tx(z.p.t)})),{size:132,stroke:18,center:String(ro.length),sub:T('offen','open')}):'';
+  const wTot=wk.reduce((a,w)=>a+w.ok+w.nok,0);
   return`
-  <section class="greet"><div><h1>${greet}, Sophie 👋</h1><p>${lang==='en'?`You have <b>${open.length} inspections</b> and <b>${tasks.length} open tasks</b> today.`:`Heute stehen <b>${open.length} Prüfungen</b> und <b>${tasks.length} offene Aufgaben</b> an.`}</p></div><div class="week" aria-label="${T('Woche','Week')}">${week}</div></section>
-  <div class="tiles4">
-    <button class="tile lav" data-act="nav" data-arg="lots"><div class="t-h"><span>${T('Offene Prüfungen','Open inspections')}</span><span class="t-ic">${icon('check')}</span></div><div class="big">${open.length}</div><div class="t-f"><div class="av-stack">${insp.map(i=>av(i,'xs')).join('')}</div><small>${T('heute fällig','due today')}: ${open.filter(l=>l.date<=TODAY()).length}</small></div></button>
-    <div class="tile white"><div class="t-h"><span>${T('Annahmequote','Acceptance rate')}</span><span class="t-ic">${icon('ok')}</span></div><div class="t-ring">${ring(rate,72,9,rate>=85?'#12804A':'#6C3BFF')}<div><div class="big">${rate}<span style="font-size:18px"> %</span></div><small>${done.length} ${T('abgeschlossen','completed')}</small></div></div></div>
-    <button class="tile pink" data-act="nav" data-arg="rekla"><div class="t-h"><span>${T('Offene Reklamationen','Open complaints')}</span><span class="t-ic">${icon('alert')}</span></div><div class="big">${ro.length}</div><div class="t-f">${overL.length?`<span class="pill coral">${overL.length} ${T('überfällig','overdue')}</span>`:`<small>${T('alles im Plan','all on track')}</small>`}</div></button>
-    <button class="tile mint" data-act="nav" data-arg="certs"><div class="t-h"><span>${T('Zeugnisse (30 Tage)','Certificates (30 days)')}</span><span class="t-ic">${icon('award')}</span></div><div class="big">${m30}</div><div class="t-f"><small>DIN EN 10204 · 2.1 · 2.2 · 3.1</small></div></button>
+  <section class="greet"><div><p class="date">${esc(today)}</p><h1>${greet}, Sophie 👋</h1><p>${lang==='en'?`You have <b>${open.length} inspections</b> and <b>${tasks.length} open tasks</b> today.`:`Heute stehen <b>${open.length} Prüfungen</b> und <b>${tasks.length} offene Aufgaben</b> an.`}</p></div><div class="week" aria-label="${T('Woche','Week')}">${week}</div></section>
+  <div class="kt-grid" id="kpis">${tiles}</div>
+  <div class="charts" id="charts">
+    <div class="card ch-card ch-bars"><div class="card-h"><div><h2>${T('Prüfungen pro Woche','Inspections per week')}</h2><p>${T('Abgeschlossene Prüfungen der letzten 8 Wochen','Completed inspections over the last 8 weeks')} · ${wTot}</p></div><div class="legend"><span><i style="background:${C_OK}"></i>${T('i.O.','Pass')}</span><span><i style="background:${C_NOK}"></i>${T('n.i.O.','Fail')}</span></div></div><div class="card-b">${bars}</div></div>
+    <div class="card ch-card" id="gaugeCard"><div class="card-h"><div><h2>${T('Annahmequote','Acceptance rate')}</h2><p>${done.length} ${T('abgeschlossene Prüfungen','completed inspections')}</p></div></div><div class="card-b"><div class="gauge-w">${gauge}<div class="gstats"><div><b style="color:#15803D">${acc}</b><span>${T('Annahme','Accepted')}</span></div><div><b style="color:#B45309">${con}</b><span>${T('Sonderfreig.','Concession')}</span></div><div><b style="color:#E11D48">${rej}</b><span>${T('Gesperrt','Rejected')}</span></div></div></div></div></div>
+    <div class="card ch-card" id="donutCard"><div class="card-h"><div><h2>${T('Reklamationen','Complaints')}</h2><p>${T('Offene Fälle nach Status','Open cases by status')}</p></div></div><div class="card-b"><div class="donut-w">${donut}<div class="dl">${ph.map(z=>`<div class="${z.n?'':'zero'}"><i style="background:${z.n?z.p.c:'#D5DCE1'}"></i>${tx(z.p.t)}<b>${z.n}</b></div>`).join('')}</div></div></div></div>
   </div>
   <div class="dash">
     <div class="col">
       <div class="card"><div class="card-h"><div><h2>${T('Zu prüfen','To inspect')} <span class="h-cnt">${open.length}</span></h2><p>${T('Prüfobjekte aus Wareneingang und Fertigung','Items from goods receipt and production')}</p></div><button class="btn" data-act="nav" data-arg="lots">${T('Alle ansehen','View all')} ${icon('right','s')}</button></div>
-        <div class="lineup">${open.map(l=>{const s=lotSum(l);return`<button class="lu" style="--s:${l.origin==='we'?'#6C3BFF':'#FF5A3C'}" data-act="go" data-arg="lot:${l.id}"><span class="lu-k">${l.origin==='we'?T('Wareneingang','Goods receipt'):T('Fertigung','Production')}</span><b>${esc(tx(l.material))}</b><small>${esc(partnerTxt(l))} · ${fN(l.qty)} ${T('Stk.','pcs')}</small><div class="bar"><i class="g" style="width:${s.ok/s.total*100}%"></i><i class="r" style="width:${s.nok/s.total*100}%"></i></div><div class="lu-f">${av(l.insp,'xs')}<span class="mono muted">${l.id}</span>${lotPill(l)}</div></button>`;}).join('')}<button class="lu add" data-act="newLot">${icon('plus')}<b>${T('Neue Prüfung','New inspection')}</b></button></div></div>
+        <div class="lineup">${open.map(l=>{const s=lotSum(l);return`<button class="lu" style="--s:${l.origin==='we'?'#0E7C74':'#EA580C'}" data-act="go" data-arg="lot:${l.id}"><span class="lu-k">${l.origin==='we'?T('Wareneingang','Goods receipt'):T('Fertigung','Production')}</span><b>${esc(tx(l.material))}</b><small>${esc(partnerTxt(l))} · ${fN(l.qty)} ${T('Stk.','pcs')}</small><div class="bar"><i class="g" style="width:${s.ok/s.total*100}%"></i><i class="r" style="width:${s.nok/s.total*100}%"></i></div><div class="lu-f">${av(l.insp,'xs')}<span class="mono muted">${l.id}</span>${lotPill(l)}</div></button>`;}).join('')}<button class="lu add" data-act="newLot">${icon('plus')}<b>${T('Neue Prüfung','New inspection')}</b></button></div></div>
       <div class="grid2">
         <div class="card"><div class="card-h"><div><h2>${T('Fehler-Pareto','Defect Pareto')}</h2><p>${T('Häufigste n.i.O.-Prüfpunkte','Most frequent failed checkpoints')}</p></div></div>
           <div class="card-b"><div class="pareto">${par.length?par.map(([k,v])=>`<div class="pr"><span><span class="code">${esc(k)}</span> ${esc(tx(v.name))}</span><div class="bar"><i class="r" style="width:${v.n/pmax*100}%"></i></div><b>${v.n}</b></div>`).join(''):`<div class="empty">${T('Keine Fehler erfasst.','No defects recorded.')}</div>`}</div></div></div>
         <div class="card"><div class="card-h"><div><h2>${T('Lieferanten','Suppliers')}</h2><p>${T('Annahmequote im Wareneingang','Acceptance rate at goods receipt')}</p></div></div>
-          <div>${sups.map(s=>{const g=s.rate>=90?'A':(s.rate>=70?'B':'C');return`<div class="row"><span class="grade ${g}">${g}</span><div class="main"><b>${esc(s.k)}</b><small>${s.n} ${T('Prüfungen','inspections')} · ${s.r} ${T('gesperrt','rejected')}</small></div><div class="end"><b class="num" style="white-space:nowrap">${s.rate} %</b></div></div>`;}).join('')}</div></div>
+          <div>${sups.map(s=>{const g=s.rate>=90?'A':(s.rate>=70?'B':'C');return`<div class="row"><span class="grade ${g}">${g}</span><div class="main"><b>${esc(co(s.k))}</b><small>${s.n} ${T('Prüfungen','inspections')} · ${s.r} ${T('gesperrt','rejected')}</small></div><div class="end"><b class="num" style="white-space:nowrap">${s.rate} %</b></div></div>`;}).join('')}</div></div>
       </div>
     </div>
     <div class="col">
-      <div class="card"><div class="card-h"><div><h2>${T('Aufgaben','Tasks')}</h2><p>${T('Aktuelle Workflow-Schritte','Current workflow steps')}</p></div></div>
+      <div class="card" id="taskCard"><div class="card-h"><div><h2>${T('Aufgaben','Tasks')}</h2><p>${T('Aktuelle Workflow-Schritte','Current workflow steps')}</p></div></div>
         <div class="card-b" style="padding-top:2px"><div class="chips"><button class="chip ${U.taskTab!=='over'?'on':''}" data-act="taskTab" data-arg="all">${T('Offen','Open')}<span class="n">${tasks.length}</span></button><button class="chip ${U.taskTab==='over'?'on':''}" data-act="taskTab" data-arg="over">${T('Überfällig','Overdue')}<span class="n">${overL.length}</span></button></div>
-        <div class="tasks">${shown.length?shown.map(({x,s})=>{const d=x.steps.filter(z=>z.done).length;const pct=Math.round(d/x.steps.length*100);return`<button class="task" data-act="go" data-arg="rekladetail:${x.id}"><span class="rs">${ring(pct,44,4,'#6C3BFF')}<em>${pct}%</em></span><span class="main"><b>${esc(tx(s.title))}</b><small>${esc(tx(x.title))}</small><small class="${s.due<TODAY()?'due-over':''}">${T('Frist','Due')} ${fD(s.due)}</small></span>${av(s.owner,'xs')}</button>`;}).join(''):`<div class="empty">${T('Keine Aufgaben.','No tasks.')}</div>`}</div></div></div>
+        <div class="tasks">${shown.length?shown.map(({x,s})=>{const d=x.steps.filter(z=>z.done).length;const pct=Math.round(d/x.steps.length*100);return`<button class="task" data-act="go" data-arg="rekladetail:${x.id}"><span class="rs">${ring(pct,44,4,'#0E7C74')}<em>${pct}%</em></span><span class="main"><b>${esc(tx(s.title))}</b><small>${esc(tx(x.title))}</small><small class="${s.due<TODAY()?'due-over':''}">${T('Frist','Due')} ${fD(s.due)}</small></span>${av(s.owner,'xs')}</button>`;}).join(''):`<div class="empty">${T('Keine Aufgaben – alles erledigt.','No tasks – all done.')}</div>`}</div></div></div>
       <div class="howto"><div class="howto-h"><span class="t-ic">${icon('flow')}</span>${T('So funktioniert’s','How it works')}</div>${steps.map((f,i)=>`<button data-act="nav" data-arg="${f[0]}"><span class="no">${i+1}</span><span><b>${f[1]}</b><small>${f[2]}</small></span>${icon('right','s')}</button>`).join('')}</div>
     </div>
   </div>`;
@@ -871,7 +1132,7 @@ VIEWS.lots=function(){
   const cnt=k=>S.lots.filter(l=>k==='all'||(k==='open'?l.status!=='done':l.status==='done')).length;
   return`<div class="page-h"><div><h1>${T('Prüfungen','Inspections')}</h1><p>${T('Prüfobjekte aus Wareneingang und Fertigung. Am Handy Schritt für Schritt prüfen – mit Messwerten, Fotos und Dokumenten.','Items from goods receipt and production. Inspect step by step on your phone – with values, photos and documents.')}</p></div><button class="btn primary" data-act="newLot">${icon('plus')} ${T('Neue Prüfung','New inspection')}</button></div>
   <div class="chips">${[['open',T('Offen','Open')],['done',T('Abgeschlossen','Completed')],['all',T('Alle','All')]].map(([k,t])=>`<button class="chip ${f===k?'on':''}" data-act="lotF" data-arg="${k}">${t}<span class="n">${cnt(k)}</span></button>`).join('')}</div>
-  <div class="card">${list.length?list.map(l=>{const s=lotSum(l);return`<button class="row click" style="--s:${l.status==='done'?({acc:'#12804A',con:'#FFCB2B',rej:'#E5383B'}[l.ud]):(l.status==='prog'?'#FFCB2B':'#6C3BFF')}" data-act="go" data-arg="lot:${l.id}"><div class="main"><b>${esc(tx(l.material))}</b><small><span class="mono">${l.id}</span> · ${esc(partnerTxt(l))} · ${T('Charge','Batch')} ${esc(l.charge)} · ${fD(l.date)}</small></div><div class="end"><div class="bar seg" title="${s.ok} ${T('i.O.','pass')} / ${s.nok} ${T('n.i.O.','fail')}"><i class="g" style="width:${s.ok/s.total*100}%"></i><i class="r" style="width:${s.nok/s.total*100}%"></i></div>${av(l.insp,'xs')}${lotPill(l)}</div></button>`;}).join(''):`<div class="empty">${T('Keine Prüfungen in dieser Ansicht.','No inspections in this view.')}</div>`}</div>`;
+  <div class="card">${list.length?list.map(l=>{const s=lotSum(l);return`<button class="row click" style="--s:${l.status==='done'?({acc:'#12804A',con:'#FFCB2B',rej:'#E5383B'}[l.ud]):(l.status==='prog'?'#FFCB2B':'#2B5BE8')}" data-act="go" data-arg="lot:${l.id}"><div class="main"><b>${esc(tx(l.material))}</b><small><span class="mono">${l.id}</span> · ${esc(partnerTxt(l))} · ${T('Charge','Batch')} ${esc(l.charge)} · ${fD(l.date)}</small></div><div class="end"><div class="bar seg" title="${s.ok} ${T('i.O.','pass')} / ${s.nok} ${T('n.i.O.','fail')}"><i class="g" style="width:${s.ok/s.total*100}%"></i><i class="r" style="width:${s.nok/s.total*100}%"></i></div>${av(l.insp,'xs')}${lotPill(l)}</div></button>`;}).join(''):`<div class="empty">${T('Keine Prüfungen in dieser Ansicht.','No inspections in this view.')}</div>`}</div>`;
 };
 
 /* ---------- Ansicht: Prüflos (Durchführung / Detail) ---------- */
@@ -898,8 +1159,8 @@ function photosBlock(l,it,r,editable){
   const ph=r?r.photos:[];const docs=r?r.docs:[];
   return`<div class="sec-h">${icon('camera','s')} ${T('Fotos','Photos')} ${it.photo?`<span class="pill ${ph.length?'good':'warn'}">${T('Pflicht','Required')}</span>`:''}</div>
   ${ph.length?`<div class="thumbs">${ph.map((p,k)=>`<button data-act="photo" data-arg="${l.id}|${it.uid}|${k}"><img src="${p}" alt="${T('Foto','Photo')} ${k+1}"></button>`).join('')}</div>`:''}
-  ${editable?`<div class="up-row"><label class="btn">${icon('camera')} ${T('Foto aufnehmen','Take photo')}<input type="file" accept="image/*" capture="environment" multiple hidden data-in="photo"></label><label class="btn">${icon('file')} ${T('Dokument anhängen','Attach document')}<input type="file" multiple hidden data-in="doc"></label></div>`:''}
-  ${docs.length?`<div class="files">${docs.map((d,k)=>`<div class="file">${icon('file','s')}<span>${esc(d.n)}</span><small>${Math.max(1,Math.round(d.s/1024))} KB</small>${editable?`<button class="ib" data-act="delDoc" data-arg="${k}" aria-label="${T('Entfernen','Remove')}">${icon('x')}</button>`:''}</div>`).join('')}</div>`:''}`;
+  ${editable?`<div class="up-row"><label class="btn">${icon('camera')} ${T('Foto aufnehmen','Take photo')}<input type="file" accept="image/*" capture="environment" multiple hidden data-in="photo"></label><label class="btn">${icon('file')} ${T('Dokument anhängen','Attach document')}<input type="file" multiple hidden data-in="doc"></label><button class="btn ghost" data-act="demoPhoto" title="${T('Fügt ein Beispielfoto hinzu (ohne Kamera)','Adds a sample photo (no camera needed)')}">${icon('plus')} ${T('Beispielfoto','Sample photo')}</button></div>`:''}
+  ${docs.length?`<div class="files">${docs.map((d,k)=>`<div class="file">${icon('file','s')}<span>${esc(lang==='en'&&d.en?d.en:d.n)}</span><small>${Math.max(1,Math.round(d.s/1024))} KB</small>${editable?`<button class="ib" data-act="delDoc" data-arg="${k}" aria-label="${T('Entfernen','Remove')}">${icon('x')}</button>`:''}</div>`).join('')}</div>`:''}`;
 }
 function stepCard(l,it,i){
   const r=l.res[it.uid];const e=evalItem(it,r);
@@ -948,7 +1209,7 @@ function lotDetail(l){
   const rks=S.reklas.filter(x=>x.lot===l.id),cs=S.certs.filter(c=>c.lot===l.id);
   return`<div class="run-head"><button class="ib" data-act="nav" data-arg="lots" aria-label="${T('Zurück','Back')}">${icon('left')}</button><div style="flex:1;min-width:0"><h1>${esc(tx(l.material))}</h1><div class="hint"><span class="mono">${l.id}</span> · ${esc(tx(l.planName))}</div></div>${lotPill(l)}</div>
   <div class="card"><div class="card-b"><div class="info-g">
-    <div><span>${l.supplier?T('Lieferant','Supplier'):T('Fertigungsauftrag','Production order')}</span><b>${esc(l.supplier||l.order)}</b></div>
+    <div><span>${l.supplier?T('Lieferant','Supplier'):T('Fertigungsauftrag','Production order')}</span><b>${esc(co(l.supplier)||l.order)}</b></div>
     <div><span>${T('Charge','Batch')}</span><b>${esc(l.charge)}</b></div>
     <div><span>${T('Menge','Quantity')}</span><b>${fN(l.qty)} ${T('Stk.','pcs')}</b></div>
     <div><span>${T('Geprüft von / am','Inspected by / on')}</span><b>${esc(PEOPLE[l.insp]?.n||'')} · ${fD(l.closedAt)}</b></div>
@@ -986,7 +1247,7 @@ VIEWS.plans=function(){
 };
 const quantCount=p=>p.items.filter(i=>i.type==='quant').length;
 function planItem(it,k){
-  return`<div class="pi" style="--s:${it.type==='quant'?'#6C3BFF':'#0D8F7E'}" data-dragcard data-uid="${it.uid}"><span class="grip" data-drag="item:${it.uid}" aria-label="${T('Ziehen zum Verschieben','Drag to move')}">${icon('grip')}</span><span class="no-b">${k+1}</span>
+  return`<div class="pi" style="--s:${it.type==='quant'?'#2B5BE8':'#0D8F7E'}" data-dragcard data-uid="${it.uid}"><span class="grip" data-drag="item:${it.uid}" aria-label="${T('Ziehen zum Verschieben','Drag to move')}">${icon('grip')}</span><span class="no-b">${k+1}</span>
   <div class="pi-main"><b>${tb(it.type)}<span class="code">${esc(it.code)}</span><span class="t">${esc(tx(it.name))}</span></b><small>${specTxt(it)} · ${esc(tx(it.method))}</small></div>
   <div class="pi-ctl"><div class="stepper" title="${T('Stichprobenumfang','Sample size')}"><button data-act="nStep" data-arg="${it.uid}|-1" aria-label="−">−</button><span>n=${it.n}</span><button data-act="nStep" data-arg="${it.uid}|1" aria-label="+">+</button></div>
   <button class="ib ${it.photo?'on':''}" data-act="togPhoto" data-arg="${it.uid}" title="${T('Fotopflicht','Photo required')}" aria-pressed="${it.photo}">${icon('camera')}</button>
@@ -1013,7 +1274,7 @@ VIEWS.rekla=function(){
   return`<div class="page-h"><div><h1>${T('Reklamationen','Complaints')}</h1><p>${T('Aus jeder n.i.O.-Prüfung entsteht mit einem Klick eine Reklamation. Der Workflow verteilt die Schritte automatisch mit Verantwortlichen und Fristen.','Every failed inspection becomes a complaint in one click. The workflow assigns each step with owner and deadline automatically.')}</p></div><button class="btn primary" data-act="newRekla">${icon('plus')} ${T('Neue Reklamation','New complaint')}</button></div>
   <div style="display:flex;gap:8px;flex-wrap:wrap"><div class="chips">${[['open',T('Offen','Open')],['done',T('Abgeschlossen','Closed')],['all',T('Alle','All')]].map(([k,l])=>`<button class="chip ${f===k?'on':''}" data-act="rF" data-arg="${k}">${l}<span class="n">${cnt(k)}</span></button>`).join('')}</div>
   <div class="chips">${[['all',T('Alle Arten','All types')],['lief',T('Lieferant','Supplier')],['kunde',T('Kunde','Customer')],['intern',T('Intern','Internal')]].map(([k,l])=>`<button class="chip ${t===k?'on':''}" data-act="rT" data-arg="${k}">${l}</button>`).join('')}</div></div>
-  <div class="card">${list.length?list.map(x=>{const s=curStep(x);const d=x.steps.filter(z=>z.done).length;return`<button class="row click" style="--s:var(--${RTYPE[x.type].c})" data-act="go" data-arg="rekladetail:${x.id}"><div class="main"><b>${esc(tx(x.title))}</b><small><span class="mono">${x.id}</span> · ${esc(x.partner||T('Fertigung','Production'))} · ${esc(tx(x.tplName))}</small>
+  <div class="card">${list.length?list.map(x=>{const s=curStep(x);const d=x.steps.filter(z=>z.done).length;return`<button class="row click" style="--s:var(--${RTYPE[x.type].c})" data-act="go" data-arg="rekladetail:${x.id}"><div class="main"><b>${esc(tx(x.title))}</b><small><span class="mono">${x.id}</span> · ${esc(co(x.partner)||T('Fertigung','Production'))} · ${esc(tx(x.tplName))}</small>
     <small style="margin-top:3px">${s?`${T('Aktuell','Now')}: <b style="display:inline;font-size:12.5px">${esc(tx(s.title))}</b> · <span class="${s.due<TODAY()?'due-over':''}">${T('fällig','due')} ${fD(s.due)}</span>`:`✓ ${T('Abgeschlossen','Closed')}`}</small></div>
     <div class="end">${rPill(x.type)}${s?av(s.owner,'xs'):''}<div class="bar seg"><i class="${s?'a':'g'}" style="width:${d/x.steps.length*100}%"></i></div><span class="mono muted">${d}/${x.steps.length}</span></div></button>`;}).join(''):`<div class="empty">${T('Keine Reklamationen in dieser Ansicht.','No complaints in this view.')}</div>`}</div>`;
 };
@@ -1033,7 +1294,7 @@ VIEWS.rekladetail=function(){
     </div></div>`;}).join('')}</div></div></div>
   <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
     <div class="card"><div class="card-h"><h2>${T('Details','Details')}</h2></div><div class="card-b">
-      <div class="info-g" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div><span>${x.type==='kunde'?T('Kunde','Customer'):(x.type==='lief'?T('Lieferant','Supplier'):T('Bereich','Area'))}</span><b>${esc(x.partner||T('Fertigung','Production'))}</b></div><div><span>${T('Betroffener Prüfpunkt','Affected checkpoint')}</span><b>${x.defect?`<span class="code">${esc(x.defect)}</span>`:'–'}</b></div>
+      <div class="info-g" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div><span>${x.type==='kunde'?T('Kunde','Customer'):(x.type==='lief'?T('Lieferant','Supplier'):T('Bereich','Area'))}</span><b>${esc(co(x.partner)||T('Fertigung','Production'))}</b></div><div><span>${T('Betroffener Prüfpunkt','Affected checkpoint')}</span><b>${x.defect?`<span class="code">${esc(x.defect)}</span>`:'–'}</b></div>
       <div><span>${T('Prüfung','Inspection')}</span><b>${l?`<button class="linkbtn" style="background:none;border:0;color:var(--accent);font-weight:600;padding:0" data-act="go" data-arg="lot:${l.id}">${l.id} →</button>`:'–'}</b></div><div><span>${T('Workflow-Vorlage','Workflow template')}</span><b>${esc(tx(x.tplName))}</b></div></div>
       ${x.desc?`<div style="font-size:13.5px">${esc(tx(x.desc))}</div>`:''}
     </div></div>
@@ -1063,7 +1324,7 @@ VIEWS.wf=function(){
 /* ---------- Ansicht: Zeugnisse ---------- */
 VIEWS.certs=function(){
   return`<div class="page-h"><div><h1>${T('Zeugnisse','Certificates')}</h1><p>${T('Prüfbescheinigungen nach DIN EN 10204 direkt aus den Prüfergebnissen – ohne Abtippen.','Inspection documents according to EN 10204 generated straight from inspection results – no retyping.')}</p></div><button class="btn primary" data-act="newCert">${icon('plus')} ${T('Neues Zeugnis','New certificate')}</button></div>
-  <div class="card">${S.certs.length?S.certs.map(c=>{const l=lotById(c.lot);return`<button class="row click" data-act="go" data-arg="cert:${c.id}"><span class="grade A" style="width:44px">${c.type}</span><div class="main"><b>${tx(CERT[c.type].t)} · ${esc(c.customer)}</b><small><span class="mono">${c.id}</span> · ${l?esc(tx(l.material))+' · '+T('Charge','Batch')+' '+esc(l.charge):''} · ${fD(c.date)}</small></div><div class="end">${icon('right','s')}</div></button>`;}).join(''):`<div class="empty">${T('Noch keine Zeugnisse.','No certificates yet.')}</div>`}</div>`;
+  <div class="card">${S.certs.length?S.certs.map(c=>{const l=lotById(c.lot);return`<button class="row click cert-r" data-act="go" data-arg="cert:${c.id}"><span class="grade A" style="width:44px">${c.type}</span><div class="main"><b>${tx(CERT[c.type].t)} · ${esc(co(c.customer))}</b><small><span class="mono">${c.id}</span> · ${l?esc(tx(l.material))+' · '+T('Charge','Batch')+' '+esc(l.charge):''} · ${fD(c.date)}</small></div><div class="end">${icon('right','s')}</div></button>`;}).join(''):`<div class="empty">${T('Noch keine Zeugnisse.','No certificates yet.')}</div>`}</div>`;
 };
 VIEWS.cert=function(){
   const c=S.certs.find(x=>x.id===U.id);if(!c)return VIEWS.certs();
@@ -1072,12 +1333,12 @@ VIEWS.cert=function(){
     if(it.type==='quant'&&r){const v=r.vals.filter(x=>x!=null);if(v.length){mn=fN(Math.min(...v));mx=fN(Math.max(...v));av_=fN(v.reduce((a,b)=>a+b,0)/v.length,Math.min(3,dp(it.ogw)+1));}}
     return`<tr><td>${esc(it.code)} ${esc(tx(it.name))}</td><td>${it.type==='quant'?`${fN(it.soll,decOf(it))} (${fN(it.ugw,decOf(it))} … ${fN(it.ogw,decOf(it))}) ${esc(it.unit)}`:T('i.O.','pass')}</td><td>${n}</td><td>${mn}</td><td>${mx}</td><td>${av_}</td><td><b>${e==='ok'?T('i.O.','pass'):T('n.i.O.','fail')}</b></td></tr>`;}).join('');
   const by=PEOPLE[c.by];
-  return`<div class="run-head"><button class="ib" data-act="nav" data-arg="certs" aria-label="${T('Zurück','Back')}">${icon('left')}</button><div style="flex:1;min-width:0"><h1>${c.id}</h1><div class="hint">${tx(ct.t)} · ${esc(c.customer)}</div></div><div class="acts"><button class="btn" data-act="pdf">${icon('file')} PDF</button><button class="btn primary" data-act="pdf">${icon('send')} ${T('An Kunden senden','Send to customer')}</button></div></div>
+  return`<div class="run-head"><button class="ib" data-act="nav" data-arg="certs" aria-label="${T('Zurück','Back')}">${icon('left')}</button><div style="flex:1;min-width:0"><h1>${c.id}</h1><div class="hint">${tx(ct.t)} · ${esc(co(c.customer))}</div></div><div class="acts"><button class="btn" data-act="pdf">${icon('file')} PDF</button><button class="btn primary" data-act="pdf">${icon('send')} ${T('An Kunden senden','Send to customer')}</button></div></div>
   <div class="doc">
-    <div class="doc-h"><div class="doc-co"><span class="lg">MP</span><div><b>Muster Präzisionstechnik GmbH</b><small>Industriestraße 12 · 60311 Frankfurt am Main · ${T('Beispielfirma','Sample company')}</small></div></div><div class="doc-no"><div>${T('Zeugnis-Nr.','Certificate no.')} <b>${c.id}</b></div><div>${T('Datum','Date')}: ${fD(c.date)}</div><div>${T('Seite','Page')} 1/1</div></div></div>
+    <div class="doc-h"><div class="doc-co"><span class="lg">${T('MP','SP')}</span><div><b>${esc(co('Muster Präzisionstechnik GmbH'))}</b><small>Industriestraße 12 · 60311 Frankfurt am Main · ${T('Beispielfirma','Sample company')}</small></div></div><div class="doc-no"><div>${T('Zeugnis-Nr.','Certificate no.')} <b>${c.id}</b></div><div>${T('Datum','Date')}: ${fD(c.date)}</div><div>${T('Seite','Page')} 1/1</div></div></div>
     <h2 class="doc-t">${tx(ct.t)}</h2><div class="doc-st">${T('nach DIN EN 10204:2005','according to EN 10204:2005')} · ${tx(ct.d)}</div>
     <div class="doc-g">
-      <div><span>${T('Kunde','Customer')}</span><b>${esc(c.customer)}</b></div><div><span>${T('Bestell-Nr.','Order no.')}</span><b>${esc(c.order)}</b></div>
+      <div><span>${T('Kunde','Customer')}</span><b>${esc(co(c.customer))}</b></div><div><span>${T('Bestell-Nr.','Order no.')}</span><b>${esc(c.order)}</b></div>
       <div><span>${T('Erzeugnis','Product')}</span><b>${esc(tx(l.material))}</b></div><div><span>${T('Charge','Batch')}</span><b>${esc(l.charge)}</b></div>
       <div><span>${T('Liefermenge','Quantity')}</span><b>${fN(l.qty)} ${T('Stk.','pcs')}</b></div><div><span>${T('Prüfung','Inspection')}</span><b>${l.id}</b></div>
       <div><span>${T('Prüfplan','Inspection plan')}</span><b>${l.planId}</b></div><div><span>${T('Prüfdatum','Inspection date')}</span><b>${fD(l.closedAt)}</b></div>
@@ -1085,7 +1346,7 @@ VIEWS.cert=function(){
     ${c.type==='2.1'?`<p>${T('Wir bestätigen, dass die gelieferten Erzeugnisse den Vereinbarungen der Bestellung entsprechen. Prüfergebnisse werden mit dieser Werksbescheinigung nicht angegeben.','We confirm that the products supplied comply with the requirements of the order. Test results are not included in this declaration of compliance.')}</p>`:
     `<div class="scroll"><table><thead><tr><th>${T('Prüfpunkt','Checkpoint')}</th><th>${T('Soll (Toleranz)','Target (tolerance)')}</th><th>n</th><th>Min</th><th>Max</th><th>${T('Mittel','Mean')}</th><th>${T('Ergebnis','Result')}</th></tr></thead><tbody>${rows}</tbody></table></div>
     <p>${c.type==='3.1'?T('Die Prüfungen wurden spezifisch an der gelieferten Charge durchgeführt. Die Erzeugnisse entsprechen den Anforderungen der Bestellung.','The tests were carried out specifically on the batch supplied. The products comply with the requirements of the order.'):T('Die angegebenen Ergebnisse stammen aus nichtspezifischen Prüfungen an Erzeugnissen derselben Fertigung. Die Erzeugnisse entsprechen den Anforderungen der Bestellung.','The results stated are based on non-specific inspection of products from the same production. The products comply with the requirements of the order.')}</p>`}
-    <div class="doc-sig"><div class="sig"><i>${esc(by.n)}</i><b>${esc(by.n)}</b><br>${c.type==='3.1'?T('Abnahmebeauftragte (von der Fertigung unabhängig)','Inspection representative (independent of production)'):tx(by.r)}<br><small>${T('Digital signiert am','Digitally signed on')} ${fD(c.date)}</small></div><div class="stamp">${T('GEPRÜFT','INSPECTED')}<br>QS<br>${fD(c.date)}</div></div>
+    <div class="doc-sig"><div class="sig"><i>${esc(by.n)}</i><b>${esc(by.n)}</b><br>${c.type==='3.1'?T('Abnahmebeauftragte (von der Fertigung unabhängig)','Inspection representative (independent of production)'):tx(by.r)}<br><small>${T('Digital signiert am','Digitally signed on')} ${fD(c.date)}</small></div><div class="stamp">${T('GEPRÜFT','INSPECTED')}<br>${T('QS','QA')}<br>${fD(c.date)}</div></div>
     <div class="doc-f"><span>${T('Erstellt mit devunoxAI QM','Created with devunoxAI QM')}</span><span>${T('Demo – Beispieldaten','Demo – sample data')}</span></div>
   </div>`;
 };
@@ -1096,7 +1357,7 @@ function newLotModal(planId){
   const sel=planId||rel[0]?.id;
   modal(mHead(T('Neue Prüfung','New inspection'),T('Aus einem freigegebenen Prüfplan','From a released inspection plan'))+`<div class="card-b f">
     <label>${T('Prüfplan','Inspection plan')}<select id="nlPlan">${rel.map(p=>`<option value="${p.id}" ${p.id===sel?'selected':''}>${p.id} · ${esc(tx(p.name))}</option>`).join('')}</select></label>
-    <label>${T('Lieferant / Herkunft','Supplier / origin')}<select id="nlSup">${SUPPLIERS.map(s=>`<option>${esc(s)}</option>`).join('')}<option value="">${T('Eigene Fertigung','Own production')}</option></select></label>
+    <label>${T('Lieferant / Herkunft','Supplier / origin')}<select id="nlSup">${SUPPLIERS.map(s=>`<option value="${esc(s)}">${esc(co(s))}</option>`).join('')}<option value="">${T('Eigene Fertigung','Own production')}</option></select></label>
     <div class="two"><label>${T('Charge','Batch')}<input id="nlCh" value="CH-${8800+Math.floor(Math.random()*190)}"></label><label>${T('Menge (Stk.)','Quantity (pcs)')}<input id="nlQty" inputmode="numeric" value="250"></label></div>
     <label>${T('Prüfer','Inspector')}<select id="nlIn">${Object.entries(PEOPLE).map(([k,p])=>`<option value="${k}">${esc(p.n)} · ${tx(p.r)}</option>`).join('')}</select></label>
   </div><div class="card-f"><button class="btn" data-act="close">${T('Abbrechen','Cancel')}</button><button class="btn primary" data-act="newLotSave">${icon('play')} ${T('Anlegen & prüfen','Create & inspect')}</button></div>`);
@@ -1130,7 +1391,7 @@ function reklaModal(lotId){
   modal(mHead(T('Neue Reklamation','New complaint'),l?`${T('aus Prüfung','from inspection')} ${l.id}`:T('Workflow wird automatisch angelegt','Workflow is created automatically'))+`<div class="card-b f">
     <div class="opt-g" style="grid-template-columns:repeat(3,minmax(0,1fr))">${Object.entries(RTYPE).map(([k,r])=>`<label class="opt"><input type="radio" name="rType" value="${k}" ${k===type?'checked':''} data-in="rtype"><span><b>${tx(r.t)}</b></span></label>`).join('')}</div>
     <label>${T('Titel','Title')}<input id="rTitle" value="${esc(title)}" placeholder="${T('Was ist das Problem?','What is the problem?')}"></label>
-    <div class="two"><label>${T('Partner','Partner')}<select id="rPartner"><optgroup label="${T('Lieferanten','Suppliers')}">${SUPPLIERS.map(s=>`<option ${s===partner?'selected':''}>${esc(s)}</option>`).join('')}</optgroup><optgroup label="${T('Kunden','Customers')}">${CUSTOMERS.map(s=>`<option>${esc(s)}</option>`).join('')}</optgroup><option value="" ${type==='intern'?'selected':''}>${T('Intern / Fertigung','Internal / production')}</option></select></label>
+    <div class="two"><label>${T('Partner','Partner')}<select id="rPartner"><optgroup label="${T('Lieferanten','Suppliers')}">${SUPPLIERS.map(s=>`<option value="${esc(s)}" ${s===partner?'selected':''}>${esc(co(s))}</option>`).join('')}</optgroup><optgroup label="${T('Kunden','Customers')}">${CUSTOMERS.map(s=>`<option value="${esc(s)}">${esc(co(s))}</option>`).join('')}</optgroup><option value="" ${type==='intern'?'selected':''}>${T('Intern / Fertigung','Internal / production')}</option></select></label>
     <label>${T('Workflow-Vorlage','Workflow template')}<select id="rTpl">${S.tpls.map(t=>`<option value="${t.id}" ${t.id===RTYPE[type].tpl?'selected':''}>${esc(tx(t.name))} (${t.steps.length})</option>`).join('')}</select></label></div>
     <div class="two"><label>${T('Prüfung (optional)','Inspection (optional)')}<select id="rLot"><option value="">–</option>${lots.map(x=>`<option value="${x.id}" ${l&&x.id===l.id?'selected':''}>${x.id} · ${esc(tx(x.material))}</option>`).join('')}</select></label>
     <label>${T('Betroffener Prüfpunkt','Affected checkpoint')}<select id="rDef"><option value="">–</option>${S.catalog.map(m=>`<option value="${esc(m.code)}" ${m.code===defect?'selected':''}>${esc(m.code)} · ${esc(tx(m.name))}</option>`).join('')}</select></label></div>
@@ -1142,7 +1403,7 @@ function certModal(lotId){
   modal(mHead(T('Neues Zeugnis','New certificate'),T('Daten werden aus der Prüfung übernommen','Data is taken from the inspection'))+`<div class="card-b f">
     <label>${T('Prüfung','Inspection')}<select id="cLot">${lots.map(x=>`<option value="${x.id}" ${x.id===lotId?'selected':''}>${x.id} · ${esc(tx(x.material))} · ${esc(x.charge)}</option>`).join('')}</select></label>
     <div class="opt-g">${Object.entries(CERT).map(([k,c])=>`<label class="opt"><input type="radio" name="cType" value="${k}" ${k==='3.1'?'checked':''}><span><b>${tx(c.t)}</b><small>${tx(c.d)}</small></span></label>`).join('')}</div>
-    <div class="two"><label>${T('Kunde','Customer')}<select id="cCust">${CUSTOMERS.map(s=>`<option>${esc(s)}</option>`).join('')}</select></label><label>${T('Bestell-Nr. Kunde','Customer order no.')}<input id="cOrd" value="4500-${88000+Math.floor(Math.random()*999)}"></label></div>
+    <div class="two"><label>${T('Kunde','Customer')}<select id="cCust">${CUSTOMERS.map(s=>`<option value="${esc(s)}">${esc(co(s))}</option>`).join('')}</select></label><label>${T('Bestell-Nr. Kunde','Customer order no.')}<input id="cOrd" value="4500-${88000+Math.floor(Math.random()*999)}"></label></div>
   </div><div class="card-f"><button class="btn" data-act="close">${T('Abbrechen','Cancel')}</button><button class="btn primary" data-act="newCertSave" ${lots.length?'':'disabled'}>${icon('award')} ${T('Zeugnis erstellen','Create certificate')}</button></div>`);
 }
 
@@ -1151,10 +1412,11 @@ const ACT={
   close:closeModal,
   nav:v=>{closeModal();go(v);},
   go:a=>{const [v,id]=a.split(':');closeModal();go(v,id);},
-  lang:l=>{lang=l;try{localStorage.setItem('dvx-qm-lang',l);history.replaceState(null,'','#'+l);}catch(e){}closeModal();render(true);},
+  lang:l=>{if(l===lang)return;try{localStorage.setItem('dvx-qm-lang',l);}catch(e){}if(KIT)KIT.setLang(l);else{lang=l;render(true);}},
+  tour:()=>{closeModal();if(KIT)KIT.startTour(0);},
   more:()=>modal(mHead(T('Mehr','More'))+`<div class="card-b more-list">${NAV.filter(n=>['cat','wf','certs'].includes(n.v)).map(n=>`<button class="nav-i" data-act="nav" data-arg="${n.v}">${icon(n.ic)}<span class="lbl">${tx(n.t)}</span>${icon('right','s')}</button>`).join('')}
     <div class="demo-box" style="margin-top:6px"><b>${T('Live-Demo','Live demo')}</b>${T('Alle Daten sind Beispiele und bleiben in Ihrem Browser.','All data is sample data and stays in your browser.')}<a href="${CONTACT()}" target="_blank" rel="noopener">${T('Für Ihr Unternehmen anpassen →','Tailor it to your company →')}</a></div>
-    ${langSw()}<button class="btn" data-act="reset">${icon('reset')} ${T('Demo zurücksetzen','Reset demo')}</button></div>`),
+    <button class="btn" data-act="reset">${icon('reset')} ${T('Demo zurücksetzen','Reset demo')}</button></div>`),
   reset:()=>modal(mHead(T('Demo zurücksetzen?','Reset demo?'))+`<div class="card-b">${T('Alle Ihre Änderungen werden verworfen und die Beispieldaten neu geladen.','All your changes will be discarded and the sample data reloaded.')}</div><div class="card-f"><button class="btn" data-act="close">${T('Abbrechen','Cancel')}</button><button class="btn danger" data-act="resetYes">${T('Zurücksetzen','Reset')}</button></div>`),
   resetYes:()=>{S=seed();save();closeModal();U.plan='PP-1001';U.tpl='8d';U.runLot=null;go('start');toast(T('Demo zurückgesetzt','Demo reset'));},
   // Prüflose
@@ -1179,6 +1441,7 @@ const ACT={
   photo:a=>{const [lid,u,k]=a.split('|');const l=lotById(lid);const r=l&&l.res[u];if(!r)return;const it=l.items.find(i=>i.uid===u);
     modal(mHead(esc(tx(it.name)),`${l.id} · ${T('Foto','Photo')} ${Number(k)+1}/${r.photos.length}`)+`<div class="card-b"><img class="photo-big" src="${r.photos[k]}" alt=""></div>${l.status!=='done'?`<div class="card-f"><span></span><button class="btn danger" data-act="delPhoto" data-arg="${a}">${icon('trash')} ${T('Foto löschen','Delete photo')}</button></div>`:''}`,true);},
   delPhoto:a=>{const [lid,u,k]=a.split('|');const l=lotById(lid);l.res[u].photos.splice(Number(k),1);save();closeModal();render(true);},
+  demoPhoto:()=>{const l=curLot();if(!l||l.status==='done')return;const it=l.items[U.runIdx];if(!it)return;const r=ensureRes(l,it);r.photos.push(demoPhoto(shapeOf(it.mid),evalItem(it,r)==='nok',it.code+' · '+l.id));if(l.status==='open')l.status='prog';save();render(true);toast(T('Foto gespeichert','Photo saved'));},
   delDoc:k=>{const l=curLot(),it=l.items[U.runIdx];ensureRes(l,it).docs.splice(Number(k),1);save();render(true);},
   // Prüfpläne
   plan:id=>{U.plan=id;render(true);},
@@ -1334,10 +1597,75 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('input',e=>{const el=e.target;if(!el.dataset||!el.dataset.in)return;if(el.type==='file'||el.tagName==='SELECT'||el.type==='radio'||el.type==='checkbox')return;IN[el.dataset.in]&&IN[el.dataset.in](el);});
 document.addEventListener('change',e=>{const el=e.target;if(!el.dataset||!el.dataset.in)return;if(el.type==='file'||el.tagName==='SELECT'||el.type==='radio'||el.type==='checkbox'||el.type==='number'){IN[el.dataset.in]&&IN[el.dataset.in](el);if(el.type==='file')el.value='';}});
-window.addEventListener('hashchange',()=>{const h=location.hash.replace('#','');if((h==='en'||h==='de')&&h!==lang){lang=h;render(true);}});
+window.addEventListener('hashchange',()=>{const h=location.hash.replace('#','');if(h==='en'||h==='de'){if(h!==lang)ACT.lang(h);else try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#modal').hidden)closeModal();});
 
 render();
+/* ---------- Geführte Tour (Demo-Kit) ---------- */
+function tourLot(){
+  let l=lotById('PR-24031');
+  if(!l||l.status==='done')l=S.lots.find(x=>x.status!=='done'&&x.items.some(i=>i.type==='qual'));
+  if(!l){const p=S.plans.find(x=>x.id==='PP-1001')||S.plans.find(x=>x.status==='rel'&&x.items.length)||S.plans[0];const id='PR-'+(S.seq.lot++);
+    l={id,planId:p.id,planName:JSON.parse(JSON.stringify(p.name)),material:JSON.parse(JSON.stringify(p.material)),origin:p.origin,supplier:SUPPLIERS[0],order:'',charge:'CH-8850',qty:500,date:TODAY(),status:'open',ud:null,insp:'ak',items:JSON.parse(JSON.stringify(p.items)),res:{},closedAt:null};
+    S.lots.unshift(l);save();}
+  return l;
+}
+function tourOpenLot(clear){
+  closeModal();const l=tourLot();let k=l.items.findIndex(i=>i.type==='qual');if(k<0)k=0;
+  if(clear){const it=l.items[k];if(it&&l.res[it.uid])l.res[it.uid].q=null;save();}
+  if(U.view!=='lot'||U.id!==l.id||U.runIdx!==k){U.runLot=l.id;U.runIdx=k;U.view='lot';U.id=l.id;render();window.scrollTo(0,0);}
+  else render(true);
+}
+function tourRekla(){
+  let x=S.reklas.find(r=>r.id==='QM-0044'&&!isClosed(r))||S.reklas.find(r=>!isClosed(r));
+  if(!x){x=makeRekla(S,{id:'QM-'+String(S.seq.rekla++).padStart(4,'0'),type:'lief',partner:SUPPLIERS[0],title:{de:'Außendurchmesser außerhalb Toleranz',en:'Outer diameter out of tolerance'},desc:{de:'Im Wareneingang 2 von 5 Teilen über Max. 25,05 mm. Charge gesperrt.',en:'At goods receipt 2 of 5 parts above max. 25.05 mm. Batch blocked.'},defect:'DM-01',lot:'PR-24028',tpl:'8d'});S.reklas.unshift(x);save();}
+  return x;
+}
+function tourCert(){
+  let c=S.certs[0];
+  if(!c){const l=S.lots.find(x=>x.status==='done'&&x.ud==='acc');if(!l)return null;c={id:'Z-2026-'+(S.seq.cert++),lot:l.id,type:'3.1',customer:CUSTOMERS[0],order:'4500-88211',date:TODAY(),by:'sw'};S.certs.unshift(c);save();}
+  return c;
+}
+const tourGo=v=>{closeModal();if(U.view!==v)go(v);else{render(true);}};
+const TOUR={
+  welcome:{title:{de:'Willkommen in der QM-App',en:'Welcome to the QM app'},
+    text:{de:'<p>Qualitätsmanagement für kleine und mittlere Unternehmen – einfach, mobil und sofort einsatzbereit.</p><ul><li>Prüfpläne per Drag &amp; Drop zusammenstellen</li><li>Prüfungen am Handy – mit Messwerten und Fotos</li><li>Reklamationen mit Workflow und Zeugnisse nach EN 10204</li></ul>',
+          en:'<p>Quality management for small and mid-sized companies – simple, mobile and ready to use.</p><ul><li>Build inspection plans by drag &amp; drop</li><li>Inspect on your phone – with measurements and photos</li><li>Complaints with workflows and EN 10204 certificates</li></ul>'}},
+  steps:[
+    {el:'#kpis',before:()=>{tourGo('start');window.scrollTo(0,0);},placement:'bottom',
+     title:{de:'Alles auf einen Blick',en:'Everything at a glance'},
+     text:{de:'Offene Prüfungen, Annahmequote, Reklamationen und Zeugnisse – live aus Ihren Daten, mit Trend zur Vorperiode. Ein Klick auf eine Kachel öffnet die Details.',en:'Open inspections, acceptance rate, complaints and certificates – live from your data, with the trend versus the previous period. Click a tile to open the details.'}},
+    {el:()=>document.querySelector(window.innerWidth<1280?'.ch-bars':'#charts'),before:()=>tourGo('start'),placement:'bottom',
+     title:{de:'Qualität im Verlauf',en:'Quality over time'},
+     text:{de:'Prüfungen pro Woche (i.O. / n.i.O.), Annahmequote als Tacho und offene Reklamationen nach Status. So sehen Sie sofort, ob sich ein Lieferant oder Prozess verschlechtert.',en:'Inspections per week (pass / fail), the acceptance rate as a gauge and open complaints by status. You see at once if a supplier or process is getting worse.'}},
+    {el:['#rail [data-act="nav"][data-arg="plans"]','.howto [data-arg="plans"]'],click:true,before:()=>{closeModal();if(window.innerWidth<=760)tourGo('start');},
+     title:{de:'Prüfpläne öffnen',en:'Open inspection plans'},
+     text:{de:'Im Prüfplan legen Sie fest, <b>was</b> geprüft wird – einmal angelegt, für jede Lieferung wiederverwendbar. Öffnen Sie die Prüfpläne.',en:'An inspection plan defines <b>what</b> gets checked – set it up once, reuse it for every delivery. Open the inspection plans.'},},
+    {el:'.pal[data-arg="M05"]',click:true,before:()=>{const d=S.plans.find(p=>p.id==='PP-1004')||S.plans.find(p=>p.status!=='rel')||S.plans[0];U.plan=d.id;tourGo('plans');},
+     title:{de:'Prüfplan per Drag & Drop',en:'Drag & drop inspection plan'},
+     text:{de:'Ziehen Sie Prüfpunkte aus dem Katalog in den Plan – oder tippen Sie sie einfach an. Probieren Sie es: Fügen Sie <b>„Härte“</b> zum Entwurf hinzu.',en:'Drag checkpoints from the library into the plan – or simply tap them. Try it: add <b>“Hardness”</b> to the draft.'},
+     hint:{de:'Tippen Sie auf „Härte“ oder auf „Weiter“.',en:'Tap “Hardness” or press “Next”.'}},
+    {el:()=>{const a=document.querySelectorAll('.zone[data-drop="plan"] .pi');return a[a.length-1]||null;},before:()=>{if(U.view!=='plans')tourGo('plans');},
+     title:{de:'In Sekunden angepasst',en:'Adjusted in seconds'},
+     text:{de:'Reihenfolge über den Griff ändern, Stichprobe mit +/− festlegen, Fotopflicht per Kamera-Symbol. Danach freigeben – fertig.',en:'Reorder with the handle, set the sample size with +/− and require a photo with the camera icon. Then release – done.'}},
+    {el:'.qbtn.ok',click:true,before:()=>tourOpenLot(true),
+     title:{de:'Prüfen direkt am Handy',en:'Inspect right on your phone'},
+     text:{de:'Prüfer werden Schritt für Schritt durch den Plan geführt – mit Sollwerten und Toleranzen. Bewerten Sie die Verpackung mit <b>„i.O.“</b>.',en:'Inspectors are guided step by step through the plan – with targets and tolerances. Rate the packaging as <b>“Pass”</b>.'},
+     hint:{de:'Tippen Sie auf „i.O.“ oder auf „Weiter“.',en:'Tap “Pass” or press “Next”.'}},
+    {el:'[data-act="demoPhoto"]',click:true,before:()=>{if(U.view!=='lot')tourOpenLot(false);},
+     title:{de:'Foto als Nachweis',en:'Photo as evidence'},
+     text:{de:'Am Handy öffnet „Foto aufnehmen“ direkt die Kamera, Dokumente hängen Sie mit einem Tipp an. In der Demo nehmen wir ein Beispielfoto.',en:'On a phone, “Take photo” opens the camera directly, and documents are attached with one tap. In the demo we use a sample photo.'},
+     hint:{de:'Klicken Sie auf „Beispielfoto“ oder auf „Weiter“.',en:'Click “Sample photo” or press “Next”.'}},
+    {el:'[data-act="stepDone"]',click:true,before:()=>{const x=tourRekla();closeModal();U.view='rekladetail';U.id=x.id;render();window.scrollTo(0,0);},
+     title:{de:'Reklamation mit Workflow',en:'Complaint with workflow'},
+     text:{de:'Aus jeder n.i.O.-Prüfung wird mit einem Klick eine Reklamation. Jeder Schritt hat Verantwortliche und Fristen. Schließen Sie den aktuellen Schritt ab – der Nächste wird automatisch informiert.',en:'Every failed inspection becomes a complaint in one click. Each step has an owner and a deadline. Complete the current step – the next owner is notified automatically.'},
+     hint:{de:'Klicken Sie auf „Schritt abschließen“ oder auf „Weiter“.',en:'Click “Complete step” or press “Next”.'}},
+    {el:['.doc-h','.doc'],before:()=>{const c=tourCert();closeModal();if(c){U.view='cert';U.id=c.id;render();window.scrollTo(0,0);}},placement:'bottom',
+     title:{de:'Zeugnis auf Knopfdruck',en:'Certificates at the push of a button'},
+     text:{de:'Werkszeugnisse und Abnahmeprüfzeugnisse nach EN 10204 entstehen direkt aus den Prüfergebnissen – ohne Abtippen, digital signiert und bereit zum Versand an den Kunden.',en:'Test reports and inspection certificates to EN 10204 are generated straight from the inspection results – no retyping, digitally signed and ready to send to your customer.'}}
+  ]
+};
+if(KIT)KIT.init({app:'qm',accent:'#0E7C74',accent2:'#14B8A6',langMount:false,tourMount:false,i18n:{dict:{}},tour:TOUR});
 })();
 </script>
 </body>

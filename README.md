@@ -29,7 +29,17 @@ Hauptadresse ist https://www.devunox.ai (alle Canonicals zeigen dorthin). devuno
 | QM-App: Qualitätsmanagement für KMU (DE/EN, `#de`/`#en`) | `site/demos/qm.html` | – (Quelle: Claude-Artifact „QM Modul – devunoxAI Demo“) |
 | Website für eine Spedition | `site/demos/spedition.html` | – |
 
-Neue Version einer App: deren `index.html` aus dem Quell-Repository hierher kopieren und unter dem Dateinamen oben speichern.
+Weitere App-Demos: `pod.html` (Proof of Delivery), `anlagencheck.html` (Prüfungen per QR-Code), `wissen.html` (Wissensdatenbank), `cockpit-produktion.html` (Produktions-Cockpit).
+
+**Achtung:** Seit November 2026 sind die Demos hier weiterentwickelt (neues Design, Englisch, geführte Tour). Die Fassung in `site/demos/` ist maßgeblich; eine ältere `index.html` aus einem Quell-Repository würde diese Änderungen überschreiben.
+
+### Demo-Kit (`site/demos/shared-files/demo-kit.js` + `.css`)
+
+Gemeinsam für alle App-Demos:
+- **Sprache:** `?lang=de|en` (sonst gespeicherte Wahl, sonst Deutsch), DE|EN-Umschalter in jeder App. Die Website verlinkt deutsche Seiten mit `?lang=de`, englische mit `?lang=en`.
+- **Geführte Tour:** Willkommenskarte beim ersten Besuch, Schritte mit Markierung und Mitmach-Klicks, jederzeit überspringbar, Neustart über „Geführte Tour“. `?tour=1` startet die Tour sofort, `?tour=0` zeigt keine Willkommenskarte. Abschlusskarte mit Link zur Terminbuchung.
+- **Diagramme:** Balken, Tacho, Ring, Sparkline, Donut (SVG).
+- GeoAuftrag mit `embed=1` (eingebettete Handy-Vorschau auf /demos): ohne Tour und Umschalter, eigener Speicherstand.
 
 ## Veröffentlichen auf Cloudflare
 

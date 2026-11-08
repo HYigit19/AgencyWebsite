@@ -37,7 +37,7 @@ Weitere App-Demos: `pod.html` (Proof of Delivery), `anlagencheck.html` (Prüfung
 
 Gemeinsam für alle App-Demos:
 - **Sprache:** `?lang=de|en` (sonst gespeicherte Wahl, sonst Deutsch), DE|EN-Umschalter in jeder App. Die Website verlinkt deutsche Seiten mit `?lang=de`, englische mit `?lang=en`.
-- **Geführte Tour:** Willkommenskarte beim ersten Besuch, Schritte mit Markierung und Mitmach-Klicks, jederzeit überspringbar, Neustart über „Geführte Tour“. `?tour=1` startet die Tour sofort, `?tour=0` zeigt keine Willkommenskarte. Abschlusskarte mit Link zur Terminbuchung.
+- **Geführte Tour:** Willkommenskarte bei jedem neuen Besuch (neuer Tab), bis die Tour einmal abgeschlossen wurde; Schritte mit Markierung und Mitmach-Klicks, jederzeit überspringbar, Neustart über „Geführte Tour“. `?tour=1` startet die Tour sofort, `?tour=0` zeigt keine Willkommenskarte. Abschlusskarte mit Link zur Terminbuchung.
 - **Diagramme:** Balken, Tacho, Ring, Sparkline, Donut (SVG).
 - GeoAuftrag mit `embed=1` (eingebettete Handy-Vorschau auf /demos): ohne Tour und Umschalter, eigener Speicherstand.
 

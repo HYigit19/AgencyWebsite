@@ -497,12 +497,23 @@
       document.removeEventListener('keydown', keys, true);
       document.documentElement.classList.remove('dvx-tour-on');
       if (root) root.style.display = 'none';
-      try { localStorage.setItem('dvx-tour:' + CFG.app, skipped ? 'skipped' : 'done'); } catch (e) {}
+      markTour(skipped ? 'skipped' : 'done');
       var cfg = CFG.tour || {};
       if (cfg.onEnd) try { cfg.onEnd(skipped); } catch (e) { console.warn(e); }
     }
     return { start: start, end: end, next: next, prev: prev, get active() { return active; }, get index() { return idx; } };
   })();
+
+  // Tour-Status: abgeschlossen = dauerhaft; übersprungen = nur für diesen Tab,
+  // damit die Willkommenskarte beim nächsten Besuch wieder angeboten wird.
+  function markTour(v) {
+    var k = 'dvx-tour:' + CFG.app;
+    try { if (v === 'done') localStorage.setItem(k, 'done'); else sessionStorage.setItem(k, v); } catch (e) {}
+  }
+  function tourSeen() {
+    var k = 'dvx-tour:' + CFG.app;
+    try { if (localStorage.getItem(k) === 'done') return 'done'; return sessionStorage.getItem(k); } catch (e) { return null; }
+  }
 
   // ---------- Willkommens-/Abschlusskarte ----------
   var cardEl = null;
@@ -537,8 +548,8 @@
       secondary: U('explore'),
       foot: '',
       onPrimary: function () { Tour.start(0); },
-      onSecondary: function () { try { localStorage.setItem('dvx-tour:' + CFG.app, 'skipped'); } catch (e) {} },
-      onDismiss: function () { try { localStorage.setItem('dvx-tour:' + CFG.app, 'skipped'); } catch (e) {} },
+      onSecondary: function () { markTour('skipped'); },
+      onDismiss: function () { markTour('skipped'); },
       cls: 'dvx-welcome'
     });
   }
@@ -639,7 +650,7 @@
         CFG._mo.observe(document.body, { childList: true, subtree: true });
       }
       var q = new URLSearchParams(location.search).get('tour');
-      var seen = null; try { seen = localStorage.getItem('dvx-tour:' + CFG.app); } catch (e) {}
+      var seen = tourSeen();
       var hasTour = CFG.tour && CFG.tour.steps && CFG.tour.steps.length;
       if (!hasTour) return;
       if (q === '1') setTimeout(function () { Tour.start(0); }, CFG.tour.delay || 500);

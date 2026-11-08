@@ -20,6 +20,33 @@ from localize_demos import localize
 for p in sorted((OUT / "demos").glob("*.html")):
     localize(p)
 
+# Eigene JS-/CSS-Dateien mit Inhalts-Version verlinken (style.css?v=1a2b3c4d5e).
+# Cloudflare gibt statischen Dateien einen Browser-Cache von mehreren Stunden; ohne Version
+# laufen geänderte Seiten sonst mit veralteten Skripten (z. B. dem Demo-Kit).
+import hashlib, re as _re_v
+
+_ASSET_REF = _re_v.compile(r'\b(src|href)="(?!https?:|//|data:|#)([^"?#]+\.(?:js|css))"')
+_hash_cache = {}
+
+def _version(path):
+    if path not in _hash_cache:
+        _hash_cache[path] = hashlib.sha1(path.read_bytes()).hexdigest()[:10]
+    return _hash_cache[path]
+
+def version_assets(page):
+    html = page.read_text(encoding="utf-8")
+    def rep(m):
+        target = (page.parent / m.group(2)).resolve()
+        if not target.is_file() or OUT.resolve() not in target.parents:
+            return m.group(0)
+        return f'{m.group(1)}="{m.group(2)}?v={_version(target)}"'
+    new = _ASSET_REF.sub(rep, html)
+    if new != html:
+        page.write_text(new, encoding="utf-8")
+
+for p in sorted(OUT.rglob("*.html")):
+    version_assets(p)
+
 # Interne Links auf die sauberen Adressen umstellen (/de/websites statt websites.html,
 # /de/ statt index.html). Cloudflare Pages leitet .html-Adressen per 308 um; mit sauberen
 # Links spart jeder Klick und jeder Crawler-Besuch diese Weiterleitung, und die Links

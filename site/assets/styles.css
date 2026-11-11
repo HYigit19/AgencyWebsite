@@ -156,9 +156,15 @@ h1.kicker { line-height: 1.35; }
 .hero-sub { background: var(--bg); color: var(--fg); overflow: hidden; }
 .hs-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 64px; align-items: center; padding-block: 48px 80px; }
 .hero-sub h1 { font: 700 clamp(2rem, 1.1rem + 3.2vw, 3.7rem)/1.06 var(--font-display); letter-spacing: -0.04em; }
-.crumbs { font-size: 0.85rem; color: var(--muted); }
-.crumbs a { text-decoration: none; }
-.crumbs a:hover { color: var(--o-text); }
+.crumbs { justify-self: start; max-width: 100%; font-size: 0.88rem; }
+.crumbs ol { list-style: none; margin: 0; padding: 5px; display: inline-flex; flex-wrap: wrap; align-items: center; row-gap: 4px; background: rgba(255, 255, 255, .85); border: 1px solid var(--line); border-radius: 999px; box-shadow: 0 10px 28px -18px rgba(20, 20, 23, .35); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.crumbs li { display: inline-flex; align-items: center; min-width: 0; }
+.crumbs li + li::before { content: ""; flex: none; width: 6px; height: 6px; margin: 0 10px 0 7px; border-top: 1.6px solid var(--muted); border-right: 1.6px solid var(--muted); transform: rotate(45deg); opacity: .55; }
+.crumbs a { display: inline-flex; align-items: center; gap: 7px; padding: 6px 11px; border-radius: 999px; color: var(--fg); font-weight: 500; text-decoration: none; transition: background-color .15s ease; }
+.crumbs a:hover { background: var(--soft); color: var(--fg); }
+.crumbs a svg { width: 17px; height: 17px; flex: none; color: var(--o-text); }
+.crumbs [aria-current="page"] { display: inline-block; padding: 7px 15px; border-radius: 999px; background: var(--ink); color: var(--on-ink); font-weight: 600; }
+@media (max-width: 480px) { .crumbs .crumb-mid { display: none; } .crumbs { font-size: 0.8rem; } .crumbs a { padding: 5px 8px; } .crumbs [aria-current="page"] { padding: 6px 12px; } .crumbs li + li::before { margin: 0 7px 0 4px; } }
 .tags { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .tags li { font-size: 0.8rem; font-weight: 500; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 5px 11px; }
 .contact-hero .hs-copy, .legal-hero .w { padding-block: 56px 64px; }

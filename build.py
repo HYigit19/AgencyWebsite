@@ -20,6 +20,18 @@ from localize_demos import localize
 for p in sorted((OUT / "demos").glob("*.html")):
     localize(p)
 
+# Demos nie indexieren: zusätzlich zum Header X-Robots-Tag (site/_headers) einen
+# robots-Meta-Tag in jede Demo-Seite setzen. So greift noindex auch für neue Demos
+# und für Prüfwerkzeuge, die nur das HTML lesen.
+import re as _re_robots
+for p in sorted((OUT / "demos").glob("*.html")):
+    html = p.read_text(encoding="utf-8")
+    if _re_robots.search(r'<meta[^>]*name=["\']robots["\']', html, _re_robots.I):
+        html = _re_robots.sub(r'<meta[^>]*name=["\']robots["\'][^>]*>', '<meta name="robots" content="noindex, follow">', html, flags=_re_robots.I)
+    else:
+        html = _re_robots.sub(r'(<head[^>]*>)', r'\1\n<meta name="robots" content="noindex, follow">', html, count=1, flags=_re_robots.I)
+    p.write_text(html, encoding="utf-8")
+
 # Eigene JS-/CSS-Dateien mit Inhalts-Version verlinken (style.css?v=1a2b3c4d5e).
 # Cloudflare gibt statischen Dateien einen Browser-Cache von mehreren Stunden; ohne Version
 # laufen geänderte Seiten sonst mit veralteten Skripten (z. B. dem Demo-Kit).

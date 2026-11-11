@@ -68,7 +68,7 @@ Voraussetzungen in Cloudflare: Email Routing auf devunox.ai aktiv (DNS-Einträge
 - Titel höchstens 60 Zeichen, Beschreibung höchstens 160 Zeichen; `og:title`/`og:description` gleich lauten lassen
 - Jede Seite: Canonical auf https://www.devunox.ai/…, hreflang de/en/x-default (x-default = deutsche Seite)
 - Bilder mit Alt-Text (Demo-Screenshots: „Screenshot: <Name der Demo>“)
-- Demos unter `/demos/` werden nicht indexiert; gefunden werden sollen `/de/demos` und `/en/demos`
+- Demos unter `/demos/` werden nicht indexiert (Header `X-Robots-Tag` in `_headers` und robots-Meta-Tag, den `build.py` in jede Demo setzt); gefunden werden sollen `/de/demos` und `/en/demos`
 - Impressum und Datenschutz stehen auf noindex
 - Startseite: genau eine H1 mit Suchbegriff (`<h1 class="kicker">`), der große Slogan ist `<p class="hh-title">`; Footer-Überschriften sind `<p class="f-h">`, keine H2
 - `https://www.devunox.ai/` leitet serverseitig per 302 auf `/de/` oder `/en/` weiter (`functions/index.js`: Cookie `devunox-lang`, sonst Browsersprache, sonst Deutsch); `site/index.html` bleibt als Rückfall

@@ -58,7 +58,9 @@ body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--fo
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 40; background: var(--card); }
 .w { max-width: var(--wrap); margin-inline: auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
 @media (max-width: 480px) { .w { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); } }
-h1, h2, h3 { margin: 0; text-wrap: balance; }
+h1, h2, h3 { margin: 0; text-wrap: balance; overflow-wrap: break-word; }
+/* Lange Wörter dürfen ihre Spalte nie sprengen (Trennstellen per &shy; im Text) */
+.hh-copy > *, .hs-copy > *, .o-name { min-width: 0; max-width: 100%; overflow-wrap: break-word; }
 p { margin: 0; }
 a { color: inherit; }
 :focus-visible { outline: 2px solid var(--o); outline-offset: 3px; border-radius: 8px; }

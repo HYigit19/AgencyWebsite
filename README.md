@@ -72,5 +72,12 @@ Voraussetzungen in Cloudflare: Email Routing auf devunox.ai aktiv (DNS-Einträge
 - Impressum und Datenschutz stehen auf noindex
 - Startseite: genau eine H1 mit Suchbegriff (`<h1 class="kicker">`), der große Slogan ist `<p class="hh-title">`; Footer-Überschriften sind `<p class="f-h">`, keine H2
 - `https://www.devunox.ai/` leitet serverseitig per 302 auf `/de/` oder `/en/` weiter (`functions/index.js`: Cookie `devunox-lang`, sonst Browsersprache, sonst Deutsch); `site/index.html` bleibt als Rückfall
-- Nach Änderungen an `styles.css` oder `main.js` die Version in allen Seiten hochzählen (`styles.css?v=n15`, `main.js?v=n7`), sonst sehen Besucher die alte Datei aus dem Cache
+- Nach Änderungen an `styles.css` oder `main.js` die Version in allen Seiten hochzählen (`styles.css?v=n16`, `main.js?v=n7`), sonst sehen Besucher die alte Datei aus dem Cache
 - Fachseite KI im Qualitätsmanagement: `site/de/ki-qualitaetsmanagement.html` / `site/en/ai-quality-management.html` (im Footer aller Seiten verlinkt)
+
+## Über uns und Ratgeber
+
+- `site/de/ueber-uns.html`, `site/en/about.html` – Unternehmensseite (AboutPage-Schema)
+- `site/de/ratgeber/`, `site/en/insights/` – Ratgeber-Artikel (BlogPosting- und FAQ-Schema), im Footer aller Seiten verlinkt
+- Erzeugt mit `python3 tools/content_pages.py`: Texte stehen dort in `ABOUT` und `ARTICLES`. Neuer Artikel = neuer Eintrag (DE und EN), Skript ausführen, committen. Das Skript fügt auch den Abschnitt „Gut zu wissen“ auf den passenden Leistungsseiten ein.
+- `site/llms.txt` – Übersicht für KI-Suchmaschinen; bei neuen Seiten ergänzen

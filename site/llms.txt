@@ -1,0 +1,37 @@
+# devunoxAI
+
+> devunoxAI (a brand of DEVUNOX SOLUTIONS Sp. z o.o., Warsaw) builds AI automation, websites, custom software and dashboards for small and mid-sized businesses in Germany, Austria, Switzerland and the EU. Free pilot, fixed prices, no per-user subscription, EU hosting, GDPR compliant. Website in German and English.
+
+## Leistungen (Deutsch)
+- [KI-Automatisierung](https://www.devunox.ai/de/ki-automatisierung): Routinearbeit mit KI automatisieren: E-Mails, Dokumente, Datenübertragung
+- [Kundenindividuelle Software](https://www.devunox.ai/de/web-apps): Software nach Maß, vom internen Tool bis zum Kundenportal
+- [Dashboards](https://www.devunox.ai/de/dashboards): Kennzahlen live aus ERP, Excel und anderen Tools
+- [Websites](https://www.devunox.ai/de/websites): schnelle, mehrsprachige Unternehmenswebsites
+- [KI im Qualitätsmanagement](https://www.devunox.ai/de/ki-qualitaetsmanagement): Reklamationen, 8D, Prüfungen und Kennzahlen mit KI
+- [Demos](https://www.devunox.ai/de/demos): klickbare Beispiel-Anwendungen
+- [Preise](https://www.devunox.ai/de/preise): kostenloser Pilot, Festpreise, Richtpreise
+- [Über uns](https://www.devunox.ai/de/ueber-uns): Unternehmen, Gründer, Arbeitsweise
+- [Kontakt](https://www.devunox.ai/de/kontakt): kostenloses Erstgespräch
+
+## Ratgeber (Deutsch)
+- [Was kostet KI-Automatisierung?](https://www.devunox.ai/de/ratgeber/ki-automatisierung-kosten)
+- [KI im Unternehmen: DSGVO und EU AI Act](https://www.devunox.ai/de/ratgeber/ki-dsgvo-ai-act)
+- [E-Rechnung und KI: Eingangsrechnungen automatisch verarbeiten](https://www.devunox.ai/de/ratgeber/e-rechnung-ki)
+- [Individualsoftware oder Standardsoftware?](https://www.devunox.ai/de/ratgeber/individualsoftware-vs-standardsoftware)
+
+## Services (English)
+- [AI automation](https://www.devunox.ai/en/ai-automation)
+- [Custom software](https://www.devunox.ai/en/web-apps)
+- [Dashboards](https://www.devunox.ai/en/dashboards)
+- [Websites](https://www.devunox.ai/en/websites)
+- [AI for quality management](https://www.devunox.ai/en/ai-quality-management)
+- [Demos](https://www.devunox.ai/en/demos)
+- [Pricing](https://www.devunox.ai/en/pricing)
+- [About us](https://www.devunox.ai/en/about)
+- [Contact](https://www.devunox.ai/en/contact)
+
+## Insights (English)
+- [How much does AI automation cost?](https://www.devunox.ai/en/insights/ai-automation-cost)
+- [AI in business: GDPR and the EU AI Act](https://www.devunox.ai/en/insights/ai-gdpr-eu-ai-act)
+- [Invoice automation with AI](https://www.devunox.ai/en/insights/invoice-automation-ai)
+- [Custom software or off-the-shelf software?](https://www.devunox.ai/en/insights/custom-vs-off-the-shelf-software)

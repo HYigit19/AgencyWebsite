@@ -65,6 +65,7 @@ a { color: inherit; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* Kicker: a small pill with a signal dot */
+h1.kicker { line-height: 1.35; }
 .kicker { justify-self: start; display: inline-flex; align-items: center; gap: 9px; font-size: 0.85rem; font-weight: 500; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 6px 13px 6px 11px; width: fit-content; }
 .kicker::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--o); flex: none; }
 
@@ -114,7 +115,8 @@ a { color: inherit; }
 .hero-home { background: var(--bg); color: var(--fg); overflow: hidden; }
 .hh-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: 64px; align-items: center; padding-block: 72px 56px; }
 .hh-copy, .hs-copy { display: grid; gap: 22px; align-content: start; min-width: 0; }
-.hero-home h1 { font: 700 clamp(2.3rem, 0.9rem + 4.6vw, 4.9rem)/1.04 var(--font-display); letter-spacing: -0.045em; }
+.hero-home .hh-title { margin: 0; text-wrap: balance; }
+.hero-home .hh-title { font: 700 clamp(2.3rem, 0.9rem + 4.6vw, 4.9rem)/1.04 var(--font-display); letter-spacing: -0.045em; }
 .hh-lead { font-size: 1.2rem; line-height: 1.55; color: var(--muted); max-width: 34em; }
 .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
 .hh-vis, .hs-vis { position: relative; min-width: 0; }
@@ -373,7 +375,7 @@ mark.ph { background: var(--o-soft); color: var(--fg); border-radius: 4px; paddi
 .f-top { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 40px; padding-block: 72px 32px; }
 .f-top > * { min-width: 0; }
 .f-intro p { margin-top: 16px; color: var(--muted); max-width: 26em; }
-.f-col h2 { font-size: 0.85rem; font-weight: 600; color: var(--muted); margin-bottom: 14px; }
+.f-col .f-h { font-size: 0.85rem; font-weight: 600; color: var(--muted); margin-bottom: 14px; }
 .f-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
 .f-col a { text-decoration: none; }
 .f-col a:hover { color: var(--o-text); }

@@ -3,7 +3,12 @@
 
   // Remember language choice when switching.
   document.querySelectorAll(".lang a").forEach(function (a) {
-    a.addEventListener("click", function () { store("devunox-lang", a.getAttribute("hreflang")); });
+    a.addEventListener("click", function () {
+      var l = a.getAttribute("hreflang");
+      store("devunox-lang", l);
+      // Cookie für die Weiterleitung der Startadresse (functions/index.js)
+      try { document.cookie = "devunox-lang=" + l + "; path=/; max-age=31536000; SameSite=Lax; Secure"; } catch (e) {}
+    });
   });
 
   // Mobile menu

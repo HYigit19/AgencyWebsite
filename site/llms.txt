@@ -13,6 +13,13 @@
 - [Über uns](https://www.devunox.ai/de/ueber-uns): Unternehmen, Gründer, Arbeitsweise
 - [Kontakt](https://www.devunox.ai/de/kontakt): kostenloses Erstgespräch
 
+## Lösungen (Deutsch)
+- [KI-Posteingang](https://www.devunox.ai/de/loesungen/ki-posteingang): Der KI-Posteingang liest eingehende E-Mails, erkennt das Anliegen, übernimmt die Daten ins CRM und bereitet Antworten vor. Kostenloser Pilot, Hosting in der EU.
+- [Dokumente automatisch auslesen](https://www.devunox.ai/de/loesungen/dokumente-auslesen): KI liest Rechnungen, Lieferscheine und Formulare aus und überträgt die Daten in ERP, Buchhaltung oder Tabelle. Kostenloser Pilot, Hosting in der EU.
+- [Wissensdatenbank mit KI](https://www.devunox.ai/de/loesungen/wissensdatenbank-ki): Fragen stellen statt suchen: Die KI-Wissensdatenbank beantwortet Fragen aus Handbüchern, Verträgen und Richtlinien, immer mit Quelle. Kostenloser Pilot.
+- [Reklamationsmanagement](https://www.devunox.ai/de/loesungen/reklamationsmanagement-software): Kunden- und Lieferantenreklamationen digital erfassen, mit 8D und Maßnahmen bearbeiten und Fristen im Blick behalten. Als eigene Lösung, kostenloser Pilot.
+- [Außendienst-App](https://www.devunox.ai/de/loesungen/aussendienst-app): Aufträge aufs Handy, Rückmeldung mit Fotos und GPS-Standort, das Büro sieht alles live. Die Außendienst-App als eigene Lösung für Ihr Team. Kostenloser Pilot.
+
 ## Ratgeber (Deutsch)
 - [Was kostet KI-Automatisierung?](https://www.devunox.ai/de/ratgeber/ki-automatisierung-kosten)
 - [KI im Unternehmen: DSGVO und EU AI Act](https://www.devunox.ai/de/ratgeber/ki-dsgvo-ai-act)
@@ -29,6 +36,13 @@
 - [Pricing](https://www.devunox.ai/en/pricing)
 - [About us](https://www.devunox.ai/en/about)
 - [Contact](https://www.devunox.ai/en/contact)
+
+## Solutions (English)
+- [AI inbox](https://www.devunox.ai/en/solutions/ai-inbox): The AI inbox reads incoming emails, recognises the request, adds the data to your CRM and drafts replies. Free pilot, hosting in the EU.
+- [Automatic document extraction](https://www.devunox.ai/en/solutions/document-extraction): AI reads invoices, delivery notes and forms and transfers the data to your ERP, accounting or spreadsheet. Free pilot, hosting in the EU.
+- [AI knowledge base](https://www.devunox.ai/en/solutions/ai-knowledge-base): Ask instead of searching: the AI knowledge base answers questions from manuals, contracts and policies, always with the source. Free pilot.
+- [Complaint management](https://www.devunox.ai/en/solutions/complaint-management-software): Record customer and supplier complaints digitally, work through 8D and actions and keep deadlines in view. Built for you, with a free pilot.
+- [Field service app](https://www.devunox.ai/en/solutions/field-service-app): Jobs on the phone, reports with photos and GPS location, the office sees everything live. A field service app built for your team. Free pilot.
 
 ## Insights (English)
 - [How much does AI automation cost?](https://www.devunox.ai/en/insights/ai-automation-cost)

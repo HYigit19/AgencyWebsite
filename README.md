@@ -75,6 +75,16 @@ Voraussetzungen in Cloudflare: Email Routing auf devunox.ai aktiv (DNS-Einträge
 - Nach Änderungen an `styles.css` oder `main.js` die Version in allen Seiten hochzählen (`styles.css?v=n16`, `main.js?v=n7`), sonst sehen Besucher die alte Datei aus dem Cache
 - Fachseite KI im Qualitätsmanagement: `site/de/ki-qualitaetsmanagement.html` / `site/en/ai-quality-management.html` (im Footer aller Seiten verlinkt)
 
+## Vertrieb: Lösungsseiten, Pilot, Messe-Seite, Fallbeispiele, Google Ads
+
+Alles erzeugt bzw. aktualisiert mit `python3 tools/growth_pages.py` (beliebig oft ausführbar, danach committen):
+
+- **Lösungsseiten** `site/de/loesungen/`, `site/en/solutions/`: je eine Seite pro Kundenproblem (KI-Posteingang, Dokumente auslesen, Wissensdatenbank, Reklamationsmanagement, Außendienst-App) mit passender Demo, Pilot-Ablauf und FAQ. Texte in `SOLUTIONS`. Im Footer aller Seiten als „Lösungen“ verlinkt.
+- **Kostenloser Pilot** als Hauptangebot: Hero-Button der Startseite, Abschnitt „Erst sehen, dann entscheiden“ (`#pilot`), Abschluss-CTA aller Seiten, erste Auswahl im Kontaktformular.
+- **Messe-/Event-Seite** `site/de/messe.html` und `site/en/event.html` (noindex): Termin buchen, Pilot anfragen, Demos, Kontakt speichern (`site/assets/devunoxai.vcf`). QR-Codes zum Drucken: `site/assets/brand/qr-messe-de.svg|png` und `qr-event-en.svg|png`.
+- **Fallbeispiele**: Liste `CASES` in `tools/growth_pages.py`. Leer = kein Abschnitt. Nur echte Projekte mit Zustimmung des Kunden eintragen; dann erscheint der Abschnitt auf der Startseite vor dem CTA.
+- **Google-Ads-Messung** `site/assets/consent.js`: inaktiv, solange `ADS_ID` leer ist. Zum Aktivieren `ADS_ID` und `LEAD_LABEL` eintragen und Google Ads in der Datenschutzerklärung ergänzen. Dann erscheint ein Einwilligungs-Hinweis; erst nach „Einverstanden“ wird Google geladen. Gezählt werden gesendete Anfragen (Ereignis `site:lead` aus `main.js`) und Klicks auf Telefon, E-Mail, WhatsApp und Terminbuchung. Im Footer erscheint dann „Cookie-Einstellungen“.
+
 ## Über uns und Ratgeber
 
 - `site/de/ueber-uns.html`, `site/en/about.html` – Unternehmensseite (AboutPage-Schema)

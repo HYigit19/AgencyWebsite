@@ -704,3 +704,18 @@ mark.ph { background: var(--o-soft); color: var(--fg); border-radius: 4px; paddi
 .post-list span { color: var(--muted); font-size: 0.95rem; }
 .legal-hero .crumbs { margin-bottom: 22px; }
 .legal-hero .hh-lead { margin-top: 14px; max-width: 62ch; }
+
+/* Vertriebs-Bausteine (tools/growth_pages.py): einzelne Demo, Event-Aktionen, Fallbeispiele, Pilot */
+.demo-grid.demo-one { grid-template-columns: minmax(0, 1fr); max-width: 860px; }
+.event-acts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.event-acts a { padding-block: 26px; }
+.event-acts .o-name { font: 600 1.25rem/1.2 var(--font-display); letter-spacing: -0.02em; }
+.event-acts .o-more { color: var(--muted); }
+.cases { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.case { background: var(--card); border-radius: 26px; padding: 26px 28px; display: grid; gap: 8px; align-content: start; }
+.case h3 { font: 600 1.2rem/1.25 var(--font-display); letter-spacing: -0.02em; }
+.case p { color: var(--muted); margin: 0; }
+.case p b { color: var(--fg); }
+.pilot-sec .demo-foot { margin-top: 36px; }
+.task-list .tick-x { background: var(--line); color: var(--fg); }
+@media (max-width: 860px) { .event-acts, .cases { grid-template-columns: minmax(0, 1fr); } }

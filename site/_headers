@@ -13,3 +13,8 @@ https://:version.:project.pages.dev/*
 # Gefunden werden sollen die Seiten /de/demos und /en/demos, die alle Demos beschreiben.
 /demos/*
   X-Robots-Tag: noindex, follow
+
+# Visitenkarte für die Messe-Seite (QR-Code): als Kontakt öffnen statt als Text anzeigen
+/assets/devunoxai.vcf
+  Content-Type: text/vcard; charset=utf-8
+  Content-Disposition: attachment; filename="devunoxAI.vcf"

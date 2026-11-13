@@ -660,10 +660,10 @@ def crumb_ld(items):
 def cta(lang, depth):
     pre = "../" * depth
     h = "Erzählen Sie uns, was Sie Zeit kostet" if lang == "de" else "Tell us what costs you time"
-    p = ("Im kostenlosen Erstgespräch finden wir heraus, wo sich Automatisierung oder eigene Software für Sie lohnt." if lang == "de"
-         else "In a free intro call we find out where automation or your own software pays off for you.")
-    b = "Erstgespräch anfragen" if lang == "de" else "Book an intro call"
-    return f'<section class="cta"><div class="w cta-in"><h2>{h}</h2><div class="cta-side"><p>{p}</p><a class="btn btn-ink" href="{pre}{L[lang]["contact"]}">{b}{ARROW}</a></div></div></section>'
+    p = ("Im kostenlosen Erstgespräch finden wir heraus, wo sich Automatisierung oder eigene Software für Sie lohnt. Den Piloten bauen wir kostenlos." if lang == "de"
+         else "In a free intro call we find out where automation or custom software pays off for you. We build the pilot free of charge.")
+    b = "Kostenlosen Pilot anfragen" if lang == "de" else "Request a free pilot"
+    return f'<section class="cta"><div class="w cta-in"><h2>{h}</h2><div class="cta-side"><p>{p}</p><a class="btn btn-ink" href="{pre}{L[lang]["contact"]}#contact-form">{b}{ARROW}</a></div></div></section>'
 
 def card(lang, a, href):
     x = a[lang]

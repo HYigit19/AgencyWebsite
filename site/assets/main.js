@@ -92,7 +92,7 @@
       fetch(form.action || "/api/contact", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) })
         .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok && d.ok, d: d }; }); })
         .then(function (r) {
-          if (r.ok) { form.reset(); show(form.dataset.success, "ok"); submit.textContent = form.dataset.sent; return; }
+          if (r.ok) { form.reset(); show(form.dataset.success, "ok"); submit.textContent = form.dataset.sent; try { document.dispatchEvent(new CustomEvent("site:lead", { detail: "form" })); } catch (x) {} return; }
           show(r.d && r.d.error === "missing" ? form.dataset.missing : form.dataset.error, "error");
           submit.disabled = false; submit.textContent = label;
         })
